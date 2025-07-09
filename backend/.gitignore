@@ -4,7 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-.env
+.env.local
+.env.docker
+
 
 ### STS ###
 .apt_generated

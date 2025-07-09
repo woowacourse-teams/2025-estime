@@ -6,12 +6,7 @@ services:
     container_name: bether-mysql
     restart: unless-stopped
     env_file:
-      - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
+      - .env.docker
     ports:
       - "13306:3306"
     volumes:
@@ -23,21 +18,16 @@ services:
       retries: 5
 
   app:
-    image: myapp:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: bether-app
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
     env_file:
-      - .env
-    environment:
-      - SPRING_DATASOURCE_URL
-      - SPRING_DATASOURCE_USERNAME
-      - SPRING_DATASOURCE_PASSWORD
-      - SPRING_JPA_HIBERNATE_DDL_AUTO
+      - .env.docker
     ports:
       - "8081:8080"
-    restart: on-failure
 
 volumes:
   db_data:
