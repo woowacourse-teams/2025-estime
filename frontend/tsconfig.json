@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES6"],
+    "allowJs": true,
+    // node_modules 안의 타입 정의 검사는 건너뜀 — 빌드 속도↑
+    "skipLibCheck": true,
+
+    // CommonJS ↔ ES Module 간 import/require 혼용 시 편하게 동작
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    // 모든 타입 오류를 엄격하게 체크
+    "strict": true,
+
+    // 대·소문자 다른 파일 이름을 OS마다 혼동하지 않도록 강제
+    "forceConsistentCasingInFileNames": true,
+
+    // switch 문에서 case 누락(떨어지는) 방지
+    "noFallthroughCasesInSwitch": true,
+
+    // 번들 결과 모듈 형식 — 최신 ESNext(rollup·webpack이 후처리)
+    "module": "ESNext",
+
+    // Node 방식의 모듈 탐색 규칙 사용
+    "moduleResolution": "node",
+
+    // *.json 파일도 import 가능
+    "resolveJsonModule": true,
+
+    // 각 파일을 독립 모듈로 취급하여 빠른 트랜스파일 (Babel처럼)
+    "isolatedModules": true,
+
+    // tsc가 실제 .js를 내보내지 않음 — 타입 검사 전용 설정
+    "noEmit": true,
+
+    // React 17+의 새 JSX 변환 방식 사용
+    "jsx": "react-jsx",
+
+    // 절대 경로 import에 기준이 될 루트
+    "baseUrl": ".",
+
+    // "@/컴포넌트" 같이 별칭 경로 지정
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+
+  // 타입 검사 대상 소스
+  "include": ["src/**/*"],
+
+  // 검사 대상에서 제외할 디렉터리
+  "exclude": ["node_modules", "dist"]
+}
