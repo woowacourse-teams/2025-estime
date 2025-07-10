@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/time-slot")
+@RequestMapping("/time-slots")
 public class TimeSlotController {
 
     private final TimeSlotService timeSlotService;
