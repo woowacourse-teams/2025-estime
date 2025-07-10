@@ -4,7 +4,7 @@
 
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:file:.env.local[.properties]
 
   datasource:
     url: ${SPRING_DATASOURCE_URL}
