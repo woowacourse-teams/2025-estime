@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,6 +18,11 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     @Override
     public Optional<TimeSlot> findById(final Long id) {
         return timeSlotJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<TimeSlot> findAllByRoomSession(final UUID roomSession) {
+        return timeSlotJpaRepository.findAllByRoomSession(roomSession);
     }
 
     @Override
