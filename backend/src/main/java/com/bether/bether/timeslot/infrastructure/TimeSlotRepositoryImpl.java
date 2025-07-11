@@ -20,6 +20,11 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     }
 
     @Override
+    public List<TimeSlot> findAllByRoomSessionAndUserName(final UUID roomSession, final String userName) {
+        return timeSlotJpaRepository.findAllByRoomSessionAndUserName(roomSession, userName);
+    }
+
+    @Override
     public TimeSlot save(final TimeSlot timeSlot) {
         return timeSlotJpaRepository.save(timeSlot);
     }

@@ -5,9 +5,11 @@ import java.util.UUID;
 
 public interface TimeSlotRepository {
 
+    List<TimeSlot> findAllByRoomSession(UUID roomSession);
+
+    List<TimeSlot> findAllByRoomSessionAndUserName(UUID roomSession, String userName);
+
     TimeSlot save(TimeSlot timeSlot);
 
     List<TimeSlot> saveAll(List<TimeSlot> timeSlots);
-
-    List<TimeSlot> findAllByRoomSession(UUID roomSession);
 }

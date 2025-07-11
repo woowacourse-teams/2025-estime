@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface TimeSlotJpaRepository extends JpaRepository<TimeSlot, Long> {
 
     List<TimeSlot> findAllByRoomSession(UUID roomSession);
+
+    List<TimeSlot> findAllByRoomSessionAndUserName(UUID roomSession, String userName);
 }
