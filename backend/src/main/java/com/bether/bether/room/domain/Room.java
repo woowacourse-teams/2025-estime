@@ -2,12 +2,11 @@ package com.bether.bether.room.domain;
 
 import com.bether.bether.common.BaseEntity;
 import jakarta.persistence.Entity;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.UUID;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

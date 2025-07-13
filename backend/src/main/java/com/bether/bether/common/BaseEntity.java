@@ -4,11 +4,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-
-import java.util.Objects;
 
 @FieldNameConstants
 @NoArgsConstructor
@@ -30,8 +29,12 @@ public abstract class BaseEntity {
     // 프록시 객체도 같은 타입 계열로 간주
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof final BaseEntity that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof final BaseEntity that)) {
+            return false;
+        }
         return id != null && id.equals(that.id);
     }
 
