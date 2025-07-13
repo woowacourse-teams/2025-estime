@@ -35,12 +35,13 @@ public class Room extends BaseEntity {
     private LocalTime endTime;
 
     private Room(
-            final String title,
-            final List<LocalDate> availableDates,
-            final LocalTime startTime,
-            final LocalTime endTime
+        final UUID session,
+        final String title,
+        final List<LocalDate> availableDates,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
-        this.session = UUID.randomUUID();
+        this.session = session;
         this.title = title;
         this.availableDates = availableDates;
         this.startTime = startTime;
@@ -48,14 +49,15 @@ public class Room extends BaseEntity {
     }
 
     private Room(
-            final Long id,
-            final String title,
-            final List<LocalDate> availableDates,
-            final LocalTime startTime,
-            final LocalTime endTime
+        final Long id,
+        final UUID session,
+        final String title,
+        final List<LocalDate> availableDates,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         super(id);
-        this.session = UUID.randomUUID();
+        this.session = session;
         this.title = title;
         this.availableDates = availableDates;
         this.startTime = startTime;
@@ -63,32 +65,34 @@ public class Room extends BaseEntity {
     }
 
     public static Room withoutId(
-            final String title,
-            final List<LocalDate> availableDates,
-            final LocalTime startTime,
-            final LocalTime endTime
+        final String title,
+        final List<LocalDate> availableDates,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         validate(title, availableDates, startTime, endTime);
-        return new Room(title, availableDates, startTime, endTime);
+        final UUID session = UUID.randomUUID();
+        return new Room(session, title, availableDates, startTime, endTime);
     }
 
     public static Room withId(
-            final Long id,
-            final String title,
-            final List<LocalDate> availableDates,
-            final LocalTime startTime,
-            final LocalTime endTime
+        final Long id,
+        final String title,
+        final List<LocalDate> availableDates,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         validate(id, title, availableDates, startTime, endTime);
-        return new Room(id, title, availableDates, startTime, endTime);
+        final UUID session = UUID.randomUUID();
+        return new Room(id, session, title, availableDates, startTime, endTime);
     }
 
     private static void validate(
-            final Long id,
-            final String title,
-            final List<LocalDate> availableDates,
-            final LocalTime startTime,
-            final LocalTime endTime
+        final Long id,
+        final String title,
+        final List<LocalDate> availableDates,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         if (id == null) {
             throw new IllegalArgumentException("id cannot be null");
@@ -97,10 +101,10 @@ public class Room extends BaseEntity {
     }
 
     private static void validate(
-            final String title,
-            final List<LocalDate> availableDates,
-            final LocalTime startTime,
-            final LocalTime endTime
+        final String title,
+        final List<LocalDate> availableDates,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         if (title == null || availableDates == null || startTime == null || endTime == null) {
             throw new IllegalArgumentException("title, availableDates, startTime, endTime cannot be null");
