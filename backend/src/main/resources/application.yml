@@ -18,3 +18,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+discord:
+  bot:
+    token: ${DISCORD_BOT_TOKEN}
