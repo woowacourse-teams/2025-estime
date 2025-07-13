@@ -1,13 +1,20 @@
 package com.bether.bether.room.domain;
 
 import com.bether.bether.common.BaseEntity;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.UUID;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,36 +23,87 @@ import java.util.UUID;
 public class Room extends BaseEntity {
 
     private UUID session;
+    private String title;
 
-    private Room(final UUID session) {
-        this.session = session;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "room_available_dates",
+            joinColumns = @JoinColumn(name = "room_id")
+    )
+    private List<LocalDate> availableDates = new ArrayList<>();
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    private Room(
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
+    ) {
+        this.session = UUID.randomUUID();
+        this.title = title;
+        this.availableDates = availableDates;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    private Room(final Long id, final UUID session) {
+    private Room(
+            final Long id,
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
+    ) {
         super(id);
-        this.session = session;
+        this.session = UUID.randomUUID();
+        this.title = title;
+        this.availableDates = availableDates;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public static Room withoutId(final UUID session) {
-        validate(session);
-        return new Room(session);
+    public static Room withoutId(
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
+    ) {
+        validate(title, availableDates, startTime, endTime);
+        return new Room(title, availableDates, startTime, endTime);
     }
 
-    public static Room withId(final Long id, final UUID session) {
-        validate(id, session);
-        return new Room(id, session);
+    public static Room withId(
+            final Long id,
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
+    ) {
+        validate(id, title, availableDates, startTime, endTime);
+        return new Room(id, title, availableDates, startTime, endTime);
     }
 
-    private static void validate(final Long id, final UUID session) {
+    private static void validate(
+            final Long id,
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
+    ) {
         if (id == null) {
             throw new IllegalArgumentException("id cannot be null");
         }
-        validate(session);
+        validate(title, availableDates, startTime, endTime);
     }
 
-    private static void validate(final UUID session) {
-        if (session == null) {
-            throw new IllegalArgumentException("session cannot be null");
+    private static void validate(
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
+    ) {
+        if (title == null || availableDates == null || startTime == null || endTime == null) {
+            throw new IllegalArgumentException("title, availableDates, startTime, endTime cannot be null");
         }
     }
 }
