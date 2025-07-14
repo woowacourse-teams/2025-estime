@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -16,13 +15,13 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     private final TimeSlotJpaRepository timeSlotJpaRepository;
 
     @Override
-    public Optional<TimeSlot> findById(final Long id) {
-        return timeSlotJpaRepository.findById(id);
+    public List<TimeSlot> findAllByRoomSession(final UUID roomSession) {
+        return timeSlotJpaRepository.findAllByRoomSession(roomSession);
     }
 
     @Override
-    public List<TimeSlot> findAllByRoomSession(final UUID roomSession) {
-        return timeSlotJpaRepository.findAllByRoomSession(roomSession);
+    public List<TimeSlot> findAllByRoomSessionAndUserName(final UUID roomSession, final String userName) {
+        return timeSlotJpaRepository.findAllByRoomSessionAndUserName(roomSession, userName);
     }
 
     @Override

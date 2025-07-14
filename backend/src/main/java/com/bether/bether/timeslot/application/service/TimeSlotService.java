@@ -21,6 +21,11 @@ public class TimeSlotService {
         return timeSlotRepository.findAllByRoomSession(roomSession);
     }
 
+    @Transactional(readOnly = true)
+    public List<TimeSlot> getAllByRoomSessionAndUserName(final UUID roomSession, final String userName) {
+        return timeSlotRepository.findAllByRoomSessionAndUserName(roomSession, userName);
+    }
+
     @Transactional
     public List<TimeSlot> saveAll(final TimeSlotInput input) {
         final List<TimeSlot> timeSlots = input.toEntity();
