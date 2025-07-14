@@ -24,6 +24,15 @@ public class TimeSlotController {
         return ApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
     }
 
+    @GetMapping("/{room-session}/user")
+    public ApiResponse<TotalTimeSlotResponse> getByUserName(
+            @PathVariable("room-session") final String roomSession,
+            @RequestParam("name") final String userName
+    ) {
+        final List<TimeSlot> timeSlots = timeSlotService.getAllByRoomSessionAndUserName(UUID.fromString(roomSession), userName);
+        return ApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
+    }
+
     @PostMapping
     public ApiResponse<Void> create(@RequestBody final TimeSlotCreateRequest request) {
         final List<TimeSlot> timeSlots = timeSlotService.saveAll(request.toInput());
