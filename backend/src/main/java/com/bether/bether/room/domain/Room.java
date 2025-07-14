@@ -23,6 +23,8 @@ import lombok.ToString;
 @ToString
 public class Room extends BaseEntity {
 
+    private static final int TIME_SLOT_MINUTES = 30;
+
     @Column(name = "session", nullable = false, unique = true)
     private UUID session;
 
@@ -79,6 +81,8 @@ public class Room extends BaseEntity {
         final LocalTime endTime
     ) {
         validate(title, availableDates, startTime, endTime);
+        validateDates(availableDates);
+        validateTimes(startTime, endTime);
         final UUID session = UUID.randomUUID();
         return new Room(session, title, availableDates, startTime, endTime);
     }
@@ -91,6 +95,8 @@ public class Room extends BaseEntity {
         final LocalTime endTime
     ) {
         validate(id, title, availableDates, startTime, endTime);
+        validateDates(availableDates);
+        validateTimes(startTime, endTime);
         final UUID session = UUID.randomUUID();
         return new Room(id, session, title, availableDates, startTime, endTime);
     }
@@ -116,6 +122,26 @@ public class Room extends BaseEntity {
     ) {
         if (title == null || availableDates == null || startTime == null || endTime == null) {
             throw new IllegalArgumentException("title, availableDates, startTime, endTime cannot be null");
+        }
+    }
+
+    private static void validateDates(final List<LocalDate> availableDates) {
+        if (availableDates.isEmpty()) {
+            throw new IllegalArgumentException("availableDates cannot be empty");
+        }
+        for (LocalDate date : availableDates) {
+            if (date.isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("availableDates cannot contain past dates: " + date);
+            }
+        }
+    }
+
+    private static void validateTimes(final LocalTime startTime, final LocalTime endTime) {
+        if (!startTime.isBefore(endTime)) {
+            throw new IllegalArgumentException("startTime cannot be after endTime");
+        }
+        if (startTime.getMinute() % TIME_SLOT_MINUTES != 0 || endTime.getMinute() % TIME_SLOT_MINUTES != 0) {
+            throw new IllegalArgumentException("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
         }
     }
 }
