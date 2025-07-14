@@ -13,19 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
 public class Room extends BaseEntity {
 
     private static final int TIME_SLOT_MINUTES = 30;
 
-    @Column(name = "session", nullable = false, unique = true)
+    @Column(name = "session", nullable = false)
     private UUID session;
 
     @Column(name = "title", nullable = false)
@@ -44,36 +46,6 @@ public class Room extends BaseEntity {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
-    private Room(
-        final UUID session,
-        final String title,
-        final List<LocalDate> availableDates,
-        final LocalTime startTime,
-        final LocalTime endTime
-    ) {
-        this.session = session;
-        this.title = title;
-        this.availableDates = availableDates;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    private Room(
-        final Long id,
-        final UUID session,
-        final String title,
-        final List<LocalDate> availableDates,
-        final LocalTime startTime,
-        final LocalTime endTime
-    ) {
-        super(id);
-        this.session = session;
-        this.title = title;
-        this.availableDates = availableDates;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
     public static Room withoutId(
         final String title,
         final List<LocalDate> availableDates,
@@ -85,33 +57,6 @@ public class Room extends BaseEntity {
         validateTimes(startTime, endTime);
         final UUID session = UUID.randomUUID();
         return new Room(session, title, availableDates, startTime, endTime);
-    }
-
-    public static Room withId(
-        final Long id,
-        final String title,
-        final List<LocalDate> availableDates,
-        final LocalTime startTime,
-        final LocalTime endTime
-    ) {
-        validate(id, title, availableDates, startTime, endTime);
-        validateDates(availableDates);
-        validateTimes(startTime, endTime);
-        final UUID session = UUID.randomUUID();
-        return new Room(id, session, title, availableDates, startTime, endTime);
-    }
-
-    private static void validate(
-        final Long id,
-        final String title,
-        final List<LocalDate> availableDates,
-        final LocalTime startTime,
-        final LocalTime endTime
-    ) {
-        if (id == null) {
-            throw new IllegalArgumentException("id cannot be null");
-        }
-        validate(title, availableDates, startTime, endTime);
     }
 
     private static void validate(
