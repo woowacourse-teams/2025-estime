@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class TimeSlotCount {
+
     private final LocalDateTime dateTime;
     private Integer count;
     private final List<String> userNames;
@@ -17,7 +18,7 @@ public class TimeSlotCount {
         this.userNames = new ArrayList<>();
     }
 
-    public void addUserName(String userName) {
+    public void addUserName(final String userName) {
         userNames.add(userName);
         count++;
     }

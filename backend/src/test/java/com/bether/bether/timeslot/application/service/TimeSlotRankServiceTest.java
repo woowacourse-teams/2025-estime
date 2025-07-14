@@ -41,7 +41,7 @@ class TimeSlotRankServiceTest {
         final TimeSlotRankInput input = new TimeSlotRankInput(roomSession);
 
         // when
-        TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
+        final TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
 
         // then
         assertThat(output.rank())
@@ -62,7 +62,7 @@ class TimeSlotRankServiceTest {
         final TimeSlotRankInput input = new TimeSlotRankInput(roomSession);
 
         // when
-        TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
+        final TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
 
         // then
         assertThat(output.rank())

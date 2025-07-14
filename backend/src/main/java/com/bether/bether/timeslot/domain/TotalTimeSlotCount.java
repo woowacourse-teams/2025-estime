@@ -14,7 +14,7 @@ public class TotalTimeSlotCount {
         this.dateTimeCount = new HashMap<>();
     }
 
-    public void calculate(List<TimeSlot> timeSlots) {
+    public void calculate(final List<TimeSlot> timeSlots) {
         for (TimeSlot timeSlot : timeSlots) {
             addTimeSlot(timeSlot);
         }
@@ -27,9 +27,9 @@ public class TotalTimeSlotCount {
                 .toList();
     }
 
-    private void addTimeSlot(TimeSlot timeSlot) {
-        LocalDateTime dateTime = timeSlot.getStartAt();
-        String userName = timeSlot.getUserName();
+    private void addTimeSlot(final TimeSlot timeSlot) {
+        final LocalDateTime dateTime = timeSlot.getStartAt();
+        final String userName = timeSlot.getUserName();
 
         dateTimeCount.putIfAbsent(dateTime, new TimeSlotCount(dateTime));
         dateTimeCount.computeIfPresent(dateTime, ((dateTimeKey, timeSlotCount) -> {

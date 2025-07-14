@@ -35,8 +35,8 @@ public class TimeSlotController {
 
     @GetMapping("/{room-session}/rank")
     public ApiResponse<TotalTimeSlotRankResponse> getRank(@PathVariable("room-session") final String roomSession) {
-        TimeSlotRankInput input = TimeSlotRankInput.toInput(UUID.fromString(roomSession));
-        TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
+        final TimeSlotRankInput input = TimeSlotRankInput.toInput(UUID.fromString(roomSession));
+        final TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
         return ApiResponse.ok(TotalTimeSlotRankResponse.from(output));
     }
 

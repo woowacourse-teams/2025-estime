@@ -17,9 +17,9 @@ public class TimeSlotRankService {
 
     @Transactional(readOnly = true)
     public TotalTimeSlotRankOutput calculateRank(final TimeSlotRankInput input) {
-        List<TimeSlot> timeSlots = timeSlotService.getAllByRoomSession(input.roomSession());
+        final List<TimeSlot> timeSlots = timeSlotService.getAllByRoomSession(input.roomSession());
 
-        TotalTimeSlotCount timeSlotCount = new TotalTimeSlotCount();
+        final TotalTimeSlotCount timeSlotCount = TotalTimeSlotCount.create();
         timeSlotCount.calculate(timeSlots);
 
         return TotalTimeSlotRankOutput.from(timeSlotCount);
