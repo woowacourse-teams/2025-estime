@@ -2,6 +2,7 @@ package com.bether.bether.room.domain;
 
 import com.bether.bether.common.BaseEntity;
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,16 +23,23 @@ import lombok.ToString;
 @ToString
 public class Room extends BaseEntity {
 
+    @Column(name = "session", nullable = false, unique = true)
     private UUID session;
+
+    @Column(name = "title", nullable = false)
     private String title;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-            name = "room_available_dates",
-            joinColumns = @JoinColumn(name = "room_id")
+        name = "room_available_dates",
+        joinColumns = @JoinColumn(name = "room_id")
     )
     private List<LocalDate> availableDates = new ArrayList<>();
+
+    @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
+
+    @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
     private Room(
