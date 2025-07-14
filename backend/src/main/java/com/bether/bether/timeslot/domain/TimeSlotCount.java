@@ -12,10 +12,14 @@ public class TimeSlotCount {
     private Integer count;
     private final List<String> userNames;
 
-    public TimeSlotCount(LocalDateTime dateTime) {
+    private TimeSlotCount(final LocalDateTime dateTime, final Integer count, final List<String> userNames) {
         this.dateTime = dateTime;
-        this.count = 0;
-        this.userNames = new ArrayList<>();
+        this.count = count;
+        this.userNames = userNames;
+    }
+
+    public static TimeSlotCount from(final LocalDateTime dateTime) {
+        return new TimeSlotCount(dateTime, 0, new ArrayList<>());
     }
 
     public void addUserName(final String userName) {
