@@ -20,7 +20,7 @@ public class TotalTimeSlotCount {
 
     public void calculate(final List<TimeSlot> timeSlots) {
         for (TimeSlot timeSlot : timeSlots) {
-            addTimeSlot(timeSlot);
+            updateTimeSlotCount(timeSlot);
         }
     }
 
@@ -31,7 +31,7 @@ public class TotalTimeSlotCount {
                 .toList();
     }
 
-    private void addTimeSlot(final TimeSlot timeSlot) {
+    private void updateTimeSlotCount(final TimeSlot timeSlot) {
         final LocalDateTime dateTime = timeSlot.getStartAt();
         final String userName = timeSlot.getUserName();
 
