@@ -14,6 +14,13 @@ export default [
         document: 'readonly',
       },
     },
+    rules: {
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: 'import', next: '*' },
+        { blankLine: 'any', prev: 'import', next: 'import' },
+      ],
+    },
   },
 
   js.configs.recommended,
