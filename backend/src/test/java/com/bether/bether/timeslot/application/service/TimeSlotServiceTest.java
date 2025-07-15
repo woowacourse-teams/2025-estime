@@ -1,19 +1,18 @@
 package com.bether.bether.timeslot.application.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -91,7 +90,8 @@ class TimeSlotServiceTest {
     @Test
     void saveAll() {
         // given
-        final TimeSlotInput input = new TimeSlotInput(UUID.randomUUID(), "user", List.of(LocalDateTime.now(), LocalDateTime.now()));
+        final TimeSlotInput input = new TimeSlotInput(UUID.randomUUID(), "user",
+                List.of(LocalDateTime.now(), LocalDateTime.now()));
 
         // when
         final List<TimeSlot> saved = timeSlotService.saveAll(input);

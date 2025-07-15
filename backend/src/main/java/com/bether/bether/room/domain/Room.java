@@ -35,8 +35,8 @@ public class Room extends BaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-        name = "room_available_dates",
-        joinColumns = @JoinColumn(name = "room_id")
+            name = "room_available_dates",
+            joinColumns = @JoinColumn(name = "room_id")
     )
     private List<LocalDate> availableDates = new ArrayList<>();
 
@@ -47,10 +47,10 @@ public class Room extends BaseEntity {
     private LocalTime endTime;
 
     public static Room withoutId(
-        final String title,
-        final List<LocalDate> availableDates,
-        final LocalTime startTime,
-        final LocalTime endTime
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
     ) {
         validate(title, availableDates, startTime, endTime);
         validateDates(availableDates);
@@ -60,10 +60,10 @@ public class Room extends BaseEntity {
     }
 
     private static void validate(
-        final String title,
-        final List<LocalDate> availableDates,
-        final LocalTime startTime,
-        final LocalTime endTime
+            final String title,
+            final List<LocalDate> availableDates,
+            final LocalTime startTime,
+            final LocalTime endTime
     ) {
         if (title == null || availableDates == null || startTime == null || endTime == null) {
             throw new IllegalArgumentException("title, availableDates, startTime, endTime cannot be null");
@@ -74,7 +74,7 @@ public class Room extends BaseEntity {
         if (availableDates.isEmpty()) {
             throw new IllegalArgumentException("availableDates cannot be empty");
         }
-        for (LocalDate date : availableDates) {
+        for (final LocalDate date : availableDates) {
             if (date.isBefore(LocalDate.now())) {
                 throw new IllegalArgumentException("availableDates cannot contain past dates: " + date);
             }

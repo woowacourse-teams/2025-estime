@@ -1,7 +1,6 @@
 package com.bether.bether.timeslot.application.dto.input;
 
 import com.bether.bether.timeslot.domain.TimeSlot;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

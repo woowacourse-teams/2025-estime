@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,13 +39,15 @@ public class TimeSlotController {
         final TimeSlotRankInput input = TimeSlotRankInput.toInput(UUID.fromString(roomSession));
         final TotalTimeSlotRankOutput output = timeSlotRankService.calculateRank(input);
         return ApiResponse.ok(TotalTimeSlotRankResponse.from(output));
+    }
 
     @GetMapping("/{room-session}/user")
     public ApiResponse<TotalTimeSlotResponse> getByUserName(
             @PathVariable("room-session") final String roomSession,
             @RequestParam("name") final String userName
     ) {
-        final List<TimeSlot> timeSlots = timeSlotService.getAllByRoomSessionAndUserName(UUID.fromString(roomSession), userName);
+        final List<TimeSlot> timeSlots = timeSlotService.getAllByRoomSessionAndUserName(
+                UUID.fromString(roomSession), userName);
         return ApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
     }
 

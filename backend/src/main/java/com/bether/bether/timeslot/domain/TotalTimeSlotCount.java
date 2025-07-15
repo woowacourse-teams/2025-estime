@@ -19,7 +19,7 @@ public class TotalTimeSlotCount {
     }
 
     public void calculate(final List<TimeSlot> timeSlots) {
-        for (TimeSlot timeSlot : timeSlots) {
+        for (final TimeSlot timeSlot : timeSlots) {
             updateTimeSlotCount(timeSlot);
         }
     }

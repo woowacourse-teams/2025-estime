@@ -8,15 +8,8 @@ public record TotalTimeSlotRankResponse(
         List<TimeSlotRankResponse> rank
 ) {
 
-    private record TimeSlotRankResponse(
-            LocalDateTime dateTime,
-            Integer count,
-            List<String> userNames
-    ) {
-    }
-
-    public static TotalTimeSlotRankResponse from(TotalTimeSlotRankOutput output) {
-        List<TimeSlotRankResponse> rank = output.rank()
+    public static TotalTimeSlotRankResponse from(final TotalTimeSlotRankOutput output) {
+        final List<TimeSlotRankResponse> rank = output.rank()
                 .stream()
                 .map(rankOutput -> new TimeSlotRankResponse(
                         rankOutput.dateTime(),
@@ -25,5 +18,12 @@ public record TotalTimeSlotRankResponse(
                 ))
                 .toList();
         return new TotalTimeSlotRankResponse(rank);
+    }
+
+    private record TimeSlotRankResponse(
+            LocalDateTime dateTime,
+            Integer count,
+            List<String> userNames
+    ) {
     }
 }
