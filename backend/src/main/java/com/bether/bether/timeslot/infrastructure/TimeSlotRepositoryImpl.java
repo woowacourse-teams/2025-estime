@@ -2,11 +2,10 @@ package com.bether.bether.timeslot.infrastructure;
 
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor

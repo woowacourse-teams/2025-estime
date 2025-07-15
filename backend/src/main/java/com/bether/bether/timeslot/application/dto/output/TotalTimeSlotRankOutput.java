@@ -7,8 +7,8 @@ public record TotalTimeSlotRankOutput(
         List<TimeSlotRankOutput> rank
 ) {
 
-    public static TotalTimeSlotRankOutput from(TotalTimeSlotCount totalTimeSlotCount) {
-        List<TimeSlotRankOutput> rank = totalTimeSlotCount.getRank()
+    public static TotalTimeSlotRankOutput from(final TotalTimeSlotCount totalTimeSlotCount) {
+        final List<TimeSlotRankOutput> rank = totalTimeSlotCount.getRank()
                 .stream()
                 .map(timeSlotCount -> new TimeSlotRankOutput(
                         timeSlotCount.getDateTime(),
