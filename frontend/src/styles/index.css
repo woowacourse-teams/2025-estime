@@ -1,0 +1,46 @@
+@import url('./reset.css');
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('./font/PretendardVariable.woff2') format('woff2-variations');
+}
+
+body {
+  font-family: 'Pretendard', sans-serif;
+}
+
+:root {
+  --gap-1: 0.125rem; /* 2px */
+  --gap-2: 0.25rem;
+  --gap-3: 0.5rem;
+  --gap-4: 0.75rem;
+  --gap-5: 1rem;
+  --gap-6: 1.25rem;
+  --gap-7: 1.5rem;
+  --gap-8: 2rem;
+  --gap-9: 2.5rem;
+  --gap-10: 3rem;
+  --gap-11: 4rem;
+  --gap-12: 5rem;
+
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  --radius-4: 8px;
+  --radius-5: 10px;
+  --radius-6: 12px;
+
+  --padding-1: 0.125rem; /* 2px */
+  --padding-2: 0.25rem;
+  --padding-3: 0.5rem;
+  --padding-4: 0.625rem;
+  --padding-5: 0.75rem;
+  --padding-6: 1rem;
+  --padding-7: 1.25rem;
+  --padding-8: 1.5rem;
+  --padding-9: 2rem;
+  --padding-10: 2.5rem;
+}
