@@ -6,7 +6,7 @@ public record TimeSlotRankInput(
         UUID roomSession
 ) {
 
-    public static TimeSlotRankInput toInput(UUID roomSession) {
+    public static TimeSlotRankInput toInput(final UUID roomSession) {
         return new TimeSlotRankInput(roomSession);
     }
 }

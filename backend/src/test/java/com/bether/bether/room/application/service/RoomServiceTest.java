@@ -29,10 +29,10 @@ class RoomServiceTest {
     void save() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(LocalDate.now()),
-            LocalTime.of(7, 0),
-            LocalTime.of(20, 0)
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(7, 0),
+                LocalTime.of(20, 0)
         );
 
         // when
@@ -40,7 +40,7 @@ class RoomServiceTest {
 
         // then
         assertThat(isValidUUID(saved.session().toString()))
-            .isTrue();
+                .isTrue();
     }
 
     @DisplayName("시작 시간의 분(minute)이 30분 단위가 아니면 예외가 발생한다.")
@@ -48,16 +48,16 @@ class RoomServiceTest {
     void saveWithInvalidStartTimeMinute() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(LocalDate.now()),
-            LocalTime.of(7, 15),
-            LocalTime.of(20, 0)
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(7, 15),
+                LocalTime.of(20, 0)
         );
 
         // when // then
         assertThatThrownBy(() -> roomService.save(input))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
     }
 
     @DisplayName("종료 시간의 분(minute)이 30분 단위가 아니면 예외가 발생한다.")
@@ -65,16 +65,16 @@ class RoomServiceTest {
     void saveWithInvalidEndTimeMinute() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(LocalDate.now()),
-            LocalTime.of(7, 0),
-            LocalTime.of(20, 45)
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(7, 0),
+                LocalTime.of(20, 45)
         );
 
         // when // then
         assertThatThrownBy(() -> roomService.save(input))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
     }
 
     @DisplayName("날짜 리스트가 비어있으면 예외가 발생한다.")
@@ -82,16 +82,16 @@ class RoomServiceTest {
     void saveWithEmptyDates() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(),
-            LocalTime.of(7, 0),
-            LocalTime.of(20, 0)
+                "title",
+                List.of(),
+                LocalTime.of(7, 0),
+                LocalTime.of(20, 0)
         );
 
         // when // then
         assertThatThrownBy(() -> roomService.save(input))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("availableDates cannot be empty");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("availableDates cannot be empty");
     }
 
     @DisplayName("오늘 이전의 날짜가 포함되어 있으면 예외가 발생한다.")
@@ -99,16 +99,16 @@ class RoomServiceTest {
     void saveWithPastDate() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(LocalDate.now().minusDays(1)),
-            LocalTime.of(7, 0),
-            LocalTime.of(20, 0)
+                "title",
+                List.of(LocalDate.now().minusDays(1)),
+                LocalTime.of(7, 0),
+                LocalTime.of(20, 0)
         );
 
         // when // then
         assertThatThrownBy(() -> roomService.save(input))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("availableDates cannot contain past dates: " + LocalDate.now().minusDays(1));
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("availableDates cannot contain past dates: " + LocalDate.now().minusDays(1));
     }
 
     @DisplayName("시작 시간이 종료 시간보다 늦으면 예외가 발생한다.")
@@ -116,16 +116,16 @@ class RoomServiceTest {
     void saveWithStartTimeAfterEndTime() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(LocalDate.now()),
-            LocalTime.of(20, 0),
-            LocalTime.of(7, 0)
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(20, 0),
+                LocalTime.of(7, 0)
         );
 
         // when // then
         assertThatThrownBy(() -> roomService.save(input))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("startTime cannot be after endTime");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("startTime cannot be after endTime");
     }
 
     @DisplayName("시작 시간이 종료 시간과 같으면 예외가 발생한다.")
@@ -133,26 +133,26 @@ class RoomServiceTest {
     void saveWithStartTimeEqualsEndTime() {
         // given
         final RoomInput input = new RoomInput(
-            "title",
-            List.of(LocalDate.now()),
-            LocalTime.of(10, 30),
-            LocalTime.of(10, 30)
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(10, 30),
+                LocalTime.of(10, 30)
         );
 
         // when // then
         assertThatThrownBy(() -> roomService.save(input))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("startTime cannot be after endTime");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("startTime cannot be after endTime");
     }
 
-    private boolean isValidUUID(String uuid) {
+    private boolean isValidUUID(final String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             return false;
         }
         try {
             UUID.fromString(uuid);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return false;
         }
     }

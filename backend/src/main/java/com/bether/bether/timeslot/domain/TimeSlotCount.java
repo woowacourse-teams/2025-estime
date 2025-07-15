@@ -9,8 +9,8 @@ import lombok.Getter;
 public class TimeSlotCount {
 
     private final LocalDateTime dateTime;
-    private Integer count;
     private final List<String> userNames;
+    private Integer count;
 
     private TimeSlotCount(final LocalDateTime dateTime, final Integer count, final List<String> userNames) {
         this.dateTime = dateTime;
