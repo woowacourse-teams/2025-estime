@@ -3,7 +3,6 @@ package com.bether.bether.timeslot.infrastructure;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,13 +13,13 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     private final TimeSlotJpaRepository timeSlotJpaRepository;
 
     @Override
-    public List<TimeSlot> findAllByRoomSession(final UUID roomSession) {
-        return timeSlotJpaRepository.findAllByRoomSession(roomSession);
+    public List<TimeSlot> findAllByRoomId(Long roomId) {
+        return timeSlotJpaRepository.findAllByRoomId(roomId);
     }
 
     @Override
-    public List<TimeSlot> findAllByRoomSessionAndUserName(final UUID roomSession, final String userName) {
-        return timeSlotJpaRepository.findAllByRoomSessionAndUserName(roomSession, userName);
+    public List<TimeSlot> findAllByRoomIdAndUserName(Long roomId, String userName) {
+        return timeSlotJpaRepository.findAllByRoomIdAndUserName(roomId, userName);
     }
 
     @Override
