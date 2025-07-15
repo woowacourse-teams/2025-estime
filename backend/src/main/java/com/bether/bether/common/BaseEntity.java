@@ -5,12 +5,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 @Getter
 public abstract class BaseEntity {
@@ -18,13 +19,6 @@ public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
-
-    protected BaseEntity(final Long id) {
-        if (id == null) {
-            throw new IllegalStateException("Identifier has not been assigned.");
-        }
-        this.id = id;
-    }
 
     // 프록시 객체도 같은 타입 계열로 간주
     @Override
