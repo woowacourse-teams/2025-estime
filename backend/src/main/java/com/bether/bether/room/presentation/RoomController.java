@@ -23,4 +23,16 @@ public class RoomController {
         final RoomOutput saved = roomService.save(request.toInput());
         return ApiResponse.ok(RoomCreateResponse.from(saved));
     }
+
+    @GetMapping("/{session}/time-slots/statistic")
+    public ApiResponse<TimeSlotStatisticResponse> getStatistic(@PathVariable("session") final String session) {
+        final TimeSlotStatisticOutput output = roomService.calculateStatistic(UUID.fromString(session));
+        return ApiResponse.ok(TimeSlotStatisticResponse.from(output));
+    }
+
+    @GetMapping("/{session}/time-slots/recommendation")
+    public ApiResponse<TimeSlotStatisticResponse> getRank(@PathVariable("session") final String session) {
+        final TimeSlotStatisticOutput output = roomService.calculateStatistic(UUID.fromString(session));
+        return ApiResponse.ok(TimeSlotStatisticResponse.from(output));
+    }
 }

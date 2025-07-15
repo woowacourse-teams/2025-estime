@@ -30,4 +30,14 @@ public class TimeSlotService {
         final List<TimeSlot> timeSlots = input.toEntity();
         return timeSlotRepository.saveAll(timeSlots);
     }
+
+    @Transactional(readOnly = true)
+    public TimeSlotStatisticOutput calculateStatistic(final Long roomId) {
+        final List<TimeSlot> timeSlots = getAllByRoomId(roomId);
+
+        final TimeSlotStatistic timeSlotCount = TimeSlotStatistic.create();
+        timeSlotCount.calculate(timeSlots);
+
+        return TimeSlotStatisticOutput.from(timeSlotCount);
+    }
 }
