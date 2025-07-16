@@ -10,7 +10,7 @@ public record TimeSlotCreateRequest(
         List<LocalDateTime> dateTimes
 ) {
 
-    public TimeSlotInput toInput(UUID roomSession) {
+    public TimeSlotInput toInput(final UUID roomSession) {
         return new TimeSlotInput(roomSession, userName, dateTimes);
     }
 }

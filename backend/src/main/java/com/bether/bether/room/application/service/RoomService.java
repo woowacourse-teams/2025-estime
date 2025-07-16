@@ -23,7 +23,7 @@ public class RoomService {
     private final TimeSlotService timeSlotService;
 
     @Transactional
-    public RoomOutput save(final RoomInput input) {
+    public RoomOutput saveRoom(final RoomInput input) {
         final Room room = input.toEntity();
         final Room saved = roomRepository.save(room);
         return RoomOutput.from(saved);
@@ -31,29 +31,29 @@ public class RoomService {
 
     @Transactional(readOnly = true)
     public List<TimeSlot> getTimeSlotsBySession(final UUID session) {
-        Long id = getIdBySession(session);
+        final Long id = getIdBySession(session);
         return timeSlotService.getAllByRoomId(id);
     }
 
     @Transactional(readOnly = true)
     public List<TimeSlot> getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
-        Long id = getIdBySession(session);
+        final Long id = getIdBySession(session);
         return timeSlotService.getAllByRoomIdAndUserName(id, userName);
     }
 
     @Transactional
     public List<TimeSlot> saveTimeSlots(final TimeSlotInput input) {
-        Long id = getIdBySession(input.roomSession());
+        final Long id = getIdBySession(input.roomSession());
         return timeSlotService.saveAll(id, input);
     }
 
     @Transactional(readOnly = true)
     public TimeSlotStatisticOutput calculateStatistic(final UUID session) {
-        Long id = getIdBySession(session);
+        final Long id = getIdBySession(session);
         return timeSlotService.calculateStatistic(id);
     }
 
-    private Long getIdBySession(UUID session) {
+    private Long getIdBySession(final UUID session) {
         return roomRepository.findBySession(session)
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()))  // TODO 검색 대상 파라미터 명시 여부 논의 필요
                 .getId();

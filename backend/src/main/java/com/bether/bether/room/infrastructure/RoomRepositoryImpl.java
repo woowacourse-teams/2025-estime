@@ -19,7 +19,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Optional<Room> findBySession(UUID session) {
+    public Optional<Room> findBySession(final UUID session) {
         return roomJpaRepository.findBySession(session);
     }
 }

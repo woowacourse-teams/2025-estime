@@ -30,38 +30,37 @@ public class RoomController {
 
     @PostMapping
     public ApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
-        final RoomOutput saved = roomService.save(request.toInput());
+        final RoomOutput saved = roomService.saveRoom(request.toInput());
         return ApiResponse.ok(RoomCreateResponse.from(saved));
     }
 
     @GetMapping("/{session}/time-slots/statistic")
-    public ApiResponse<TimeSlotStatisticResponse> getStatistic(@PathVariable("session") final String session) {
-        final TimeSlotStatisticOutput output = roomService.calculateStatistic(UUID.fromString(session));
+    public ApiResponse<TimeSlotStatisticResponse> getStatistic(@PathVariable("session") final UUID session) {
+        final TimeSlotStatisticOutput output = roomService.calculateStatistic(session);
         return ApiResponse.ok(TimeSlotStatisticResponse.from(output));
     }
 
     @GetMapping("/{session}/time-slots/recommendation")
-    public ApiResponse<TimeSlotStatisticResponse> getRank(@PathVariable("session") final String session) {
-        final TimeSlotStatisticOutput output = roomService.calculateStatistic(UUID.fromString(session));
+    public ApiResponse<TimeSlotStatisticResponse> getRank(@PathVariable("session") final UUID session) {
+        final TimeSlotStatisticOutput output = roomService.calculateStatistic(session);
         return ApiResponse.ok(TimeSlotStatisticResponse.from(output));
     }
 
     @PostMapping("/{session}/time-slots")
     public ApiResponse<Void> create(
-            @PathVariable("session") final String session,
+            @PathVariable("session") final UUID session,
             @RequestBody final TimeSlotCreateRequest request
     ) {
-        roomService.saveTimeSlots(request.toInput(UUID.fromString(session)));
+        roomService.saveTimeSlots(request.toInput(session));
         return ApiResponse.ok();
     }
 
     @GetMapping("/{session}/time-slots/user")
     public ApiResponse<TotalTimeSlotResponse> getByUserName(
-            @PathVariable("session") final String session,
+            @PathVariable("session") final UUID session,
             @RequestParam("name") final String userName
     ) {
-        final List<TimeSlot> timeSlots = roomService.getTimeSlotsBySessionAndUserName(
-                UUID.fromString(session), userName);
+        final List<TimeSlot> timeSlots = roomService.getTimeSlotsBySessionAndUserName(session, userName);
         return ApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
     }
 }

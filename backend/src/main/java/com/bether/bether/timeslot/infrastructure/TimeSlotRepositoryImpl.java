@@ -13,12 +13,12 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     private final TimeSlotJpaRepository timeSlotJpaRepository;
 
     @Override
-    public List<TimeSlot> findAllByRoomId(Long roomId) {
+    public List<TimeSlot> findAllByRoomId(final Long roomId) {
         return timeSlotJpaRepository.findAllByRoomId(roomId);
     }
 
     @Override
-    public List<TimeSlot> findAllByRoomIdAndUserName(Long roomId, String userName) {
+    public List<TimeSlot> findAllByRoomIdAndUserName(final Long roomId, final String userName) {
         return timeSlotJpaRepository.findAllByRoomIdAndUserName(roomId, userName);
     }
 

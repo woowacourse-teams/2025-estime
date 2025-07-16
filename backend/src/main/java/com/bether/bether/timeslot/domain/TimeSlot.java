@@ -27,7 +27,7 @@ public class TimeSlot extends BaseEntity {
 
     private static void validate(final Long roomId, final String userName, final LocalDateTime startAt) {
         if (roomId == null || userName == null || startAt == null) {
-            throw new IllegalArgumentException("roomSession and userName and startAt cannot be null");
+            throw new IllegalArgumentException("roomId and userName and startAt cannot be null");
         }
     }
 }
