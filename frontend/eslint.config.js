@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from 'eslint-plugin-storybook';
+
 import js from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
@@ -14,6 +17,22 @@ export default [
         document: 'readonly',
       },
     },
+  },
+  {
+    files: ['**/__tests__/**/*.{js,jsx,ts,tsx}', '**/*.test.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      globals: {
+        test: 'readonly',
+        expect: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly',
+      },
+    },
     rules: {
       'padding-line-between-statements': [
         'error',
@@ -22,9 +41,7 @@ export default [
       ],
     },
   },
-
   js.configs.recommended,
-
   {
     files: ['**/*.jsx', '**/*.tsx'],
     plugins: { react, 'react-hooks': reactHooks },
@@ -34,7 +51,6 @@ export default [
       'react/react-in-jsx-scope': 'off',
     },
   },
-
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -51,6 +67,6 @@ export default [
       'prefer-const': 'error',
     },
   },
-
   prettier,
+  ...storybook.configs['flat/recommended'],
 ];
