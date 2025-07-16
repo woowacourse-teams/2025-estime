@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 export const Container = styled.button<{
   color: keyof typeof LIGHT_THEME.colors;
-  size: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large';
 }>`
   width: ${({ size }) => {
     switch (size) {
