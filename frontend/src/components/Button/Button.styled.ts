@@ -17,8 +17,8 @@ export const Container = styled.button<{
         return '100%';
     }
   }};
-  height: 50px;
-  border-radius: 8px;
+  height: 3rem;
+  border-radius: var(--radius-4);
   background-color: ${({ theme, color }) => theme.colors[color]};
   border: none;
   cursor: pointer;
