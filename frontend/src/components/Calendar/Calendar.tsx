@@ -26,13 +26,17 @@ const Calender = ({ today }: CalenderProps) => {
     if (!day) return false;
     return day < today;
   };
+  const isItCurrentMonth = (day: Date | null) => {
+    if (!day) return false;
+    return day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
+  };
 
   return (
     <S.Container>
       <S.Header>
         <S.Month>{current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}</S.Month>
         <S.ButtonContainer>
-          <CalendarButton onClick={prevMonth} disabled={current.getMonth() === today.getMonth()}>
+          <CalendarButton onClick={prevMonth} disabled={isItCurrentMonth(current)}>
             {'<'}
           </CalendarButton>
           <CalendarButton onClick={nextMonth}>{'>'}</CalendarButton>
