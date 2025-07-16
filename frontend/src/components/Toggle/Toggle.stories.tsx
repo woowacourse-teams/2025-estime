@@ -5,6 +5,14 @@ const meta: Meta<typeof Toggle> = {
   title: 'Components/Toggle',
   component: Toggle,
   tags: ['autodocs'],
+
+  decorators: [
+    (Story) => (
+      <div style={{ width: '50px', padding: '10px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
