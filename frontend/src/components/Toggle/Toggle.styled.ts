@@ -6,7 +6,7 @@ export const Container = styled.div<{ isOn: boolean }>`
   height: 1.6rem;
   padding: 0.3rem 0.3rem;
   background-color: ${({ theme, isOn }) => (isOn ? theme.colors.primary : theme.colors.gray30)};
-  border-radius: 50px;
+  border-radius: var(--radius-25);
   cursor: pointer;
   overflow: hidden;
 `;
