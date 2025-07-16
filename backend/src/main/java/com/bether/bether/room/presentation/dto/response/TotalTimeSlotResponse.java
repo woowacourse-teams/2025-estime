@@ -1,4 +1,4 @@
-package com.bether.bether.timeslot.presentation.dto.response;
+package com.bether.bether.room.presentation.dto.response;
 
 import com.bether.bether.timeslot.domain.TimeSlot;
 import java.time.LocalDateTime;

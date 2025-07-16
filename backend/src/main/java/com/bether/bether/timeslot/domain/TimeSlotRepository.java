@@ -1,13 +1,12 @@
 package com.bether.bether.timeslot.domain;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface TimeSlotRepository {
 
-    List<TimeSlot> findAllByRoomSession(UUID roomSession);
+    List<TimeSlot> findAllByRoomId(Long roomId);
 
-    List<TimeSlot> findAllByRoomSessionAndUserName(UUID roomSession, String userName);
+    List<TimeSlot> findAllByRoomIdAndUserName(Long roomId, String userName);
 
     TimeSlot save(TimeSlot timeSlot);
 

@@ -11,9 +11,9 @@ public record TimeSlotInput(
         List<LocalDateTime> dateTimes
 ) {
 
-    public List<TimeSlot> toEntity() {
+    public List<TimeSlot> toEntity(final Long roomId) {
         return dateTimes.stream()
-                .map(dateTime -> TimeSlot.withoutId(roomSession, userName, dateTime))
+                .map(dateTime -> TimeSlot.withoutId(roomId, userName, dateTime))
                 .toList();
     }
 }

@@ -26,7 +26,7 @@ class RoomServiceTest {
 
     @DisplayName("방을 생성할 수 있다.")
     @Test
-    void save() {
+    void saveRoom() {
         // given
         final RoomInput input = new RoomInput(
                 "title",
@@ -36,7 +36,7 @@ class RoomServiceTest {
         );
 
         // when
-        final RoomOutput saved = roomService.save(input);
+        final RoomOutput saved = roomService.saveRoom(input);
 
         // then
         assertThat(isValidUUID(saved.session().toString()))
@@ -55,7 +55,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.save(input))
+        assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
     }
@@ -72,7 +72,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.save(input))
+        assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
     }
@@ -89,7 +89,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.save(input))
+        assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("availableDates cannot be empty");
     }
@@ -106,7 +106,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.save(input))
+        assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("availableDates cannot contain past dates: " + LocalDate.now().minusDays(1));
     }
@@ -123,7 +123,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.save(input))
+        assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("startTime cannot be after endTime");
     }
@@ -140,7 +140,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.save(input))
+        assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("startTime cannot be after endTime");
     }
