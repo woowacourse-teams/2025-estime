@@ -10,6 +10,6 @@ export const Container = styled.input<{ isError?: boolean }>`
 
   &:focus {
     outline: none;
-    border: 2px solid ${({ theme }) => theme.colors.plum40};
+    border: 1px solid ${({ theme }) => theme.colors.plum40};
   }
 `;
