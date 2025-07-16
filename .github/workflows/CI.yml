@@ -48,11 +48,13 @@ jobs:
           java-version: 21
 
       - name: 빌드 권한 부여
-        run: chmod +x ./backend/gradlew
+        working-directory: ./backend
+        run: chmod +x ./gradlew
         shell: bash
 
       - name: 빌드 및 테스트
-        run: ./backend/gradlew build
+        working-directory: ./backend
+        run: ./gradlew build
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
