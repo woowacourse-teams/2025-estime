@@ -1,21 +1,68 @@
 import styled from '@emotion/styled';
+import { column, row } from '@/constants/calender';
 
-const Grid = styled.div`
+const dayCellRadius = 36;
+
+export const Container = styled.div`
+  border: ${({ theme }) => `1px solid ${theme.colors.gray20}`};
+  border-radius: var(--radius-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 620px;
+  max-height: 670px;
+  padding: var(--padding-9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Grid = styled.div`
+  min-width: 100%;
+  min-height: 100%;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(${column}, 1fr);
+  grid-template-rows: repeat(${row}, 1fr);
+  grid-row-gap: var(--gap-4);
   text-align: center;
+  back-gr
 `;
 
-const Weekday = styled.span`
-  font-weight: 500; /* Tailwind font-medium */
-`;
-
-const DayCell = styled.div<{ dimmed: boolean }>`
-  height: 2rem; /* Tailwind h-8   */
+export const Weekday = styled.span<{
+  isSunday: boolean;
+  isSaturday: boolean;
+}>`
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ dimmed }) => (dimmed ? '#9ca3af' : 'inherit')}; /* Tailwind text-gray-400 */
+  margin-bottom: var(--gap-4);
+  color: ${({ isSunday, isSaturday, theme }) => {
+    if (isSunday) return theme.colors.red40;
+    if (isSaturday) return theme.colors.primary;
+    return theme.colors.black;
+  }};
 `;
 
-export { Grid, Weekday, DayCell };
+export const DayCell = styled.div<{
+  past: boolean;
+  isSunday: boolean;
+  isSaturday: boolean;
+  isToday: boolean;
+}>`
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ past, theme, isSunday, isSaturday }) => {
+    if (past) return theme.colors.gray20;
+    if (isSunday) return theme.colors.red40;
+    if (isSaturday) return theme.colors.black;
+    return theme.colors.black;
+  }};
+  font-weight: ${({ isSaturday }) => (isSaturday ? 600 : 400)};
+  border: ${({ isToday, theme }) => (isToday ? `2px solid ${theme.colors.primary}` : 'none')};
+  border-radius: ${({ isToday }) => (isToday ? `${dayCellRadius}px` : '0')};
+`;
