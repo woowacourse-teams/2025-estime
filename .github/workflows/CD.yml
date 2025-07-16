@@ -54,6 +54,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: 도커 이미지 빌드 및 Push
+        working-directory: ./backend
         run: |
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ github.ref_name }}"
           
