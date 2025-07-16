@@ -21,4 +21,5 @@ export const Container = styled.button<{
   border-radius: 8px;
   background-color: ${({ theme, color }) => theme.colors[color]};
   border: none;
+  cursor: pointer;
 `;
