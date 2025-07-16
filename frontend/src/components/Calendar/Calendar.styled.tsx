@@ -4,6 +4,11 @@ import { column, row } from '@/constants/calender';
 const dayCellRadius = 36;
 
 export const Container = styled.div`
+  max-width: 620px;
+  max-height: 670px;
+`;
+
+export const CalendarContainer = styled.div`
   border: ${({ theme }) => `1px solid ${theme.colors.gray20}`};
   border-radius: var(--radius-4);
   display: flex;
@@ -65,4 +70,24 @@ export const DayCell = styled.div<{
   font-weight: ${({ isSaturday }) => (isSaturday ? 600 : 400)};
   border: ${({ isToday, theme }) => (isToday ? `2px solid ${theme.colors.primary}` : 'none')};
   border-radius: ${({ isToday }) => (isToday ? `${dayCellRadius}px` : '0')};
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-4);
+`;
+export const Month = styled.p`
+  font-size: ${({ theme }) => theme.typography.h2.fontSize};
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.black};
+`;
+
+export const Header = styled.header`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--gap-6);
 `;

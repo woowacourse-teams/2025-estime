@@ -1,5 +1,6 @@
 import { useCalender } from '@/hooks/Calendar/useCalender';
 import * as S from './Calendar.styled';
+import CalendarButton from './CalendarButton/CalendarButton';
 
 interface CalenderProps {
   today: Date;
@@ -27,13 +28,17 @@ const Calender = ({ today }: CalenderProps) => {
   };
 
   return (
-    <>
-      <header>
-        <button onClick={prevMonth}>이전</button>
-        <span>{current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}</span>
-        <button onClick={nextMonth}>다음</button>
-      </header>
-      <S.Container>
+    <S.Container>
+      <S.Header>
+        <S.Month>{current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}</S.Month>
+        <S.ButtonContainer>
+          <CalendarButton onClick={prevMonth} disabled={current.getMonth() === today.getMonth()}>
+            {'<'}
+          </CalendarButton>
+          <CalendarButton onClick={nextMonth}>{'>'}</CalendarButton>
+        </S.ButtonContainer>
+      </S.Header>
+      <S.CalendarContainer>
         <S.Grid>
           {weekdays.map((w) => (
             <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'}>
@@ -53,8 +58,8 @@ const Calender = ({ today }: CalenderProps) => {
             </S.DayCell>
           ))}
         </S.Grid>
-      </S.Container>
-    </>
+      </S.CalendarContainer>
+    </S.Container>
   );
 };
 
