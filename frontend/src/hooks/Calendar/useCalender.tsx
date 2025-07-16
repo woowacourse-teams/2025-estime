@@ -1,8 +1,8 @@
 import { makeMonthMatrix } from '@/utils/Calendar/makeMonthMatrix';
 import { useState } from 'react';
 
-const useCalender = () => {
-  const [current, setCurrent] = useState<Date>(new Date());
+const useCalender = (date: Date) => {
+  const [current, setCurrent] = useState<Date>(date);
 
   const prevMonth = () => {
     setCurrent((prev: Date) => {
