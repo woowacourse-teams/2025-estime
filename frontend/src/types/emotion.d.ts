@@ -1,7 +1,7 @@
 import '@emotion/react';
-import { theme } from '@/styles/theme';
+import { DARK_THEME } from '@/styles/theme';
 
-type AppTheme = typeof theme;
+type AppTheme = typeof DARK_THEME;
 declare module '@emotion/react' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface Theme extends AppTheme {}
