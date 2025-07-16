@@ -22,3 +22,7 @@ spring:
 discord:
   bot:
     token: ${DISCORD_BOT_TOKEN}
+
+springdoc:
+  swagger-ui:
+    path: /docs
