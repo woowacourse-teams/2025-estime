@@ -8,6 +8,20 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpw
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
       SPRING_DATASOURCE_USERNAME: root
