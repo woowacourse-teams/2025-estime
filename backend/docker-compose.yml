@@ -7,12 +7,10 @@ services:
     restart: unless-stopped
     env_file:
       - .env.docker
-    ports:
-      - "13306:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,8 +21,6 @@ services:
       - mysql
     env_file:
       - .env.docker
-    ports:
-      - "8081:8080"
 
 volumes:
   db_data:
