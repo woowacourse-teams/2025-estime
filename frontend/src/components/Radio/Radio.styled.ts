@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 
-export const Label = styled.label`
+export const Container = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: start;
   gap: var(--gap-4);
 `;
 
@@ -14,9 +14,11 @@ export const Input = styled.input`
   accent-color: ${({ theme }) => theme.colors.primary};
 `;
 
-export const Content = styled.div`
+export const Label = styled.label`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  padding-top: 0.125rem;
 `;
