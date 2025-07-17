@@ -1,7 +1,8 @@
-import React, { ComponentProps, useState } from 'react';
+import { ComponentProps } from 'react';
 import * as S from './Timepicker.styled';
 import { ColorsKey } from '@/styles/theme';
 import Text from '../Text';
+import useTimePicker from '../../hooks/useTimePicker';
 
 interface TimePickerProps extends ComponentProps<'input'> {
   color: ColorsKey;
@@ -15,24 +16,8 @@ const hourOptions = Array.from({ length: 24 }, (_, i) => {
 const minuteOptions = ['00', '30'];
 
 const TimePicker = ({ color = 'gray10', ...props }: TimePickerProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedHour, setSelectedHour] = useState<string | null>(null);
-  const [selectedMinute, setSelectedMinute] = useState<string | null>(null);
-  const toggleOpen = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const selectHour = (hour: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedHour(hour);
-    setIsOpen(false);
-  };
-
-  const selectMinute = (minute: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedMinute(minute);
-    setIsOpen(false);
-  };
+  const { selectedHour, selectedMinute, selectHour, selectMinute, toggleOpen, isOpen } =
+    useTimePicker();
 
   return (
     <S.Container role="combobox" color={color} onClick={toggleOpen} {...props}>
