@@ -1,4 +1,3 @@
-import { ColorsKey } from '@/styles/theme';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
@@ -12,7 +11,7 @@ const slideUp = keyframes`
   to { max-height: 0; opacity: 0; }
 `;
 
-export const Container = styled.div<{ color: ColorsKey }>`
+export const Container = styled.div`
   width: 100%;
   height: 2rem;
   background-color: ${({ theme }) => theme.colors.gray10};

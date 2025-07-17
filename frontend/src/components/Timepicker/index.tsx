@@ -1,12 +1,7 @@
 import { ComponentProps } from 'react';
 import * as S from './Timepicker.styled';
-import { ColorsKey } from '@/styles/theme';
 import Text from '../Text';
 import useTimePicker from '../../hooks/useTimePicker';
-
-interface TimePickerProps extends ComponentProps<'input'> {
-  color: ColorsKey;
-}
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => {
   const hour = String(i).padStart(2, '0');
@@ -15,12 +10,12 @@ const hourOptions = Array.from({ length: 24 }, (_, i) => {
 
 const minuteOptions = ['00', '30'];
 
-const TimePicker = ({ color = 'gray10', ...props }: TimePickerProps) => {
+const TimePicker = ({ ...props }: ComponentProps<'input'>) => {
   const { selectedHour, selectedMinute, selectHour, selectMinute, toggleOpen, isOpen } =
     useTimePicker();
 
   return (
-    <S.Container role="combobox" color={color} onClick={toggleOpen} {...props}>
+    <S.Container role="combobox" onClick={toggleOpen} {...props}>
       <S.Wrapper>
         <S.TimeWrapper>
           <Text variant="body">{selectedHour || '00'}</Text>
