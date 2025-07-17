@@ -8,7 +8,7 @@ const meta: Meta<typeof Toggle> = {
 
   decorators: [
     (Story) => (
-      <div style={{ width: '50px', padding: '10px' }}>
+      <div style={{ width: '70px', padding: '10px' }}>
         <Story />
       </div>
     ),
