@@ -12,6 +12,13 @@ html {
   box-sizing: inherit;
 }
 
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
 html,
 body,
 div,
