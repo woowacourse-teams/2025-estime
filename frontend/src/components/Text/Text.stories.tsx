@@ -1,60 +1,31 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta } from '@storybook/react-webpack5';
 import Text from '.';
+import { TypographyKey } from '@/styles/theme'; // variant 타입이 여기 정의돼 있다면
 
-const meta = {
+const meta: Meta<typeof Text> = {
   title: 'Component/Text',
   component: Text,
-} satisfies Meta<typeof Text>;
+  tags: ['autodocs'],
+  argTypes: {
+    children: {
+      control: { type: 'text' },
+    },
+  },
+};
 
 export default meta;
 
-type Story = StoryObj<typeof Text>;
-
-export const Heading1: Story = {
-  args: {
-    variant: 'h1',
-    children: '안녕하세요!',
-  },
-};
-
-export const Heading2: Story = {
-  args: {
-    variant: 'h2',
-    children: '안녕하세요!',
-  },
-};
-
-export const Heading3: Story = {
-  args: {
-    variant: 'h3',
-    children: '안녕하세요!',
-  },
-};
-
-export const Heading4: Story = {
-  args: {
-    variant: 'h4',
-    children: '안녕하세요!',
-  },
-};
-
-export const Body: Story = {
-  args: {
-    variant: 'body',
-    children: '안녕하세요!',
-  },
-};
-
-export const ButtonText: Story = {
-  args: {
-    variant: 'button',
-    children: '안녕하세요!',
-  },
-};
-
-export const Caption: Story = {
-  args: {
-    variant: 'caption',
-    children: '안녕하세요!',
+export const Variants = {
+  render: () => {
+    const variants: TypographyKey[] = ['h1', 'h2', 'h3', 'h4', 'body', 'button', 'caption'];
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {variants.map((variant) => (
+          <Text key={variant} variant={variant}>
+            {variant} text 예시입니다.
+          </Text>
+        ))}
+      </div>
+    );
   },
 };
