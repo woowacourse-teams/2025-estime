@@ -29,7 +29,7 @@ export const LIGHT_THEME = {
     },
     h2: {
       fontSize: '1.5rem',
-      fontWeight: 'medium',
+      fontWeight: 'bold',
     },
     h3: {
       fontSize: '1.5rem',
@@ -80,7 +80,7 @@ export const DARK_THEME = {
     },
     h2: {
       fontSize: '1.5rem',
-      fontWeight: 'medium',
+      fontWeight: 'bold',
     },
     h3: {
       fontSize: '1.5rem',
