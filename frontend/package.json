@@ -11,8 +11,7 @@
     "build": "webpack --config webpack.prod.js",
     "test": "jest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "chromatic": "npx chromatic --project-token=chpt_d2047080bc3aa80"
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
