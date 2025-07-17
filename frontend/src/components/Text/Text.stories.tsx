@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react-webpack5';
 import Text from '.';
-import { TypographyKey } from '@/styles/theme'; // variant 타입이 여기 정의돼 있다면
+import { TypographyKey } from '@/styles/theme';
 
 const meta: Meta<typeof Text> = {
   title: 'Component/Text',
