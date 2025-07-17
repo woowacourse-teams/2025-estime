@@ -10,7 +10,7 @@ const baseFetch = async <T>(
   body?: Record<string, any>
 ): Promise<T> => {
   const searchParams = new URLSearchParams(
-    Object.entries({ language: 'ko-KR', ...query }).reduce(
+    Object.entries({ query }).reduce(
       (acc, [key, value]) => {
         if (value !== undefined) {
           acc[key] = String(value);
