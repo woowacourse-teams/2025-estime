@@ -12,6 +12,10 @@ export default [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
+      env: {
+        browser: true,
+        es2020: true,
+      },
       globals: {
         console: 'readonly',
         document: 'readonly',
