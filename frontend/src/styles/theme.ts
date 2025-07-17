@@ -1,3 +1,7 @@
+export type Theme = typeof LIGHT_THEME;
+export type ColorsKey = keyof typeof LIGHT_THEME.colors;
+export type TypographyKey = keyof typeof LIGHT_THEME.typography;
+
 export const LIGHT_THEME = {
   colors: {
     primary: '#8052E1',
