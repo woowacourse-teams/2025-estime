@@ -5,7 +5,7 @@ export const Label = styled.label`
   height: 100%;
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: var(--gap-4);
 `;
 
 export const Input = styled.input`
