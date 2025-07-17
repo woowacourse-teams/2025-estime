@@ -33,7 +33,6 @@ export const Grid = styled.div`
   grid-row-gap: var(--gap-4);
   grid-column-gap: var(--gap-4);
   text-align: center;
-  back-gr
 `;
 
 export const Weekday = styled.span<{
@@ -53,19 +52,21 @@ export const Weekday = styled.span<{
 `;
 
 export const DayCell = styled.div<{
-  past: boolean;
+  isPast: boolean;
   isSunday: boolean;
   isSaturday: boolean;
   isToday: boolean;
   isSelected: boolean;
+  isEmpty: boolean;
 }>`
-  height: ${({ isToday }) => (isToday ? '3rem' : 'calc(3rem - 2px)')};
+  user-select: none;
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ past, theme, isSunday, isSaturday, isSelected }) => {
+  color: ${({ isPast, theme, isSunday, isSaturday, isSelected }) => {
     if (isSelected) return theme.colors.white;
-    if (past) return theme.colors.gray20;
+    if (isPast) return theme.colors.gray20;
     if (isSunday) return theme.colors.red40;
     if (isSaturday) return theme.colors.black;
     return theme.colors.black;
@@ -78,8 +79,23 @@ export const DayCell = styled.div<{
     return 'none';
   }};
   border-radius: ${dayCellRadius}px;
-  background-color: ${({ isSelected, theme }) => (isSelected ? theme.colors.primary : 'none')};
-  cursor: pointer;
+  background-color: ${({ isSelected, theme }) => {
+    if (isSelected) return theme.colors.primary;
+    return 'none';
+  }};
+  &:hover {
+    background-color: ${({ theme, isPast, isEmpty }) => {
+      if (isPast || isEmpty) return 'none';
+      return theme.colors.primary;
+    }};
+    color: ${({ theme, isPast, isEmpty }) => {
+      if (isPast || isEmpty) return 'inherit';
+      return theme.colors.white;
+    }};
+    cursor: ${({ isPast, isEmpty }) => (isPast || isEmpty ? 'not-allowed' : 'grab')};
+  }
+  transition: all 0.15s ease-in-out;
+  transform: ${({ isSelected }) => (isSelected ? 'scale(1.05)' : 'scale(1)')};
 `;
 
 export const ButtonContainer = styled.div`
