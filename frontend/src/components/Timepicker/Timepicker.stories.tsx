@@ -6,7 +6,6 @@ const meta: Meta<typeof TimePicker> = {
   component: TimePicker,
   tags: ['autodocs'],
   args: {
-    defaultValue: '09:00',
     color: 'gray10',
   },
   argTypes: {
@@ -28,8 +27,4 @@ export default meta;
 
 type Story = StoryObj<typeof TimePicker>;
 
-export const Default: Story = {
-  args: {
-    defaultValue: '09:30',
-  },
-};
+export const Default: Story = {};
