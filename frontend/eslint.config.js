@@ -19,6 +19,14 @@ export default [
     },
   },
   {
+    files: ['.storybook/**/*.{js,ts}'],
+    languageOptions: {
+      globals: {
+        __dirname: 'readonly',
+      },
+    },
+  },
+  {
     files: ['**/__tests__/**/*.{js,jsx,ts,tsx}', '**/*.test.{js,jsx,ts,tsx}'],
     languageOptions: {
       globals: {
