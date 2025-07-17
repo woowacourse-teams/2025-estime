@@ -82,21 +82,24 @@ export const useDragSelection = ({
     }
   }, [handleMouseUp]);
 
-  useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      if (draggingRef.current) {
-        draggingRef.current = false;
-      }
-    };
+  // 혹시 event leaking 방지를 위해 넣어 둡니다.
+  // 현재는 없이도 정상 동작합니다.
+  // 모바일 환경에서는 필요 할수 있습니다.
+  // useEffect(() => {
+  //   const handleGlobalMouseUp = () => {
+  //     if (draggingRef.current) {
+  //       draggingRef.current = false;
+  //     }
+  //   };
 
-    if (draggingRef.current) {
-      document.addEventListener('mouseup', handleGlobalMouseUp);
+  //   if (draggingRef.current) {
+  //     document.addEventListener('mouseup', handleGlobalMouseUp);
 
-      return () => {
-        document.removeEventListener('mouseup', handleGlobalMouseUp);
-      };
-    }
-  }, [draggingRef]);
+  //     return () => {
+  //       document.removeEventListener('mouseup', handleGlobalMouseUp);
+  //     };
+  //   }
+  // }, [draggingRef]);
 
   // 터치 이벤트 지원
   const handleTouchStart = useCallback(
