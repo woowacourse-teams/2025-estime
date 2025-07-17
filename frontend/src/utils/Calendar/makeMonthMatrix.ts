@@ -1,10 +1,11 @@
 import { column, row, ERROR_MESSAGE } from '@/constants/calender';
 import { daysInMonth } from './daysInMonth';
+import { isValidDate } from './dateUtils';
 
 type Day = Date | null;
 
 export function makeMonthMatrix(base: Date): Day[][] {
-  if (!(base instanceof Date) || isNaN(base.getTime())) {
+  if (!isValidDate(base)) {
     throw new Error(ERROR_MESSAGE.INVALID_DATE);
   }
   const y = base.getFullYear();
