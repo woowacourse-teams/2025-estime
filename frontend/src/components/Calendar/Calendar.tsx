@@ -4,12 +4,21 @@ import CalendarButton from './CalendarButton/CalendarButton';
 
 interface CalenderProps {
   today: Date;
+  selectedDates: Set<string>;
+  setSelectedDates: (dates: Set<string>) => void;
 }
 
-const Calender = ({ today }: CalenderProps) => {
+const Calender = ({ today, selectedDates, setSelectedDates }: CalenderProps) => {
   const { current, prevMonth, nextMonth, matrix } = useCalender(today);
 
   const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+  const formatDateToString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   const isToday = (day: Date | null, today: Date) => {
     if (!day) return false;
@@ -31,6 +40,20 @@ const Calender = ({ today }: CalenderProps) => {
     return day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
   };
 
+  const handleDayClick = (day: Date | null) => {
+    if (isItPast(day)) return;
+    if (day) {
+      const dayString = formatDateToString(day);
+      const newSelectedDates = new Set(selectedDates);
+
+      if (newSelectedDates.has(dayString)) {
+        newSelectedDates.delete(dayString);
+      } else {
+        newSelectedDates.add(dayString);
+      }
+      setSelectedDates(newSelectedDates);
+    }
+  };
   return (
     <S.Container>
       <S.Header>
@@ -57,6 +80,8 @@ const Calender = ({ today }: CalenderProps) => {
               isSunday={day?.getDay() === 0}
               isSaturday={day?.getDay() === 6}
               isToday={isToday(day, today)}
+              isSelected={day ? selectedDates.has(formatDateToString(day)) : false}
+              onClick={() => handleDayClick(day)}
             >
               {day ? day.getDate() : ''}
             </S.DayCell>
