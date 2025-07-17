@@ -27,6 +27,6 @@ export const RadioChecked: Story = {
     name: 'visibility',
     checked: true,
     onChange: () => {},
-    children: <span>공개</span>,
+    children: <span>비공개</span>,
   },
 };
