@@ -1,3 +1,4 @@
+import React from 'react';
 import { TypographyKey, ColorsKey } from '@/styles/theme';
 import * as S from './Text.styled';
 
