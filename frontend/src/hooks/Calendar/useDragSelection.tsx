@@ -125,7 +125,7 @@ export const useDragSelection = ({
         const dateStr = target?.getAttribute('data-date');
         if (dateStr) {
           const date = new Date(dateStr);
-          if (isValidDate(date)) {
+          if (isValidDate(date) || !isItPast(date, today)) {
             addRemoveDate(date, dragState);
           }
         }
