@@ -9,19 +9,22 @@ const baseFetch = async <T>(
   query?: QueryParams,
   body?: Record<string, any>
 ): Promise<T> => {
-  const searchParams = new URLSearchParams(
-    Object.entries({ query }).reduce(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = String(value);
-        }
-        return acc;
-      },
-      {} as Record<string, string>
-    )
-  );
+  const url = new URL(path, BASE_URL);
 
-  const url = `${BASE_URL}${path}?${searchParams.toString()}`;
+  if (query) {
+    url.search = new URLSearchParams(
+      Object.entries(query).reduce(
+        (acc, [key, value]) => {
+          if (value !== undefined) {
+            acc[key] = String(value);
+          }
+          return acc;
+        },
+        {} as Record<string, string>
+      )
+    ).toString();
+  }
+
   const options: RequestInit = {
     method,
     headers: {
@@ -31,7 +34,7 @@ const baseFetch = async <T>(
     ...(body && method !== 'GET' && method !== 'DELETE' ? { body: JSON.stringify(body) } : {}),
   };
 
-  const response = await fetch(url, options);
+  const response = await fetch(url.toString(), options);
 
   if (!response.ok) {
     const errorBody = await response.json();
