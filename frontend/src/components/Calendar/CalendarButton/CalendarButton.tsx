@@ -5,7 +5,7 @@ import * as S from './CalendarButton.styled';
 interface CalendarButtonProps extends ComponentProps<'button'> {}
 
 const CalendarButton = ({ children, ...props }: CalendarButtonProps) => {
-  return <S.Button {...props}>{children}</S.Button>;
+  return <S.Container {...props}>{children}</S.Container>;
 };
 
 export default CalendarButton;
