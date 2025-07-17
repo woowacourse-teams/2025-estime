@@ -69,18 +69,14 @@ jobs:
     needs: build-and-push
 
     steps:
-      - name: Pull Docker Image
-        run: docker pull ${IMAGE_NAME}:latest
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Stop existing container (if any)
-        run: docker stop ${{ secrets.DOCKER_DEV_CONTAINER_NAME }} || true
+      - name: Create .env file for Docker Compose
+        run: printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
 
-      - name: Remove existing container (if any)
-        run: docker rm ${{ secrets.DOCKER_DEV_CONTAINER_NAME }} || true
-
-      - name: Run new container
+      - name: Deploy with Docker Compose
+        working-directory: ./backend
         run: |
-          docker run -d \
-            --name ${{ secrets.DOCKER_DEV_CONTAINER_NAME }} \
-            -p 8080:8080 \
-            ${IMAGE_NAME}:latest
+          docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull app
+          docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d          
