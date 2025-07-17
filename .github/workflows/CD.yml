@@ -78,5 +78,5 @@ jobs:
       - name: Deploy with Docker Compose
         working-directory: ./backend
         run: |
-          docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull app
-          docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d          
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml pull app
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d          
