@@ -141,9 +141,9 @@ export const useDragSelection = ({
     handleMouseUp,
     handleMouseLeave,
 
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    // handleTouchStart,
+    // handleTouchMove,
+    // handleTouchEnd,
 
     reset: () => {
       draggingRef.current = false;
