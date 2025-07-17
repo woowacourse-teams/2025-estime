@@ -8,6 +8,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    outputs:
+      image-name: ${{ steps.export-image-name.outputs.image-name }}
+
     services:
       mysql:
         image: mysql:8.0
@@ -53,27 +56,35 @@ jobs:
       - name: 도커 허브 로그인
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: 도커 이미지 이름 출력
+        id: export-image-name
+        run: echo "image-name=${{ secrets.DOCKER_USERNAME }}/valanse-api-server" >> "$GITHUB_OUTPUT"
+
       - name: 도커 이미지 빌드 및 Push
         working-directory: ./backend
         run: |
-          IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ github.ref_name }}"
-          
+          IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/valanse-api-server"
           docker build -t ${IMAGE_NAME}:${GITHUB_SHA::7} -t ${IMAGE_NAME}:latest .
           docker push ${IMAGE_NAME}:${GITHUB_SHA::7}
           docker push ${IMAGE_NAME}:latest
 
-#  deploy:
-#    runs-on: ubuntu-latest
-#    needs: build-and-push
-#
-#    steps:
-#      - name: SSH 연결을 통한 EC2 배포
-#        uses: appleboy/ssh-action@v0.1.3
-#        with:
-#          host: ${{ secrets.EC2_HOST }}
-#          username: ${{ secrets.EC2_USERNAME }}
-#          key: ${{ secrets.EC2_SSH_KEY }}
-#          port: 22
-#          script: |
-#            cd somemore
-#            sudo ./deploy.sh
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+
+    steps:
+      - name: Pull Docker image from DockerHub
+        working-directory: ./server
+        run: docker pull ${{ needs.build-and-push.outputs.image-name }}:latest
+
+      - name: Stop existing Docker container
+        working-directory: ./server
+        run: docker stop ${{ secrets.DOCKER_DEV_CONTAINER_NAME }} || true
+
+      - name: Remove existing Docker container
+        working-directory: ./server
+        run: docker rm ${{ secrets.DOCKER_DEV_CONTAINER_NAME }} || true
+
+      - name: Run new Docker container
+        working-directory: ./server
+        run: docker run -d --name ${{ secrets.DOCKER_DEV_CONTAINER_NAME }} -p 8080:8080 ${{ needs.build-and-push.outputs.image-name }}:latest
