@@ -1,23 +1,19 @@
-import React, { ComponentProps } from 'react';
+import { ComponentProps, ReactNode, useId } from 'react';
 import * as S from './Radio.styled';
 
-interface RadioProps extends ComponentProps<'input'> {
-  children: React.ReactNode;
+interface RadioProps extends Omit<ComponentProps<'input'>, 'type'> {
+  children: ReactNode;
 }
 
-const Radio = ({ children, value, name, checked, onChange, ...props }: RadioProps) => {
+const Radio = ({ children, ...props }: RadioProps) => {
+  const autoId = useId();
+  const inputId = props.id ?? autoId;
+
   return (
-    <S.Label>
-      <S.Input
-        type="radio"
-        value={value}
-        name={name}
-        checked={checked}
-        onChange={onChange}
-        {...props}
-      />
-      <S.Content>{children}</S.Content>
-    </S.Label>
+    <S.Container>
+      <S.Input type="radio" id={inputId} {...props} />
+      <S.Label htmlFor={inputId}>{children}</S.Label>
+    </S.Container>
   );
 };
 
