@@ -38,13 +38,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Prepare IMAGE_NAME
-        shell: bash
-        run: |
-          BRANCH="${GITHUB_REF_NAME}"
-          SAFE_REF="${BRANCH//\//-}"
-          echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${SAFE_REF}" >> "$GITHUB_ENV"
-
       - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
