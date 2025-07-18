@@ -52,6 +52,19 @@ jobs:
           echo "image_name=${{ secrets.DOCKER_USERNAME }}/${SAFE_REF}" >> "$GITHUB_OUTPUT"
 
 
+      - name: Prepare IMAGE_NAME
+        id: set_image_name
+        shell: bash
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          # slash -> -, 대문자 -> 소문자 (Docker Hub repo/tag는 소문자 권장)
+          SAFE_REF="$(echo "${BRANCH}" | tr '[:upper:]' '[:lower:]' | tr '/' '-')"
+          echo "image_name=${{ secrets.DOCKER_USERNAME }}/${SAFE_REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Calc short sha
+        id: set_short_sha
+        run: echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
       - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
