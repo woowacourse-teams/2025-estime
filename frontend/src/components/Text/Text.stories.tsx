@@ -3,7 +3,7 @@ import Text from '.';
 import { TypographyKey } from '@/styles/theme';
 
 const meta: Meta<typeof Text> = {
-  title: 'Component/Text',
+  title: 'Components/Text',
   component: Text,
   tags: ['autodocs'],
   argTypes: {
