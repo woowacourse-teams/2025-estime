@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      image_name: ${{ steps.set_image_name.outputs.image_name }}
       short_sha: ${{ steps.set_short_sha.outputs.short_sha }}
 
     services:
@@ -41,17 +40,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
-      - name: Prepare IMAGE_NAME
-        id: set_image_name
-        shell: bash
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: |
-          BRANCH="${GITHUB_REF_NAME}"
-          SAFE_REF="$(echo "${BRANCH}" | tr '[:upper:]' '[:lower:]' | tr '/' '-')"
-          echo "image_name=${DOCKER_USERNAME}/${SAFE_REF}" >> "$GITHUB_OUTPUT"
-    
+
       - name: Calc short sha
         id: set_short_sha
         run: echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
@@ -86,8 +75,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ steps.set_image_name.outputs.image_name }}:${{ steps.set_short_sha.outputs.short_sha }}
-            ${{ steps.set_image_name.outputs.image_name }}:latest
+            ${{ secrets.DEV_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
+            ${{ secrets.DEV_IMAGE_NAME }}:latest
 
   deploy:
     runs-on: self-hosted
@@ -100,7 +89,7 @@ jobs:
       - name: Create .env file for Docker Compose
         run: |
           printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
-          echo "IMAGE_NAME=${{ needs.build-and-push.outputs.image_name }}" >> .env.docker
+          echo "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" >> .env.docker
       
       - name: Deploy with Docker Compose
         run: |
