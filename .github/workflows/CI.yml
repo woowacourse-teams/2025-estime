@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   pull_request:
     branches:
-      [ main ]
+      [ be/dev ]
     types:
       [opened, synchronize, reopened]
 
