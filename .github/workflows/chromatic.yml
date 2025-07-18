@@ -18,9 +18,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./frontend/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('./frontend/yarn.lock') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('./frontend/package-lock.json') }}
 
-      - run: yarn
+      - run: npm ci
         working-directory: ./frontend
 
       # 내부 리포지토리 PR만 Chromatic 실행
