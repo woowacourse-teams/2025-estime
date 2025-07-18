@@ -48,7 +48,7 @@ export const List = styled.ul<{ isOpen: boolean }>`
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   border-radius: var(--radius-4);
   box-shadow: var(--shadow-2);

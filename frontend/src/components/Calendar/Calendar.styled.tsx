@@ -47,7 +47,7 @@ export const Weekday = styled.span<{
   color: ${({ isSunday, isSaturday, theme }) => {
     if (isSunday) return theme.colors.red40;
     if (isSaturday) return theme.colors.primary;
-    return theme.colors.black;
+    return theme.colors.text;
   }};
 `;
 
@@ -65,11 +65,11 @@ export const DayCell = styled.div<{
   align-items: center;
   justify-content: center;
   color: ${({ isPast, theme, isSunday, isSaturday, isSelected }) => {
-    if (isSelected) return theme.colors.white;
+    if (isSelected) return theme.colors.background;
     if (isPast) return theme.colors.gray20;
     if (isSunday) return theme.colors.red40;
-    if (isSaturday) return theme.colors.black;
-    return theme.colors.black;
+    if (isSaturday) return theme.colors.text;
+    return theme.colors.text;
   }};
   font-weight: ${({ isSaturday }) => (isSaturday ? 600 : 400)};
   border: ${({ isToday, isSelected, theme }) => {
@@ -90,7 +90,7 @@ export const DayCell = styled.div<{
     }};
     color: ${({ theme, isPast, isEmpty }) => {
       if (isPast || isEmpty) return 'inherit';
-      return theme.colors.white;
+      return theme.colors.background;
     }};
     cursor: ${({ isPast, isEmpty }) => (isPast || isEmpty ? 'not-allowed' : 'grab')};
   }
@@ -107,7 +107,7 @@ export const ButtonContainer = styled.div`
 export const Month = styled.p`
   font-size: ${({ theme }) => theme.typography.h2.fontSize};
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const Header = styled.header`
