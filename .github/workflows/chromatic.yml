@@ -1,20 +1,19 @@
-name: "Chromatic Deployment"
+name: Chromatic Deployment
 
 on:
-  # PR이 fe/dev(베이스 브랜치)에 열리거나 커밋이 추가될 때마다 실행
   pull_request:
-    types: [opened, synchronize, reopened] # 선택 사항. 기본값은 모든 PR 이벤트
-    branches:
-      - fe/dev
+    branches: [fe/dev]
+  push:
+    branches: [fe/dev]
 
-  # (선택) fe/dev에 직접 push될 때도 실행하고 싶다면 아래 유지
-  # push:
-  #   branches:
-  #     - fe/dev
+# 두 워크플로우 동시 실행 방지
+concurrency:
+  group: chromatic-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   chromatic:
-    name: "Run Chromatic"
+    name: Chromatic Deployment
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +21,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: ./frontend/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('./frontend/yarn.lock') }}
+
       - run: yarn
         working-directory: ./frontend
 
-      - uses: chromaui/action@latest
+      # 내부 리포지토리 PR/push일 때만 Chromatic 실행
+      - if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: chromaui/action@latest
         with:
-          workingDir: ./frontend # storybook 위치
+          workingDir: ./frontend
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
