@@ -1,29 +1,33 @@
-# Workflow name
-name: "Chromatic Deployment"
+name: Chromatic Deployment
 
-# Event for the workflow
 on:
-  push:
-    branches:
-      - fe/dev
+  pull_request:
+    branches: [fe/dev]
 
-# List of jobs
 jobs:
   chromatic:
-    name: "Run Chromatic"
+    name: Chromatic Deployment
     runs-on: ubuntu-latest
-    # Job steps
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: ./frontend/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('./frontend/yarn.lock') }}
+
       - run: yarn
         working-directory: ./frontend
-        #👇 Adds Chromatic as a step in the workflow
-      - uses: chromaui/action@latest
-        # Options required for Chromatic's GitHub Action
+
+      # 내부 리포지토리 PR만 Chromatic 실행
+      - name: Run Chromatic
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: chromaui/action@latest
         with:
-          #👇 Chromatic projectToken, see https://storybook.js.org/tutorials/intro-to-storybook/react/ko/deploy/ to obtain it
           workingDir: ./frontend
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
