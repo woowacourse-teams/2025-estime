@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import Calendar from '.';
 import { LIGHT_THEME } from '@/styles/theme';
-import { useDragSelection } from '@/hooks/Calendar/useDragSelection';
+import { useDateSelection } from '@/hooks/Calendar/useDateSelection';
 
 const meta = {
   title: 'Components/Calendar',
@@ -20,7 +20,7 @@ const meta = {
       const [selectedDates, setSelectedDates] = useState<Set<string>>(
         context.args.selectedDates || new Set()
       );
-      const drag = useDragSelection({ selectedDates, setSelectedDates, today });
+      const drag = useDateSelection({ selectedDates, setSelectedDates, today });
 
       return (
         <ThemeProvider theme={LIGHT_THEME}>

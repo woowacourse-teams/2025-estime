@@ -9,7 +9,7 @@ interface SimpleDragSelectionOptions {
 }
 type DragState = 'add' | 'remove';
 
-export const useDragSelection = ({
+export const useDateSelection = ({
   selectedDates,
   setSelectedDates,
   today,
