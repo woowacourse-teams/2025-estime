@@ -89,7 +89,7 @@ jobs:
       - name: Create .env file for Docker Compose
         run: |
           printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
-          echo "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" >> .env.docker
+          printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
       
       - name: Deploy with Docker Compose
         run: |
