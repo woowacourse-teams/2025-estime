@@ -98,14 +98,13 @@ jobs:
 
       - name: Create .env file for Docker Compose
         run: |
-          printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env
-          echo "IMAGE_NAME=${{ needs.build-and-push.outputs.image_name }}" >> .env
+          printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
+          echo "IMAGE_NAME=${{ needs.build-and-push.outputs.image_name }}" >> .env.docker
       
-
       - name: Deploy with Docker Compose
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml pull app
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d          
+          docker compose --env-file .env.docker -f docker-compose.yml -f docker-compose.dev.yml pull app
+          docker compose --env-file .env.docker -f docker-compose.yml -f docker-compose.dev.yml up -d          
 
       - name: Debug running containers
         run: docker ps -a
