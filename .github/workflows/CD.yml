@@ -61,6 +61,9 @@ jobs:
           SAFE_REF="$(echo "${BRANCH}" | tr '[:upper:]' '[:lower:]' | tr '/' '-')"
           echo "image_name=${{ secrets.DOCKER_USERNAME }}/${SAFE_REF}" >> "$GITHUB_OUTPUT"
 
+      - name: Calc short sha
+        id: set_short_sha
+        run: echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Setup JDK 21
         uses: actions/setup-java@v4
