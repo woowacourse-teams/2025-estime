@@ -3,13 +3,6 @@ name: Chromatic Deployment
 on:
   pull_request:
     branches: [fe/dev]
-  push:
-    branches: [fe/dev]
-
-# 두 워크플로우 동시 실행 방지
-concurrency:
-  group: chromatic-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
 
 jobs:
   chromatic:
@@ -30,8 +23,9 @@ jobs:
       - run: yarn
         working-directory: ./frontend
 
-      # 내부 리포지토리 PR/push일 때만 Chromatic 실행
-      - if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+      # 내부 리포지토리 PR만 Chromatic 실행
+      - name: Run Chromatic
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: chromaui/action@latest
         with:
           workingDir: ./frontend
