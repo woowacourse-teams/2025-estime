@@ -4,23 +4,18 @@ import Text from '../Text';
 import useTimePicker from '../../hooks/useTimePicker';
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => {
-  const hour = String(i).padStart(2, '0');
+  const hour = `${String(i).padStart(2, '0')} : 00`;
   return hour;
 });
 
-const minuteOptions = ['00', '30'];
-
 const TimePicker = ({ ...props }: ComponentProps<'input'>) => {
-  const { selectedHour, selectedMinute, selectHour, selectMinute, toggleOpen, isOpen } =
-    useTimePicker();
+  const { selectedHour, selectHour, toggleOpen, isOpen } = useTimePicker();
 
   return (
     <S.Container role="combobox" onClick={toggleOpen} {...props}>
       <S.Wrapper>
         <S.TimeWrapper>
-          <Text variant="body">{selectedHour || '00'}</Text>
-          <Text variant="body">:</Text>
-          <Text variant="body">{selectedMinute || '00'}</Text>
+          <Text variant="body">{selectedHour || '00 : 00'}</Text>
         </S.TimeWrapper>
         <img src="clock.svg" alt="clock icon" />
       </S.Wrapper>
@@ -29,13 +24,6 @@ const TimePicker = ({ ...props }: ComponentProps<'input'>) => {
           <S.ListItemWrapper>
             {hourOptions.map((time) => (
               <S.ListItem key={time} role="option" onClick={(e) => selectHour(time, e)}>
-                <Text variant="body"> {time}</Text>
-              </S.ListItem>
-            ))}
-          </S.ListItemWrapper>
-          <S.ListItemWrapper>
-            {minuteOptions.map((time) => (
-              <S.ListItem key={time} role="option" onClick={(e) => selectMinute(time, e)}>
                 <Text variant="body"> {time}</Text>
               </S.ListItem>
             ))}
