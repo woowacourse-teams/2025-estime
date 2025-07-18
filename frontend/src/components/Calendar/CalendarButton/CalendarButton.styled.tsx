@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.button`
+  user-select: none;
   background-color: transparent;
   border: none;
   cursor: pointer;
