@@ -43,13 +43,6 @@ jobs:
           fetch-depth: 0
 
       - name: Prepare IMAGE_NAME
-        shell: bash
-        run: |
-          BRANCH="${GITHUB_REF_NAME}"
-          SAFE_REF="${BRANCH//\//-}"
-          echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${SAFE_REF}" >> "$GITHUB_ENV"
-
-      - name: Prepare IMAGE_NAME
         id: set_image_name
         shell: bash
         run: |
