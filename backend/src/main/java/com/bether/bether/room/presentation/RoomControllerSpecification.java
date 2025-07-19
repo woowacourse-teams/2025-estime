@@ -92,14 +92,14 @@ public interface RoomControllerSpecification {
                                 "success": true,
                                 "message": null,
                                 "result": {
-                                    "rankedTimeSlots": [
+                                    "recommendations": [
                                         {
-                                            "startTime": "2025-07-17T11:00:00",
-                                            "availableMembers": 8
+                                            "dateTime": "2025-07-17T11:00:00",
+                                            "userNames": ["플린트", "강산", "리버", "제프리"]
                                         },
                                         {
-                                            "startTime": "2025-07-17T10:00:00",
-                                            "availableMembers": 5
+                                            "dateTime": "2025-07-17T10:00:00",
+                                            "userNames": ["강산", "제프리"]
                                         }
                                     ]
                                 }
