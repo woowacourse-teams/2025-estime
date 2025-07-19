@@ -11,5 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class SlackBotProperties {
 
+    private String token;
+    private String channelId;
     private String webhookUrl;
 }

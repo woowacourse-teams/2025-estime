@@ -2,6 +2,10 @@ package com.bether.bether.slack.application.service;
 
 import com.bether.bether.slack.application.service.dto.SlackRoomCreatedInput;
 import com.bether.bether.slack.config.SlackBotProperties;
+import com.slack.api.Slack;
+import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -9,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +28,28 @@ public class SlackService {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final RestClient restClient = RestClient.builder().build();
+    private final Slack slack;
     private final SlackBotProperties slackProps;
+
+    public void sendMessage(final String message) {
+        try {
+            final ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+                    .channel(slackProps.getChannelId())
+                    .text(message)
+                    .build();
+
+            final ChatPostMessageResponse response = slack.methods(slackProps.getToken())
+                    .chatPostMessage(request);
+
+            if (response.isOk()) {
+                log.info("Slack message sent: channel={}, ts={}", response.getChannel(), response.getTs());
+            } else {
+                log.warn("Slack API responded with error: {}", response.getError());
+            }
+        } catch (final IOException | SlackApiException e) {
+            log.error("Failed to send Slack message", e);
+        }
+    }
 
     public void sendRoomCreatedMessage(final SlackRoomCreatedInput input) {
         final String scheduleLink = BASE_SCHEDULE_URL + input.session();
