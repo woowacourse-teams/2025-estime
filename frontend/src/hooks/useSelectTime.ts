@@ -2,45 +2,68 @@ import { useState } from 'react';
 
 const useSelectTime = () => {
   const [showCustomTime, setShowCustomTime] = useState(false);
-  const [selectedButton, setSelectedButton] = useState<'day' | 'night' | 'custom' | null>(null);
+  const [selectedButtons, setSelectedButtons] = useState<('day' | 'night' | 'custom')[]>([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
   const handleDayNightButtonClick = (type: 'day' | 'night') => {
-    if (type === 'day') {
-      setSelectedButton('day');
-      setStartTime('09:00');
-      setEndTime('18:00');
-    } else if (type === 'night') {
-      setSelectedButton('night');
-      setStartTime('18:00');
-      setEndTime('24:00');
+    const filteredButtons = selectedButtons.filter((button) => button !== 'custom');
+
+    if (selectedButtons.includes(type)) {
+      //이미 선택된 상태라면 선택 해제
+      const updatedButtons = filteredButtons.filter((button) => button !== type);
+      setSelectedButtons(updatedButtons);
+
+      if (updatedButtons.includes('day') && updatedButtons.includes('night')) {
+        setStartTime('09:00');
+        setEndTime('24:00');
+      } else if (updatedButtons.includes('day')) {
+        setStartTime('09:00');
+        setEndTime('18:00');
+      } else if (updatedButtons.includes('night')) {
+        setStartTime('18:00');
+        setEndTime('24:00');
+      } else {
+        setStartTime('');
+        setEndTime('');
+      }
+    } else {
+      const updatedButtons = [...filteredButtons, type];
+      setSelectedButtons(updatedButtons);
+
+      if (updatedButtons.includes('day') && updatedButtons.includes('night')) {
+        setStartTime('09:00');
+        setEndTime('24:00');
+      } else if (updatedButtons.includes('day')) {
+        setStartTime('09:00');
+        setEndTime('18:00');
+      } else if (updatedButtons.includes('night')) {
+        setStartTime('18:00');
+        setEndTime('24:00');
+      }
     }
+    setShowCustomTime(false);
   };
 
   const handleCustomButtonClick = () => {
-    setSelectedButton('custom');
+    setSelectedButtons(['custom']);
     setShowCustomTime(true);
     setStartTime('');
     setEndTime('');
   };
 
   const handleCustomStartClick = (time: string) => {
-    setSelectedButton('custom');
-    setShowCustomTime(true);
     setStartTime(time);
   };
 
   const handleCustomEndClick = (time: string) => {
-    setSelectedButton('custom');
-    setShowCustomTime(true);
     setEndTime(time);
   };
 
   return {
     startTime,
     endTime,
-    selectedButton,
+    selectedButtons,
     showCustomTime,
     handleDayNightButtonClick,
     handleCustomButtonClick,
