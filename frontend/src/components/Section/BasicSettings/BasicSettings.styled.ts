@@ -9,6 +9,7 @@ export const Container = styled.div`
   gap: var(--gap-6);
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-10);
+  border-radius: var(--radius-6);
   max-width: 50rem;
   box-shadow: 0px 10px 30px rgba(33, 33, 33, 0.15);
   background-color: ${({ theme }) => theme.colors.background};
