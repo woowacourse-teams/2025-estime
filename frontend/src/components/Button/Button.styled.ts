@@ -1,9 +1,10 @@
-import { LIGHT_THEME } from '@/styles/theme';
 import styled from '@emotion/styled';
+import { LIGHT_THEME } from '@/styles/theme';
 
 export const Container = styled.button<{
   color: keyof typeof LIGHT_THEME.colors;
   size?: 'small' | 'medium' | 'large';
+  selected?: boolean;
 }>`
   width: ${({ size }) => {
     switch (size) {
@@ -19,7 +20,22 @@ export const Container = styled.button<{
   }};
   height: 3rem;
   border-radius: var(--radius-4);
-  background-color: ${({ theme, color }) => theme.colors[color]};
-  border: none;
+  border: 1px solid ${({ theme, color }) => theme.colors[color]};
+  color: ${({ theme, selected, color }) =>
+    selected ? theme.colors.background : theme.colors[color]};
+
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap-3);
+  background-color: ${({ theme, selected, color }) =>
+    selected ? theme.colors[color] : theme.colors.background};
+
+  &:hover {
+    ${({ selected, color, theme }) =>
+      !selected &&
+      `background-color: ${color === 'primary' ? theme.colors.plum30 : theme.colors.gray10};
+      `}
+  }
 `;
