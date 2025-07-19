@@ -31,4 +31,9 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     public List<TimeSlot> saveAll(final List<TimeSlot> timeSlots) {
         return timeSlotJpaRepository.saveAll(timeSlots);
     }
+
+    @Override
+    public void deleteAll(final List<TimeSlot> timeSlots) {
+        timeSlotJpaRepository.deleteAll(timeSlots);
+    }
 }

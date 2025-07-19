@@ -1,11 +1,15 @@
 package com.bether.bether.timeslot.application.service;
 
 import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
+import com.bether.bether.timeslot.application.dto.input.TimeSlotUpdateInput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
 import com.bether.bether.timeslot.domain.TimeSlotStatistic;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +44,37 @@ public class TimeSlotService {
         timeSlotCount.calculate(timeSlots);
 
         return TimeSlotStatisticOutput.from(timeSlotCount);
+    }
+
+    @Transactional
+    public void updateTimeSlots(final Long roomId, final TimeSlotUpdateInput input) {
+        final List<TimeSlot> existingTimeSlots = timeSlotRepository.findAllByRoomIdAndUserName(roomId,
+                input.userName());
+
+        final Set<LocalDateTime> existingStartAts = existingTimeSlots.stream()
+                .map(TimeSlot::getStartAt)
+                .collect(Collectors.toSet());
+
+        final Set<LocalDateTime> requestedStartAts = Set.copyOf(input.dateTimes());
+
+        if (existingStartAts.equals(requestedStartAts)) {
+            return;
+        }
+
+        final List<TimeSlot> timeSlotsToSave = requestedStartAts.stream()
+                .filter(startAt -> !existingStartAts.contains(startAt))
+                .map(startAt -> TimeSlot.withoutId(roomId, input.userName(), startAt))
+                .toList();
+
+        final List<TimeSlot> timeSlotsToDelete = existingTimeSlots.stream()
+                .filter(timeSlot -> !requestedStartAts.contains(timeSlot.getStartAt()))
+                .toList();
+
+        if (!timeSlotsToSave.isEmpty()) {
+            timeSlotRepository.saveAll(timeSlotsToSave);
+        }
+        if (!timeSlotsToDelete.isEmpty()) {
+            timeSlotRepository.deleteAll(timeSlotsToDelete);
+        }
     }
 }

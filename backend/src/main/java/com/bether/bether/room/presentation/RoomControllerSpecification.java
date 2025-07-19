@@ -3,6 +3,7 @@ package com.bether.bether.room.presentation;
 import com.bether.bether.common.CustomApiResponse;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
+import com.bether.bether.room.presentation.dto.request.TimeSlotUpdateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -158,4 +160,8 @@ public interface RoomControllerSpecification {
     @GetMapping("/{session}/time-slots/user")
     CustomApiResponse<TotalTimeSlotResponse> getByUserName(@PathVariable("session") UUID session,
                                                            @RequestParam("name") String userName);
+
+    @PutMapping("/{session}/time-slots")
+    CustomApiResponse<Void> updateTimeSlot(@PathVariable("session") final UUID session,
+                                           final TimeSlotUpdateRequest request);
 }
