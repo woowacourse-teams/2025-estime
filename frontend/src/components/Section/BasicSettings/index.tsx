@@ -1,6 +1,6 @@
-import Text from '../../../components/Text';
+import Text from '@/components/Text';
 import * as S from './BasicSettings.styled';
-import Input from '../../../components/Input';
+import Input from '@/components/Input';
 import Button from '@/components/Button';
 import TimePicker from '@/components/Timepicker';
 import useTimePicker from '@/hooks/useTimePicker';
