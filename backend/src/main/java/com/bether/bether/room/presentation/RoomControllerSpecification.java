@@ -161,7 +161,33 @@ public interface RoomControllerSpecification {
     CustomApiResponse<TotalTimeSlotResponse> getByUserName(@PathVariable("session") UUID session,
                                                            @RequestParam("name") String userName);
 
+    @Operation(summary = "사용자 제출 시간 수정", description = "💡 특정 룸에 사용자가 제출한 시간 정보를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                        "code": 200,
+                                        "success": true,
+                                        "message": null,
+                                        "result": null
+                                    }
+                                    """)))})
     @PutMapping("/{session}/time-slots")
     CustomApiResponse<Void> updateTimeSlot(@PathVariable("session") final UUID session,
-                                           final TimeSlotUpdateRequest request);
+                                           @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
+                                                   examples = @ExampleObject(
+                                                           summary = "시간 수정 예시",
+                                                           value = """
+                                                                   {
+                                                                       "userName": "강감찬",
+                                                                       "dateTimes": [
+                                                                           "2025-07-21T16:00:00",
+                                                                           "2025-07-21T17:00:00",
+                                                                           "2025-07-22T20:00:00"
+                                                                       ]
+                                                                   }
+                                                                   """
+                                                   )
+                                           )) TimeSlotUpdateRequest request);
 }
