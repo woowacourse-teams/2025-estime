@@ -56,7 +56,7 @@ export const ImageWrapper = styled.div<{ color: ColorsKey }>`
   }
 `;
 
-export const CustomTimeWrapper = styled.div<{ selected: string | null }>`
+export const CustomTimeWrapper = styled.div<{ selected: ('day' | 'night' | 'custom')[] }>`
   display: flex;
   width: 100%;
   gap: var(--gap-5);

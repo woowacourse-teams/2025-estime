@@ -17,7 +17,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
   const {
     startTime,
     endTime,
-    selectedButton,
+    selectedButtons,
     showCustomTime,
     handleDayNightButtonClick,
     handleCustomButtonClick,
@@ -44,41 +44,50 @@ const BasicSettings = ({}: BasicSettingsProps) => {
           <Button
             color="orange40"
             onClick={() => handleDayNightButtonClick('day')}
-            selected={selectedButton === 'day'}
+            selected={selectedButtons.includes('day')}
           >
             <S.ImageWrapper color="secondary">
               <img src="/sun.svg" alt="sun" />
             </S.ImageWrapper>
-            <Text variant="button" color={selectedButton === 'day' ? 'background' : 'secondary'}>
+            <Text
+              variant="button"
+              color={selectedButtons.includes('day') ? 'background' : 'secondary'}
+            >
               9~18시
             </Text>
           </Button>
           <Button
             color="primary"
             onClick={() => handleDayNightButtonClick('night')}
-            selected={selectedButton === 'night'}
+            selected={selectedButtons.includes('night')}
           >
             <S.ImageWrapper color="primary">
               <img src="/moon.svg" alt="moon" />
             </S.ImageWrapper>
 
-            <Text variant="button" color={selectedButton === 'night' ? 'background' : 'primary'}>
+            <Text
+              variant="button"
+              color={selectedButtons.includes('night') ? 'background' : 'primary'}
+            >
               18~24시
             </Text>
           </Button>
           <Button
             color="primary"
             onClick={handleCustomButtonClick}
-            selected={selectedButton === 'custom'}
+            selected={selectedButtons.includes('custom')}
           >
-            <Text variant="button" color={selectedButton === 'custom' ? 'background' : 'primary'}>
+            <Text
+              variant="button"
+              color={selectedButtons.includes('custom') ? 'background' : 'primary'}
+            >
               커스텀
             </Text>
           </Button>
         </S.ButtonWrapper>
 
         {showCustomTime && (
-          <S.CustomTimeWrapper selected={selectedButton}>
+          <S.CustomTimeWrapper selected={selectedButtons}>
             <S.Label>
               <Text variant="body">시작 시간</Text>
               <TimePicker
