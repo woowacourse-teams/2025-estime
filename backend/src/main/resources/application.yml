@@ -23,6 +23,10 @@ discord:
   bot:
     token: ${DISCORD_BOT_TOKEN}
 
+slack:
+  bot:
+    webhookUrl: ${SLACK_BOT_WEBHOOK_URL}
+
 springdoc:
   swagger-ui:
     path: /docs
