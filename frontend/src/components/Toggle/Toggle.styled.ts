@@ -2,6 +2,10 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div<{ isOn: boolean }>`
   width: 100%;
+
+  // section 개발 중에 바뀜
+  max-width: 3rem;
+
   height: 1.6rem;
   padding: var(--padding-2);
   background-color: ${({ theme, isOn }) => (isOn ? theme.colors.primary : theme.colors.gray30)};
@@ -15,7 +19,7 @@ export const Track = styled.div<{ isOn: boolean }>`
   height: 100%;
   display: flex;
   align-items: center;
-  transition: transform 0.5s ease;
+  transition: transform 0.2s ease;
   transform: ${({ isOn }) => (isOn ? 'translateX(calc(100% - 1.3rem))' : 'translateX(0px)')};
 `;
 

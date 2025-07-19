@@ -4,17 +4,17 @@ export const Container = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.gray10};
   border-radius: var(--radius-6);
-  padding: var(--padding-8) var(--padding-7);
+  padding: 0 var(--padding-7);
   box-shadow: var(--shadow-card);
 `;
 
 export const Header = styled.div`
   width: 100%;
-  height: 3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  padding: var(--padding-8) 0;
 `;
 
 export const Icon = styled.img<{ isOpen: boolean }>`
@@ -29,8 +29,7 @@ export const Content = styled.div<{ isOpen: boolean }>`
   border-top: 1px solid rgba(221, 221, 221, 0.7);
   padding: ${({ isOpen }) => (isOpen ? 'var(--padding-7) 0' : '0')};
   transition: all 0.3s ease;
-
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: var(--gap-8);
 `;
