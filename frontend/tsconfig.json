@@ -47,7 +47,7 @@
   },
 
   // 타입 검사 대상 소스
-  "include": ["src/**/*"],
+  "include": ["src/**/*", ".storybook/**/*"],
 
   // 검사 대상에서 제외할 디렉터리
   "exclude": ["node_modules", "dist"]
