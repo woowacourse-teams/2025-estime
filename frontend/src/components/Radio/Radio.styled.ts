@@ -12,6 +12,7 @@ export const Input = styled.input`
   width: 1.25rem;
   height: 1.25rem;
   accent-color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
 `;
 
 export const Label = styled.label`
@@ -21,4 +22,6 @@ export const Label = styled.label`
   flex-direction: column;
   justify-content: center;
   padding-top: 0.125rem;
+  gap: var(--gap-3);
+  cursor: pointer;
 `;
