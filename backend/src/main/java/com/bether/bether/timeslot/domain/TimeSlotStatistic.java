@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeSlotStatistic {
 
+    public static final int MAX_RECOMMENDATION_COUNT = 2;
+
     private final Map<LocalDateTime, TimeSlotParticipants> participantsByDateTime;
 
     public static TimeSlotStatistic create() {
@@ -29,11 +31,14 @@ public class TimeSlotStatistic {
                 .toList();
     }
 
-    public List<TimeSlotParticipants> getRank() {
-        return participantsByDateTime.values()
+    public List<TimeSlotParticipants> getRecommendation() {
+        final List<TimeSlotParticipants> timeSlotParticipants = participantsByDateTime.values()
                 .stream()
                 .sorted(Comparator.comparingInt(TimeSlotParticipants::size).reversed())
-                .toList().subList(0, 2); // TODO 매직 넘버 관리 여부 논의 필요
+                .toList();
+
+        final int recommendationCount = Math.min(timeSlotParticipants.size(), MAX_RECOMMENDATION_COUNT);
+        return timeSlotParticipants.subList(0, recommendationCount);
     }
 
     private void accumulate(final TimeSlot timeSlot) {

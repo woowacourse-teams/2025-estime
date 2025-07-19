@@ -6,6 +6,8 @@ import static org.assertj.core.groups.Tuple.tuple;
 import com.bether.bether.room.domain.Room;
 import com.bether.bether.room.domain.RoomRepository;
 import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
+import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationOutput;
+import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
@@ -169,6 +171,65 @@ class TimeSlotServiceTest {
                 .containsExactlyInAnyOrder(
                         tuple(dateTime1, List.of("user", "user2")),
                         tuple(dateTime2, List.of("user"))
+                );
+    }
+
+    @DisplayName("타임슬롯 추천 시간 순위를 계산한다.")
+    @Test
+    void calculateRecommendations() {
+        // given
+        final Room room = roomRepository.save(
+                Room.withoutId(
+                        "title",
+                        List.of(LocalDate.now()),
+                        LocalTime.of(7, 0),
+                        LocalTime.of(20, 0)
+                ));
+
+        final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
+        final LocalDateTime dateTime2 = LocalDateTime.of(2024, 3, 1, 2, 30);
+
+        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime1));
+        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime2));
+        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
+
+        // when
+        final TimeSlotRecommendationsOutput output = timeSlotService.calculateRecommendation(room.getId());
+
+        // then
+        assertThat(output.recommendations())
+                .hasSize(2)
+                .containsExactly(
+                        new TimeSlotRecommendationOutput(dateTime1, List.of("user", "user2")),
+                        new TimeSlotRecommendationOutput(dateTime2, List.of("user"))
+                );
+    }
+
+    @DisplayName("타임슬롯 투표 시간이 최대 랭킹 수보다 적은 경우, 존재하는 개수 만큼 반환한다.")
+    @Test
+    void whenSmallerThanMaxRankingNumber() {
+        // given
+        final Room room = roomRepository.save(
+                Room.withoutId(
+                        "title",
+                        List.of(LocalDate.now()),
+                        LocalTime.of(7, 0),
+                        LocalTime.of(20, 0)
+                ));
+
+        final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
+
+        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime1));
+        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
+
+        // when
+        final TimeSlotRecommendationsOutput output = timeSlotService.calculateRecommendation(room.getId());
+
+        // then
+        assertThat(output.recommendations())
+                .hasSize(1)
+                .containsExactly(
+                        new TimeSlotRecommendationOutput(dateTime1, List.of("user", "user2"))
                 );
     }
 }

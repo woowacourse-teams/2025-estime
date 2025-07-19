@@ -1,6 +1,7 @@
 package com.bether.bether.timeslot.application.service;
 
 import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
+import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
@@ -40,5 +41,15 @@ public class TimeSlotService {
         timeSlotCount.calculate(timeSlots);
 
         return TimeSlotStatisticOutput.from(timeSlotCount);
+    }
+
+    @Transactional(readOnly = true)
+    public TimeSlotRecommendationsOutput calculateRecommendation(final Long roomId) {
+        final List<TimeSlot> timeSlots = getAllByRoomId(roomId);
+
+        final TimeSlotStatistic timeSlotCount = TimeSlotStatistic.create();
+        timeSlotCount.calculate(timeSlots);
+
+        return TimeSlotRecommendationsOutput.from(timeSlotCount);
     }
 }

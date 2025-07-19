@@ -4,6 +4,7 @@ import com.bether.bether.common.CustomApiResponse;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
+import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -105,7 +106,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/recommendation")
-    CustomApiResponse<TimeSlotStatisticResponse> getRank(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotRecommendationsResponse> getRecommendations(@PathVariable("session") UUID session);
 
     @Operation(summary = "사용자 가능 시간 제출", description = "💡 특정 룸에 사용자의 가능 시간을 제출(등록)합니다.")
     @ApiResponses(value = {

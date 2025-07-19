@@ -6,8 +6,10 @@ import com.bether.bether.room.application.service.RoomService;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
+import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
+import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import java.util.List;
@@ -37,9 +39,10 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<TimeSlotStatisticResponse> getRank(@PathVariable("session") final UUID session) {
-        final TimeSlotStatisticOutput output = roomService.calculateStatistic(session);
-        return CustomApiResponse.ok(TimeSlotStatisticResponse.from(output));
+    public CustomApiResponse<TimeSlotRecommendationsResponse> getRecommendations(
+            @PathVariable("session") final UUID session) {
+        final TimeSlotRecommendationsOutput output = roomService.calculateRecommendation(session);
+        return CustomApiResponse.ok(TimeSlotRecommendationsResponse.from(output));
     }
 
     @Override
