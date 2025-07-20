@@ -1,6 +1,7 @@
 package com.bether.bether.slack.application.service;
 
 import com.bether.bether.slack.application.service.dto.SlackRoomCreatedInput;
+import com.bether.bether.slack.application.util.SlackMessageBuilder;
 import com.bether.bether.slack.config.SlackBotProperties;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,12 +23,11 @@ import java.util.stream.Collectors;
 public class SlackService {
 
     private static final String BASE_SCHEDULE_URL = "https://estime.today/schedule/";
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final RestClient slackRestClient;
     private final Slack slack;
     private final SlackBotProperties slackProps;
+    private final SlackMessageBuilder slackMessageBuilder;
 
     public void sendMessage(final String message) {
         try {
@@ -55,7 +53,7 @@ public class SlackService {
 
     public void sendRoomCreatedMessage(final SlackRoomCreatedInput input) {
         final String scheduleLink = BASE_SCHEDULE_URL + input.session();
-        final String message = buildRoomCreatedMessage(input, scheduleLink);
+        final String message = slackMessageBuilder.buildRoomCreatedMessage(input, scheduleLink);
 
         final JSONObject payload = new JSONObject()
                 .put("blocks", List.of(blockSection(message)));
@@ -72,23 +70,6 @@ public class SlackService {
         } catch (final Exception e) {
             log.error("Failed to send Slack message for created room '{}'. Reason: {}", input.title(), e.getMessage(), e);
         }
-    }
-
-    private String buildRoomCreatedMessage(final SlackRoomCreatedInput input, final String scheduleLink) {
-        final String dates = input.availableDates().stream()
-                .map(DATE_FORMATTER::format)
-                .collect(Collectors.joining(", "));
-
-        final String start = input.startTime().format(TIME_FORMATTER);
-        final String end = input.endTime().format(TIME_FORMATTER);
-
-        return String.join("\n",
-                "🗓 *일정이 생성되었습니다!*",
-                "> <" + scheduleLink + "|*일정조율 링크바로가기*>",
-                "> 제목 : " + input.title(),
-                "> 날짜 : " + dates,
-                "> 시간 : " + start + " ~ " + end
-        );
     }
 
     private JSONObject blockSection(final String text) {
