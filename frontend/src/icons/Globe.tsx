@@ -1,10 +1,6 @@
-const Globe = ({
-  color = '#fff',
-  ...props
-}: {
-  color?: string;
-  props?: React.SVGProps<SVGSVGElement>;
-}) => {
+import { IconType } from '@/types/iconType';
+
+const Globe = ({ color = '#fff', ...props }: IconType) => {
   return (
     <svg
       width="18"
