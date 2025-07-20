@@ -27,7 +27,7 @@ public class SlackService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    private final RestClient restClient = RestClient.builder().build();
+    private final RestClient slackRestClient;
     private final Slack slack;
     private final SlackBotProperties slackProps;
 
@@ -59,7 +59,7 @@ public class SlackService {
                 .put("blocks", List.of(blockSection(message)));
 
         try {
-            final String response = restClient.post()
+            final String response = slackRestClient.post()
                     .uri(slackProps.getWebhookUrl())
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(payload.toString())
