@@ -11,7 +11,7 @@ import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 interface OptionSettingsProps {
   isOpenAccordion: boolean;
   onToggleAccordion: () => void;
-  isOnDeadline: boolean;
+  isDeadlineEnable: boolean;
   onToggleDeadline: () => void;
   date: string;
   onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -20,7 +20,7 @@ interface OptionSettingsProps {
 const OptionSettings = ({
   isOpenAccordion,
   onToggleAccordion,
-  isOnDeadline,
+  isDeadlineEnable,
   onToggleDeadline,
   date,
   onDateChange,
@@ -33,7 +33,7 @@ const OptionSettings = ({
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
           <S.Wrapper justifyContent="space-between">
             <Text variant="h3">마감 기한</Text>
-            <Toggle isOn={isOnDeadline} onToggle={onToggleDeadline} />
+            <Toggle isOn={isDeadlineEnable} onToggle={onToggleDeadline} />
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
             <DatePicker value={date} onChange={onDateChange} />
