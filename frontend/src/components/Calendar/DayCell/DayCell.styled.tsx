@@ -2,14 +2,16 @@ import styled from '@emotion/styled';
 
 const dayCellRadius = 36;
 
-export const Container = styled.div<{
+interface DayCellProps {
   isPast: boolean;
   isSunday: boolean;
   isSaturday: boolean;
   isToday: boolean;
   isSelected: boolean;
   isEmpty: boolean;
-}>`
+}
+
+export const Container = styled.div<DayCellProps>`
   user-select: none;
   height: 3rem;
   display: flex;
