@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const useTimePicker = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedHour, setSelectedHour] = useState<string | null>(null);
+  const [selectedHour, setSelectedHour] = useState<string>('');
 
   const toggleOpen = () => {
     setIsOpen((prev) => !prev);
