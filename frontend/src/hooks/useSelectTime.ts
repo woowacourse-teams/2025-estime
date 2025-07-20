@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 const useSelectTime = () => {
-  const [showCustomTime, setShowCustomTime] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<('day' | 'night' | 'custom')[]>([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -42,12 +41,10 @@ const useSelectTime = () => {
         setEndTime('24:00');
       }
     }
-    setShowCustomTime(false);
   };
 
   const handleCustomButtonClick = () => {
     setSelectedButtons(['custom']);
-    setShowCustomTime(true);
     setStartTime('');
     setEndTime('');
   };
@@ -64,7 +61,6 @@ const useSelectTime = () => {
     startTime,
     endTime,
     selectedButtons,
-    showCustomTime,
     handleDayNightButtonClick,
     handleCustomButtonClick,
     handleCustomStartClick,

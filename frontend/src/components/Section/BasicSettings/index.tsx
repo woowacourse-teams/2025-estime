@@ -18,7 +18,6 @@ const BasicSettings = ({}: BasicSettingsProps) => {
     startTime,
     endTime,
     selectedButtons,
-    showCustomTime,
     handleDayNightButtonClick,
     handleCustomButtonClick,
     handleCustomStartClick,
@@ -86,7 +85,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
           </Button>
         </S.ButtonWrapper>
 
-        {showCustomTime && (
+        {selectedButtons.includes('custom') && (
           <S.CustomTimeWrapper selected={selectedButtons}>
             <S.Label>
               <Text variant="body">시작 시간</Text>
