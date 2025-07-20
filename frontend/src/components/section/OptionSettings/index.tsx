@@ -21,6 +21,7 @@ interface OptionSettingsProps {
 export interface StyleProps {
   flexDirection?: string;
   justifyContent?: string;
+  backgroundColor?: string;
   alignItems?: string;
   gap?: string;
   border?: string;
@@ -63,6 +64,7 @@ const OptionSettings = ({
             <S.Wrapper
               key={value}
               border={`1px solid ${theme.colors.gray20}`}
+              backgroundColor={theme.colors.gray10}
               padding={'var(--padding-7) var(--padding-4)'}
               borderRadius={'var(--radius-4)'}
             >

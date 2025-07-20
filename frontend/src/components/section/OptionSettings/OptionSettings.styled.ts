@@ -17,4 +17,5 @@ export const Wrapper = styled.div<StyleProps>`
   padding: ${({ padding = '0' }) => padding};
   border: ${({ border = 'none' }) => border};
   border-radius: ${({ borderRadius = '0rem' }) => borderRadius};
+  background-color: ${({ backgroundColor = 'theme.colors.background' }) => backgroundColor};
 `;
