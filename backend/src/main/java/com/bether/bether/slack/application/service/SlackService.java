@@ -42,12 +42,14 @@ public class SlackService {
                     .chatPostMessage(request);
 
             if (response.isOk()) {
-                log.info("Slack message sent: channel={}, ts={}", response.getChannel(), response.getTs());
+                log.info("Slack message sent: channel={}", response.getChannel());
             } else {
-                log.warn("Slack API responded with error: {}", response.getError());
+                log.warn("Slack API returned error response: {}", response.getError());
             }
-        } catch (final IOException | SlackApiException e) {
-            log.error("Failed to send Slack message", e);
+        } catch (final SlackApiException e) {
+            log.error("Slack API exception occurred: {}", e.getError(), e);
+        } catch (final IOException e) {
+            log.error("I/O error while sending Slack message", e);
         }
     }
 
