@@ -1,0 +1,31 @@
+package com.bether.bether.slack.application.util;
+
+import com.bether.bether.slack.application.service.dto.SlackRoomCreatedInput;
+import org.springframework.stereotype.Component;
+
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
+
+@Component
+public class SlackMessageBuilder {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
+    public String buildRoomCreatedMessage(final SlackRoomCreatedInput input, final String scheduleLink) {
+        final String dates = input.availableDates().stream()
+                .map(DATE_FORMATTER::format)
+                .collect(Collectors.joining(", "));
+
+        final String start = input.startTime().format(TIME_FORMATTER);
+        final String end = input.endTime().format(TIME_FORMATTER);
+
+        return String.join("\n",
+                "🗓 *일정이 생성되었습니다!*",
+                "> <" + scheduleLink + "|*일정조율 링크바로가기*>",
+                "> 제목 : " + input.title(),
+                "> 날짜 : " + dates,
+                "> 시간 : " + start + " ~ " + end
+        );
+    }
+}
