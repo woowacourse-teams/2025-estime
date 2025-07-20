@@ -3,13 +3,13 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { ThemeProvider } from '@emotion/react';
 import { useState } from 'react';
 
-import Calender from '.';
+import Calendar from '.';
 import { LIGHT_THEME } from '@/styles/theme';
 import { useDateSelection } from '@/hooks/Calendar/useDateSelection';
 
 const meta = {
   title: 'Components/Calendar',
-  component: Calender,
+  component: Calendar,
   tags: ['autodocs'],
   argTypes: {
     selectedDates: { control: false },
@@ -40,10 +40,10 @@ const meta = {
       );
     },
   ],
-} satisfies Meta<typeof Calender>;
+} satisfies Meta<typeof Calendar>;
 
 export default meta;
-type Story = StoryObj<typeof Calender>;
+type Story = StoryObj<typeof Calendar>;
 
 export const Basic: Story = {
   args: {},
