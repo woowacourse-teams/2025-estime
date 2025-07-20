@@ -14,14 +14,14 @@ const useSelectTime = () => {
       setSelectedButtons(updatedButtons);
 
       if (updatedButtons.includes('day') && updatedButtons.includes('night')) {
-        setStartTime('09:00');
-        setEndTime('24:00');
+        setStartTime(TIME.DAY_START);
+        setEndTime(TIME.NIGHT_END);
       } else if (updatedButtons.includes('day')) {
-        setStartTime('09:00');
-        setEndTime('18:00');
+        setStartTime(TIME.DAY_START);
+        setEndTime(TIME.DAY_END);
       } else if (updatedButtons.includes('night')) {
-        setStartTime('18:00');
-        setEndTime('24:00');
+        setStartTime(TIME.NIGHT_START);
+        setEndTime(TIME.NIGHT_END);
       } else {
         setStartTime('');
         setEndTime('');
@@ -31,14 +31,14 @@ const useSelectTime = () => {
       setSelectedButtons(updatedButtons);
 
       if (updatedButtons.includes('day') && updatedButtons.includes('night')) {
-        setStartTime('09:00');
-        setEndTime('24:00');
+        setStartTime(TIME.DAY_START);
+        setEndTime(TIME.NIGHT_END);
       } else if (updatedButtons.includes('day')) {
-        setStartTime('09:00');
-        setEndTime('18:00');
+        setStartTime(TIME.DAY_START);
+        setEndTime(TIME.DAY_END);
       } else if (updatedButtons.includes('night')) {
-        setStartTime('18:00');
-        setEndTime('24:00');
+        setStartTime(TIME.NIGHT_START);
+        setEndTime(TIME.NIGHT_END);
       }
     }
   };
