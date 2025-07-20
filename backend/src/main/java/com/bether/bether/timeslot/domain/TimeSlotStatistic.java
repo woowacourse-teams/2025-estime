@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeSlotStatistic {
 
-    public static final int MAX_RECOMMENDATION_COUNT = 2;
+    private static final int MAX_RECOMMENDATION_COUNT = 2;
 
     private final Map<LocalDateTime, TimeSlotParticipants> participantsByDateTime;
 
