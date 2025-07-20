@@ -32,11 +32,11 @@ public class SlackService {
     public void sendMessage(final String message) {
         try {
             final ChatPostMessageRequest request = ChatPostMessageRequest.builder()
-                    .channel(slackProps.getChannelId())
+                    .channel(slackProps.channelId())
                     .text(message)
                     .build();
 
-            final ChatPostMessageResponse response = slack.methods(slackProps.getToken())
+            final ChatPostMessageResponse response = slack.methods(slackProps.token())
                     .chatPostMessage(request);
 
             if (response.isOk()) {
@@ -60,7 +60,7 @@ public class SlackService {
 
         try {
             final String response = slackRestClient.post()
-                    .uri(slackProps.getWebhookUrl())
+                    .uri(slackProps.webhookUrl())
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(payload.toString())
                     .retrieve()
