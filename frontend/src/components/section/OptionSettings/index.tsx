@@ -7,6 +7,7 @@ import Accordion from '@/components/Accordian';
 import TimePicker from '@/components/Timepicker';
 import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
+import useTimePicker from '@/hooks/useTimePicker';
 
 interface OptionSettingsProps {
   isOpenAccordion: boolean;
@@ -36,6 +37,7 @@ const OptionSettings = ({
   onDateChange,
 }: OptionSettingsProps) => {
   const theme = useTheme();
+  const { selectedHour, selectHour, toggleOpen, isOpen } = useTimePicker();
 
   return (
     <S.Container>
@@ -47,7 +49,12 @@ const OptionSettings = ({
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
             <DatePicker value={date} onChange={onDateChange} />
-            <TimePicker />
+            <TimePicker
+              selectedHour={selectedHour}
+              selectHour={selectHour}
+              toggleOpen={toggleOpen}
+              isOpen={isOpen}
+            />
           </S.Wrapper>
         </S.Wrapper>
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">

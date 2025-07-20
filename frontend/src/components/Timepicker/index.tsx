@@ -9,7 +9,7 @@ const hourOptions = Array.from({ length: 24 }, (_, i) => {
 });
 
 interface TimePickerProps extends ComponentProps<'input'> {
-  selectedHour: string;
+  selectedHour: string | null;
   selectHour: (hour: string, e: React.MouseEvent<HTMLLIElement>) => void;
   toggleOpen: () => void;
   isOpen: boolean;
