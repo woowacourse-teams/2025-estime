@@ -86,7 +86,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
         </S.ButtonWrapper>
 
         {selectedButtons.includes('custom') && (
-          <S.CustomTimeWrapper selected={selectedButtons}>
+          <S.CustomTimeWrapper selected={selectedButtons.includes('custom')}>
             <S.Label>
               <Text variant="body">시작 시간</Text>
               <TimePicker
