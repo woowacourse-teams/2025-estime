@@ -21,7 +21,7 @@ const DayCell = ({
   const dayState = useDayState({ day, today, selectedDates });
 
   return (
-    <S.DayCell
+    <S.Container
       isPast={dayState.isPast}
       isSunday={dayState.isSunday}
       isSaturday={dayState.isSaturday}
@@ -33,7 +33,7 @@ const DayCell = ({
       onMouseUp={onMouseUp}
     >
       {dayState.dateString}
-    </S.DayCell>
+    </S.Container>
   );
 };
 

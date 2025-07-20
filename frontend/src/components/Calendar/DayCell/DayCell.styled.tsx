@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 const dayCellRadius = 36;
 
-export const DayCell = styled.div<{
+export const Container = styled.div<{
   isPast: boolean;
   isSunday: boolean;
   isSaturday: boolean;
