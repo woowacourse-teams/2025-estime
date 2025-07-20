@@ -17,6 +17,16 @@ interface OptionSettingsProps {
   onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+export interface StyleProps {
+  flexDirection?: string;
+  justifyContent?: string;
+  alignItems?: string;
+  gap?: string;
+  border?: string;
+  padding?: string;
+  borderRadius?: string;
+}
+
 const OptionSettings = ({
   isOpenAccordion,
   onToggleAccordion,

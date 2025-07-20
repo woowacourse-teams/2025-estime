@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import { CSSProperties } from 'react';
+import { StyleProps } from '.';
 
 export const Container = styled.div`
   width: 100%;
 `;
 
-export const Wrapper = styled.div<CSSProperties>`
+export const Wrapper = styled.div<StyleProps>`
   width: 100%;
 
   display: flex;
