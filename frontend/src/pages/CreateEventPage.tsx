@@ -16,13 +16,13 @@ const CreateEventPage = () => {
   const [date, setDate] = useState('2025-07-19');
 
   return (
-    <Wrapper>
-      <Flex justify="space-between" gap={40}>
+    <Wrapper maxWidth={1280} paddingTop="var(--padding-11)">
+      <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
           <CalendarSettings />
         </Flex.Item>
         <Flex.Item flex={1}>
-          <Flex direction="column" justify="space-between" gap={36}>
+          <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings />
             <OptionSettings
               isOpenAccordion={isOpenAccordion}
