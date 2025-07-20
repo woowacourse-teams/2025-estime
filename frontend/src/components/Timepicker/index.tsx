@@ -1,7 +1,6 @@
 import { ComponentProps } from 'react';
 import * as S from './Timepicker.styled';
 import Text from '../Text';
-import useTimePicker from '../../hooks/useTimePicker';
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => {
   const hour = `${String(i).padStart(2, '0')} : 00`;
