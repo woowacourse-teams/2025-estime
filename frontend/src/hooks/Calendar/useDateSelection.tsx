@@ -41,7 +41,7 @@ export const useDateSelection = ({
     [selectedDates, setSelectedDates]
   );
 
-  const handleMouseDown = useCallback(
+  const onMouseDown = useCallback(
     (date: Date | null) => {
       if (!date || !isValidDate(date) || isItPast(date, today)) return;
 
@@ -55,7 +55,7 @@ export const useDateSelection = ({
     [today, determineDragState, addRemoveDate]
   );
 
-  const handleMouseEnter = useCallback(
+  const onMouseEnter = useCallback(
     (date: Date | null) => {
       if (!draggingRef.current || !date || !isValidDate(date) || isItPast(date, today)) return;
 
@@ -64,7 +64,7 @@ export const useDateSelection = ({
     [today, dragState, addRemoveDate]
   );
 
-  const handleMouseUp = useCallback((e?: React.MouseEvent) => {
+  const onMouseUp = useCallback((e?: React.MouseEvent) => {
     if (!draggingRef.current) return;
 
     if (e) {
@@ -76,11 +76,11 @@ export const useDateSelection = ({
   }, []);
 
   // 캘린더 영역에서 마우스가 벗어날 때
-  const handleMouseLeave = useCallback(() => {
+  const onMouseLeave = useCallback(() => {
     if (draggingRef.current) {
-      handleMouseUp();
+      onMouseUp();
     }
-  }, [handleMouseUp]);
+  }, [onMouseUp]);
 
   // 혹시 event leaking 방지를 위해 넣어 둡니다.
   // 현재는 없이도 정상 동작합니다.
@@ -104,9 +104,9 @@ export const useDateSelection = ({
   // 터치 이벤트 지원
   const handleTouchStart = useCallback(
     (date: Date | null) => {
-      handleMouseDown(date);
+      onMouseDown(date);
     },
-    [handleMouseDown]
+    [onMouseDown]
   );
 
   const handleTouchMove = useCallback(
@@ -135,14 +135,14 @@ export const useDateSelection = ({
   );
 
   const handleTouchEnd = useCallback(() => {
-    handleMouseUp();
-  }, [handleMouseUp]);
+    onMouseUp();
+  }, [onMouseUp]);
 
   return {
-    handleMouseDown,
-    handleMouseEnter,
-    handleMouseUp,
-    handleMouseLeave,
+    onMouseDown,
+    onMouseEnter,
+    onMouseUp,
+    onMouseLeave,
 
     // handleTouchStart,
     // handleTouchMove,
