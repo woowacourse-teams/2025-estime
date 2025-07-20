@@ -1,10 +1,10 @@
 import * as S from './Calendar.styled';
 import { weekdays } from '@/constants/calender';
-import { isItCurrentMonth, isItPast, isToday } from '@/utils/Calendar/dateUtils';
-import { formatDateToString } from '@/utils/Calendar/format';
+import { isItCurrentMonth } from '@/utils/Calendar/dateUtils';
 import { useCalender } from '@/hooks/Calendar/useCalender';
 
 import CalendarButton from './CalendarButton/CalendarButton';
+import DayCell from './DayCell';
 import Text from '@/components/Text';
 import ChevronLeft from '@/icons/ChevronLeft';
 import ChevronRight from '@/icons/ChrevronRight';
@@ -12,22 +12,17 @@ import ChevronRight from '@/icons/ChrevronRight';
 interface CalenderProps {
   today: Date;
   selectedDates: Set<string>;
-  handleMouseDown: (date: Date | null) => void;
-  handleMouseEnter: (date: Date | null) => void;
-  handleMouseUp: () => void;
-  handleMouseLeave: () => void;
+  mouseHandlers: {
+    onMouseDown: (date: Date | null) => void;
+    onMouseEnter: (date: Date | null) => void;
+    onMouseUp: () => void;
+    onMouseLeave: () => void;
+  };
 }
 
-const Calender = ({
-  today,
-  selectedDates,
-  handleMouseDown,
-  handleMouseEnter,
-  handleMouseUp,
-  handleMouseLeave,
-}: CalenderProps) => {
-  const { current, prevMonth, nextMonth, matrix } = useCalender(today);
-
+const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
+  const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
+  const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = mouseHandlers;
   return (
     <S.Container>
       <S.Header>
@@ -44,28 +39,23 @@ const Calender = ({
         </S.ButtonContainer>
       </S.Header>
       <S.CalendarContainer>
-        <S.Grid onMouseLeave={handleMouseLeave}>
+        <S.Grid onMouseLeave={onMouseLeave}>
           {weekdays.map((w) => (
             <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'}>
               {w}
             </S.Weekday>
           ))}
 
-          {matrix.flat().map((day, i) => (
-            <S.DayCell
+          {monthMatrix.flat().map((day, i) => (
+            <DayCell
               key={i}
-              isPast={isItPast(day, today)}
-              isSunday={day?.getDay() === 0}
-              isSaturday={day?.getDay() === 6}
-              isToday={isToday(day, today)}
-              isSelected={day ? selectedDates.has(formatDateToString(day)) : false}
-              isEmpty={!day}
-              onMouseDown={() => handleMouseDown(day)}
-              onMouseEnter={() => handleMouseEnter(day)}
-              onMouseUp={handleMouseUp}
-            >
-              {day ? day.getDate() : ''}
-            </S.DayCell>
+              day={day}
+              today={today}
+              selectedDates={selectedDates}
+              onMouseDown={onMouseDown}
+              onMouseEnter={onMouseEnter}
+              onMouseUp={onMouseUp}
+            />
           ))}
         </S.Grid>
       </S.CalendarContainer>

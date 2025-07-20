@@ -18,9 +18,9 @@ const useCalender = (date: Date) => {
       return newDate;
     });
   };
-  const matrix = makeMonthMatrix(current);
+  const monthMatrix = makeMonthMatrix(current);
 
-  return { current, prevMonth, nextMonth, matrix };
+  return { current, prevMonth, nextMonth, monthMatrix };
 };
 
 export { useCalender };

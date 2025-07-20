@@ -13,6 +13,8 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     selectedDates: { control: false },
+    today: { control: false },
+    mouseHandlers: { control: false },
   },
   decorators: [
     (Story, context) => {
@@ -20,12 +22,19 @@ const meta = {
       const [selectedDates, setSelectedDates] = useState<Set<string>>(
         context.args.selectedDates || new Set()
       );
-      const drag = useDateSelection({ selectedDates, setSelectedDates, today });
+      const dateSelection = useDateSelection({ selectedDates, setSelectedDates, today });
+
+      const mouseHandlers = {
+        onMouseDown: dateSelection.onMouseDown,
+        onMouseEnter: dateSelection.onMouseEnter,
+        onMouseUp: dateSelection.onMouseUp,
+        onMouseLeave: dateSelection.onMouseLeave,
+      };
 
       return (
         <ThemeProvider theme={LIGHT_THEME}>
           <div style={{ width: 800 }}>
-            <Story args={{ ...context.args, today, selectedDates, ...drag }} />
+            <Story args={{ ...context.args, today, selectedDates, mouseHandlers }} />
           </div>
         </ThemeProvider>
       );
