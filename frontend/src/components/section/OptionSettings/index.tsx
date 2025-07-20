@@ -3,7 +3,7 @@ import Text from '@/components/Text';
 import Toggle from '@/components/Toggle';
 import DatePicker from '@/components/DatePicker';
 import Radio from '@/components/Radio';
-import Accordion from '@/components/Accordian';
+import Accordion from '@/components/Accordion';
 import TimePicker from '@/components/Timepicker';
 import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
