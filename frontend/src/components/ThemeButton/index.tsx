@@ -9,11 +9,12 @@ interface ThemeButtonProps {
 }
 
 const ThemeButton = ({ isDark, onToggle }: ThemeButtonProps) => {
-  const theme = useTheme();
+  const { colors } = useTheme();
+  const Icon = isDark ? Sun : Moon;
 
   return (
     <S.Container onClick={onToggle}>
-      {!isDark ? <Moon color={theme.colors.black} /> : <Sun color={theme.colors.white} />}
+      <Icon color={colors.text} />
     </S.Container>
   );
 };
