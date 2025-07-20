@@ -16,7 +16,7 @@ export const Container = styled.div`
   height: 2rem;
   background-color: ${({ theme }) => theme.colors.gray10};
   border: 1px solid ${({ theme }) => theme.colors.gray20};
-  padding: var(--padding-4) var(--padding-6);
+  padding: var(--padding-8);
   border-radius: var(--radius-4);
   vertical-align: middle;
   font-family: inherit;

@@ -8,11 +8,16 @@ const hourOptions = Array.from({ length: 24 }, (_, i) => {
   return hour;
 });
 
-const TimePicker = ({ ...props }: ComponentProps<'input'>) => {
-  const { selectedHour, selectHour, toggleOpen, isOpen } = useTimePicker();
+interface TimePickerProps extends ComponentProps<'input'> {
+  selectedHour: string;
+  selectHour: (hour: string, e: React.MouseEvent<HTMLLIElement>) => void;
+  toggleOpen: () => void;
+  isOpen: boolean;
+}
 
+const TimePicker = ({ selectedHour, selectHour, toggleOpen, isOpen }: TimePickerProps) => {
   return (
-    <S.Container role="combobox" onClick={toggleOpen} {...props}>
+    <S.Container role="combobox" onClick={toggleOpen}>
       <S.Wrapper>
         <S.TimeWrapper>
           <Text variant="body">{selectedHour || '00 : 00'}</Text>
