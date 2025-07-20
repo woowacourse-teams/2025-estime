@@ -9,7 +9,8 @@ describe('DayCell는', () => {
   const mockHandleMouseEnter = jest.fn();
   const mockHandleMouseUp = jest.fn();
 
-  // 고정된 "오늘" 날짜 설정 (2024년 1월 20일 토요일)
+  // 고정된 "오늘" 날짜 설정
+  // today라는 날짜를 고정하여 테스트의 일관성을 유지합니다.
   const fixedToday = new Date(2024, 0, 20);
 
   const defaultProps = {
