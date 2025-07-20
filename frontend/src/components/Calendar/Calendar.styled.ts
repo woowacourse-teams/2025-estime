@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { column, row } from '@/constants/calender';
 
 export const Container = styled.div`
-  max-width: 620px;
+  max-width: 100%;
   max-height: 670px;
 `;
 
@@ -13,7 +13,6 @@ export const CalendarContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 620px;
   max-height: 670px;
   padding: var(--padding-9);
   display: flex;
