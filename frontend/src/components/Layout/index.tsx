@@ -1,11 +1,14 @@
-import { Outlet } from 'react-router';
+import * as S from './Layout.styled';
 import Header from './Header';
+import { Outlet } from 'react-router';
 
 const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   return (
     <>
       <Header isDark={isDark} toggleTheme={toggleTheme} />
-      <Outlet />
+      <S.Container>
+        <Outlet />
+      </S.Container>
     </>
   );
 };
