@@ -7,7 +7,7 @@ export const Container = styled.div<FlexProps>`
   align-items: ${({ align }) => align ?? 'stretch'};
   flex-direction: ${({ direction }) => direction ?? 'row'};
   flex-wrap: ${({ wrap }) => wrap ?? 'nowrap'};
-  gap: ${({ gap }) => (gap ? `${gap}px` : '0')};
+  gap: ${({ gap }) => (gap ? `${gap}` : '0')};
 `;
 
 export const Item = styled.div<{ flex?: number }>`

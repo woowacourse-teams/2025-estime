@@ -1,5 +1,6 @@
 import React from 'react';
 import * as S from './Flex.styled';
+import { CSSGapVar } from '@/types/designTokenType';
 
 export interface FlexProps {
   children: React.ReactNode;
@@ -7,7 +8,7 @@ export interface FlexProps {
   align?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline';
   direction?: 'row' | 'column';
   wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
-  gap?: number;
+  gap?: CSSGapVar;
 }
 
 export interface FlexItemProps {
