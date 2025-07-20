@@ -15,14 +15,14 @@ const BasicSettings = ({}: BasicSettingsProps) => {
   const { isOpen: isEndOpen, toggleOpen: toggleEndOpen } = useTimePicker();
 
   const {
-    startTime,
-    endTime,
+    timeRange,
     selectedButtons,
     handleDayNightButtonClick,
     handleCustomButtonClick,
     handleCustomStartClick,
     handleCustomEndClick,
   } = useSelectTime();
+
   return (
     <S.Container>
       <S.InfoWrapper>
@@ -90,7 +90,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             <S.Label>
               <Text variant="body">시작 시간</Text>
               <TimePicker
-                selectedHour={startTime}
+                selectedHour={timeRange.startTime}
                 selectHour={handleCustomStartClick}
                 toggleOpen={toggleStartOpen}
                 isOpen={isStartOpen}
@@ -99,7 +99,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             <S.Label>
               <Text variant="body">종료 시간</Text>
               <TimePicker
-                selectedHour={endTime}
+                selectedHour={timeRange.endTime}
                 selectHour={handleCustomEndClick}
                 toggleOpen={toggleEndOpen}
                 isOpen={isEndOpen}

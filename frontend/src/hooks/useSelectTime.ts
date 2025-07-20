@@ -1,65 +1,48 @@
-import { useState } from 'react';
+import { TIME } from '@/constants/time';
+import { useCallback, useState } from 'react';
 
 const useSelectTime = () => {
   const [selectedButtons, setSelectedButtons] = useState<('day' | 'night' | 'custom')[]>([]);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [timeRange, setTimeRange] = useState({ startTime: '', endTime: '' });
 
-  const handleDayNightButtonClick = (type: 'day' | 'night') => {
-    const filteredButtons = selectedButtons.filter((button) => button !== 'custom');
+  const handleDayNightButtonClick = useCallback(
+    (type: 'day' | 'night') => {
+      const filteredButtons = selectedButtons.filter((button) => button !== 'custom');
 
-    if (selectedButtons.includes(type)) {
-      //이미 선택된 상태라면 선택 해제
-      const updatedButtons = filteredButtons.filter((button) => button !== type);
+      const updatedButtons = selectedButtons.includes(type)
+        ? filteredButtons.filter((button) => button !== type)
+        : [...filteredButtons, type];
+
       setSelectedButtons(updatedButtons);
 
       if (updatedButtons.includes('day') && updatedButtons.includes('night')) {
-        setStartTime(TIME.DAY_START);
-        setEndTime(TIME.NIGHT_END);
+        setTimeRange({ startTime: TIME.DAY_START, endTime: TIME.NIGHT_END });
       } else if (updatedButtons.includes('day')) {
-        setStartTime(TIME.DAY_START);
-        setEndTime(TIME.DAY_END);
+        setTimeRange({ startTime: TIME.DAY_START, endTime: TIME.DAY_END });
       } else if (updatedButtons.includes('night')) {
-        setStartTime(TIME.NIGHT_START);
-        setEndTime(TIME.NIGHT_END);
+        setTimeRange({ startTime: TIME.NIGHT_START, endTime: TIME.NIGHT_END });
       } else {
-        setStartTime('');
-        setEndTime('');
+        setTimeRange({ startTime: '', endTime: '' });
       }
-    } else {
-      const updatedButtons = [...filteredButtons, type];
-      setSelectedButtons(updatedButtons);
-
-      if (updatedButtons.includes('day') && updatedButtons.includes('night')) {
-        setStartTime(TIME.DAY_START);
-        setEndTime(TIME.NIGHT_END);
-      } else if (updatedButtons.includes('day')) {
-        setStartTime(TIME.DAY_START);
-        setEndTime(TIME.DAY_END);
-      } else if (updatedButtons.includes('night')) {
-        setStartTime(TIME.NIGHT_START);
-        setEndTime(TIME.NIGHT_END);
-      }
-    }
-  };
+    },
+    [selectedButtons]
+  );
 
   const handleCustomButtonClick = () => {
     setSelectedButtons(['custom']);
-    setStartTime('');
-    setEndTime('');
+    setTimeRange({ startTime: '', endTime: '' });
   };
 
   const handleCustomStartClick = (time: string) => {
-    setStartTime(time);
+    setTimeRange({ startTime: time, endTime: timeRange.endTime });
   };
 
   const handleCustomEndClick = (time: string) => {
-    setEndTime(time);
+    setTimeRange({ startTime: timeRange.startTime, endTime: time });
   };
 
   return {
-    startTime,
-    endTime,
+    timeRange,
     selectedButtons,
     handleDayNightButtonClick,
     handleCustomButtonClick,
