@@ -3,6 +3,7 @@ package com.bether.bether.room.presentation;
 import com.bether.bether.common.CustomApiResponse;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
+import com.bether.bether.room.presentation.dto.request.TimeSlotUpdateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -159,4 +161,34 @@ public interface RoomControllerSpecification {
     @GetMapping("/{session}/time-slots/user")
     CustomApiResponse<TotalTimeSlotResponse> getByUserName(@PathVariable("session") UUID session,
                                                            @RequestParam("name") String userName);
+
+    @Operation(summary = "사용자 제출 시간 수정", description = "💡 특정 룸에 사용자가 제출한 시간 정보를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                        "code": 200,
+                                        "success": true,
+                                        "message": null,
+                                        "result": null
+                                    }
+                                    """)))})
+    @PutMapping("/{session}/time-slots")
+    CustomApiResponse<Void> updateTimeSlots(@PathVariable("session") final UUID session,
+                                            @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
+                                                    examples = @ExampleObject(
+                                                            summary = "시간 수정 예시",
+                                                            value = """
+                                                                    {
+                                                                        "userName": "강감찬",
+                                                                        "dateTimes": [
+                                                                            "2025-07-21T16:00:00",
+                                                                            "2025-07-21T17:00:00",
+                                                                            "2025-07-22T20:00:00"
+                                                                        ]
+                                                                    }
+                                                                    """
+                                                    )
+                                            )) TimeSlotUpdateRequest request);
 }
