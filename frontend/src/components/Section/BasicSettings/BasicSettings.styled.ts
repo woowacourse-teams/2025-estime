@@ -11,7 +11,7 @@ export const Container = styled.div`
   padding: var(--padding-10);
   border-radius: var(--radius-6);
   max-width: 50rem;
-  box-shadow: 0px 10px 30px rgba(33, 33, 33, 0.15);
+  box-shadow: var(--shadow-card);
   background-color: ${({ theme }) => theme.colors.background};
 `;
 

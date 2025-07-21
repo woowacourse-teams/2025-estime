@@ -47,6 +47,5 @@ export const Container = styled.div<DayCellProps>`
     }};
     cursor: ${({ isPast, isEmpty }) => (isPast || isEmpty ? 'not-allowed' : 'grab')};
   }
-  transition: all 0.15s ease-in-out;
   transform: ${({ isSelected }) => (isSelected ? 'scale(1.05)' : 'scale(1)')};
 `;

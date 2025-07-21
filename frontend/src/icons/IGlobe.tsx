@@ -1,6 +1,6 @@
 import { IconType } from '@/types/iconType';
 
-const Globe = ({ color = '#fff', ...props }: IconType) => {
+const IGlobe = ({ color = '#fff', ...props }: IconType) => {
   return (
     <svg
       width="18"
@@ -37,4 +37,4 @@ const Globe = ({ color = '#fff', ...props }: IconType) => {
   );
 };
 
-export default Globe;
+export default IGlobe;

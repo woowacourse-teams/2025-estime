@@ -1,6 +1,6 @@
 import { IconType } from '@/types/iconType';
 
-const Lock = ({ color = '#fff', ...props }: IconType) => {
+const ILock = ({ color = '#fff', ...props }: IconType) => {
   return (
     <svg
       width="18"
@@ -28,4 +28,4 @@ const Lock = ({ color = '#fff', ...props }: IconType) => {
   );
 };
 
-export default Lock;
+export default ILock;

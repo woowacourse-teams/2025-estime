@@ -38,7 +38,8 @@ const OptionSettings = ({
   onDateChange,
 }: OptionSettingsProps) => {
   const theme = useTheme();
-  const { selectedHour, selectHour, toggleOpen, isOpen } = useTimePicker();
+
+  const timePicker = useTimePicker();
 
   return (
     <S.Container>
@@ -50,12 +51,7 @@ const OptionSettings = ({
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
             <DatePicker value={date} onChange={onDateChange} />
-            <TimePicker
-              selectedHour={selectedHour}
-              selectHour={selectHour}
-              toggleOpen={toggleOpen}
-              isOpen={isOpen}
-            />
+            <TimePicker {...timePicker} />
           </S.Wrapper>
         </S.Wrapper>
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">

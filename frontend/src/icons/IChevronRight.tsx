@@ -1,4 +1,6 @@
-function ChevronRight({ ...props }: React.SVGProps<SVGSVGElement>) {
+import { IconType } from '@/types/iconType';
+
+const IChevronRight = ({ ...props }: IconType) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +16,6 @@ function ChevronRight({ ...props }: React.SVGProps<SVGSVGElement>) {
       <path d="m9 18 6-6-6-6" />
     </svg>
   );
-}
+};
 
-export default ChevronRight;
+export default IChevronRight;

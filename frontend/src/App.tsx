@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { DARK_THEME, LIGHT_THEME } from './styles/theme';
 import { ThemeProvider } from '@emotion/react';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import CreateEventPage from './pages/CreateEventPage';
+import CheckEventPage from './pages/CheckEventPage';
+import Layout from './components/Layout';
 
 const App = () => {
   const [isDark, setIsDark] = useState(false);
@@ -9,8 +13,14 @@ const App = () => {
   };
   return (
     <ThemeProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
-      <button onClick={toggleTheme} />
-      <div>hello</div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout isDark={isDark} toggleTheme={toggleTheme} />}>
+            <Route index element={<CreateEventPage />} />
+            <Route path="check" element={<CheckEventPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };

@@ -1,7 +1,8 @@
 import { ComponentProps } from 'react';
 import * as S from './Timepicker.styled';
 import Text from '../Text';
-import useTimePicker from '../../hooks/useTimePicker';
+import IClock from '@/icons/IClock';
+import { useTheme } from '@emotion/react';
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => {
   const hour = `${String(i).padStart(2, '0')} : 00`;
@@ -16,6 +17,8 @@ interface TimePickerProps extends ComponentProps<'input'> {
 }
 
 const TimePicker = ({ selectedHour, selectHour, toggleOpen, isOpen }: TimePickerProps) => {
+  const { colors } = useTheme();
+
   return (
     <S.Container role="combobox" onClick={toggleOpen}>
       <S.Wrapper>
@@ -24,7 +27,7 @@ const TimePicker = ({ selectedHour, selectHour, toggleOpen, isOpen }: TimePicker
             {selectedHour || '00 : 00'}
           </Text>
         </S.TimeWrapper>
-        <img src="clock.svg" alt="clock icon" />
+        <IClock color={colors.text} />
       </S.Wrapper>
       {isOpen && (
         <S.List role="listbox" isOpen={isOpen}>
