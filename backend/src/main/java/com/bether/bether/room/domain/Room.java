@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,27 +47,38 @@ public class Room extends BaseEntity {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    @Column(name = "dead_line", nullable = false)
+    private LocalDateTime deadLine;
+
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic;
+
     public static Room withoutId(
             final String title,
             final List<LocalDate> availableDates,
             final LocalTime startTime,
-            final LocalTime endTime
+            final LocalTime endTime,
+            final LocalDateTime deadLine,
+            final Boolean isPublic
     ) {
-        validate(title, availableDates, startTime, endTime);
+        validate(title, availableDates, startTime, endTime, deadLine, isPublic);
         validateDates(availableDates);
         validateTimes(startTime, endTime);
         final UUID session = UUID.randomUUID();
-        return new Room(session, title, availableDates, startTime, endTime);
+        return new Room(session, title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 
     private static void validate(
             final String title,
             final List<LocalDate> availableDates,
             final LocalTime startTime,
-            final LocalTime endTime
-    ) {
-        if (title == null || availableDates == null || startTime == null || endTime == null) {
-            throw new IllegalArgumentException("title, availableDates, startTime, endTime cannot be null");
+            final LocalTime endTime,
+            final LocalDateTime deadLine,
+            final Boolean isPublic) {
+        if (title == null || availableDates == null || startTime == null || endTime == null || deadLine == null
+                || isPublic == null) {
+            throw new IllegalArgumentException(
+                    "title, availableDates, startTime, endTime, deadLine, isPublic cannot be null");
         }
     }
 

@@ -1,12 +1,14 @@
 package com.bether.bether.room.presentation;
 
 import com.bether.bether.common.CustomApiResponse;
+import com.bether.bether.room.application.dto.RoomCreatedOutput;
 import com.bether.bether.room.application.dto.RoomOutput;
 import com.bether.bether.room.application.service.RoomService;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotUpdateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
+import com.bether.bether.room.presentation.dto.response.RoomResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
@@ -29,8 +31,14 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
-        final RoomOutput saved = roomService.saveRoom(request.toInput());
+        final RoomCreatedOutput saved = roomService.saveRoom(request.toInput());
         return CustomApiResponse.created(RoomCreateResponse.from(saved));
+    }
+
+    @Override
+    public CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") final UUID session) {
+        final RoomOutput output = roomService.getBySession(session);
+        return CustomApiResponse.ok(RoomResponse.from(output));
     }
 
     @Override

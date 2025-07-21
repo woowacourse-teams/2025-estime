@@ -5,6 +5,7 @@ import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotUpdateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
+import com.bether.bether.room.presentation.dto.response.RoomResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
@@ -26,6 +27,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "Room", description = "룸 관련 API")
 @RequestMapping("/api/v1/rooms")
 public interface RoomControllerSpecification {
+
+    @Operation(summary = "룸 상세 정보 조회", description = "💡 세션 ID를 사용하여 특정 룸의 상세 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    content = @Content(
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                                "code": 200,
+                                                "success": true,
+                                                "message": null,
+                                                "result": {
+                                                    "title": "Bether 스터디",
+                                                    "availableDates": ["2026-07-15", "2026-07-16"],
+                                                    "startTime": "09:00",
+                                                    "endTime": "23:00",
+                                                    "deadLine": "2026-07-14T23:00:00",
+                                                    "isPublic": true,
+                                                    "roomSession": "a4b1c2d3-e4f5-6789-0123-456789abcdef"
+                                                }
+                                            }
+                                            """)))
+    })
+    @GetMapping("/{session}")
+    CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") UUID session);
 
     @Operation(summary = "룸 생성", description = "💡 새로운 룸을 생성합니다.")
     @ApiResponses(value = {

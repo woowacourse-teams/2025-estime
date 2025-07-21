@@ -2,17 +2,20 @@ package com.bether.bether.room.application.dto;
 
 import com.bether.bether.room.domain.Room;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public record RoomInput(
+public record RoomCreatedInput(
         String title,
         List<LocalDate> availableDates,
         LocalTime startTime,
-        LocalTime endTime
+        LocalTime endTime,
+        LocalDateTime deadLine,
+        Boolean isPublic
 ) {
 
     public Room toEntity() {
-        return Room.withoutId(title, availableDates, startTime, endTime);
+        return Room.withoutId(title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 }
