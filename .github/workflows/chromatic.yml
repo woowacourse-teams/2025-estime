@@ -25,9 +25,11 @@ jobs:
       - run: npm ci
         working-directory: ./frontend
 
-      # 내부 리포지토리 PR만 Chromatic 실행
       - name: Run Chromatic
-        if: github.event.pull_request.head.repo.full_name == github.repository
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'pull_request' &&
+           github.event.pull_request.head.repo.full_name == github.repository)
         uses: chromaui/action@latest
         with:
           workingDir: ./frontend
