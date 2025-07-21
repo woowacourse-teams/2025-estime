@@ -62,8 +62,8 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<Void> updateTimeSlot(@PathVariable("session") final UUID session,
-                                                  @RequestBody final TimeSlotUpdateRequest request) {
+    public CustomApiResponse<Void> updateTimeSlots(@PathVariable("session") final UUID session,
+                                                   @RequestBody final TimeSlotUpdateRequest request) {
         roomService.updateTimeSlots(request.toInput(session));
         return CustomApiResponse.ok();
     }

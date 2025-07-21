@@ -1,6 +1,7 @@
 package com.bether.bether.timeslot.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.assertj.core.groups.Tuple.tuple;
 
 import com.bether.bether.room.domain.Room;
@@ -16,7 +17,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -268,21 +268,17 @@ class TimeSlotServiceTest {
                 userName);
 
         // then
-        final SoftAssertions softAssertions = new SoftAssertions();
-
-        softAssertions.assertThat(resultAfterFirstCall)
-                .as("첫 번째 호출 후, 타임슬롯 개수가 기대값과 일치하는지 검증")
-                .hasSize(updatedSlots.size());
-
-        softAssertions.assertThat(resultAfterFirstCall)
-                .extracting("startAt")
-                .as("첫 번째 호출 후, 타임슬롯 내용이 기대값과 일치하는지 검증")
-                .containsExactlyInAnyOrderElementsOf(updatedSlots);
-
-        softAssertions.assertThat(resultAfterSecondCall)
-                .as("두 번째 호출 결과가 첫 번째 호출 결과와 동일한지 멱등성 검증")
-                .containsExactlyInAnyOrderElementsOf(resultAfterFirstCall);
-
-        softAssertions.assertAll();
+        assertSoftly(softly -> {
+            softly.assertThat(resultAfterFirstCall)
+                    .as("첫 번째 호출 후, 타임슬롯 개수가 기대값과 일치하는지 검증")
+                    .hasSize(updatedSlots.size());
+            softly.assertThat(resultAfterFirstCall)
+                    .extracting("startAt")
+                    .as("첫 번째 호출 후, 타임슬롯 내용이 기대값과 일치하는지 검증")
+                    .containsExactlyInAnyOrderElementsOf(updatedSlots);
+            softly.assertThat(resultAfterSecondCall)
+                    .as("두 번째 호출 결과가 첫 번째 호출 결과와 동일한지 멱등성 검증")
+                    .containsExactlyInAnyOrderElementsOf(resultAfterFirstCall);
+        });
     }
 }

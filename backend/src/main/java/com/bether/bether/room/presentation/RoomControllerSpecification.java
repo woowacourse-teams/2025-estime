@@ -174,20 +174,20 @@ public interface RoomControllerSpecification {
                                     }
                                     """)))})
     @PutMapping("/{session}/time-slots")
-    CustomApiResponse<Void> updateTimeSlot(@PathVariable("session") final UUID session,
-                                           @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
-                                                   examples = @ExampleObject(
-                                                           summary = "시간 수정 예시",
-                                                           value = """
-                                                                   {
-                                                                       "userName": "강감찬",
-                                                                       "dateTimes": [
-                                                                           "2025-07-21T16:00:00",
-                                                                           "2025-07-21T17:00:00",
-                                                                           "2025-07-22T20:00:00"
-                                                                       ]
-                                                                   }
-                                                                   """
-                                                   )
-                                           )) TimeSlotUpdateRequest request);
+    CustomApiResponse<Void> updateTimeSlots(@PathVariable("session") final UUID session,
+                                            @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
+                                                    examples = @ExampleObject(
+                                                            summary = "시간 수정 예시",
+                                                            value = """
+                                                                    {
+                                                                        "userName": "강감찬",
+                                                                        "dateTimes": [
+                                                                            "2025-07-21T16:00:00",
+                                                                            "2025-07-21T17:00:00",
+                                                                            "2025-07-22T20:00:00"
+                                                                        ]
+                                                                    }
+                                                                    """
+                                                    )
+                                            )) TimeSlotUpdateRequest request);
 }
