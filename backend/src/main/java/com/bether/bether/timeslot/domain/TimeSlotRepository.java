@@ -11,4 +11,6 @@ public interface TimeSlotRepository {
     TimeSlot save(TimeSlot timeSlot);
 
     List<TimeSlot> saveAll(List<TimeSlot> timeSlots);
+
+    void deleteAll(List<TimeSlot> timeSlots);
 }
