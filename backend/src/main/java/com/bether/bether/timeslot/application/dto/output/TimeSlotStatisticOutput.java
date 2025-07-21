@@ -1,19 +1,18 @@
 package com.bether.bether.timeslot.application.dto.output;
 
-import com.bether.bether.timeslot.domain.TimeSlotStatistic;
+import com.bether.bether.timeslot.domain.TimeSlotParticipants;
 import java.util.List;
 
 public record TimeSlotStatisticOutput(
         List<TimeSlotParticipantsOutput> statistic
 ) {
 
-    public static TimeSlotStatisticOutput from(final TimeSlotStatistic timeSlotStatistic) {
+    public static TimeSlotStatisticOutput from(final List<TimeSlotParticipants> timeSlotParticipants) {
         return new TimeSlotStatisticOutput(
-                timeSlotStatistic.getStatistic()
-                        .stream()
-                        .map(timeSlotParticipants -> new TimeSlotParticipantsOutput(
-                                timeSlotParticipants.getDateTime(),
-                                timeSlotParticipants.getUserNames()
+                timeSlotParticipants.stream()
+                        .map(timeSlotParticipant -> new TimeSlotParticipantsOutput(
+                                timeSlotParticipant.getDateTime(),
+                                timeSlotParticipant.getUserNames()
                         ))
                         .toList()
         );

@@ -49,15 +49,15 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public TimeSlotStatisticOutput calculateStatistic(final UUID session) {
+    public TimeSlotStatisticOutput generateTimeSlotStatistic(final UUID session) {
         final Long id = getIdBySession(session);
-        return timeSlotService.calculateStatistic(id);
+        return timeSlotService.generateTimeSlotStatistic(id);
     }
 
     @Transactional(readOnly = true)
-    public TimeSlotRecommendationsOutput calculateRecommendation(final UUID session) {
+    public TimeSlotRecommendationsOutput recommendTopTimeSlots(final UUID session) {
         final Long id = getIdBySession(session);
-        return timeSlotService.calculateRecommendation(id);
+        return timeSlotService.recommendTopTimeSlots(id);
     }
 
     private Long getIdBySession(final UUID session) {

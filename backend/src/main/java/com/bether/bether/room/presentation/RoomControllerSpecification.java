@@ -81,7 +81,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/statistic")
-    CustomApiResponse<TimeSlotStatisticResponse> getStatistic(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(@PathVariable("session") UUID session);
 
     @Operation(summary = "추천 시간대 순위 조회", description = "💡 가장 많은 인원이 가능한 시간대를 순위별로 추천받습니다.")
     @ApiResponses(value = {
@@ -106,7 +106,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/recommendation")
-    CustomApiResponse<TimeSlotRecommendationsResponse> getRecommendations(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(@PathVariable("session") UUID session);
 
     @Operation(summary = "사용자 가능 시간 제출", description = "💡 특정 룸에 사용자의 가능 시간을 제출(등록)합니다.")
     @ApiResponses(value = {

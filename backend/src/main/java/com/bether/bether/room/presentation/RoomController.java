@@ -33,15 +33,16 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<TimeSlotStatisticResponse> getStatistic(@PathVariable("session") final UUID session) {
-        final TimeSlotStatisticOutput output = roomService.calculateStatistic(session);
+    public CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(
+            @PathVariable("session") final UUID session) {
+        final TimeSlotStatisticOutput output = roomService.generateTimeSlotStatistic(session);
         return CustomApiResponse.ok(TimeSlotStatisticResponse.from(output));
     }
 
     @Override
-    public CustomApiResponse<TimeSlotRecommendationsResponse> getRecommendations(
+    public CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(
             @PathVariable("session") final UUID session) {
-        final TimeSlotRecommendationsOutput output = roomService.calculateRecommendation(session);
+        final TimeSlotRecommendationsOutput output = roomService.recommendTopTimeSlots(session);
         return CustomApiResponse.ok(TimeSlotRecommendationsResponse.from(output));
     }
 

@@ -162,7 +162,7 @@ class TimeSlotServiceTest {
         timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final TimeSlotStatisticOutput output = timeSlotService.calculateStatistic(room.getId());
+        final TimeSlotStatisticOutput output = timeSlotService.generateTimeSlotStatistic(room.getId());
 
         // then
         assertThat(output.statistic())
@@ -194,7 +194,7 @@ class TimeSlotServiceTest {
         timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final TimeSlotRecommendationsOutput output = timeSlotService.calculateRecommendation(room.getId());
+        final TimeSlotRecommendationsOutput output = timeSlotService.recommendTopTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())
@@ -223,7 +223,7 @@ class TimeSlotServiceTest {
         timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final TimeSlotRecommendationsOutput output = timeSlotService.calculateRecommendation(room.getId());
+        final TimeSlotRecommendationsOutput output = timeSlotService.recommendTopTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())
