@@ -30,7 +30,7 @@ export const ModalBackground = styled.div<{
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: ${({ theme }) => theme.colors.gray40};
   animation: ${fadeIn} 0.3s ease-in-out;
   justify-content: center;
   align-items: ${(props) => (props.position === 'center' ? 'center' : 'end')};
