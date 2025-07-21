@@ -4,6 +4,7 @@ import com.bether.bether.common.CustomApiResponse;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
+import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,7 +81,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/statistic")
-    CustomApiResponse<TimeSlotStatisticResponse> getStatistic(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(@PathVariable("session") UUID session);
 
     @Operation(summary = "추천 시간대 순위 조회", description = "💡 가장 많은 인원이 가능한 시간대를 순위별로 추천받습니다.")
     @ApiResponses(value = {
@@ -91,21 +92,21 @@ public interface RoomControllerSpecification {
                                 "success": true,
                                 "message": null,
                                 "result": {
-                                    "rankedTimeSlots": [
+                                    "recommendations": [
                                         {
-                                            "startTime": "2025-07-17T11:00:00",
-                                            "availableMembers": 8
+                                            "dateTime": "2025-07-17T11:00:00",
+                                            "userNames": ["플린트", "강산", "리버", "제프리"]
                                         },
                                         {
-                                            "startTime": "2025-07-17T10:00:00",
-                                            "availableMembers": 5
+                                            "dateTime": "2025-07-17T10:00:00",
+                                            "userNames": ["강산", "제프리"]
                                         }
                                     ]
                                 }
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/recommendation")
-    CustomApiResponse<TimeSlotStatisticResponse> getRank(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(@PathVariable("session") UUID session);
 
     @Operation(summary = "사용자 가능 시간 제출", description = "💡 특정 룸에 사용자의 가능 시간을 제출(등록)합니다.")
     @ApiResponses(value = {

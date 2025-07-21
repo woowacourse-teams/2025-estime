@@ -3,14 +3,14 @@ package com.bether.bether.timeslot.application.dto.output;
 import com.bether.bether.timeslot.domain.TimeSlotParticipants;
 import java.util.List;
 
-public record TimeSlotStatisticOutput(
-        List<TimeSlotParticipantsOutput> statistic
+public record TimeSlotRecommendationsOutput(
+        List<TimeSlotRecommendationOutput> recommendations
 ) {
 
-    public static TimeSlotStatisticOutput from(final List<TimeSlotParticipants> timeSlotParticipants) {
-        return new TimeSlotStatisticOutput(
+    public static TimeSlotRecommendationsOutput from(final List<TimeSlotParticipants> timeSlotParticipants) {
+        return new TimeSlotRecommendationsOutput(
                 timeSlotParticipants.stream()
-                        .map(timeSlotParticipant -> new TimeSlotParticipantsOutput(
+                        .map(timeSlotParticipant -> new TimeSlotRecommendationOutput(
                                 timeSlotParticipant.getDateTime(),
                                 timeSlotParticipant.getUserNames()
                         ))
