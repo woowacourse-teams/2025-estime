@@ -1,6 +1,8 @@
 name: Chromatic Deployment
 
 on:
+  push:
+    branches: [fe/dev]
   pull_request:
     branches: [fe/dev]
 
