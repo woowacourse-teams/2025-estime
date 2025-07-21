@@ -1,5 +1,5 @@
 import React from 'react';
-import * as S from './Accordian.styled';
+import * as S from './Accordion.styled';
 import Text from '../Text';
 
 interface AccordionProps {

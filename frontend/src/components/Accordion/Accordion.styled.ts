@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div`
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.gray10};
+  background-color: ${({ theme }) => theme.colors.background};
   border-radius: var(--radius-6);
   padding: 0 var(--padding-7);
   box-shadow: var(--shadow-card);

@@ -3,10 +3,11 @@ import Text from '@/components/Text';
 import Toggle from '@/components/Toggle';
 import DatePicker from '@/components/DatePicker';
 import Radio from '@/components/Radio';
-import Accordion from '@/components/Accordian';
+import Accordion from '@/components/Accordion';
 import TimePicker from '@/components/Timepicker';
 import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
+import useTimePicker from '@/hooks/useTimePicker';
 
 interface OptionSettingsProps {
   isOpenAccordion: boolean;
@@ -20,6 +21,7 @@ interface OptionSettingsProps {
 export interface StyleProps {
   flexDirection?: string;
   justifyContent?: string;
+  backgroundColor?: string;
   alignItems?: string;
   gap?: string;
   border?: string;
@@ -36,6 +38,7 @@ const OptionSettings = ({
   onDateChange,
 }: OptionSettingsProps) => {
   const theme = useTheme();
+  const { selectedHour, selectHour, toggleOpen, isOpen } = useTimePicker();
 
   return (
     <S.Container>
@@ -47,7 +50,12 @@ const OptionSettings = ({
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
             <DatePicker value={date} onChange={onDateChange} />
-            <TimePicker />
+            <TimePicker
+              selectedHour={selectedHour}
+              selectHour={selectHour}
+              toggleOpen={toggleOpen}
+              isOpen={isOpen}
+            />
           </S.Wrapper>
         </S.Wrapper>
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
@@ -56,6 +64,7 @@ const OptionSettings = ({
             <S.Wrapper
               key={value}
               border={`1px solid ${theme.colors.gray20}`}
+              backgroundColor={theme.colors.gray10}
               padding={'var(--padding-7) var(--padding-4)'}
               borderRadius={'var(--radius-4)'}
             >
