@@ -20,7 +20,9 @@ const TimePicker = ({ selectedHour, selectHour, toggleOpen, isOpen }: TimePicker
     <S.Container role="combobox" onClick={toggleOpen}>
       <S.Wrapper>
         <S.TimeWrapper>
-          <Text variant="body">{selectedHour || '00 : 00'}</Text>
+          <Text variant="h4" color="gray50">
+            {selectedHour || '00 : 00'}
+          </Text>
         </S.TimeWrapper>
         <img src="clock.svg" alt="clock icon" />
       </S.Wrapper>
