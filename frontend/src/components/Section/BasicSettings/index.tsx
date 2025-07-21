@@ -5,8 +5,8 @@ import Button from '@/components/Button';
 import TimePicker from '@/components/Timepicker';
 import useTimePicker from '@/hooks/useTimePicker';
 import useSelectTime from '@/hooks/useSelectTime';
-import Sun from '@/icons/Sun';
-import Moon from '@/icons/Moon';
+import ISun from '@/icons/ISun';
+import IMoon from '@/icons/IMoon';
 import { useTheme } from '@emotion/react';
 
 //Todo: 페이지에서 상태를 내려줄 경우
@@ -51,7 +51,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             selected={selectedButtons.includes('day')}
           >
             <S.ImageWrapper color="secondary">
-              <Sun color={colors.text} />
+              <ISun color={colors.text} />
             </S.ImageWrapper>
             <Text
               variant="button"
@@ -66,7 +66,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             selected={selectedButtons.includes('night')}
           >
             <S.ImageWrapper color="primary">
-              <Moon color={colors.text} />
+              <IMoon color={colors.text} />
             </S.ImageWrapper>
 
             <Text

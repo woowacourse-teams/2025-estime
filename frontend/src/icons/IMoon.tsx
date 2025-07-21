@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Moon = ({
+const IMoon = ({
   color = '#fff',
   ...props
 }: {
@@ -27,4 +27,4 @@ const Moon = ({
   );
 };
 
-export default Moon;
+export default IMoon;

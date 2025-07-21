@@ -6,8 +6,8 @@ import { useCalender } from '@/hooks/Calendar/useCalender';
 import CalendarButton from './CalendarButton/CalendarButton';
 import DayCell from './DayCell';
 import Text from '@/components/Text';
-import ChevronLeft from '@/icons/ChevronLeft';
-import ChevronRight from '@/icons/ChrevronRight';
+import IChevronLeft from '@/icons/IChevronLeft';
+import IChevronRight from '@/icons/IChevronRight';
 
 interface CalenderProps {
   today: Date;
@@ -31,10 +31,10 @@ const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
         </Text>
         <S.ButtonContainer>
           <CalendarButton onClick={prevMonth} disabled={isItCurrentMonth(current, today)}>
-            <ChevronLeft width={20} height={20} />
+            <IChevronLeft width={20} height={20} />
           </CalendarButton>
           <CalendarButton onClick={nextMonth}>
-            <ChevronRight width={20} height={20} />
+            <IChevronRight width={20} height={20} />
           </CalendarButton>
         </S.ButtonContainer>
       </S.Header>

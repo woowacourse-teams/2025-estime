@@ -1,4 +1,4 @@
-function ChevronRight({ ...props }: React.SVGProps<SVGSVGElement>) {
+function IChevronRight({ ...props }: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,4 +16,4 @@ function ChevronRight({ ...props }: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export default ChevronRight;
+export default IChevronRight;

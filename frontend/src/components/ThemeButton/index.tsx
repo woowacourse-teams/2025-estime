@@ -1,6 +1,6 @@
 import * as S from './ThemeButton.styled';
-import Moon from '@/icons/Moon';
-import Sun from '@/icons/Sun';
+import IMoon from '@/icons/IMoon';
+import ISun from '@/icons/ISun';
 import { useTheme } from '@emotion/react';
 
 interface ThemeButtonProps {
@@ -10,7 +10,7 @@ interface ThemeButtonProps {
 
 const ThemeButton = ({ isDark, onToggle }: ThemeButtonProps) => {
   const { colors } = useTheme();
-  const Icon = isDark ? Sun : Moon;
+  const Icon = isDark ? ISun : IMoon;
 
   return (
     <S.Container onClick={onToggle}>
