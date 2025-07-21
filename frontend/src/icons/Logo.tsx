@@ -1,12 +1,6 @@
-import React from 'react';
+import { IconType } from '@/types/iconType';
 
-const Logo = ({
-  color = '#914DE7',
-  ...props
-}: {
-  color?: string;
-  props?: React.SVGProps<SVGSVGElement>;
-}) => {
+const Logo = ({ color = '#914DE7', ...props }: IconType) => {
   return (
     <svg
       width="40"

@@ -1,12 +1,6 @@
-import React from 'react';
+import { IconType } from '@/types/iconType';
 
-const Sun = ({
-  color = '#fff',
-  ...props
-}: {
-  color?: string;
-  props?: React.SVGProps<SVGSVGElement>;
-}) => {
+const Sun = ({ color = '#fff', ...props }: IconType) => {
   return (
     <svg
       width="18"

@@ -1,6 +1,6 @@
-import React from 'react';
+import { IconType } from '@/types/iconType';
 
-const IArrow = ({ color, ...props }: React.SVGProps<SVGSVGElement>) => {
+const IArrow = ({ color, ...props }: IconType) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -1,12 +1,6 @@
-import React from 'react';
+import { IconType } from '@/types/iconType';
 
-const IMoon = ({
-  color = '#fff',
-  ...props
-}: {
-  color?: string;
-  props?: React.SVGProps<SVGSVGElement>;
-}) => {
+const IMoon = ({ color = '#fff', ...props }: IconType) => {
   return (
     <svg
       width="18"
