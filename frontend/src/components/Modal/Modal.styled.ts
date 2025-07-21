@@ -83,24 +83,33 @@ export const ModalContainer = styled.div<{
 `;
 
 export const CloseButton = styled.button`
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  transition: transform 0.2s ease;
   background: none;
   border: none;
-  padding: 0;
+  border-radius: var(--radius-2);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.text};
-  transition: transform 0.2s ease;
+  color: ${({ theme }) => theme.colors.gray60};
+  transition: all 0.2s ease;
+
   &:hover {
-    transform: scale(1.1);
-    color: ${({ theme }) => theme.colors.text};
+    background-color: ${({ theme }) => theme.colors.gray10};
+    color: ${({ theme }) => theme.colors.gray80};
+    transform: scale(1.05);
   }
+
   &:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
+    background-color: ${({ theme }) => theme.colors.gray20};
+  }
+
+  &:focus {
+    outline: 2px solid ${({ theme }) => theme.colors.plum30};
+    outline-offset: 2px;
   }
 `;
 
@@ -115,4 +124,19 @@ export const ModalHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: var(--margin-6);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+`;
+
+export const HeaderTitle = styled.div`
+  flex: 1;
 `;

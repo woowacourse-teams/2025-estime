@@ -2,7 +2,6 @@ import { ComponentProps, useContext, PropsWithChildren } from 'react';
 
 import * as S from '../Modal.styled';
 import { ModalContext } from '@/contexts/ModalContext';
-import Close from '@/icons/Close';
 
 interface ModalContainerProps extends PropsWithChildren, ComponentProps<'div'> {
   size?: 'small' | 'medium' | 'large';
