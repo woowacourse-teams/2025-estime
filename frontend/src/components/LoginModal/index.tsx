@@ -1,7 +1,11 @@
-import { useState } from 'react';
 import Modal from '@/components/Modal';
 import Text from '@/components/Text';
 import Input from '@/components/Input';
+import IInfo from '@/icons/IInfo';
+import Flex from '@/components/Layout/Flex';
+import Button from '@/components/Button';
+import * as S from './LoginModal.styled';
+import Tooltip from '@/components/Tooltip';
 
 export interface LoginModalProps {
   setIsOpen: (isOpen: boolean) => void;
@@ -13,20 +17,47 @@ export const LoginModal = ({ setIsOpen, isOpen }: LoginModalProps) => {
       <Modal.Background>
         <Modal.Container>
           <Modal.Header>
-            <div>
-              <Text variant="h2">로그인</Text>
-              <Text variant="caption">시간표를 보려면 로그인이 필요해요.</Text>
-            </div>
+            <Flex justify="space-between" align="center" gap="var(--gap-1)">
+              <Tooltip content="서비스를 이용하기 위해 로그인이 필요합니다.">
+                <Flex align="center" gap="var(--gap-4)">
+                  <Text variant="h3">로그인</Text>
+                  <IInfo aria-hidden="true" color="black" />
+                </Flex>
+              </Tooltip>
+            </Flex>
           </Modal.Header>
           <Modal.Content>
-            <div>
-              <label htmlFor="">아이디</label>
-              <Input />
-            </div>
-            <div>
-              <label htmlFor="">아이디</label>
-              <Input />
-            </div>
+            <Flex gap="var(--gap-6)" direction="column">
+              <Flex justify="space-between" align="center" gap="var(--gap-6)">
+                <Flex.Item flex={1}>
+                  <S.LoginLabel htmlFor="userid" required>
+                    아이디
+                  </S.LoginLabel>
+                </Flex.Item>
+                <Flex.Item flex={4}>
+                  <Input id="userid" placeholder="아이디를 입력해주세요." autoFocus={true} />
+                </Flex.Item>
+              </Flex>
+              <Flex justify="space-between" align="center" gap="var(--gap-6)">
+                <Flex.Item flex={1}>
+                  <S.LoginLabel htmlFor="user-password">비밀번호</S.LoginLabel>
+                </Flex.Item>
+                <Flex.Item flex={4}>
+                  <Input
+                    type="password"
+                    id="user-password"
+                    placeholder="비밀번호를 입력해주세요."
+                  />
+                </Flex.Item>
+              </Flex>
+              <Flex.Item flex={1}>
+                <Button color="primary" selected onClick={() => setIsOpen(false)}>
+                  <Text variant="body" color="gray10">
+                    저장하고 계속하기
+                  </Text>
+                </Button>
+              </Flex.Item>
+            </Flex>
           </Modal.Content>
         </Modal.Container>
       </Modal.Background>
