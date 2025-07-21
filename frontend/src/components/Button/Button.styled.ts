@@ -21,8 +21,6 @@ export const Container = styled.button<{
   height: 3rem;
   border-radius: var(--radius-4);
   border: 1px solid ${({ theme, color }) => theme.colors[color]};
-  color: ${({ theme, selected, color }) =>
-    selected ? theme.colors.background : theme.colors[color]};
 
   cursor: pointer;
   display: flex;
