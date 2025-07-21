@@ -13,7 +13,6 @@ export const Container = styled.button`
   align-items: center;
   justify-content: center;
   color: ${({ theme }) => theme.colors.gray60};
-  transition: all 0.4s ease-in-out;
   &:disabled {
     color: ${({ theme }) => theme.colors.gray20};
     background-color: ${({ theme }) => theme.colors.gray10};
