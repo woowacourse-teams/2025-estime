@@ -16,7 +16,7 @@ const CreateEventPage = () => {
   const [date, setDate] = useState('2025-07-19');
 
   return (
-    <Wrapper maxWidth={1280} paddingTop="var(--padding-11)">
+    <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
           <CalendarSettings />
