@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { keyframes, css } from '@emotion/react';
+import { zIndex } from '@/constants/styles';
 
 const fadeIn = keyframes`
   from {
@@ -34,7 +35,7 @@ export const ModalBackground = styled.div<{
   animation: ${fadeIn} 0.3s ease-in-out;
   justify-content: center;
   align-items: ${(props) => (props.position === 'center' ? 'center' : 'end')};
-  z-index: 1000;
+  z-index: ${zIndex.modal};
 `;
 
 const getSizeStyles = (size?: 'small' | 'medium' | 'large' | 'full') => {
