@@ -40,7 +40,7 @@ export const LoginModal = ({ setIsOpen, isOpen }: LoginModalProps) => {
               </Flex>
               <Flex justify="space-between" align="center" gap="var(--gap-6)">
                 <Flex.Item flex={1}>
-                  <S.LoginLabel htmlFor="user-password">비밀번호</S.LoginLabel>
+                  <S.LoginLabel htmlFor="user-password">비밀번호(선택)</S.LoginLabel>
                 </Flex.Item>
                 <Flex.Item flex={4}>
                   <Input
