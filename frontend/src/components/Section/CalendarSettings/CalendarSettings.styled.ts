@@ -8,7 +8,7 @@ export const Container = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-10);
   border-radius: var(--radius-6);
-  box-shadow: 0px 10px 30px rgba(33, 33, 33, 0.15);
+  box-shadow: var(--shadow-card);
   background-color: ${({ theme }) => theme.colors.background};
 `;
 
