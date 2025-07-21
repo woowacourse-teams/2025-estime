@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { zIndex } from '@/constants/styles';
 
 export const TooltipContainer = styled.div`
   position: relative;
@@ -12,7 +13,7 @@ export const TooltipContainer = styled.div`
 
 export const TooltipContent = styled.div`
   position: absolute;
-  z-index: 1000;
+  z-index: ${zIndex.tooltip};
   padding: var(--padding-3) var(--padding-4);
   background-color: ${({ theme }) => theme.colors.gray80};
   color: ${({ theme }) => theme.colors.background};
