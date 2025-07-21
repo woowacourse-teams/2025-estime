@@ -10,7 +10,7 @@ const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
         <S.Wrapper>
           <Logo />
           <Text variant="h2" color="primary">
-            아인슈타인
+            아인슈타임
           </Text>
         </S.Wrapper>
         <ThemeButton isDark={isDark} onToggle={toggleTheme} />
