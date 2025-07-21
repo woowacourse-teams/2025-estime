@@ -2,6 +2,7 @@ package com.bether.bether.timeslot.application.service;
 
 import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
 import com.bether.bether.timeslot.application.dto.input.TimeSlotUpdateInput;
+import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
@@ -37,13 +38,13 @@ public class TimeSlotService {
     }
 
     @Transactional(readOnly = true)
-    public TimeSlotStatisticOutput calculateStatistic(final Long roomId) {
-        final List<TimeSlot> timeSlots = getAllByRoomId(roomId);
+    public TimeSlotStatisticOutput generateTimeSlotStatistic(final Long roomId) {
+        return TimeSlotStatisticOutput.from(calculateTimeSlotStatistic(roomId).getStatistic());
+    }
 
-        final TimeSlotStatistic timeSlotCount = TimeSlotStatistic.create();
-        timeSlotCount.calculate(timeSlots);
-
-        return TimeSlotStatisticOutput.from(timeSlotCount);
+    @Transactional(readOnly = true)
+    public TimeSlotRecommendationsOutput recommendTopTimeSlots(final Long roomId) {
+        return TimeSlotRecommendationsOutput.from(calculateTimeSlotStatistic(roomId).getRecommendation());
     }
 
     @Transactional
@@ -76,5 +77,13 @@ public class TimeSlotService {
         if (!timeSlotsToDelete.isEmpty()) {
             timeSlotRepository.deleteAll(timeSlotsToDelete);
         }
+    }
+
+    private TimeSlotStatistic calculateTimeSlotStatistic(final Long roomId) {
+        // TODO List<TimeSlot> 일급 컬렉션 적용
+        final List<TimeSlot> timeSlots = getAllByRoomId(roomId);
+        final TimeSlotStatistic statistic = TimeSlotStatistic.create();
+        statistic.calculate(timeSlots);
+        return statistic;
     }
 }

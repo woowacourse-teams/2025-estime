@@ -6,6 +6,7 @@ import com.bether.bether.room.application.dto.RoomOutput;
 import com.bether.bether.room.domain.Room;
 import com.bether.bether.room.domain.RoomRepository;
 import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
+import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.input.TimeSlotUpdateInput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.application.service.TimeSlotService;
@@ -49,9 +50,15 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public TimeSlotStatisticOutput calculateStatistic(final UUID session) {
+    public TimeSlotStatisticOutput generateTimeSlotStatistic(final UUID session) {
         final Long id = getIdBySession(session);
-        return timeSlotService.calculateStatistic(id);
+        return timeSlotService.generateTimeSlotStatistic(id);
+    }
+
+    @Transactional(readOnly = true)
+    public TimeSlotRecommendationsOutput recommendTopTimeSlots(final UUID session) {
+        final Long id = getIdBySession(session);
+        return timeSlotService.recommendTopTimeSlots(id);
     }
 
     @Transactional
