@@ -81,9 +81,9 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
               {timeList.map(({ timeText }) => (
                 <S.HeaderCell
                   key={`${date}-${timeText}`}
-                  onMouseDown={() => onMouseDown(`${date} ${timeText}`)}
+                  onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
                   onMouseUp={() => onMouseUp()}
-                  onMouseMove={() => onMouseEnter(`${date} ${timeText}`)}
+                  onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
                   selectedTimes={selectedTimes}
                   date={date}
                   timeText={timeText}

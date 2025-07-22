@@ -34,7 +34,7 @@ const useTimeSelection = ({
         newSelectedTimes.add(time);
       } else {
         newSelectedTimes.delete(time);
-      }   
+      }
 
       setSelectedTimes(newSelectedTimes);
     },
