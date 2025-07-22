@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import BasicSettings from '@/components/Sections/BasicSettings';
@@ -11,10 +10,8 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
-  // 상세 설정 상태
-  const [date, setDate] = useState('2025-07-19');
 
-  const { title, availableDates, time } = useCreateRoom();
+  const { title, availableDates, time, deadLine } = useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -25,10 +22,7 @@ const CreateEventPage = () => {
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings title={title} time={time} />
-            <OptionSettings
-              date={date}
-              onDateChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
-            />
+            <OptionSettings deadLine={deadLine} />
             <Flex justify="flex-end">
               <Button
                 color="primary"

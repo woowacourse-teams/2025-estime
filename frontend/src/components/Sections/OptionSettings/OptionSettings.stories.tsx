@@ -1,21 +1,13 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useState } from 'react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import OptionSettings from '.';
 
-const meta: Meta<typeof OptionSettings> = {
+export default {
   title: 'Components/OptionSettings',
   component: OptionSettings,
   tags: ['autodocs'],
-};
+} as Meta<typeof OptionSettings>;
 
-export default meta;
+const Template: StoryFn<typeof OptionSettings> = (args) => <OptionSettings {...args} />;
 
-type Story = StoryObj<typeof OptionSettings>;
-
-export const Interactive: Story = {
-  render: () => {
-    const [date, setDate] = useState('2025-07-19');
-
-    return <OptionSettings date={date} onDateChange={(e) => setDate(e.target.value)} />;
-  },
-};
+export const Default = Template.bind({});
+Default.args = {};

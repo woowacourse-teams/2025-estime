@@ -1,6 +1,5 @@
 import * as S from './OptionSettings.styled';
 import Text from '@/components/Text';
-import Toggle from '@/components/Toggle';
 import DatePicker from '@/components/DatePicker';
 import Radio from '@/components/Radio';
 import Accordion from '@/components/Accordion';
@@ -9,10 +8,10 @@ import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 import useTimePicker from '@/hooks/useTimePicker';
 import { useState } from 'react';
+import { Field } from '@/types/field';
 
 interface OptionSettingsProps {
-  date: string;
-  onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  deadLine: Field<{ date: string; time: string }>;
 }
 
 export interface StyleProps {
@@ -26,9 +25,9 @@ export interface StyleProps {
   borderRadius?: string;
 }
 
-const OptionSettings = ({ date, onDateChange }: OptionSettingsProps) => {
+const OptionSettings = ({ deadLine }: OptionSettingsProps) => {
   const theme = useTheme();
-  const timePicker = useTimePicker();
+  const { toggleOpen, isOpen } = useTimePicker();
   const [isOpenAccordion, setIsOpenAccordion] = useState(false);
 
   return (
@@ -43,8 +42,16 @@ const OptionSettings = ({ date, onDateChange }: OptionSettingsProps) => {
             <Text variant="h3">마감 기한</Text>
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
-            <DatePicker value={date} onChange={onDateChange} />
-            <TimePicker {...timePicker} />
+            <DatePicker
+              value={deadLine.value.date}
+              onChange={(e) => deadLine.set({ date: e.target.value, time: deadLine.value.time })}
+            />
+            <TimePicker
+              selectedHour={deadLine.value.time}
+              selectHour={(hour: string) => deadLine.set({ date: deadLine.value.date, time: hour })}
+              toggleOpen={toggleOpen}
+              isOpen={isOpen}
+            />
           </S.Wrapper>
         </S.Wrapper>
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
