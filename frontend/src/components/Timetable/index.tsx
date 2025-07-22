@@ -9,39 +9,23 @@ import * as S from './Timetable.styled';
 import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Button from '../Button';
 
-const response = {
-  title: 'Bether 스터디',
-  availableDates: [
-    '2026-07-15',
-    '2026-07-16',
-    '2026-07-17',
-    '2026-07-18',
-    '2026-07-19',
-    '2026-07-20',
-    '2026-07-21',
-    '2026-07-22',
-    '2026-07-23',
-    '2026-07-24',
-    '2026-07-25',
-  ],
-  startTime: '09:00',
-  endTime: '23:00',
-  deadLine: '2026-07-15T10:00',
-  isPublic: true,
-  roomSession: '4d1f3a7e-6b8c-4d9a-9e0b-2f7c1a5b9d8e',
-};
+interface TimetableProps {
+  availableDates: string[];
+  startTime: string;
+  endTime: string;
+}
 
-const startTime = response.startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-const endTime = response.endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-const interval = 30;
+const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
+  const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
+  const endTimeInMinutes = endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
+  const interval = 30;
 
-const timeList = [
-  { timeText: 'Dates', isHour: false },
-  ...generateTimeList({ startTime, endTime, interval }),
-];
-const Timetable = () => {
+  const timeList = [
+    { timeText: 'Dates', isHour: false },
+    ...generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
+  ];
+
   const [selectedTimes, setSelectedTimes] = useState<Set<string>>(new Set());
-
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
     selectedTimes,
     setSelectedTimes,
@@ -92,7 +76,7 @@ const Timetable = () => {
               </S.GridContainer>
             ))}
           </S.TimeSlotColumn>
-          {response.availableDates.map((date) => (
+          {availableDates.map((date) => (
             <Wrapper key={date} center={false}>
               {timeList.map(({ timeText }) => (
                 <S.HeaderCell
