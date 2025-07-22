@@ -34,7 +34,7 @@ const useTimeSelection = ({
         newSelectedTimes.add(time);
       } else {
         newSelectedTimes.delete(time);
-      }
+      }   
 
       setSelectedTimes(newSelectedTimes);
     },
@@ -57,7 +57,7 @@ const useTimeSelection = ({
 
   const onMouseEnter = useCallback(
     (time: string) => {
-      if (isHeaderTime(time)) return;
+      if (isHeaderTime(time) || !draggingRef.current) return;
 
       addRemoveTime(time, dragState);
     },
