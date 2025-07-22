@@ -10,8 +10,7 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
-
-  const { title, availableDates, time, deadLine, isPublic } = useCreateRoom();
+  const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom } = useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -25,9 +24,10 @@ const CreateEventPage = () => {
             <OptionSettings deadLine={deadLine} isPublic={isPublic} />
             <Flex justify="flex-end">
               <Button
-                color="primary"
+                color={isReadyToCreateRoom ? 'primary' : 'plum40'}
                 selected={true}
                 size="small"
+                disabled={!isReadyToCreateRoom}
                 onClick={() => navigate(`/check?id=${124124124}`)}
               >
                 <Text variant="button" color="background">

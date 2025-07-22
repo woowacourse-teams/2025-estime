@@ -54,12 +54,23 @@ export const useCreateRoom = () => {
     set: (isPublic: boolean) => setRoomInfo((prev) => ({ ...prev, isPublic })),
   };
 
+  const isReadyToCreateRoom =
+    roomInfo.title.trim() !== '' &&
+    roomInfo.availableDates.size > 0 &&
+    roomInfo.time.startTime.trim() !== '' &&
+    roomInfo.time.endTime.trim() !== '' &&
+    roomInfo.deadLine.date.trim() !== '' &&
+    roomInfo.deadLine.time.trim() !== '';
+
+  // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
+
   return {
     title,
     availableDates,
     time,
     deadLine,
     isPublic,
+    isReadyToCreateRoom,
   };
 };
 
