@@ -1,10 +1,9 @@
-package com.bether.bether.slack.application.util;
+package com.bether.bether.connection.slack.application.util;
 
-import com.bether.bether.slack.application.service.dto.SlackRoomCreatedInput;
-import org.springframework.stereotype.Component;
-
+import com.bether.bether.connection.slack.application.dto.SlackRoomCreatedInput;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SlackMessageBuilder {

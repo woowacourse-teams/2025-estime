@@ -1,4 +1,4 @@
-package com.bether.bether.discord.application.service;
+package com.bether.bether.connection.discord.application.service;
 
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
