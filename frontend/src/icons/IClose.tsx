@@ -1,6 +1,6 @@
 import { IconType } from '@/types/iconType';
 
-function Close({ ...props }: IconType) {
+function Close({ color = 'currentColor', ...props }: IconType) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +8,7 @@ function Close({ ...props }: IconType) {
       height="36"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
