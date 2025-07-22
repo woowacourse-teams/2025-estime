@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - cd frontend
+      - npm i
+  build:
+    commands:
+      - npm run build
+
+artifacts:
+  base-directory: frontend/dist
+  files:
+    - "**/*"
