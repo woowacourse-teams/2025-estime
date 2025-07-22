@@ -11,8 +11,7 @@ import com.bether.bether.timeslot.application.dto.input.TimeSlotUpdateInput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.application.service.TimeSlotService;
-import com.bether.bether.timeslot.domain.TimeSlot;
-import java.util.List;
+import com.bether.bether.timeslot.domain.TimeSlots;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,19 +39,19 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public List<TimeSlot> getTimeSlotsBySession(final UUID session) {
+    public TimeSlots getTimeSlotsBySession(final UUID session) {
         final Long id = getIdBySession(session);
         return timeSlotService.getAllByRoomId(id);
     }
 
     @Transactional(readOnly = true)
-    public List<TimeSlot> getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
+    public TimeSlots getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
         final Long id = getIdBySession(session);
         return timeSlotService.getAllByRoomIdAndUserName(id, userName);
     }
 
     @Transactional
-    public List<TimeSlot> saveTimeSlots(final TimeSlotInput input) {
+    public TimeSlots saveTimeSlots(final TimeSlotInput input) {
         final Long id = getIdBySession(input.roomSession());
         return timeSlotService.saveAll(id, input);
     }

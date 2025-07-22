@@ -2,7 +2,6 @@ package com.bether.bether.timeslot.domain;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
@@ -15,14 +14,11 @@ public class TimeSlotStatistic {
 
     private final Map<LocalDateTime, TimeSlotParticipants> participantsByDateTime;
 
-    public static TimeSlotStatistic create() {
-        return new TimeSlotStatistic(new HashMap<>());
-    }
-
-    public void calculate(final List<TimeSlot> timeSlots) {
-        for (final TimeSlot timeSlot : timeSlots) {
-            accumulate(timeSlot);
+    public static TimeSlotStatistic from(final Map<LocalDateTime, TimeSlotParticipants> participantsByDateTime) {
+        if (participantsByDateTime == null) {
+            throw new IllegalArgumentException("Participants by date time cannot be null");
         }
+        return new TimeSlotStatistic(participantsByDateTime);
     }
 
     public List<TimeSlotParticipants> getStatistic() {
@@ -39,15 +35,5 @@ public class TimeSlotStatistic {
 
         final int recommendationCount = Math.min(timeSlotParticipants.size(), MAX_RECOMMENDATION_COUNT);
         return timeSlotParticipants.subList(0, recommendationCount);
-    }
-
-    private void accumulate(final TimeSlot timeSlot) {
-        final LocalDateTime dateTime = timeSlot.getStartAt();
-
-        participantsByDateTime.putIfAbsent(dateTime, TimeSlotParticipants.from(dateTime));
-        participantsByDateTime.computeIfPresent(dateTime, ((dateTimeKey, timeSlotParticipants) -> {
-            timeSlotParticipants.addUserName(timeSlot.getUserName());
-            return timeSlotParticipants;
-        }));
     }
 }
