@@ -1,4 +1,4 @@
-package com.bether.bether.discord.application.service;
+package com.bether.bether.connection.discord.application.service;
 
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;

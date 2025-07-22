@@ -1,4 +1,4 @@
-package com.bether.bether.slack.config;
+package com.bether.bether.connection.slack.config;
 
 import com.slack.api.Slack;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
