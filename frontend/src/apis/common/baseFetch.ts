@@ -1,7 +1,7 @@
 import { HTTPMethod, QueryParams } from './type';
 
-// const BASE_URL = import.meta.env.API_URL;
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = process.env.API_BASE_URL;
+// const BASE_URL = 'http://localhost:8080';
 
 const baseFetch = async <T>(
   path: string,
