@@ -36,7 +36,7 @@ export const useCreateRoom = () => {
 
   const time = {
     value: roomInfo.time,
-    set: (startTime: string, endTime: string) =>
+    set: ({ startTime, endTime }: { startTime: string; endTime: string }) =>
       setRoomInfo((prev) => ({ ...prev, time: { startTime, endTime } })),
   };
 
