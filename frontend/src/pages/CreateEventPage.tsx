@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
-import BasicSettings from '@/components/Section/BasicSettings';
-import OptionSettings from '@/components/Section/OptionSettings';
-import CalendarSettings from '@/components/Section/CalendarSettings';
+import BasicSettings from '@/components/Sections/BasicSettings';
+import OptionSettings from '@/components/Sections/OptionSettings';
+import CalendarSettings from '@/components/Sections/CalendarSettings';
 import Button from '@/components/Button';
 import Text from '@/components/Text';
 import { useNavigate } from 'react-router';
@@ -30,7 +30,7 @@ const CreateEventPage = () => {
               isDeadlineEnable={isDeadlineEnable}
               onToggleDeadline={() => setisDeadlineEnable((prev) => !prev)}
               date={date}
-              onDateChange={(e) => setDate(e.target.value)}
+              onDateChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
             />
             <Flex justify="flex-end">
               <Button
