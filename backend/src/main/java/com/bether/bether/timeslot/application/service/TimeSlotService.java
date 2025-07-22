@@ -55,28 +55,14 @@ public class TimeSlotService {
         final Set<LocalDateTime> existingStartAts = existingTimeSlots.stream()
                 .map(TimeSlot::getStartAt)
                 .collect(Collectors.toSet());
-
         final Set<LocalDateTime> requestedStartAts = Set.copyOf(input.dateTimes());
 
-        if (existingStartAts.equals(requestedStartAts)) {
+        if (isSameStartAts(existingStartAts, requestedStartAts)) {
             return;
         }
 
-        final List<TimeSlot> timeSlotsToSave = requestedStartAts.stream()
-                .filter(startAt -> !existingStartAts.contains(startAt))
-                .map(startAt -> TimeSlot.withoutId(roomId, input.userName(), startAt))
-                .toList();
-
-        final List<TimeSlot> timeSlotsToDelete = existingTimeSlots.stream()
-                .filter(timeSlot -> !requestedStartAts.contains(timeSlot.getStartAt()))
-                .toList();
-
-        if (!timeSlotsToSave.isEmpty()) {
-            timeSlotRepository.saveAll(timeSlotsToSave);
-        }
-        if (!timeSlotsToDelete.isEmpty()) {
-            timeSlotRepository.deleteAll(timeSlotsToDelete);
-        }
+        saveNewTimeSlots(roomId, input.userName(), requestedStartAts, existingStartAts);
+        deleteUnselectedTimeSlots(existingTimeSlots, requestedStartAts);
     }
 
     private TimeSlotStatistic calculateTimeSlotStatistic(final Long roomId) {
@@ -85,5 +71,35 @@ public class TimeSlotService {
         final TimeSlotStatistic statistic = TimeSlotStatistic.create();
         statistic.calculate(timeSlots);
         return statistic;
+    }
+
+    private boolean isSameStartAts(final Set<LocalDateTime> existingStartAts,
+                                   final Set<LocalDateTime> requestedStartAts) {
+        return existingStartAts.equals(requestedStartAts);
+    }
+
+    private void saveNewTimeSlots(final Long roomId,
+                                  final String userName,
+                                  final Set<LocalDateTime> requestedStartAts,
+                                  final Set<LocalDateTime> existingStartAts) {
+        final List<TimeSlot> timeSlotsToSave = requestedStartAts.stream()
+                .filter(startAt -> !existingStartAts.contains(startAt))
+                .map(startAt -> TimeSlot.withoutId(roomId, userName, startAt))
+                .toList();
+
+        if (!timeSlotsToSave.isEmpty()) {
+            timeSlotRepository.saveAll(timeSlotsToSave);
+        }
+    }
+
+    private void deleteUnselectedTimeSlots(final List<TimeSlot> existingTimeSlots,
+                                           final Set<LocalDateTime> requestedStartAts) {
+        final List<TimeSlot> timeSlotsToDelete = existingTimeSlots.stream()
+                .filter(timeSlot -> !requestedStartAts.contains(timeSlot.getStartAt()))
+                .toList();
+
+        if (!timeSlotsToDelete.isEmpty()) {
+            timeSlotRepository.deleteAllInBatch(timeSlotsToDelete);
+        }
     }
 }
