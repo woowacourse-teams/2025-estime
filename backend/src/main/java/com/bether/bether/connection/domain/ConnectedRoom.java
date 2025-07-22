@@ -2,7 +2,10 @@ package com.bether.bether.connection.domain;
 
 import com.bether.bether.common.BaseEntity;
 import com.bether.bether.room.domain.Room;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -23,7 +26,7 @@ public class ConnectedRoom extends BaseEntity {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-@Enumerated(EnumType.STRING)
-@Column(name = "platform", nullable = false)
-private Platform platform;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "platform", nullable = false)
+    private Platform platform;
 }
