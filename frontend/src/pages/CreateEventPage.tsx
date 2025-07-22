@@ -16,13 +16,13 @@ const CreateEventPage = () => {
   const [isDeadlineEnable, setisDeadlineEnable] = useState(false);
   const [date, setDate] = useState('2025-07-19');
 
-  const { title } = useCreateRoom();
+  const { title, availableDates } = useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
-          <CalendarSettings />
+          <CalendarSettings availableDates={availableDates} />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
