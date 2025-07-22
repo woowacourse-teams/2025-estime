@@ -13,7 +13,7 @@ export interface LoginModalProps {
 }
 export const LoginModal = ({ setIsOpen, isOpen }: LoginModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} position="center" blur={true}>
+    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} position="center">
       <Modal.Container>
         <Modal.Header>
           <Flex justify="space-between" align="center" gap="var(--gap-1)">

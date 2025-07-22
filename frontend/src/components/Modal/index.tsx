@@ -69,7 +69,7 @@ function ModalContent({ children, ...props }: ModalContentProps) {
 function ModalHeader({ children, ...props }: ModalHeaderProps) {
   const ctx = useContext(ModalContext);
   return (
-    <S.ModalHeader {...props}>
+    <S.ModalHeader aria-labelledby="modal-title" {...props}>
       <S.HeaderTitle>
         <Text variant="h2" color="gray90">
           {children}

@@ -129,15 +129,6 @@ export const ModalHeader = styled.header`
   align-items: center;
   margin-bottom: var(--margin-6);
   position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 1px;
-  }
 `;
 
 export const HeaderTitle = styled.div`
