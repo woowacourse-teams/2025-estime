@@ -21,12 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class RoomServiceTest {
+class RoomApplicationServiceTest {
 
     private static final int TIME_SLOT_MINUTES = 30;
 
     @Autowired
-    private RoomService roomService;
+    private RoomApplicationService roomApplicationService;
 
     @DisplayName("방을 생성할 수 있다.")
     @Test
@@ -42,7 +42,7 @@ class RoomServiceTest {
         );
 
         // when
-        final RoomCreateOutput saved = roomService.saveRoom(input);
+        final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
 
         // then
         assertThat(isValidUUID(saved.session().toString()))
@@ -61,10 +61,10 @@ class RoomServiceTest {
                 LocalDateTime.of(2026, 1, 1, 0, 0),
                 true
         );
-        final RoomCreateOutput saved = roomService.saveRoom(input);
+        final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
 
         // when
-        final RoomOutput output = roomService.getBySession(saved.session());
+        final RoomOutput output = roomApplicationService.getBySession(saved.session());
 
         // then
         assertSoftly(softAssertions -> {
@@ -92,7 +92,7 @@ class RoomServiceTest {
         final UUID notExistedSession = UUID.fromString("1ac856c2-5236-4439-9f58-c4153a6ecb5d");
 
         // when // then
-        assertThatThrownBy(() -> roomService.getBySession(notExistedSession))
+        assertThatThrownBy(() -> roomApplicationService.getBySession(notExistedSession))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Room not found");
     }
@@ -111,7 +111,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
     }
@@ -130,7 +130,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
     }
@@ -149,7 +149,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("availableDates cannot be empty");
     }
@@ -168,7 +168,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("availableDates cannot contain past dates: " + LocalDate.now().minusDays(1));
     }
@@ -187,7 +187,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("startTime cannot be after endTime");
     }
@@ -206,7 +206,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("startTime cannot be after endTime");
     }
@@ -225,7 +225,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("The deadline cannot be in the past.");
     }
@@ -244,7 +244,7 @@ class RoomServiceTest {
         );
 
         // when // then
-        assertThatThrownBy(() -> roomService.saveRoom(input))
+        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("The deadline must be set in 30-minute intervals.");
     }

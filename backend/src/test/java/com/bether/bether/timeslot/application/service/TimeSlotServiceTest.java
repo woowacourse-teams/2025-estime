@@ -13,6 +13,7 @@ import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendations
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
+import com.bether.bether.timeslot.domain.TimeSlots;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -85,7 +86,7 @@ class TimeSlotServiceTest {
         final TimeSlot saved2 = timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomId(room.getId());
+        final List<TimeSlot> found = timeSlotService.getAllByRoomId(room.getId()).getTimeSlots();
 
         // then
         assertThat(found)
@@ -96,7 +97,7 @@ class TimeSlotServiceTest {
     @Test
     void getAllByNonExistingRoomId() {
         // given // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomId(1234L);
+        final List<TimeSlot> found = timeSlotService.getAllByRoomId(1234L).getTimeSlots();
 
         // then
         assertThat(found)
@@ -123,7 +124,7 @@ class TimeSlotServiceTest {
                 TimeSlot.withoutId(room.getId(), "user2", LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomIdAndUserName(room.getId(), "user1");
+        final List<TimeSlot> found = timeSlotService.getAllByRoomIdAndUserName(room.getId(), "user1").getTimeSlots();
 
         // then
         assertThat(found)
@@ -150,7 +151,7 @@ class TimeSlotServiceTest {
                 TimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomIdAndUserName(room.getId(), "user2");
+        final List<TimeSlot> found = timeSlotService.getAllByRoomIdAndUserName(room.getId(), "user2").getTimeSlots();
 
         // then
         assertThat(found)
@@ -175,7 +176,7 @@ class TimeSlotServiceTest {
                 List.of(LocalDateTime.now(), LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> actual = timeSlotService.saveAll(room.getId(), input);
+        final List<TimeSlot> actual = timeSlotService.saveAll(room.getId(), input).getTimeSlots();
 
         // then
         assertThat(actual)
@@ -268,7 +269,7 @@ class TimeSlotServiceTest {
         final List<TimeSlot> existedTimeSlot = existed.stream()
                 .map(dateTime -> TimeSlot.withoutId(room.getId(), "existed", dateTime))
                 .toList();
-        timeSlotRepository.saveAll(existedTimeSlot);
+        timeSlotRepository.saveAll(TimeSlots.from(existedTimeSlot));
 
         final TimeSlotUpdateInput input = new TimeSlotUpdateInput(UUID.randomUUID(), userName, updated);
 
@@ -276,7 +277,8 @@ class TimeSlotServiceTest {
         timeSlotService.updateTimeSlots(room.getId(), input);
 
         // then
-        final List<TimeSlot> saved = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(), userName);
+        final List<TimeSlot> saved = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(), userName)
+                .getTimeSlots();
 
         assertThat(saved)
                 .hasSize(updated.size())
@@ -310,11 +312,11 @@ class TimeSlotServiceTest {
         // when
         timeSlotService.updateTimeSlots(room.getId(), input);
         final List<TimeSlot> resultAfterFirstCall = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
-                userName);
+                userName).getTimeSlots();
 
         timeSlotService.updateTimeSlots(room.getId(), input);
         final List<TimeSlot> resultAfterSecondCall = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
-                userName);
+                userName).getTimeSlots();
 
         // then
         assertSoftly(softly -> {
