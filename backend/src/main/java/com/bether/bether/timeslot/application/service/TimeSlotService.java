@@ -52,33 +52,22 @@ public class TimeSlotService {
 
     @Transactional
     public void updateTimeSlots(final Long roomId, final TimeSlotUpdateInput input) {
-        final List<TimeSlot> existingTimeSlots = timeSlotRepository.findAllByRoomIdAndUserName(roomId,
-                input.userName()).getTimeSlots(); //FIXME : 임시
-
-        final Set<LocalDateTime> existingStartAts = existingTimeSlots.stream()
-                .map(TimeSlot::getStartAt)
-                .collect(Collectors.toSet());
-
+        final TimeSlots existing = timeSlotRepository.findAllByRoomIdAndUserName(roomId, input.userName());
+        final Set<LocalDateTime> existingStartAts = existing.calculateUniqueStartAts();
         final Set<LocalDateTime> requestedStartAts = Set.copyOf(input.dateTimes());
 
         if (existingStartAts.equals(requestedStartAts)) {
             return;
         }
 
-        final List<TimeSlot> timeSlotsToSave = requestedStartAts.stream()
-                .filter(startAt -> !existingStartAts.contains(startAt))
-                .map(startAt -> TimeSlot.withoutId(roomId, input.userName(), startAt))
-                .toList();
+        final TimeSlots timeSlotsToSave = existing.findSlotsToSave(requestedStartAts, roomId, input.userName());
+        final TimeSlots timeSlotsToDelete = existing.findSlotsToDelete(requestedStartAts);
 
-        final List<TimeSlot> timeSlotsToDelete = existingTimeSlots.stream()
-                .filter(timeSlot -> !requestedStartAts.contains(timeSlot.getStartAt()))
-                .toList();
-
-        if (!timeSlotsToSave.isEmpty()) {
-            timeSlotRepository.saveAll(TimeSlots.from(timeSlotsToSave));
+        if (timeSlotsToSave.isNotEmpty()) {
+            timeSlotRepository.saveAll(timeSlotsToSave);
         }
-        if (!timeSlotsToDelete.isEmpty()) {
-            timeSlotRepository.deleteAll(TimeSlots.from(timeSlotsToDelete));
+        if (timeSlotsToDelete.isNotEmpty()) {
+            timeSlotRepository.deleteAll(timeSlotsToDelete);
         }
     }
 }
