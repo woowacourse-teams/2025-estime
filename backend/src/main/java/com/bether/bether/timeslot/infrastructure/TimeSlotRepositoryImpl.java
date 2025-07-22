@@ -2,7 +2,7 @@ package com.bether.bether.timeslot.infrastructure;
 
 import com.bether.bether.timeslot.domain.TimeSlot;
 import com.bether.bether.timeslot.domain.TimeSlotRepository;
-import java.util.List;
+import com.bether.bether.timeslot.domain.TimeSlots;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,13 +13,13 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     private final TimeSlotJpaRepository timeSlotJpaRepository;
 
     @Override
-    public List<TimeSlot> findAllByRoomId(final Long roomId) {
-        return timeSlotJpaRepository.findAllByRoomId(roomId);
+    public TimeSlots findAllByRoomId(final Long roomId) {
+        return TimeSlots.from(timeSlotJpaRepository.findAllByRoomId(roomId));
     }
 
     @Override
-    public List<TimeSlot> findAllByRoomIdAndUserName(final Long roomId, final String userName) {
-        return timeSlotJpaRepository.findAllByRoomIdAndUserName(roomId, userName);
+    public TimeSlots findAllByRoomIdAndUserName(final Long roomId, final String userName) {
+        return TimeSlots.from(timeSlotJpaRepository.findAllByRoomIdAndUserName(roomId, userName));
     }
 
     @Override
@@ -28,12 +28,12 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     }
 
     @Override
-    public List<TimeSlot> saveAll(final List<TimeSlot> timeSlots) {
-        return timeSlotJpaRepository.saveAll(timeSlots);
+    public TimeSlots saveAll(final TimeSlots timeSlots) {
+        return TimeSlots.from(timeSlotJpaRepository.saveAll(timeSlots.getTimeSlots()));
     }
 
     @Override
-    public void deleteAll(final List<TimeSlot> timeSlots) {
-        timeSlotJpaRepository.deleteAll(timeSlots);
+    public void deleteAll(final TimeSlots timeSlots) {
+        timeSlotJpaRepository.deleteAll(timeSlots.getTimeSlots());
     }
 }
