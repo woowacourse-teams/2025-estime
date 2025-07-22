@@ -33,7 +33,11 @@ const TimePicker = ({ selectedHour, selectHour, toggleOpen, isOpen }: TimePicker
         <S.List role="listbox" isOpen={isOpen}>
           <S.ListItemWrapper>
             {hourOptions.map((time) => (
-              <S.ListItem key={time} role="option" onClick={(e) => selectHour(time, e)}>
+              <S.ListItem
+                key={time}
+                role="option"
+                onClick={(e) => selectHour(time.replace(/\s/g, ''), e)}
+              >
                 <Text variant="body"> {time}</Text>
               </S.ListItem>
             ))}
