@@ -1,8 +1,8 @@
-package com.bether.bether.slack.application.service;
+package com.bether.bether.connection.slack.application.service;
 
-import com.bether.bether.slack.application.service.dto.SlackRoomCreatedInput;
-import com.bether.bether.slack.application.util.SlackMessageBuilder;
-import com.bether.bether.slack.config.SlackBotProperties;
+import com.bether.bether.connection.slack.application.dto.SlackRoomCreatedInput;
+import com.bether.bether.connection.slack.application.util.SlackMessageBuilder;
+import com.bether.bether.connection.slack.config.SlackBotProperties;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;

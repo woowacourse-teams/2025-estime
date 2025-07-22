@@ -1,6 +1,6 @@
-package com.bether.bether.slack.application.util;
+package com.bether.bether.connection.slack.application.util;
 
-import com.bether.bether.slack.application.service.dto.SlackRoomCreatedInput;
+import com.bether.bether.connection.slack.application.dto.SlackRoomCreatedInput;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
