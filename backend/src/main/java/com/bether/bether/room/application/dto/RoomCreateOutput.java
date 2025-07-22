@@ -3,11 +3,11 @@ package com.bether.bether.room.application.dto;
 import com.bether.bether.room.domain.Room;
 import java.util.UUID;
 
-public record RoomCreatedOutput(
+public record RoomCreateOutput(
         UUID session
 ) {
 
-    public static RoomCreatedOutput from(final Room room) {
-        return new RoomCreatedOutput(room.getSession());
+    public static RoomCreateOutput from(final Room room) {
+        return new RoomCreateOutput(room.getSession());
     }
 }

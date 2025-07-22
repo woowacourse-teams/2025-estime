@@ -13,7 +13,7 @@ public record RoomOutput(
         LocalTime startTime,
         LocalTime endTime,
         LocalDateTime deadLine,
-        Boolean isPublic,
+        boolean isPublic,
         UUID roomSession
 ) {
 
@@ -24,7 +24,7 @@ public record RoomOutput(
                 room.getStartTime(),
                 room.getEndTime(),
                 room.getDeadLine(),
-                room.getIsPublic(),
+                room.isPublic(),
                 room.getSession()
         );
     }

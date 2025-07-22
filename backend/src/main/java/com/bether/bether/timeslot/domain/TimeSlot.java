@@ -2,6 +2,7 @@ package com.bether.bether.timeslot.domain;
 
 import com.bether.bether.common.BaseEntity;
 import jakarta.persistence.Entity;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,11 @@ import lombok.ToString;
 @ToString
 public class TimeSlot extends BaseEntity {
 
+    public static final Duration UNIT = Duration.ofMinutes(30);
+
     private Long roomId;
     private String userName;
-    private LocalDateTime startAt;  // 15분 단위 고정
+    private LocalDateTime startAt;
 
     public static TimeSlot withoutId(final Long roomId, final String userName, final LocalDateTime startAt) {
         validate(roomId, userName, startAt);

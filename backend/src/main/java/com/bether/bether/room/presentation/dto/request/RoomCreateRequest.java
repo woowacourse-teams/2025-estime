@@ -1,6 +1,6 @@
 package com.bether.bether.room.presentation.dto.request;
 
-import com.bether.bether.room.application.dto.RoomCreatedInput;
+import com.bether.bether.room.application.dto.RoomCreateInput;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,7 +15,7 @@ public record RoomCreateRequest(
         Boolean isPublic
 ) {
 
-    public RoomCreatedInput toInput() {
-        return new RoomCreatedInput(title, availableDates, startTime, endTime, deadLine, isPublic);
+    public RoomCreateInput toInput() {
+        return new RoomCreateInput(title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 }

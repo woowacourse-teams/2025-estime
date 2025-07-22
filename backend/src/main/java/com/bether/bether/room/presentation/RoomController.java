@@ -1,7 +1,7 @@
 package com.bether.bether.room.presentation;
 
 import com.bether.bether.common.CustomApiResponse;
-import com.bether.bether.room.application.dto.RoomCreatedOutput;
+import com.bether.bether.room.application.dto.RoomCreateOutput;
 import com.bether.bether.room.application.dto.RoomOutput;
 import com.bether.bether.room.application.service.RoomService;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
@@ -31,7 +31,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
-        final RoomCreatedOutput saved = roomService.saveRoom(request.toInput());
+        final RoomCreateOutput saved = roomService.saveRoom(request.toInput());
         return CustomApiResponse.created(RoomCreateResponse.from(saved));
     }
 

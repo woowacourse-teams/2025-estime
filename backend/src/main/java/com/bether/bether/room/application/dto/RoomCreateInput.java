@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public record RoomCreatedInput(
+public record RoomCreateInput(
         String title,
         List<LocalDate> availableDates,
         LocalTime startTime,
         LocalTime endTime,
         LocalDateTime deadLine,
-        Boolean isPublic
+        boolean isPublic
 ) {
 
     public Room toEntity() {

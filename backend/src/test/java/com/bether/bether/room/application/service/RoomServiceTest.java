@@ -2,17 +2,17 @@ package com.bether.bether.room.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.bether.bether.common.NotFoundException;
-import com.bether.bether.room.application.dto.RoomCreatedInput;
-import com.bether.bether.room.application.dto.RoomCreatedOutput;
+import com.bether.bether.room.application.dto.RoomCreateInput;
+import com.bether.bether.room.application.dto.RoomCreateOutput;
 import com.bether.bether.room.application.dto.RoomOutput;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ class RoomServiceTest {
     @Test
     void saveRoom() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now()),
                 LocalTime.of(7, 0),
@@ -42,7 +42,7 @@ class RoomServiceTest {
         );
 
         // when
-        final RoomCreatedOutput saved = roomService.saveRoom(input);
+        final RoomCreateOutput saved = roomService.saveRoom(input);
 
         // then
         assertThat(isValidUUID(saved.session().toString()))
@@ -53,7 +53,7 @@ class RoomServiceTest {
     @Test
     void getRoomBySession() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now()),
                 LocalTime.of(7, 0),
@@ -61,13 +61,13 @@ class RoomServiceTest {
                 LocalDateTime.of(2026, 1, 1, 0, 0),
                 true
         );
-        final RoomCreatedOutput saved = roomService.saveRoom(input);
+        final RoomCreateOutput saved = roomService.saveRoom(input);
 
         // when
         final RoomOutput output = roomService.getBySession(saved.session());
 
         // then
-        SoftAssertions.assertSoftly(softAssertions -> {
+        assertSoftly(softAssertions -> {
             softAssertions.assertThat(output.title())
                     .isEqualTo(input.title());
             softAssertions.assertThat(output.availableDates())
@@ -101,7 +101,7 @@ class RoomServiceTest {
     @Test
     void saveWithInvalidStartTimeMinute() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now()),
                 LocalTime.of(7, 15),
@@ -120,7 +120,7 @@ class RoomServiceTest {
     @Test
     void saveWithInvalidEndTimeMinute() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now()),
                 LocalTime.of(7, 0),
@@ -139,7 +139,7 @@ class RoomServiceTest {
     @Test
     void saveWithEmptyDates() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(),
                 LocalTime.of(7, 0),
@@ -158,7 +158,7 @@ class RoomServiceTest {
     @Test
     void saveWithPastDate() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now().minusDays(1)),
                 LocalTime.of(7, 0),
@@ -177,7 +177,7 @@ class RoomServiceTest {
     @Test
     void saveWithStartTimeAfterEndTime() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now()),
                 LocalTime.of(20, 0),
@@ -196,7 +196,7 @@ class RoomServiceTest {
     @Test
     void saveWithStartTimeEqualsEndTime() {
         // given
-        final RoomCreatedInput input = new RoomCreatedInput(
+        final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(LocalDate.now()),
                 LocalTime.of(10, 30),
@@ -209,6 +209,44 @@ class RoomServiceTest {
         assertThatThrownBy(() -> roomService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("startTime cannot be after endTime");
+    }
+
+    @DisplayName("마감 시간이 현재 시간 보다 빠르면 예외가 발생한다.")
+    @Test
+    void saveWithDeadLine() {
+        // given
+        final RoomCreateInput input = new RoomCreateInput(
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(10, 30),
+                LocalTime.of(11, 30),
+                LocalDateTime.of(2000, 1, 1, 0, 0),
+                true
+        );
+
+        // when // then
+        assertThatThrownBy(() -> roomService.saveRoom(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The deadline cannot be in the past.");
+    }
+
+    @DisplayName("마감 시간이 30분 단위가 아니면 예외가 발생한다.")
+    @Test
+    void saveWithDeadLinePer30Minutes() {
+        // given
+        final RoomCreateInput input = new RoomCreateInput(
+                "title",
+                List.of(LocalDate.now()),
+                LocalTime.of(10, 30),
+                LocalTime.of(11, 30),
+                LocalDateTime.of(2026, 1, 1, 0, 21),
+                true
+        );
+
+        // when // then
+        assertThatThrownBy(() -> roomService.saveRoom(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The deadline must be set in 30-minute intervals.");
     }
 
     private boolean isValidUUID(final String uuid) {
