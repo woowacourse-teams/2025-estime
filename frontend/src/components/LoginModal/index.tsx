@@ -13,54 +13,48 @@ export interface LoginModalProps {
 }
 export const LoginModal = ({ setIsOpen, isOpen }: LoginModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} position="center">
-      <Modal.Background>
-        <Modal.Container>
-          <Modal.Header>
-            <Flex justify="space-between" align="center" gap="var(--gap-1)">
-              <Tooltip content="서비스를 이용하기 위해 로그인이 필요합니다.">
-                <Flex align="center" gap="var(--gap-4)">
-                  <Text variant="h3">로그인</Text>
-                  <IInfo aria-hidden="true" color="black" />
-                </Flex>
-              </Tooltip>
-            </Flex>
-          </Modal.Header>
-          <Modal.Content>
-            <Flex gap="var(--gap-6)" direction="column">
-              <Flex justify="space-between" align="center" gap="var(--gap-6)">
-                <Flex.Item flex={1}>
-                  <S.LoginLabel htmlFor="userid" required>
-                    아이디
-                  </S.LoginLabel>
-                </Flex.Item>
-                <Flex.Item flex={4}>
-                  <Input id="userid" placeholder="아이디를 입력해주세요." autoFocus={true} />
-                </Flex.Item>
+    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} position="center" blur={true}>
+      <Modal.Container>
+        <Modal.Header>
+          <Flex justify="space-between" align="center" gap="var(--gap-1)">
+            <Tooltip content="서비스를 이용하기 위해 로그인이 필요합니다.">
+              <Flex align="center" gap="var(--gap-4)">
+                <Text variant="h3">로그인</Text>
+                <IInfo aria-hidden="true" color="black" />
               </Flex>
-              <Flex justify="space-between" align="center" gap="var(--gap-6)">
-                <Flex.Item flex={1}>
-                  <S.LoginLabel htmlFor="user-password">비밀번호(선택)</S.LoginLabel>
-                </Flex.Item>
-                <Flex.Item flex={4}>
-                  <Input
-                    type="password"
-                    id="user-password"
-                    placeholder="비밀번호를 입력해주세요."
-                  />
-                </Flex.Item>
-              </Flex>
+            </Tooltip>
+          </Flex>
+        </Modal.Header>
+        <Modal.Content>
+          <Flex gap="var(--gap-6)" direction="column">
+            <Flex justify="space-between" align="center" gap="var(--gap-6)">
               <Flex.Item flex={1}>
-                <Button color="primary" selected onClick={() => setIsOpen(false)}>
-                  <Text variant="body" color="gray10">
-                    저장하고 계속하기
-                  </Text>
-                </Button>
+                <S.LoginLabel htmlFor="userid" required>
+                  닉네임
+                </S.LoginLabel>
+              </Flex.Item>
+              <Flex.Item flex={4}>
+                <Input id="userid" placeholder="아이디를 입력해주세요." autoFocus={true} />
               </Flex.Item>
             </Flex>
-          </Modal.Content>
-        </Modal.Container>
-      </Modal.Background>
+            <Flex justify="space-between" align="center" gap="var(--gap-6)">
+              <Flex.Item flex={1}>
+                <S.LoginLabel htmlFor="user-password">비밀번호(선택)</S.LoginLabel>
+              </Flex.Item>
+              <Flex.Item flex={4}>
+                <Input type="password" id="user-password" placeholder="비밀번호를 입력해주세요." />
+              </Flex.Item>
+            </Flex>
+            <Flex.Item flex={1}>
+              <Button color="primary" selected onClick={() => setIsOpen(false)}>
+                <Text variant="body" color="gray10">
+                  저장하고 계속하기
+                </Text>
+              </Button>
+            </Flex.Item>
+          </Flex>
+        </Modal.Content>
+      </Modal.Container>
     </Modal>
   );
 };
