@@ -14,8 +14,7 @@ import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticRespons
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
-import com.bether.bether.timeslot.domain.TimeSlot;
-import java.util.List;
+import com.bether.bether.timeslot.domain.TimeSlots;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,6 +69,7 @@ public class RoomController implements RoomControllerSpecification {
             @RequestParam("name") final String userName
     ) {
         final List<TimeSlot> timeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
+        final TimeSlots timeSlots = roomService.getTimeSlotsBySessionAndUserName(session, userName);
         return CustomApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
     }
 
