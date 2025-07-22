@@ -12,8 +12,6 @@ import useTimePicker from '@/hooks/useTimePicker';
 interface OptionSettingsProps {
   isOpenAccordion: boolean;
   onToggleAccordion: () => void;
-  isDeadlineEnable: boolean;
-  onToggleDeadline: () => void;
   date: string;
   onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -32,8 +30,6 @@ export interface StyleProps {
 const OptionSettings = ({
   isOpenAccordion,
   onToggleAccordion,
-  isDeadlineEnable,
-  onToggleDeadline,
   date,
   onDateChange,
 }: OptionSettingsProps) => {
@@ -47,7 +43,6 @@ const OptionSettings = ({
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
           <S.Wrapper justifyContent="space-between">
             <Text variant="h3">마감 기한</Text>
-            <Toggle isOn={isDeadlineEnable} onToggle={onToggleDeadline} />
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
             <DatePicker value={date} onChange={onDateChange} />

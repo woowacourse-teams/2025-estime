@@ -13,7 +13,6 @@ const CreateEventPage = () => {
   const navigate = useNavigate();
   // 상세 설정 상태
   const [isOpenAccordion, setIsOpenAccordion] = useState(false);
-  const [isDeadlineEnable, setisDeadlineEnable] = useState(false);
   const [date, setDate] = useState('2025-07-19');
 
   const { title, availableDates, time } = useCreateRoom();
@@ -30,8 +29,6 @@ const CreateEventPage = () => {
             <OptionSettings
               isOpenAccordion={isOpenAccordion}
               onToggleAccordion={() => setIsOpenAccordion((prev) => !prev)}
-              isDeadlineEnable={isDeadlineEnable}
-              onToggleDeadline={() => setisDeadlineEnable((prev) => !prev)}
               date={date}
               onDateChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
             />
