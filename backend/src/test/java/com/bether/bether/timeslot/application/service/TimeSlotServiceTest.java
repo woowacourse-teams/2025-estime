@@ -76,7 +76,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final TimeSlot saved1 = timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
@@ -110,7 +112,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final TimeSlot saved1 = timeSlotRepository.save(
@@ -135,7 +139,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final TimeSlot saved1 = timeSlotRepository.save(
@@ -160,7 +166,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final TimeSlotInput input = new TimeSlotInput(UUID.randomUUID(), "user",
@@ -183,7 +191,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
@@ -215,7 +225,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
@@ -247,7 +259,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final String userName = "user";
@@ -279,7 +293,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
         final String userName = "user";
 
@@ -324,7 +340,9 @@ class TimeSlotServiceTest {
                         "title",
                         List.of(LocalDate.now()),
                         LocalTime.of(7, 0),
-                        LocalTime.of(20, 0)
+                        LocalTime.of(20, 0),
+                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        true
                 ));
 
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);

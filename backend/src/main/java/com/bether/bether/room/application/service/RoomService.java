@@ -1,7 +1,8 @@
 package com.bether.bether.room.application.service;
 
 import com.bether.bether.common.NotFoundException;
-import com.bether.bether.room.application.dto.RoomInput;
+import com.bether.bether.room.application.dto.RoomCreateInput;
+import com.bether.bether.room.application.dto.RoomCreateOutput;
 import com.bether.bether.room.application.dto.RoomOutput;
 import com.bether.bether.room.domain.Room;
 import com.bether.bether.room.domain.RoomRepository;
@@ -24,11 +25,18 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final TimeSlotService timeSlotService;
 
+    @Transactional(readOnly = true)
+    public RoomOutput getBySession(final UUID session) {
+        final Room room = roomRepository.findBySession(session)
+                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+        return RoomOutput.from(room);
+    }
+
     @Transactional
-    public RoomOutput saveRoom(final RoomInput input) {
+    public RoomCreateOutput saveRoom(final RoomCreateInput input) {
         final Room room = input.toEntity();
         final Room saved = roomRepository.save(room);
-        return RoomOutput.from(saved);
+        return RoomCreateOutput.from(saved);
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package com.bether.bether.room.domain;
 
 import com.bether.bether.common.BaseEntity;
+import com.bether.bether.timeslot.domain.TimeSlot;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -8,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Room extends BaseEntity {
-
-    private static final int TIME_SLOT_MINUTES = 30;
 
     @Column(name = "session", nullable = false)
     private UUID session;
@@ -46,27 +46,37 @@ public class Room extends BaseEntity {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    @Column(name = "dead_line", nullable = false)
+    private LocalDateTime deadLine;
+
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic;
+
     public static Room withoutId(
             final String title,
             final List<LocalDate> availableDates,
             final LocalTime startTime,
-            final LocalTime endTime
+            final LocalTime endTime,
+            final LocalDateTime deadLine,
+            final Boolean isPublic
     ) {
-        validate(title, availableDates, startTime, endTime);
+        validate(title, availableDates, startTime, endTime, deadLine);
         validateDates(availableDates);
         validateTimes(startTime, endTime);
+        validateDeadLine(deadLine);
         final UUID session = UUID.randomUUID();
-        return new Room(session, title, availableDates, startTime, endTime);
+        return new Room(session, title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 
     private static void validate(
             final String title,
             final List<LocalDate> availableDates,
             final LocalTime startTime,
-            final LocalTime endTime
-    ) {
-        if (title == null || availableDates == null || startTime == null || endTime == null) {
-            throw new IllegalArgumentException("title, availableDates, startTime, endTime cannot be null");
+            final LocalTime endTime,
+            final LocalDateTime deadLine) {
+        if (title == null || availableDates == null || startTime == null || endTime == null || deadLine == null) {
+            throw new IllegalArgumentException(
+                    "title, availableDates, startTime, endTime, deadLine cannot be null");
         }
     }
 
@@ -85,8 +95,18 @@ public class Room extends BaseEntity {
         if (!startTime.isBefore(endTime)) {
             throw new IllegalArgumentException("startTime cannot be after endTime");
         }
-        if (startTime.getMinute() % TIME_SLOT_MINUTES != 0 || endTime.getMinute() % TIME_SLOT_MINUTES != 0) {
-            throw new IllegalArgumentException("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
+        final long timeSlotMinutes = TimeSlot.UNIT.toMinutes();
+        if (startTime.getMinute() % timeSlotMinutes != 0 || endTime.getMinute() % timeSlotMinutes != 0) {
+            throw new IllegalArgumentException("time must be in " + timeSlotMinutes + "-minute intervals");
+        }
+    }
+
+    private static void validateDeadLine(final LocalDateTime deadLine) {
+        if (deadLine.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("The deadline cannot be in the past.");
+        }
+        if (deadLine.getMinute() != 0 && deadLine.getMinute() != 30) {
+            throw new IllegalArgumentException("The deadline must be set in 30-minute intervals.");
         }
     }
 }
