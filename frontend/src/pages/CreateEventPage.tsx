@@ -11,7 +11,7 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 const CreateEventPage = () => {
   const navigate = useNavigate();
 
-  const { title, availableDates, time, deadLine } = useCreateRoom();
+  const { title, availableDates, time, deadLine, isPublic } = useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -22,7 +22,7 @@ const CreateEventPage = () => {
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings title={title} time={time} />
-            <OptionSettings deadLine={deadLine} />
+            <OptionSettings deadLine={deadLine} isPublic={isPublic} />
             <Flex justify="flex-end">
               <Button
                 color="primary"
