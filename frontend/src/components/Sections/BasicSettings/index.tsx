@@ -12,9 +12,10 @@ import { Field } from '@/types/field';
 
 type BasicSettingsProps = {
   title: Field<string>;
+  time: Field<{ startTime: string; endTime: string }>;
 };
 
-const BasicSettings = ({ title }: BasicSettingsProps) => {
+const BasicSettings = ({ title, time }: BasicSettingsProps) => {
   const { colors } = useTheme();
 
   const { isOpen: isStartOpen, toggleOpen: toggleStartOpen } = useTimePicker();
@@ -28,7 +29,7 @@ const BasicSettings = ({ title }: BasicSettingsProps) => {
     handleCustomButtonClick,
     handleCustomStartClick,
     handleCustomEndClick,
-  } = useSelectTime();
+  } = useSelectTime({ timeRange: time.value, setTimeRange: time.set });
 
   return (
     <S.Container>

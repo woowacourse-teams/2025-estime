@@ -1,9 +1,13 @@
 import { TIME } from '@/constants/time';
 import { useCallback, useState } from 'react';
 
-const useSelectTime = () => {
+interface TimeRangeField {
+  timeRange: { startTime: string; endTime: string };
+  setTimeRange: ({ startTime, endTime }: { startTime: string; endTime: string }) => void;
+}
+
+const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
   const [selectedButtons, setSelectedButtons] = useState<('day' | 'night' | 'custom')[]>([]);
-  const [timeRange, setTimeRange] = useState({ startTime: '', endTime: '' });
 
   const handleDayNightButtonClick = useCallback(
     (type: 'day' | 'night') => {

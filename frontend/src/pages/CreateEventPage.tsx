@@ -16,7 +16,7 @@ const CreateEventPage = () => {
   const [isDeadlineEnable, setisDeadlineEnable] = useState(false);
   const [date, setDate] = useState('2025-07-19');
 
-  const { title, availableDates } = useCreateRoom();
+  const { title, availableDates, time } = useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -26,7 +26,7 @@ const CreateEventPage = () => {
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <BasicSettings title={title} />
+            <BasicSettings title={title} time={time} />
             <OptionSettings
               isOpenAccordion={isOpenAccordion}
               onToggleAccordion={() => setIsOpenAccordion((prev) => !prev)}
