@@ -7,6 +7,7 @@ import CalendarSettings from '@/components/Sections/CalendarSettings';
 import Button from '@/components/Button';
 import Text from '@/components/Text';
 import { useNavigate } from 'react-router';
+import useCreateRoom from '@/hooks/useCreateRoom';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const CreateEventPage = () => {
   const [isOpenAccordion, setIsOpenAccordion] = useState(false);
   const [isDeadlineEnable, setisDeadlineEnable] = useState(false);
   const [date, setDate] = useState('2025-07-19');
+
+  const { title } = useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -23,7 +26,7 @@ const CreateEventPage = () => {
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <BasicSettings />
+            <BasicSettings title={title} />
             <OptionSettings
               isOpenAccordion={isOpenAccordion}
               onToggleAccordion={() => setIsOpenAccordion((prev) => !prev)}
