@@ -43,7 +43,7 @@ export const useCreateRoom = () => {
       setRoomInfo((prev) => ({ ...prev, time: { startTime, endTime } })),
   };
 
-  const deadline = {
+  const deadLine = {
     value: roomInfo.deadLine,
     set: ({ date, time }: { date: string; time: string }) =>
       setRoomInfo((prev) => ({ ...prev, deadLine: { date, time } })),
@@ -58,7 +58,7 @@ export const useCreateRoom = () => {
     title,
     availableDates,
     time,
-    deadline,
+    deadLine,
     isPublic,
   };
 };
