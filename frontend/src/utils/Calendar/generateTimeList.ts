@@ -8,7 +8,7 @@ const generateTimeList = ({
   interval: number;
 }) => {
   const time = [];
-  for (let i = startTime; i <= endTime; i += interval) {
+  for (let i = startTime; i < endTime; i += interval) {
     const hour = Math.floor(i / 60)
       .toString()
       .padStart(2, '0');
