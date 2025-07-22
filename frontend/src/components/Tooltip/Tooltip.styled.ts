@@ -24,18 +24,7 @@ export const TooltipContent = styled.div`
   visibility: hidden;
   transition: opacity 0.2s ease;
   pointer-events: none;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 8px;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-bottom-color: currentColor;
-  }
+  bottom: 50%;
+  left: 110%;
+  transform: translateY(50%);
 `;
