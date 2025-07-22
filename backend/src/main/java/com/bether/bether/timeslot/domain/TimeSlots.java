@@ -20,7 +20,7 @@ public class TimeSlots {
         if (timeSlots == null) {
             throw new IllegalArgumentException("Time slots cannot be null");
         }
-        return new TimeSlots(timeSlots);
+        return new TimeSlots(List.copyOf(timeSlots));
     }
 
     public TimeSlotStatistic calculateStatistic() {
@@ -46,7 +46,7 @@ public class TimeSlots {
             final Long roomId,
             final String userName
     ) {
-        final Set<LocalDateTime> existingStartAts = getStartAts();
+        final Set<LocalDateTime> existingStartAts = calculateUniqueStartAts();
         return new TimeSlots(requestedStartAts.stream()
                 .filter(startAt -> !existingStartAts.contains(startAt))
                 .map(startAt -> TimeSlot.withoutId(roomId, userName, startAt))
@@ -65,11 +65,5 @@ public class TimeSlots {
 
     public boolean isNotEmpty() {
         return !isEmpty();
-    }
-
-    private Set<LocalDateTime> getStartAts() {
-        return timeSlots.stream()
-                .map(TimeSlot::getStartAt)
-                .collect(Collectors.toSet());
     }
 }
