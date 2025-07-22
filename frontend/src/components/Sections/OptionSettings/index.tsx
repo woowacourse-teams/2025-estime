@@ -8,10 +8,9 @@ import TimePicker from '@/components/Timepicker';
 import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 import useTimePicker from '@/hooks/useTimePicker';
+import { useState } from 'react';
 
 interface OptionSettingsProps {
-  isOpenAccordion: boolean;
-  onToggleAccordion: () => void;
   date: string;
   onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -27,19 +26,18 @@ export interface StyleProps {
   borderRadius?: string;
 }
 
-const OptionSettings = ({
-  isOpenAccordion,
-  onToggleAccordion,
-  date,
-  onDateChange,
-}: OptionSettingsProps) => {
+const OptionSettings = ({ date, onDateChange }: OptionSettingsProps) => {
   const theme = useTheme();
-
   const timePicker = useTimePicker();
+  const [isOpenAccordion, setIsOpenAccordion] = useState(false);
 
   return (
     <S.Container>
-      <Accordion title="선택 설정" isOpen={isOpenAccordion} onToggle={onToggleAccordion}>
+      <Accordion
+        title="선택 설정"
+        isOpen={isOpenAccordion}
+        onToggle={() => setIsOpenAccordion((prev) => !prev)}
+      >
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
           <S.Wrapper justifyContent="space-between">
             <Text variant="h3">마감 기한</Text>

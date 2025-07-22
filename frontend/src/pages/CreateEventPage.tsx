@@ -12,7 +12,6 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 const CreateEventPage = () => {
   const navigate = useNavigate();
   // 상세 설정 상태
-  const [isOpenAccordion, setIsOpenAccordion] = useState(false);
   const [date, setDate] = useState('2025-07-19');
 
   const { title, availableDates, time } = useCreateRoom();
@@ -27,8 +26,6 @@ const CreateEventPage = () => {
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings title={title} time={time} />
             <OptionSettings
-              isOpenAccordion={isOpenAccordion}
-              onToggleAccordion={() => setIsOpenAccordion((prev) => !prev)}
               date={date}
               onDateChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
             />

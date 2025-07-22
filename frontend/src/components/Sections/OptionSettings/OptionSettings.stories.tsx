@@ -14,16 +14,8 @@ type Story = StoryObj<typeof OptionSettings>;
 
 export const Interactive: Story = {
   render: () => {
-    const [isOpenAccordion, setIsOpenAccordion] = useState(false);
     const [date, setDate] = useState('2025-07-19');
 
-    return (
-      <OptionSettings
-        isOpenAccordion={isOpenAccordion}
-        onToggleAccordion={() => setIsOpenAccordion((prev) => !prev)}
-        date={date}
-        onDateChange={(e) => setDate(e.target.value)}
-      />
-    );
+    return <OptionSettings date={date} onDateChange={(e) => setDate(e.target.value)} />;
   },
 };
