@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 
 const FocusTrap = ({ children }: { children: React.ReactNode }) => {
   const modalRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const modalEl = modalRef.current;
     if (!modalEl) return;
 
@@ -38,7 +38,7 @@ const FocusTrap = ({ children }: { children: React.ReactNode }) => {
       modalEl.removeEventListener('keydown', onKeyDown);
       prevActive?.focus();
     };
-  }, [modalRef.current]);
+  }, []);
 
   if (React.isValidElement(children)) {
     const element = children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>;
