@@ -10,7 +10,8 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
-  const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom } = useCreateRoom();
+  const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom, roomInfoSubmit } =
+    useCreateRoom();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -28,7 +29,10 @@ const CreateEventPage = () => {
                 selected={true}
                 size="small"
                 disabled={!isReadyToCreateRoom}
-                onClick={() => navigate(`/check?id=${124124124}`)}
+                onClick={() => {
+                  navigate(`/check?id=${124124124}`);
+                  roomInfoSubmit();
+                }}
               >
                 <Text variant="button" color="background">
                   방 만들기

@@ -64,6 +64,10 @@ export const useCreateRoom = () => {
 
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
+  const roomInfoSubmit = () => {
+    console.log(roomInfo);
+  };
+
   return {
     title,
     availableDates,
@@ -71,6 +75,7 @@ export const useCreateRoom = () => {
     deadLine,
     isPublic,
     isReadyToCreateRoom,
+    roomInfoSubmit,
   };
 };
 
