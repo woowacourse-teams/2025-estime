@@ -33,7 +33,7 @@ public class TimeSlotRepositoryImpl implements TimeSlotRepository {
     }
 
     @Override
-    public void deleteAllInBatch(final List<TimeSlot> timeSlots) {
-        timeSlotJpaRepository.deleteAllInBatch(timeSlots);
+    public void deleteAllInBatch(final TimeSlots timeSlots) {
+        timeSlotJpaRepository.deleteAllInBatch(timeSlots.getTimeSlots());
     }
 }

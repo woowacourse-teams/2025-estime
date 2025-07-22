@@ -10,5 +10,5 @@ public interface TimeSlotRepository {
 
     TimeSlots saveAll(TimeSlots timeSlots);
 
-    void deleteAllInBatch(List<TimeSlot> timeSlots);
+    void deleteAllInBatch(TimeSlots timeSlots);
 }
