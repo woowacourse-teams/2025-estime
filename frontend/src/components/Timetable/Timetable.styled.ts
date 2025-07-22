@@ -1,10 +1,35 @@
 import styled from '@emotion/styled';
 
-export const GridContainer = styled.div<{ availableDates: number }>`
-  display: grid;
-  grid-template-columns: repeat(${({ availableDates }) => availableDates + 1}, 1fr);
-  grid-auto-rows: minmax(32px, auto);
+export const TimetableHeader = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const TimetableContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow-x: auto;
+  user-select: none;
+`;
+
+export const TimeSlotColumn = styled.div`
+  border: 1px solid ${({ theme }) => theme.colors.gray20};
+  background-color: ${({ theme }) => theme.colors.background};
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--padding-8);
+`;
+
+export const GridContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 0 var(--padding-4);
+  background-color: ${({ theme }) => theme.colors.background};
+  user-select: none;
 `;
 
 export const HeaderCell = styled.div<{
@@ -12,19 +37,25 @@ export const HeaderCell = styled.div<{
   date: string;
   timeText: string;
 }>`
-  box-sizing: border-box;
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   border-right: 1px solid ${({ theme }) => theme.colors.gray20};
   background-color: ${({ selectedTimes, date, timeText, theme }) =>
-    selectedTimes.has(`${date} ${timeText}`) ? theme.colors.primary : 'transparent'};
+    timeText === 'Dates'
+      ? theme.colors.background
+      : selectedTimes.has(`${date} ${timeText}`)
+        ? theme.colors.primary
+        : theme.colors.gray10};
   cursor: pointer;
   padding: var(--padding-4);
+  height: ${({ timeText }) => (timeText === 'Dates' ? '3rem' : '1.5rem')};
+  width: 5rem;
+  user-select: none;
 `;
 
-export const TimeLabel = styled.div<{ isHour: boolean }>`
+export const TimeLabel = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 3rem;
   background-color: ${({ theme }) => theme.colors.background};
-  border-top: 1px solid ${({ isHour, theme }) => (isHour ? theme.colors.gray20 : 'transparent')};
 `;
