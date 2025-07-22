@@ -46,14 +46,15 @@ public class TimeSlots {
             final Long roomId,
             final String userName
     ) {
+        final Set<LocalDateTime> existingStartAts = getStartAts();
         return new TimeSlots(requestedStartAts.stream()
-                .filter(startAt -> !getStartAts().contains(startAt))
+                .filter(startAt -> !existingStartAts.contains(startAt))
                 .map(startAt -> TimeSlot.withoutId(roomId, userName, startAt))
                 .toList());
     }
 
     public TimeSlots findSlotsToDelete(final Set<LocalDateTime> requestedStartAts) {
-        return TimeSlots.from(timeSlots.stream()
+        return new TimeSlots(timeSlots.stream()
                 .filter(timeSlot -> !requestedStartAts.contains(timeSlot.getStartAt()))
                 .toList());
     }
