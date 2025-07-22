@@ -40,12 +40,14 @@ public class TimeSlotService {
 
     @Transactional(readOnly = true)
     public TimeSlotStatisticOutput generateTimeSlotStatistic(final Long roomId) {
-        return TimeSlotStatisticOutput.from(calculateTimeSlotStatistic(roomId).getStatistic());
+        final TimeSlotStatistic statistic = getAllByRoomId(roomId).calculateStatistic();
+        return TimeSlotStatisticOutput.from(statistic.getStatistic());
     }
 
     @Transactional(readOnly = true)
     public TimeSlotRecommendationsOutput recommendTopTimeSlots(final Long roomId) {
-        return TimeSlotRecommendationsOutput.from(calculateTimeSlotStatistic(roomId).getRecommendation());
+        final TimeSlotStatistic statistic = getAllByRoomId(roomId).calculateStatistic();
+        return TimeSlotRecommendationsOutput.from(statistic.getRecommendation());
     }
 
     @Transactional
@@ -78,13 +80,5 @@ public class TimeSlotService {
         if (!timeSlotsToDelete.isEmpty()) {
             timeSlotRepository.deleteAll(TimeSlots.from(timeSlotsToDelete));
         }
-    }
-
-    private TimeSlotStatistic calculateTimeSlotStatistic(final Long roomId) {
-        // TODO List<TimeSlot> 일급 컬렉션 적용
-        final List<TimeSlot> timeSlots = getAllByRoomId(roomId).getTimeSlots(); // FIXME : 임시
-        final TimeSlotStatistic statistic = TimeSlotStatistic.create();
-        statistic.calculate(timeSlots);
-        return statistic;
     }
 }
