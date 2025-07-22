@@ -1,11 +1,10 @@
 package com.bether.bether.connection.discord.application.service;
 
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 @Component
 @Slf4j

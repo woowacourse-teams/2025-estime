@@ -7,15 +7,14 @@ import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
-import java.io.IOException;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -68,7 +67,8 @@ public class SlackService {
 
             log.info("Slack message sent for created room: '{}', Link: {}", input.title(), scheduleLink);
         } catch (final Exception e) {
-            log.error("Failed to send Slack message for created room '{}'. Reason: {}", input.title(), e.getMessage(), e);
+            log.error("Failed to send Slack message for created room '{}'. Reason: {}", input.title(), e.getMessage(),
+                    e);
         }
     }
 

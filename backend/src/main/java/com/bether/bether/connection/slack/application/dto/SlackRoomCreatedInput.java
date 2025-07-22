@@ -2,7 +2,6 @@ package com.bether.bether.connection.slack.application.dto;
 
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
