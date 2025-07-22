@@ -24,6 +24,7 @@ const zoomIn = keyframes`
 
 export const ModalBackground = styled.div<{
   position?: 'center' | 'bottom';
+  blur?: boolean;
 }>`
   position: fixed;
   display: flex;
@@ -36,6 +37,7 @@ export const ModalBackground = styled.div<{
   justify-content: center;
   align-items: ${(props) => (props.position === 'center' ? 'center' : 'end')};
   z-index: ${zIndex.modal};
+  backdrop-filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
 `;
 
 const getSizeStyles = (size?: 'small' | 'medium' | 'large' | 'full') => {

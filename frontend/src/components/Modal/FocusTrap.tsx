@@ -1,12 +1,9 @@
-import { useEffect, RefObject } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-export function useFocusTrap<T extends HTMLElement>(
-  modalRef: RefObject<T | null>,
-  isOpen: boolean
-) {
+const FocusTrap = ({ children }: { children: React.ReactNode }) => {
+  const modalRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
-    if (!isOpen) return;
-
     const modalEl = modalRef.current;
     if (!modalEl) return;
 
@@ -41,5 +38,16 @@ export function useFocusTrap<T extends HTMLElement>(
       modalEl.removeEventListener('keydown', onKeyDown);
       prevActive?.focus();
     };
-  }, [modalRef.current, isOpen]);
-}
+  }, [modalRef.current]);
+
+  if (React.isValidElement(children)) {
+    const element = children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>;
+    return React.cloneElement(element, {
+      ref: modalRef,
+    });
+  }
+
+  return children;
+};
+
+export default FocusTrap;

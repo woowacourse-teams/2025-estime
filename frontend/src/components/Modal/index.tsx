@@ -1,37 +1,89 @@
-import { useRef, PropsWithChildren } from 'react';
+import * as S from './Modal.styled';
+import { PropsWithChildren, ComponentProps, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { ModalContext } from '@/contexts/ModalContext';
-import { useFocusTrap } from '@/hooks/Modal/useFocusTrap';
 import { useEscapeClose } from '@/hooks/Modal/useEscapeClose';
-import Background from './parts/Background';
-import Container from './parts/Container';
-import Header from './parts/Header';
-import Content from './parts/Content';
+import Text from '@/components/Text';
+import FocusTrap from './FocusTrap';
+import IClose from '@/icons/IClose';
 
 export interface ModalProps extends PropsWithChildren {
   isOpen: boolean;
   onClose: () => void;
   position: 'bottom' | 'center';
+  portalToWhere?: Element | DocumentFragment;
+  blur?: boolean;
 }
 
-function Modal({ isOpen, onClose, position = 'center', children }: ModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(modalRef, isOpen);
-  useEscapeClose(isOpen, onClose);
+interface ModalHeaderProps extends PropsWithChildren, ComponentProps<'header'> {}
+interface ModalContainerProps extends PropsWithChildren, ComponentProps<'div'> {
+  size?: 'small' | 'medium' | 'large';
+  position?: 'center' | 'bottom';
+}
+interface ModalContentProps extends ComponentProps<'div'> {}
 
+function Modal({
+  isOpen,
+  onClose,
+  position = 'center',
+  portalToWhere = document.body,
+  blur = false,
+  children,
+}: ModalProps) {
   if (!isOpen) return null;
 
+  useEscapeClose(isOpen, onClose);
+
   return createPortal(
-    <div ref={modalRef}>
-      <ModalContext.Provider value={{ onClose, position }}>{children}</ModalContext.Provider>
-    </div>,
-    document.body
+    <ModalContext.Provider value={{ onClose, position }}>
+      <FocusTrap>
+        <S.ModalBackground onClick={onClose} position={position} blur={blur}>
+          {children}
+        </S.ModalBackground>
+      </FocusTrap>
+    </ModalContext.Provider>,
+    portalToWhere
   );
 }
 
-Modal.Background = Background;
-Modal.Container = Container;
-Modal.Header = Header;
-Modal.Content = Content;
+function ModalContainer({ children, size = 'medium', ...props }: ModalContainerProps) {
+  return (
+    <S.ModalContainer
+      {...props}
+      size={size}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      role="dialog"
+      aria-modal="true"
+    >
+      {children}
+    </S.ModalContainer>
+  );
+}
+
+function ModalContent({ children, ...props }: ModalContentProps) {
+  return <S.ModalContent {...props}>{children}</S.ModalContent>;
+}
+
+function ModalHeader({ children, ...props }: ModalHeaderProps) {
+  const ctx = useContext(ModalContext);
+  return (
+    <S.ModalHeader {...props}>
+      <S.HeaderTitle>
+        <Text variant="h2" color="gray90">
+          {children}
+        </Text>
+      </S.HeaderTitle>
+      <S.CloseButton aria-label="모달 닫기" title="모달 닫기" onClick={ctx?.onClose} type="button">
+        <IClose aria-hidden="true" />
+      </S.CloseButton>
+    </S.ModalHeader>
+  );
+}
+
+Modal.Container = ModalContainer;
+Modal.Header = ModalHeader;
+Modal.Content = ModalContent;
 
 export default Modal;
