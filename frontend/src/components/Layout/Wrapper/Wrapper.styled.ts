@@ -10,7 +10,7 @@ export const Container = styled.div<WrapperProps>`
 
   ${({ padding, paddingTop, paddingRight, paddingBottom, paddingLeft }) =>
     padding
-      ? `padding: ${padding};`
+      ? `padding: ${padding ?? '0'};`
       : `
           padding-top: ${paddingTop ?? '0'};
           padding-right: ${paddingRight ?? '0'};

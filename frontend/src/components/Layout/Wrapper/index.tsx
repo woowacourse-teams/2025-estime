@@ -2,20 +2,12 @@ import React from 'react';
 import * as S from './Wrapper.styled';
 import { CSSPaddingVar } from '@/types/designTokenType';
 
-type paddingUnit = CSSPaddingVar | 0;
-
-export type CSSPaddingShorthand =
-  | `${paddingUnit}`
-  | `${paddingUnit} ${paddingUnit}`
-  | `${paddingUnit} ${paddingUnit} ${paddingUnit}`
-  | `${paddingUnit} ${paddingUnit} ${paddingUnit} ${paddingUnit}`;
-
 export interface WrapperProps {
   maxWidth?: number | 'fit-content' | 'max-content' | 'min-content' | '100%' | 'auto';
   fullHeight?: boolean;
   backgroundColor?: string;
 
-  padding?: CSSPaddingShorthand;
+  padding?: CSSPaddingVar;
   paddingTop?: CSSPaddingVar;
   paddingRight?: CSSPaddingVar;
   paddingBottom?: CSSPaddingVar;
