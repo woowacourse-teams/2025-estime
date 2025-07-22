@@ -8,8 +8,13 @@ export const Container = styled.div<WrapperProps>`
   height: ${({ fullHeight }) => (fullHeight ? '100vh' : 'auto')};
   background-color: ${({ backgroundColor }) => backgroundColor ?? 'transparent'};
 
-  padding-top: ${({ paddingTop }) => paddingTop ?? '0'};
-  padding-right: ${({ paddingRight }) => paddingRight ?? '0'};
-  padding-bottom: ${({ paddingBottom }) => paddingBottom ?? '0'};
-  padding-left: ${({ paddingLeft }) => paddingLeft ?? '0'};
+  ${({ padding, paddingTop, paddingRight, paddingBottom, paddingLeft }) =>
+    padding
+      ? `padding: ${padding};`
+      : `
+          padding-top: ${paddingTop ?? '0'};
+          padding-right: ${paddingRight ?? '0'};
+          padding-bottom: ${paddingBottom ?? '0'};
+          padding-left: ${paddingLeft ?? '0'};
+        `}
 `;
