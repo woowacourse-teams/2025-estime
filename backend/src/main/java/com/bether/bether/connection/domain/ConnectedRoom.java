@@ -23,5 +23,7 @@ public class ConnectedRoom extends BaseEntity {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    private Platform platform;
+@Enumerated(EnumType.STRING)
+@Column(name = "platform", nullable = false)
+private Platform platform;
 }
