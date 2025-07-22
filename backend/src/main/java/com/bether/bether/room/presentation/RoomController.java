@@ -68,8 +68,7 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final UUID session,
             @RequestParam("name") final String userName
     ) {
-        final List<TimeSlot> timeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
-        final TimeSlots timeSlots = roomService.getTimeSlotsBySessionAndUserName(session, userName);
+        final TimeSlots timeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
         return CustomApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
     }
 

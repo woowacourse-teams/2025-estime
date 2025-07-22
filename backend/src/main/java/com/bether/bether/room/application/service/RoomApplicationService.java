@@ -36,35 +36,20 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-<<<<<<< HEAD:backend/src/main/java/com/bether/bether/room/application/service/RoomApplicationService.java
-    public List<TimeSlot> getTimeSlotsBySession(final UUID session) {
-        final Long id = roomDomainService.getIdBySession(session);
-=======
     public TimeSlots getTimeSlotsBySession(final UUID session) {
-        final Long id = getIdBySession(session);
->>>>>>> origin/be/dev:backend/src/main/java/com/bether/bether/room/application/service/RoomService.java
+        final Long id = roomDomainService.getIdBySession(session);
         return timeSlotService.getAllByRoomId(id);
     }
 
     @Transactional(readOnly = true)
-<<<<<<< HEAD:backend/src/main/java/com/bether/bether/room/application/service/RoomApplicationService.java
-    public List<TimeSlot> getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
-        final Long id = roomDomainService.getIdBySession(session);
-=======
     public TimeSlots getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
-        final Long id = getIdBySession(session);
->>>>>>> origin/be/dev:backend/src/main/java/com/bether/bether/room/application/service/RoomService.java
+        final Long id = roomDomainService.getIdBySession(session);
         return timeSlotService.getAllByRoomIdAndUserName(id, userName);
     }
 
     @Transactional
-<<<<<<< HEAD:backend/src/main/java/com/bether/bether/room/application/service/RoomApplicationService.java
-    public List<TimeSlot> saveTimeSlots(final TimeSlotInput input) {
-        final Long id = roomDomainService.getIdBySession(input.roomSession());
-=======
     public TimeSlots saveTimeSlots(final TimeSlotInput input) {
-        final Long id = getIdBySession(input.roomSession());
->>>>>>> origin/be/dev:backend/src/main/java/com/bether/bether/room/application/service/RoomService.java
+        final Long id = roomDomainService.getIdBySession(input.roomSession());
         return timeSlotService.saveAll(id, input);
     }
 
