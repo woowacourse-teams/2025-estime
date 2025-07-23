@@ -3,12 +3,14 @@ import { HTTPMethod, QueryParams } from './type';
 const BASE_URL = process.env.API_BASE_URL;
 // const BASE_URL = 'http://localhost:8080';
 
-const baseFetch = async <T>(
-  path: string,
-  method: HTTPMethod,
-  query?: QueryParams,
-  body?: Record<string, any>
-): Promise<T> => {
+interface baseFetchProps {
+  path: string;
+  method: HTTPMethod;
+  query?: QueryParams;
+  body?: Record<string, any>;
+}
+
+const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Promise<T> => {
   const url = new URL(path, BASE_URL);
 
   if (query) {
