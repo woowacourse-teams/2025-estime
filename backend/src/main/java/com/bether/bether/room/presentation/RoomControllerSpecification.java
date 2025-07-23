@@ -43,7 +43,7 @@ public interface RoomControllerSpecification {
                                                     "availableDates": ["2026-07-15", "2026-07-16"],
                                                     "startTime": "09:00",
                                                     "endTime": "23:00",
-                                                    "deadLine": "2026-07-14T23:00:00",
+                                                    "deadLine": "2026-07-14T23:00",
                                                     "isPublic": true,
                                                     "roomSession": "a4b1c2d3-e4f5-6789-0123-456789abcdef"
                                                 }
@@ -80,8 +80,10 @@ public interface RoomControllerSpecification {
                                             "2026-07-15",
                                             "2026-07-16"
                                         ],
-                                        "startTime": "09:00:00",
-                                        "endTime": "23:00:00"
+                                        "startTime": "09:00",
+                                        "endTime": "23:00",
+                                        "deadLine": "2026-07-30T16:00",
+                                        "isPublic": true
                                     }
                                     """)))
             RoomCreateRequest request);
@@ -97,12 +99,12 @@ public interface RoomControllerSpecification {
                                 "result": {
                                     "timeSlots": [
                                         {
-                                            "startTime": "2025-07-17T10:00:00",
-                                            "availableMembers": 5
+                                            "startTime": "2025-07-17T10:00",
+                                            "userNames": ["플린트", "강산", "리버", "제프리"]
                                         },
                                         {
-                                            "startTime": "2025-07-17T11:00:00",
-                                            "availableMembers": 8
+                                            "startTime": "2025-07-17T11:00",
+                                            "userNames": ["리버", "제프리"]
                                         }
                                     ]
                                 }
@@ -122,11 +124,11 @@ public interface RoomControllerSpecification {
                                 "result": {
                                     "recommendations": [
                                         {
-                                            "dateTime": "2025-07-17T11:00:00",
+                                            "dateTime": "2025-07-17T11:00",
                                             "userNames": ["플린트", "강산", "리버", "제프리"]
                                         },
                                         {
-                                            "dateTime": "2025-07-17T10:00:00",
+                                            "dateTime": "2025-07-17T10:00",
                                             "userNames": ["강산", "제프리"]
                                         }
                                     ]
@@ -156,10 +158,10 @@ public interface RoomControllerSpecification {
                                                                     {
                                                                         "userName": "강감찬",
                                                                         "dateTimes": [
-                                                                            "2025-07-21T14:00:00",
-                                                                            "2025-07-21T15:00:00",
-                                                                            "2025-07-22T18:00:00",
-                                                                            "2025-07-22T19:00:00"
+                                                                            "2025-07-21T14:00",
+                                                                            "2025-07-21T15:00",
+                                                                            "2025-07-22T18:00",
+                                                                            "2025-07-22T19:00"
                                                                         ]
                                                                     }
                                                                     """
@@ -177,9 +179,9 @@ public interface RoomControllerSpecification {
                                 "result": {
                                     "userName": "홍길동",
                                     "timeSlots": [
-                                        "2025-07-17T11:00:00",
-                                        "2025-07-17T12:00:00",
-                                        "2025-07-17T14:00:00"
+                                        "2025-07-17T11:00",
+                                        "2025-07-17T12:00",
+                                        "2025-07-17T14:00"
                                     ]
                                 }
                             }
@@ -209,9 +211,9 @@ public interface RoomControllerSpecification {
                                                                     {
                                                                         "userName": "강감찬",
                                                                         "dateTimes": [
-                                                                            "2025-07-21T16:00:00",
-                                                                            "2025-07-21T17:00:00",
-                                                                            "2025-07-22T20:00:00"
+                                                                            "2025-07-21T16:00",
+                                                                            "2025-07-21T17:00",
+                                                                            "2025-07-22T20:00"
                                                                         ]
                                                                     }
                                                                     """

@@ -1,6 +1,7 @@
 package com.bether.bether.room.presentation.dto.response;
 
 import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +21,9 @@ public record TimeSlotRecommendationsResponse(
     }
 
     private record TimeSlotRecommendationResponse(
+            @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
             LocalDateTime dateTime,
+
             List<String> userNames
     ) {
     }
