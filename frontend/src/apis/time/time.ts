@@ -1,33 +1,41 @@
-import baseFetch from '../common/baseFetch';
-import { baseURL } from '../common/constant';
+import api from '../common';
+import { ROOM_API_PATH } from '../common/constant';
 import {
-  CombinedAvailableTimesResponse,
-  UserAvailableTimeResponse,
-  RecommendationTimeResponse,
-  UserAvailableTimeRequest,
+  CombinedAvailableTimesResponseType,
+  UserAvailableTimeResponseType,
+  RecommendationTimeResponseType,
+  UserAvailableTimeRequestType,
 } from './type';
 
-export const putUserAvailableTime = async (session: string, body: UserAvailableTimeRequest) => {
-  return await baseFetch(`${baseURL}/${session}/time-slots`, 'PUT', undefined, body);
+export const updateUserAvailableTime = async (
+  session: string,
+  body: UserAvailableTimeRequestType
+) => {
+  return await api.put(`${ROOM_API_PATH}/${session}/time-slots`, body);
 };
 
-export const postUserAvailableTime = async (session: string, body: UserAvailableTimeRequest) => {
-  return await baseFetch(`${baseURL}/${session}/time-slots`, 'POST', undefined, body);
+export const createUserAvailableTime = async (
+  session: string,
+  body: UserAvailableTimeRequestType
+) => {
+  return await api.post(`${ROOM_API_PATH}/${session}/time-slots`, body);
 };
 
 export const getUserAvailableTime = async (
   session: string,
   name: string
-): Promise<UserAvailableTimeResponse> => {
-  return await baseFetch(`${baseURL}/${session}/time-slots/user`, 'GET', { name });
+): Promise<UserAvailableTimeResponseType> => {
+  return await api.get(`${ROOM_API_PATH}/${session}/time-slots/user`, { name });
 };
 
 export const getTimeSlotStatistics = async (
   session: string
-): Promise<CombinedAvailableTimesResponse> => {
-  return await baseFetch(`${baseURL}/${session}/time-slots/statistic`, 'GET');
+): Promise<CombinedAvailableTimesResponseType> => {
+  return await api.get(`${ROOM_API_PATH}/${session}/time-slots/statistic`);
 };
 
-export const getRecommendedTime = async (session: string): Promise<RecommendationTimeResponse> => {
-  return baseFetch(`${baseURL}/${session}/time-slots/recommendation`, 'GET');
+export const getRecommendedTime = async (
+  session: string
+): Promise<RecommendationTimeResponseType> => {
+  return api.get(`${ROOM_API_PATH}/${session}/time-slots/recommendation`);
 };

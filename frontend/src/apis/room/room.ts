@@ -1,11 +1,11 @@
-import baseFetch from '../common/baseFetch';
-import { baseURL } from '../common/constant';
-import { CreateRoomResponse, CreateRoomRequest, GetRoomInfoResponse } from './type';
+import api from '../common';
+import { ROOM_API_PATH } from '../common/constant';
+import { CreateRoomResponseType, CreateRoomRequestType, GetRoomInfoResponseType } from './type';
 
-export const postCreateRoom = async (body: CreateRoomRequest): Promise<CreateRoomResponse> => {
-  return await baseFetch(`${baseURL}`, 'POST', undefined, body);
+export const createRoom = async (body: CreateRoomRequestType): Promise<CreateRoomResponseType> => {
+  return await api.post(`${ROOM_API_PATH}`, body);
 };
 
-export const getRoomInfo = async (sessionId: string): Promise<GetRoomInfoResponse> => {
-  return await baseFetch(`${baseURL}/${sessionId}`, 'GET');
+export const getRoomInfo = async (sessionId: string): Promise<GetRoomInfoResponseType> => {
+  return await api.get(`${ROOM_API_PATH}/${sessionId}`);
 };
