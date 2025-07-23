@@ -24,3 +24,14 @@ export interface GetRoomInfoResponseType {
 export interface GetRoomInfoResponseType extends CreateRoomRequestType {
   roomSession: string;
 }
+
+export interface CreateUserType {
+  name: string;
+  password: string;
+}
+export interface CreateUserResponseType {
+  code: number;
+  success: boolean;
+  message: string;
+  result: { session: string };
+}
