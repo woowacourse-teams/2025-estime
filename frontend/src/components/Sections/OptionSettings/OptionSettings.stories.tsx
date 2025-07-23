@@ -20,9 +20,9 @@ const Template: StoryFn = () => {
     set: setDeadLine,
   };
 
-  const [isPublic, setIsPublic] = useState<boolean>(true);
+  const [isPublic, setIsPublic] = useState<'public' | 'private'>('public');
 
-  const isPublicField: Field<boolean> = {
+  const isPublicField: Field<'public' | 'private'> = {
     value: isPublic,
     set: setIsPublic,
   };

@@ -12,7 +12,7 @@ import { Field } from '@/types/field';
 
 interface OptionSettingsProps {
   deadLine: Field<{ date: string; time: string }>;
-  isPublic: Field<boolean>;
+  isPublic: Field<'public' | 'private'>;
 }
 
 export interface StyleProps {
@@ -57,16 +57,16 @@ const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
         </S.Wrapper>
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
           <Text variant="h3">공개 범위</Text>
-          {ACCESS_OPTIONS.map(({ value, flag, label, Icon, description }) => (
+          {ACCESS_OPTIONS.map(({ value, label, Icon, description }) => (
             <S.Wrapper
               key={value}
-              onClick={() => isPublic.set(flag)}
+              onClick={() => isPublic.set(value)}
               border={`1px solid ${theme.colors.gray20}`}
               backgroundColor={theme.colors.gray10}
               padding={'var(--padding-7) var(--padding-4)'}
               borderRadius={'var(--radius-4)'}
             >
-              <Radio name="access" value={value} checked={isPublic.value === flag} readOnly>
+              <Radio name="access" value={value} checked={isPublic.value === value}>
                 <S.Wrapper gap="var(--gap-3)" alignItems="center">
                   <Icon color={theme.colors.text} />
                   <Text variant="h4">{label}</Text>
