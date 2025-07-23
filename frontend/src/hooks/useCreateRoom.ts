@@ -1,3 +1,4 @@
+import { checkTimeRangeValid } from '@/utils/Time/checkTimeRangeValid';
 import { useState } from 'react';
 
 interface RoomInfo {
@@ -13,8 +14,8 @@ const initialRoomInfo: RoomInfo = {
   title: '',
   availableDates: new Set(),
   time: {
-    startTime: '',
-    endTime: '',
+    startTime: '09:00',
+    endTime: '17:00',
   },
   deadLine: {
     date: '2025-07-23',
@@ -26,6 +27,11 @@ const initialRoomInfo: RoomInfo = {
 
 export const useCreateRoom = () => {
   const [roomInfo, setRoomInfo] = useState<RoomInfo>(initialRoomInfo);
+
+  const isTimeRangeValid = checkTimeRangeValid({
+    startTime: roomInfo.time.startTime,
+    endTime: roomInfo.time.endTime,
+  });
 
   const title = {
     value: roomInfo.title,
@@ -39,6 +45,7 @@ export const useCreateRoom = () => {
 
   const time = {
     value: roomInfo.time,
+    valid: isTimeRangeValid,
     set: ({ startTime, endTime }: { startTime: string; endTime: string }) =>
       setRoomInfo((prev) => ({ ...prev, time: { startTime, endTime } })),
   };
@@ -58,6 +65,7 @@ export const useCreateRoom = () => {
     roomInfo.title.trim() !== '' &&
     roomInfo.availableDates.size > 0 &&
     roomInfo.time.startTime.trim() !== '' &&
+    isTimeRangeValid &&
     roomInfo.time.endTime.trim() !== '' &&
     roomInfo.deadLine.date.trim() !== '' &&
     roomInfo.deadLine.time.trim() !== '';

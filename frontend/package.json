@@ -11,7 +11,8 @@
     "build": "webpack --config webpack.prod.js",
     "test": "jest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "clean": "rm -rf node_modules && npm install"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
