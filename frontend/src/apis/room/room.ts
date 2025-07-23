@@ -6,6 +6,6 @@ export const createRoom = async (body: CreateRoomRequestType): Promise<CreateRoo
   return await api.post(`${ROOM_API_PATH}`, body);
 };
 
-export const getRoomInfo = async (sessionId: string): Promise<GetRoomInfoResponseType> => {
+export const getRoomInfo = async (sessionId: string | null): Promise<GetRoomInfoResponseType> => {
   return await api.get(`${ROOM_API_PATH}/${sessionId}`);
 };
