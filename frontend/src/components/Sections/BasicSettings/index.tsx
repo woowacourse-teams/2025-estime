@@ -121,7 +121,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
             </S.CustomTimeWrapper>
             {!time.valid && (
               <Text variant="caption" color="red40">
-                종료시간은 시작시간보다 늦어야한다핑~~
+                종료 시간은 시작 시간보다 빠를 수 없습니다. 다시 선택해주세요.
               </Text>
             )}
           </>
