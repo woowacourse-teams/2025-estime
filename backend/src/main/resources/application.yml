@@ -19,6 +19,9 @@ spring:
       hibernate:
         format_sql: true
 
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
 discord:
   bot:
     token: ${DISCORD_BOT_TOKEN}
