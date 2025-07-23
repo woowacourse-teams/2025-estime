@@ -17,6 +17,13 @@ interface ApiResponse<T> {
   data: T;
 }
 
+interface ApiErrorResponse {
+  timestamp: string;
+  status: number;
+  error: string;
+  path: string;
+}
+
 const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Promise<T> => {
   const url = new URL(path, BASE_URL);
 
@@ -46,8 +53,8 @@ const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Prom
   const response = await fetch(url.toString(), options);
 
   if (!response.ok) {
-    const errorBody = await response.json();
-    throw new Error(errorBody.message || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    const error: ApiErrorResponse = await response.json();
+    throw new Error(error.error || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 
   const responseJson: ApiResponse<T> = await response.json();
