@@ -15,7 +15,7 @@ export const updateUserAvailableTime = async (
 };
 
 export const createUserAvailableTime = async (
-  session: string,
+  session: string | undefined,
   body: UserAvailableTimeRequestType
 ) => {
   return await api.post(`${ROOM_API_PATH}/${session}/time-slots`, body);
