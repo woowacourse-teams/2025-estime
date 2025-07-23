@@ -3,7 +3,7 @@ export interface CreateRoomRequestType {
   availableDates: string[];
   startTime: string;
   endTime: string;
-  deadline: string;
+  deadLine: string;
   isPublic: boolean;
 }
 
