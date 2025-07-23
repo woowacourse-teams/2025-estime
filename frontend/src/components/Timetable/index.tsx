@@ -8,14 +8,27 @@ import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import * as S from './Timetable.styled';
 import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Button from '../Button';
+import { Field } from '@/types/field';
 
 interface TimetableProps {
-  availableDates: string[];
+  availableDates: Set<string>;
   startTime: string;
   endTime: string;
+  session: string | undefined;
+  userAvailability: {
+    userName: Field<string>;
+    selectedTimes: Field<Set<string>>;
+    userAvailabilitySubmit: (session: string | undefined) => Promise<unknown>;
+  };
 }
 
-const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
+const Timetable = ({
+  availableDates,
+  startTime,
+  endTime,
+  session,
+  userAvailability,
+}: TimetableProps) => {
   const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
   const endTimeInMinutes = endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
   const interval = 30;
@@ -25,10 +38,9 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
     ...generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
   ];
 
-  const [selectedTimes, setSelectedTimes] = useState<Set<string>>(new Set());
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
-    selectedTimes,
-    setSelectedTimes,
+    selectedTimes: userAvailability.selectedTimes.value,
+    setSelectedTimes: userAvailability.selectedTimes.set,
     time: '',
   });
 
@@ -48,14 +60,17 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
         <S.TimetableHeader>
           <Flex direction="column" gap="var(--gap-4)">
             <Text variant="h2" color="text">
-              내 시간 등록하기
+              {userAvailability.userName.value}의 시간 등록하기
             </Text>
             <Text variant="body" color="text">
               가능한 시간을 아래 시간표에서 드래그 해주세요 !
             </Text>
           </Flex>
           <Wrapper maxWidth={100} center={false}>
-            <Button color="primary">
+            <Button
+              color="primary"
+              onClick={() => userAvailability.userAvailabilitySubmit(session)}
+            >
               <Text variant="button" color="text">
                 저장하기
               </Text>
@@ -76,7 +91,7 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
               </S.GridContainer>
             ))}
           </S.TimeSlotColumn>
-          {availableDates.map((date) => (
+          {[...availableDates].map((date) => (
             <Wrapper key={date} center={false}>
               {timeList.map(({ timeText }) => (
                 <S.HeaderCell
@@ -84,7 +99,7 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
                   onMouseDown={() => onMouseDown(`${date} ${timeText}`)}
                   onMouseUp={() => onMouseUp()}
                   onMouseMove={() => onMouseEnter(`${date} ${timeText}`)}
-                  selectedTimes={selectedTimes}
+                  selectedTimes={userAvailability.selectedTimes.value}
                   date={date}
                   timeText={timeText}
                 >
