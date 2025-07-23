@@ -5,7 +5,7 @@ interface RoomInfo {
   availableDates: Set<string>;
   time: { startTime: string; endTime: string };
   deadLine: { date: string; time: string };
-  isPublic: boolean;
+  isPublic: 'public' | 'private';
   roomSession?: string;
 }
 
@@ -20,7 +20,7 @@ const initialRoomInfo: RoomInfo = {
     date: '2025-07-23',
     time: '16:00',
   },
-  isPublic: true,
+  isPublic: 'public',
   roomSession: '',
 };
 
@@ -51,7 +51,7 @@ export const useCreateRoom = () => {
 
   const isPublic = {
     value: roomInfo.isPublic,
-    set: (isPublic: boolean) => setRoomInfo((prev) => ({ ...prev, isPublic })),
+    set: (isPublic: 'public' | 'private') => setRoomInfo((prev) => ({ ...prev, isPublic })),
   };
 
   const isReadyToCreateRoom =
