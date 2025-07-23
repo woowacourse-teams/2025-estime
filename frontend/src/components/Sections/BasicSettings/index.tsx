@@ -8,13 +8,15 @@ import useSelectTime from '@/hooks/useSelectTime';
 import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
 import { useTheme } from '@emotion/react';
-
+import { Field } from '@/types/field';
 import changeIconColor from '@/utils/changeIconColor';
 
-//Todo: 페이지에서 상태를 내려줄 경우
-interface BasicSettingsProps {}
+type BasicSettingsProps = {
+  title: Field<string>;
+  time: Field<{ startTime: string; endTime: string }>;
+};
 
-const BasicSettings = ({}: BasicSettingsProps) => {
+const BasicSettings = ({ title, time }: BasicSettingsProps) => {
   const { colors } = useTheme();
 
   const { isOpen: isStartOpen, toggleOpen: toggleStartOpen } = useTimePicker();
@@ -28,7 +30,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
     handleCustomButtonClick,
     handleCustomStartClick,
     handleCustomEndClick,
-  } = useSelectTime();
+  } = useSelectTime({ timeRange: time.value, setTimeRange: time.set });
 
   return (
     <S.Container>
@@ -38,7 +40,11 @@ const BasicSettings = ({}: BasicSettingsProps) => {
           <Text variant="body">참여자들에게 표시될 방의 제목을 입력해주세요.</Text>
         </S.TextWrapper>
         <S.InputWrapper>
-          <Input placeholder="예: 1팀 7월 정기 회의" />
+          <Input
+            placeholder="예: 1팀 7월 정기 회의"
+            value={title.value}
+            onChange={(e) => title.set(e.target.value)}
+          />
         </S.InputWrapper>
       </S.InfoWrapper>
       <S.InfoWrapper>

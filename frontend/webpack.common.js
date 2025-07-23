@@ -1,10 +1,14 @@
 import path from 'path';
+import dotenv from 'dotenv';
+import webpack from 'webpack';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 export default {
   entry: './src/index.tsx',
@@ -38,5 +42,11 @@ export default {
       { test: /\.(png|jpe?g|gif|svg)$/, type: 'asset/resource' },
     ],
   },
-  plugins: [new HtmlWebpackPlugin({ template: './public/index.html' }), new ForkTsCheckerPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new ForkTsCheckerPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env),
+    }),
+  ],
 };
