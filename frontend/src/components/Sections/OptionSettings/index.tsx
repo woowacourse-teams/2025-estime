@@ -66,7 +66,7 @@ const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
               padding={'var(--padding-7) var(--padding-4)'}
               borderRadius={'var(--radius-4)'}
             >
-              <Radio name="access" value={value} checked={isPublic.value === value}>
+              <Radio name="access" value={value} checked={isPublic.value === value} readOnly>
                 <S.Wrapper gap="var(--gap-3)" alignItems="center">
                   <Icon color={theme.colors.text} />
                   <Text variant="h4">{label}</Text>
