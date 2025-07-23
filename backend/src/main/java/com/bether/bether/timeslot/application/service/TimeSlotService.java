@@ -64,7 +64,7 @@ public class TimeSlotService {
             timeSlotRepository.saveAll(timeSlotsToSave);
         }
         if (timeSlotsToDelete.isNotEmpty()) {
-            timeSlotRepository.deleteAll(timeSlotsToDelete);
+            timeSlotRepository.deleteAllInBatch(timeSlotsToDelete);
         }
     }
 }
