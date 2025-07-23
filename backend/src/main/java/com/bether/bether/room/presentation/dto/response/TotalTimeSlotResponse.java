@@ -1,6 +1,7 @@
 package com.bether.bether.room.presentation.dto.response;
 
 import com.bether.bether.timeslot.domain.TimeSlots;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public record TotalTimeSlotResponse(
 
     private record TimeSlotResponse(
             String userName,
+
+            @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
             LocalDateTime dateTime
     ) {
     }
