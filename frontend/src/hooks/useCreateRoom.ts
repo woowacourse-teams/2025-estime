@@ -1,7 +1,8 @@
-import { checkTimeRangeValid } from '@/utils/Time/checkTimeRangeValid';
+import { createRoom } from '@/apis/room/room';
+import { getCreateRoomPayload } from '@/apis/transform/getCreateRoomPayload';
 import { useState } from 'react';
 
-interface RoomInfo {
+export interface RoomInfo {
   title: string;
   availableDates: Set<string>;
   time: { startTime: string; endTime: string };
@@ -18,7 +19,7 @@ const initialRoomInfo: RoomInfo = {
     endTime: '17:00',
   },
   deadLine: {
-    date: '2025-07-23',
+    date: '2025-07-25',
     time: '16:00',
   },
   isPublic: 'public',
@@ -72,8 +73,14 @@ export const useCreateRoom = () => {
 
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
-  const roomInfoSubmit = () => {
-    console.log(roomInfo);
+  const roomInfoSubmit = async () => {
+    try {
+      const payload = getCreateRoomPayload(roomInfo);
+      const response = await createRoom(payload);
+      console.log('방 생성 성공:', response);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return {
