@@ -1,27 +1,27 @@
-export interface UserAvailableTimeRequest {
+export interface UserAvailableTimeRequestType {
   userName: string;
   dateTimes: string[];
 }
 
-export type UserAvailableTimeResponse = {
+export type UserAvailableTimeResponseType = {
   userName: string;
   timeSlots: string[];
 };
 
-export interface CombinedAvailableTimesResponse {
-  timeSlots: TimeSlotStat[];
+export interface CombinedAvailableTimesResponseType {
+  timeSlots: TimeSlotStatType[];
 }
 
-export interface RecommendationTimeResponse {
-  recommendations: RecommendedTimeSlot[];
+export interface RecommendationTimeResponseType {
+  recommendations: RecommendedTimeSlotType[];
 }
 
-interface TimeSlotStat {
+interface TimeSlotStatType {
   startTime: string;
   availableMembers: number;
 }
 
-interface RecommendedTimeSlot {
+interface RecommendedTimeSlotType {
   dateTime: string;
   userNames: string[];
 }
