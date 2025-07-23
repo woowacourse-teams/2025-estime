@@ -1,6 +1,5 @@
 import * as S from './OptionSettings.styled';
 import Text from '@/components/Text';
-import Toggle from '@/components/Toggle';
 import DatePicker from '@/components/DatePicker';
 import Radio from '@/components/Radio';
 import Accordion from '@/components/Accordion';
@@ -8,14 +7,12 @@ import TimePicker from '@/components/Timepicker';
 import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 import useTimePicker from '@/hooks/useTimePicker';
+import { useState } from 'react';
+import { Field } from '@/types/field';
 
 interface OptionSettingsProps {
-  isOpenAccordion: boolean;
-  onToggleAccordion: () => void;
-  isDeadlineEnable: boolean;
-  onToggleDeadline: () => void;
-  date: string;
-  onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  deadLine: Field<{ date: string; time: string }>;
+  isPublic: Field<'public' | 'private'>;
 }
 
 export interface StyleProps {
@@ -29,29 +26,33 @@ export interface StyleProps {
   borderRadius?: string;
 }
 
-const OptionSettings = ({
-  isOpenAccordion,
-  onToggleAccordion,
-  isDeadlineEnable,
-  onToggleDeadline,
-  date,
-  onDateChange,
-}: OptionSettingsProps) => {
+const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
   const theme = useTheme();
-
-  const timePicker = useTimePicker();
+  const { toggleOpen, isOpen } = useTimePicker();
+  const [isOpenAccordion, setIsOpenAccordion] = useState(false);
 
   return (
     <S.Container>
-      <Accordion title="선택 설정" isOpen={isOpenAccordion} onToggle={onToggleAccordion}>
+      <Accordion
+        title="선택 설정"
+        isOpen={isOpenAccordion}
+        onToggle={() => setIsOpenAccordion((prev) => !prev)}
+      >
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
           <S.Wrapper justifyContent="space-between">
             <Text variant="h3">마감 기한</Text>
-            <Toggle isOn={isDeadlineEnable} onToggle={onToggleDeadline} />
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
-            <DatePicker value={date} onChange={onDateChange} />
-            <TimePicker {...timePicker} />
+            <DatePicker
+              value={deadLine.value.date}
+              onChange={(e) => deadLine.set({ date: e.target.value, time: deadLine.value.time })}
+            />
+            <TimePicker
+              selectedHour={deadLine.value.time}
+              selectHour={(hour: string) => deadLine.set({ date: deadLine.value.date, time: hour })}
+              toggleOpen={toggleOpen}
+              isOpen={isOpen}
+            />
           </S.Wrapper>
         </S.Wrapper>
         <S.Wrapper flexDirection="column" gap="var(--gap-6)">
@@ -59,12 +60,13 @@ const OptionSettings = ({
           {ACCESS_OPTIONS.map(({ value, label, Icon, description }) => (
             <S.Wrapper
               key={value}
+              onClick={() => isPublic.set(value)}
               border={`1px solid ${theme.colors.gray20}`}
               backgroundColor={theme.colors.gray10}
               padding={'var(--padding-7) var(--padding-4)'}
               borderRadius={'var(--radius-4)'}
             >
-              <Radio name="access" value={value}>
+              <Radio name="access" value={value} checked={isPublic.value === value}>
                 <S.Wrapper gap="var(--gap-3)" alignItems="center">
                   <Icon color={theme.colors.text} />
                   <Text variant="h4">{label}</Text>

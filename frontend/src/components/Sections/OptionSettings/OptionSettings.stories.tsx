@@ -1,32 +1,33 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useState } from 'react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import OptionSettings from '.';
+import { useState } from 'react';
+import type { Field } from '@/types/field';
 
-const meta: Meta<typeof OptionSettings> = {
+export default {
   title: 'Components/OptionSettings',
   component: OptionSettings,
   tags: ['autodocs'],
+} as Meta<typeof OptionSettings>;
+
+const Template: StoryFn = () => {
+  const [deadLine, setDeadLine] = useState<{ date: string; time: string }>({
+    date: '2025-07-23',
+    time: '16:00',
+  });
+
+  const deadLineField: Field<{ date: string; time: string }> = {
+    value: deadLine,
+    set: setDeadLine,
+  };
+
+  const [isPublic, setIsPublic] = useState<'public' | 'private'>('public');
+
+  const isPublicField: Field<'public' | 'private'> = {
+    value: isPublic,
+    set: setIsPublic,
+  };
+
+  return <OptionSettings deadLine={deadLineField} isPublic={isPublicField} />;
 };
 
-export default meta;
-
-type Story = StoryObj<typeof OptionSettings>;
-
-export const Interactive: Story = {
-  render: () => {
-    const [isOpenAccordion, setIsOpenAccordion] = useState(false);
-    const [isDeadlineEnable, setisDeadlineEnable] = useState(false);
-    const [date, setDate] = useState('2025-07-19');
-
-    return (
-      <OptionSettings
-        isOpenAccordion={isOpenAccordion}
-        onToggleAccordion={() => setIsOpenAccordion((prev) => !prev)}
-        isDeadlineEnable={isDeadlineEnable}
-        onToggleDeadline={() => setisDeadlineEnable((prev) => !prev)}
-        date={date}
-        onDateChange={(e) => setDate(e.target.value)}
-      />
-    );
-  },
-};
+export const Default = Template.bind({});
