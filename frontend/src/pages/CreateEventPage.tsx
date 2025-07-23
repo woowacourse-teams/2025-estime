@@ -13,6 +13,13 @@ const CreateEventPage = () => {
   const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom, roomInfoSubmit } =
     useCreateRoom();
 
+  const handleCreateRoom = async () => {
+    const session = await roomInfoSubmit();
+    if (session) {
+      navigate(`/check?id=${session}`);
+    }
+  };
+
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
@@ -29,10 +36,7 @@ const CreateEventPage = () => {
                 selected={true}
                 size="small"
                 disabled={!isReadyToCreateRoom}
-                onClick={() => {
-                  navigate(`/check?id=${124124124}`);
-                  roomInfoSubmit();
-                }}
+                onClick={handleCreateRoom}
               >
                 <Text variant="button" color="background">
                   방 만들기
