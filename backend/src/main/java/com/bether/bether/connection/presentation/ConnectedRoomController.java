@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class ConnectedRoomController {
+public class ConnectedRoomController implements ConnectedRoomControllerSpecification {
 
     private final ConnectedRoomApplicationService applicationService;
 

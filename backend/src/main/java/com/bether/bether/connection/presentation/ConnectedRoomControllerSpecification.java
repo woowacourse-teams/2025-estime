@@ -1,16 +1,20 @@
 package com.bether.bether.connection.presentation;
 
 import com.bether.bether.common.CustomApiResponse;
+import com.bether.bether.connection.presentation.dto.request.ConnectedRoomCreateRequest;
 import com.bether.bether.connection.presentation.dto.response.ConnectedRoomCreateResponse;
-import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+@Tag(name = "ConnectedRoom", description = "커넥티드 룸 관련 API")
+@RequestMapping("/api/v1/connected-rooms")
 public interface ConnectedRoomControllerSpecification {
 
     @Operation(summary = "커넥티드 룸 생성", description = "💡 새로운 커넥티드 룸을 생성합니다.")
@@ -49,5 +53,5 @@ public interface ConnectedRoomControllerSpecification {
                                         "channelId": "C096H841ELㅌX"
                                     }
                                     """)))
-            RoomCreateRequest request);
+            ConnectedRoomCreateRequest request);
 }
