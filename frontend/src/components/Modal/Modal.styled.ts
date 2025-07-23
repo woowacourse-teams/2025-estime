@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { keyframes, css } from '@emotion/react';
 import { zIndex } from '@/constants/styles';
+import { ModalSize } from '.';
 
 const modalBackgroundColor = 'rgba(0, 0, 0, 0.4)';
 const fadeIn = keyframes`
@@ -40,6 +41,8 @@ export const ModalBackground = styled.div<{
         background-color: ${modalBackgroundColor};
         justify-content: center;
         align-items: center;
+        // inside 모달시 border-radius 사용 안해주면, 각짐!
+        border-radius: var(--radius-4);
       `;
     }
 
@@ -59,11 +62,11 @@ export const ModalBackground = styled.div<{
   backdrop-filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
 `;
 
-const getSizeStyles = (size?: 'small' | 'medium' | 'large' | 'full') => {
+const getSizeStyles = (size?: 'small' | 'medium' | 'large' | '85%') => {
   switch (size) {
-    case 'full':
+    case '85%':
       return css`
-        width: 100%;
+        width: 85%;
         animation: ${zoomIn} 0.3s ease-in-out;
       `;
     case 'small':
@@ -87,9 +90,8 @@ const getSizeStyles = (size?: 'small' | 'medium' | 'large' | 'full') => {
 };
 
 export const ModalContainer = styled.div<{
-  size?: 'small' | 'medium' | 'large' | 'full';
+  size?: ModalSize;
 }>`
-  padding: var(--padding-8);
   background: ${({ theme }) => theme.colors.background};
   color: ${({ theme }) => theme.colors.text};
   border-radius: var(--radius-4);
@@ -98,20 +100,18 @@ export const ModalContainer = styled.div<{
   flex-direction: column;
   gap: var(--gap-4);
   align-items: flex-start;
-
   animation: ${zoomIn} 0.3s ease-in-out;
-
   ${(props) => getSizeStyles(props.size)}
 `;
 
 export const CloseButton = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   background: none;
   border: none;
   border-radius: var(--radius-2);
-
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;

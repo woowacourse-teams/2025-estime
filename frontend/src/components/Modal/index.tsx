@@ -15,10 +15,11 @@ export interface ModalProps extends PropsWithChildren {
   blur?: boolean;
   shouldCloseOnOverlayAction?: boolean;
 }
+export type ModalSize = 'small' | 'medium' | 'large' | '85%';
 
 interface ModalHeaderProps extends PropsWithChildren, ComponentProps<'header'> {}
 interface ModalContainerProps extends PropsWithChildren, ComponentProps<'div'> {
-  size?: 'small' | 'medium' | 'large' | 'full';
+  size?: ModalSize;
 }
 interface ModalContentProps extends ComponentProps<'div'> {}
 
