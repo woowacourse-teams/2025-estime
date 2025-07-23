@@ -62,7 +62,7 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
             </Button>
           </Wrapper>
         </S.TimetableHeader>
-        <S.TimetableContent>
+        <S.TimetableContent onMouseLeave={() => onMouseLeave()}>
           <S.TimeSlotColumn>
             {timeList.map(({ timeText, isHour }) => (
               <S.GridContainer key={timeText}>
@@ -80,10 +80,10 @@ const Timetable = ({ availableDates, startTime, endTime }: TimetableProps) => {
             <Wrapper key={date} center={false}>
               {timeList.map(({ timeText }) => (
                 <S.HeaderCell
-                  key={`${date}-${timeText}`}
-                  onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
+                  key={`${date} ${timeText}`}
+                  onMouseDown={() => onMouseDown(`${date} ${timeText}`)}
                   onMouseUp={() => onMouseUp()}
-                  onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
+                  onMouseMove={() => onMouseEnter(`${date} ${timeText}`)}
                   selectedTimes={selectedTimes}
                   date={date}
                   timeText={timeText}
