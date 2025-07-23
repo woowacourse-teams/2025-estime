@@ -7,14 +7,17 @@ import com.bether.bether.room.application.service.RoomApplicationService;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotUpdateRequest;
+import com.bether.bether.room.presentation.dto.request.UserCreateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
 import com.bether.bether.room.presentation.dto.response.RoomResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
+import com.bether.bether.room.presentation.dto.response.UserCreateResponse;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.domain.TimeSlots;
+import com.bether.bether.user.application.dto.output.UserCreateOutput;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,5 +80,12 @@ public class RoomController implements RoomControllerSpecification {
                                                    @RequestBody final TimeSlotUpdateRequest request) {
         roomApplicationService.updateTimeSlots(request.toInput(session));
         return CustomApiResponse.ok();
+    }
+
+    @Override
+    public CustomApiResponse<UserCreateResponse> createUser(@PathVariable("session") final UUID session,
+                                                            @RequestBody final UserCreateRequest request) {
+        final UserCreateOutput output = roomApplicationService.saveUser(session, request.toInput(session));
+        return CustomApiResponse.ok(UserCreateResponse.from(output));
     }
 }
