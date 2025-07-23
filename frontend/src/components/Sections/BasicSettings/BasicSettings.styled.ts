@@ -40,23 +40,6 @@ export const ButtonWrapper = styled.div`
   width: 100%;
 `;
 
-export const ImageWrapper = styled.div<{ color: ColorsKey }>`
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-
-  svg {
-    color: ${({ theme, color }) => theme.colors[color]};
-  }
-`;
-
 export const CustomTimeWrapper = styled.div<{ selected: boolean }>`
   display: flex;
   width: 100%;

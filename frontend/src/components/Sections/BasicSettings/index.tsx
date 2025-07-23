@@ -9,6 +9,7 @@ import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
 import { useTheme } from '@emotion/react';
 import { Field } from '@/types/field';
+import changeIconColor from '@/utils/changeIconColor';
 
 type BasicSettingsProps = {
   title: Field<string>;
@@ -57,9 +58,12 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
             onClick={() => handleDayNightButtonClick('day')}
             selected={selectedButtons.includes('day')}
           >
-            <S.ImageWrapper color="secondary">
-              <ISun color={colors.text} />
-            </S.ImageWrapper>
+            <ISun
+              color={changeIconColor({
+                defaultColor: 'secondary',
+                isSelected: selectedButtons.includes('day'),
+              })}
+            />
             <Text
               variant="button"
               color={selectedButtons.includes('day') ? 'background' : 'secondary'}
@@ -72,9 +76,12 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
             onClick={() => handleDayNightButtonClick('night')}
             selected={selectedButtons.includes('night')}
           >
-            <S.ImageWrapper color="primary">
-              <IMoon color={colors.text} />
-            </S.ImageWrapper>
+            <IMoon
+              color={changeIconColor({
+                defaultColor: 'primary',
+                isSelected: selectedButtons.includes('night'),
+              })}
+            />
 
             <Text
               variant="button"
