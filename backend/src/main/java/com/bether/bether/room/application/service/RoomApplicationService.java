@@ -10,6 +10,9 @@ import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendations
 import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
 import com.bether.bether.timeslot.application.service.TimeSlotService;
 import com.bether.bether.timeslot.domain.TimeSlots;
+import com.bether.bether.user.application.dto.input.UserCreateInput;
+import com.bether.bether.user.application.dto.output.UserCreateOutput;
+import com.bether.bether.user.application.service.UserDomainService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ public class RoomApplicationService {
 
     private final RoomDomainService roomDomainService;
     private final TimeSlotService timeSlotService;
+    private final UserDomainService userDomainService;
 
     @Transactional(readOnly = true)
     public RoomOutput getBySession(final UUID session) {
@@ -69,5 +73,11 @@ public class RoomApplicationService {
     public void updateTimeSlots(final TimeSlotUpdateInput input) {
         final Long roomId = roomDomainService.getIdBySession(input.roomSession());
         timeSlotService.updateTimeSlots(roomId, input);
+    }
+
+    @Transactional
+    public UserCreateOutput saveUser(final UUID session, final UserCreateInput input) {
+        final Long id = roomDomainService.getIdBySession(session);
+        return UserCreateOutput.from(userDomainService.getByRoomIdAndName(id, input));
     }
 }

@@ -4,11 +4,13 @@ import com.bether.bether.common.CustomApiResponse;
 import com.bether.bether.room.presentation.dto.request.RoomCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotCreateRequest;
 import com.bether.bether.room.presentation.dto.request.TimeSlotUpdateRequest;
+import com.bether.bether.room.presentation.dto.request.UserCreateRequest;
 import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
 import com.bether.bether.room.presentation.dto.response.RoomResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
+import com.bether.bether.room.presentation.dto.response.UserCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -219,4 +221,35 @@ public interface RoomControllerSpecification {
                                                                     """
                                                     )
                                             )) TimeSlotUpdateRequest request);
+
+
+    @Operation(summary = "룸 사용자 로그인", description = "💡 특정 룸에 새로운 사용자를 생성(로그인)합니다. 사용자는 이름과 비밀번호로 식별됩니다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                        "code": 200,
+                                        "success": true,
+                                        "message": null,
+                                        "result": {
+                                            "name": "홍길동"
+                                        }
+                                    }
+                                    """)))
+    })
+    @PostMapping("/{session}/users")
+    CustomApiResponse<UserCreateResponse> createUser(@PathVariable("session") final UUID session,
+                                                     @RequestBody(description = "생성할 사용자의 이름과 비밀번호를 입력합니다.", required = true,
+                                                             content = @Content(
+                                                                     examples = @ExampleObject(
+                                                                             summary = "사용자 생성 요청 예시",
+                                                                             value = """
+                                                                                     {
+                                                                                         "name": "홍길동",
+                                                                                         "password": "1234"
+                                                                                     }
+                                                                                     """
+                                                                     )
+                                                             )) final UserCreateRequest request);
 }
