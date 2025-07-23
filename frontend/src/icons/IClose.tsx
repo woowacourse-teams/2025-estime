@@ -1,6 +1,6 @@
 import { IconType } from '@/types/iconType';
 
-function Close({ color = 'currentColor', ...props }: IconType) {
+function IClose({ color = 'currentColor', ...props }: IconType) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -21,4 +21,4 @@ function Close({ color = 'currentColor', ...props }: IconType) {
   );
 }
 
-export default Close;
+export default IClose;
