@@ -70,8 +70,10 @@ export const useCreateRoom = () => {
     try {
       const payload = getCreateRoomPayload(roomInfo);
       const response = await createRoom(payload);
-      console.log('방 생성 성공:', response);
+      return response.session;
     } catch (err) {
+      const e = err as Error;
+      alert(e.message);
       console.error(err);
     }
   };
