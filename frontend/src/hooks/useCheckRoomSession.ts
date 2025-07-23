@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useExtractQueryParam } from './common/useExtractQueryParam';
-import { initialRoomInfo, RoomInfo } from './useCreateRoom';
 import { getRoomInfo } from '@/apis/room/room';
 import { parseRoomInfoResponse } from '@/apis/transform/parseRoomInfoResponse';
+import { RoomInfo } from '@/types/roomInfo';
+import { initialRoomInfo } from '@/constants/initialRoomInfo';
 
 const useCheckRoomSession = () => {
   const session = useExtractQueryParam('id');
