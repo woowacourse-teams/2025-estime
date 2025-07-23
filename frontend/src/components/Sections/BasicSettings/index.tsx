@@ -53,14 +53,12 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             onClick={() => handleDayNightButtonClick('day')}
             selected={selectedButtons.includes('day')}
           >
-            <S.ImageWrapper>
-              <ISun
-                color={getIconColor({
-                  defaultColor: 'secondary',
-                  isSelected: selectedButtons.includes('day'),
-                })}
-              />
-            </S.ImageWrapper>
+            <ISun
+              color={getIconColor({
+                defaultColor: 'secondary',
+                isSelected: selectedButtons.includes('day'),
+              })}
+            />
             <Text
               variant="button"
               color={selectedButtons.includes('day') ? 'background' : 'secondary'}
@@ -73,14 +71,12 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             onClick={() => handleDayNightButtonClick('night')}
             selected={selectedButtons.includes('night')}
           >
-            <S.ImageWrapper color="primary">
-              <IMoon
-                color={getIconColor({
-                  defaultColor: 'primary',
-                  isSelected: selectedButtons.includes('night'),
-                })}
-              />
-            </S.ImageWrapper>
+            <IMoon
+              color={getIconColor({
+                defaultColor: 'primary',
+                isSelected: selectedButtons.includes('night'),
+              })}
+            />
 
             <Text
               variant="button"
