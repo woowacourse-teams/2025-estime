@@ -10,6 +10,8 @@ const useCheckRoomSession = () => {
   const [roomInfo, setRoomInfo] = useState<RoomInfo>(initialRoomInfo);
 
   const fetchSession = async () => {
+    if (!session) return;
+
     try {
       const response = await getRoomInfo(session);
       const parseData = parseRoomInfoResponse(response);
