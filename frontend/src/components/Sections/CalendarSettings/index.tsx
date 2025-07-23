@@ -18,7 +18,7 @@ const CalendarSettings = () => {
     <S.Container>
       <S.TextWrapper>
         <Text variant="h3">날짜 선택</Text>
-        <Text variant="body">참여자들에게 드래그 해주세요! 뭐라카노</Text>
+        <Text variant="body">가능한 날짜를 드래그해서 선택해주세요!</Text>
       </S.TextWrapper>
       <Calender today={today} selectedDates={selectedDates} mouseHandlers={mouseHandlers} />
     </S.Container>
