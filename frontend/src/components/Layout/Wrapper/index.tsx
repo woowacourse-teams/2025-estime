@@ -7,6 +7,7 @@ export interface WrapperProps {
   fullHeight?: boolean;
   backgroundColor?: string;
 
+  padding?: CSSPaddingVar;
   paddingTop?: CSSPaddingVar;
   paddingRight?: CSSPaddingVar;
   paddingBottom?: CSSPaddingVar;
