@@ -1,30 +1,8 @@
 import { createRoom } from '@/apis/room/room';
 import { getCreateRoomPayload } from '@/apis/transform/getCreateRoomPayload';
+import { initialRoomInfo } from '@/constants/initialRoomInfo';
+import { RoomInfo } from '@/types/roomInfo';
 import { useState } from 'react';
-
-export interface RoomInfo {
-  title: string;
-  availableDates: Set<string>;
-  time: { startTime: string; endTime: string };
-  deadLine: { date: string; time: string };
-  isPublic: 'public' | 'private';
-  roomSession?: string;
-}
-
-export const initialRoomInfo: RoomInfo = {
-  title: '',
-  availableDates: new Set(),
-  time: {
-    startTime: '',
-    endTime: '',
-  },
-  deadLine: {
-    date: '2025-07-25',
-    time: '16:00',
-  },
-  isPublic: 'public',
-  roomSession: '',
-};
 
 export const useCreateRoom = () => {
   const [roomInfo, setRoomInfo] = useState<RoomInfo>(initialRoomInfo);

@@ -1,4 +1,4 @@
-import { RoomInfo } from '@/hooks/useCreateRoom';
+import { RoomInfo } from '@/types/roomInfo';
 import { CreateRoomRequestType } from '../room/type';
 
 /**
