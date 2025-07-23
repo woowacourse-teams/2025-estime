@@ -1,7 +1,7 @@
 import { ColorsKey, Theme } from '@/styles/theme';
 import { useTheme } from '@emotion/react';
 
-const getIconColor = ({
+const changeIconColor = ({
   defaultColor,
   isSelected,
 }: {
@@ -12,4 +12,4 @@ const getIconColor = ({
   return isSelected ? colors.background : colors[defaultColor];
 };
 
-export default getIconColor;
+export default changeIconColor;

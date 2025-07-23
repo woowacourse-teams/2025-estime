@@ -8,9 +8,8 @@ import useSelectTime from '@/hooks/useSelectTime';
 import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
 import { useTheme } from '@emotion/react';
-import { background } from 'storybook/internal/theming';
-import { ColorsKey } from '@/styles/theme';
-import getIconColor from '@/utils/getIconColor';
+
+import changeIconColor from '@/utils/changeIconColor';
 
 //Todo: 페이지에서 상태를 내려줄 경우
 interface BasicSettingsProps {}
@@ -54,7 +53,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             selected={selectedButtons.includes('day')}
           >
             <ISun
-              color={getIconColor({
+              color={changeIconColor({
                 defaultColor: 'secondary',
                 isSelected: selectedButtons.includes('day'),
               })}
@@ -72,7 +71,7 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             selected={selectedButtons.includes('night')}
           >
             <IMoon
-              color={getIconColor({
+              color={changeIconColor({
                 defaultColor: 'primary',
                 isSelected: selectedButtons.includes('night'),
               })}
