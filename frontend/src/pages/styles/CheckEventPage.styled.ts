@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -10,4 +11,6 @@ export const Container = styled.div`
   border-radius: var(--radius-6);
   box-shadow: var(--shadow-card);
   background-color: ${({ theme }) => theme.colors.background};
+  // 지우시오.
+  height: 600px;
 `;
