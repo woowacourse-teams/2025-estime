@@ -7,11 +7,15 @@ import Button from '@/components/Button';
 import Text from '@/components/Text';
 import { useNavigate } from 'react-router';
 import useCreateRoom from '@/hooks/useCreateRoom';
+import Info from '@/components/Info';
+import { useTheme } from '@emotion/react';
+import IInfo from '@/icons/IInfo';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
   const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom, roomInfoSubmit } =
     useCreateRoom();
+  const { colors } = useTheme();
 
   const handleCreateRoom = async () => {
     const session = await roomInfoSubmit();
@@ -30,6 +34,12 @@ const CreateEventPage = () => {
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings title={title} time={time} />
             <OptionSettings deadLine={deadLine} isPublic={isPublic} />
+            <Info color="orange30">
+              <IInfo color={colors.orange40} />
+              <Text variant="h4" color="orange40">
+                마감 기한은 방 생성 후 1일 이내로 설정되어 있습니다.
+              </Text>
+            </Info>
             <Flex justify="flex-end">
               <Button
                 color={isReadyToCreateRoom ? 'primary' : 'plum40'}
