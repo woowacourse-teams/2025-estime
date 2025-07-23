@@ -11,7 +11,7 @@ export interface RoomInfo {
   roomSession?: string;
 }
 
-const initialRoomInfo: RoomInfo = {
+export const initialRoomInfo: RoomInfo = {
   title: '',
   availableDates: new Set(),
   time: {
