@@ -31,7 +31,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
     return (
       <Flex>
         <Button
@@ -48,6 +47,8 @@ export const Default: Story = {
           isLoginModalOpen={isLoginModalOpen}
           setIsLoginModalOpen={setIsLoginModalOpen}
           handleModalLogin={() => {}}
+          userData={{ userid: '', password: '' }}
+          setUserData={() => {}}
         />
       </Flex>
     );
@@ -56,7 +57,6 @@ export const Default: Story = {
 export const PreOpenModal: Story = {
   render: () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
-    const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
     return (
       <Flex>
         <Button
@@ -73,6 +73,8 @@ export const PreOpenModal: Story = {
           isLoginModalOpen={isLoginModalOpen}
           setIsLoginModalOpen={setIsLoginModalOpen}
           handleModalLogin={() => {}}
+          userData={{ userid: '', password: '' }}
+          setUserData={() => {}}
         />
       </Flex>
     );
