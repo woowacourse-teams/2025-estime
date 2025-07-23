@@ -7,7 +7,7 @@ import { CreateRoomRequestType } from '../room/type';
  * @param data - 서버 응답으로 받은 CreateRoomRequestType 데이터
  * @returns 클라이언트에서 사용할 RoomInfo 상태 객체
  */
-export const parseRoomInfoResponse = (data: CreateRoomRequestType): RoomInfo => {
+export const fromParseRoomInfo = (data: CreateRoomRequestType): RoomInfo => {
   const { title, availableDates, startTime, endTime, deadLine, isPublic } = data;
 
   const [date, time] = deadLine.split('T');

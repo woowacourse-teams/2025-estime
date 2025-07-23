@@ -1,5 +1,5 @@
 import { createRoom } from '@/apis/room/room';
-import { getCreateRoomPayload } from '@/apis/transform/getCreateRoomPayload';
+import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/types/roomInfo';
 import { checkTimeRangeValid } from '@/utils/Time/checkTimeRangeValid';
@@ -54,7 +54,7 @@ export const useCreateRoom = () => {
 
   const roomInfoSubmit = async () => {
     try {
-      const payload = getCreateRoomPayload(roomInfo);
+      const payload = toCreateRoomInfo(roomInfo);
       const response = await createRoom(payload);
       return response.session;
     } catch (err) {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useExtractQueryParam } from './common/useExtractQueryParam';
 import { getRoomInfo } from '@/apis/room/room';
-import { parseRoomInfoResponse } from '@/apis/transform/parseRoomInfoResponse';
 import { RoomInfo } from '@/types/roomInfo';
 import { initialRoomInfo } from '@/constants/initialRoomInfo';
+import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 
 const useCheckRoomSession = () => {
   const session = useExtractQueryParam('id');
@@ -14,7 +14,7 @@ const useCheckRoomSession = () => {
 
     try {
       const response = await getRoomInfo(session);
-      const parseData = parseRoomInfoResponse(response);
+      const parseData = fromParseRoomInfo(response);
       setRoomInfo(parseData);
     } catch (err) {
       const e = err as Error;

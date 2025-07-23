@@ -7,7 +7,7 @@ import { CreateRoomRequestType } from '../room/type';
  * @param roomInfo - 클라이언트에서 관리하는 방 생성 정보
  * @returns 서버에 전송할 API 요청 페이로드 형식
  */
-export const getCreateRoomPayload = (roomInfo: RoomInfo): CreateRoomRequestType => {
+export const toCreateRoomInfo = (roomInfo: RoomInfo): CreateRoomRequestType => {
   const { title, availableDates, time, deadLine, isPublic } = roomInfo;
 
   return {
