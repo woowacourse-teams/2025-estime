@@ -50,7 +50,7 @@ public interface ConnectedRoomControllerSpecification {
                                         "deadLine": "2026-07-14T23:00",
                                         "isPublic": true,
                                         "platform": "DISCORD",
-                                        "channelId": "C096H841ELㅌX"
+                                        "channelId": "1393585306225348700"
                                     }
                                     """)))
             ConnectedRoomCreateRequest request);

@@ -6,6 +6,7 @@ import com.bether.bether.connection.domain.ConnectedRoom;
 import com.bether.bether.connection.domain.Platform;
 import com.bether.bether.room.application.service.RoomDomainService;
 import com.bether.bether.room.domain.Room;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,10 +43,18 @@ public class ConnectedRoomApplicationService {
             final String channelId
     ) {
         final Room room = connectedRoom.getRoom();
-        final String url = "https://estime.today/" + room.getSession(); // TODO refactor URL class
-        final String message = room.getTitle() + room.getDeadLine() + url;
+        final String url = "https://estime.today/" + room.getSession();
 
-        sendMessage(connectedRoom.getPlatform(), channelId, message);
+        sendMessage(connectedRoom.getPlatform(), channelId, generateCreatedMessage(room, url));
+    }
+
+    private String generateCreatedMessage(final Room room, final String url) {
+        final String title = "**" + room.getTitle() + "**";
+        final String line = "<" + url + "|🔗 바로가기>";
+        final String deadLine = String.format(
+                ":alarm_clock: 마감: %s",
+                room.getDeadLine().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        return title + "\n" + line + "\n" + deadLine;
     }
 
     private void sendMessage(
