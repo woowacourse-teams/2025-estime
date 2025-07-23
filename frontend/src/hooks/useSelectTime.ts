@@ -1,6 +1,5 @@
 import { TIME } from '@/constants/time';
 import { useCallback, useState } from 'react';
-
 interface TimeRangeField {
   timeRange: { startTime: string; endTime: string };
   setTimeRange: ({ startTime, endTime }: { startTime: string; endTime: string }) => void;
@@ -26,7 +25,7 @@ const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
       } else if (updatedButtons.includes('night')) {
         setTimeRange({ startTime: TIME.NIGHT_START, endTime: TIME.NIGHT_END });
       } else {
-        setTimeRange({ startTime: '', endTime: '' });
+        setTimeRange({ startTime: '09:00', endTime: '17:00' });
       }
     },
     [selectedButtons]
@@ -34,7 +33,7 @@ const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
 
   const handleCustomButtonClick = () => {
     setSelectedButtons(['custom']);
-    setTimeRange({ startTime: '', endTime: '' });
+    setTimeRange({ startTime: '09:00', endTime: '17:00' });
   };
 
   const handleCustomStartClick = (time: string) => {
