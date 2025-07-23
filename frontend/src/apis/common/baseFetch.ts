@@ -10,6 +10,13 @@ interface baseFetchProps {
   body?: Record<string, any>;
 }
 
+interface ApiResponse<T> {
+  code: number;
+  message: string | null;
+  success: boolean;
+  data: T;
+}
+
 const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Promise<T> => {
   const url = new URL(path, BASE_URL);
 
@@ -43,7 +50,8 @@ const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Prom
     throw new Error(errorBody.message || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 
-  return response.json();
+  const responseJson: ApiResponse<T> = await response.json();
+  return responseJson.data;
 };
 
 export default baseFetch;
