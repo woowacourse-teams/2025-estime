@@ -40,7 +40,7 @@ export const ButtonWrapper = styled.div`
   width: 100%;
 `;
 
-export const ImageWrapper = styled.div<{ color: ColorsKey }>`
+export const ImageWrapper = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
@@ -50,10 +50,6 @@ export const ImageWrapper = styled.div<{ color: ColorsKey }>`
   img {
     width: 100%;
     height: 100%;
-  }
-
-  svg {
-    color: ${({ theme, color }) => theme.colors[color]};
   }
 `;
 

@@ -8,6 +8,9 @@ import useSelectTime from '@/hooks/useSelectTime';
 import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
 import { useTheme } from '@emotion/react';
+import { background } from 'storybook/internal/theming';
+import { ColorsKey } from '@/styles/theme';
+import getIconColor from '@/utils/getIconColor';
 
 //Todo: 페이지에서 상태를 내려줄 경우
 interface BasicSettingsProps {}
@@ -50,8 +53,13 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             onClick={() => handleDayNightButtonClick('day')}
             selected={selectedButtons.includes('day')}
           >
-            <S.ImageWrapper color="secondary">
-              <ISun color={colors.text} />
+            <S.ImageWrapper>
+              <ISun
+                color={getIconColor({
+                  defaultColor: 'secondary',
+                  isSelected: selectedButtons.includes('day'),
+                })}
+              />
             </S.ImageWrapper>
             <Text
               variant="button"
@@ -66,7 +74,12 @@ const BasicSettings = ({}: BasicSettingsProps) => {
             selected={selectedButtons.includes('night')}
           >
             <S.ImageWrapper color="primary">
-              <IMoon color={colors.text} />
+              <IMoon
+                color={getIconColor({
+                  defaultColor: 'primary',
+                  isSelected: selectedButtons.includes('night'),
+                })}
+              />
             </S.ImageWrapper>
 
             <Text
