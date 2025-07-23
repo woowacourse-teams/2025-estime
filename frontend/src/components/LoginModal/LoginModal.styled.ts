@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Modal from '@/components/Modal';
 
 export const LoginLabel = styled.label<{ required?: boolean }>`
   display: block;
@@ -11,4 +12,12 @@ export const LoginLabel = styled.label<{ required?: boolean }>`
     font-size: ${({ theme }) => theme.typography.h4.fontSize};
     margin-left: 0.25rem;
   }
+`;
+
+export const LoginModalContainer = styled(Modal.Container)`
+  padding: var(--padding-8);
+`;
+
+export const LoginModalHeader = styled(Modal.Header)`
+  margin-bottom: 12px;
 `;

@@ -7,32 +7,38 @@ import Button from '@/components/Button';
 import * as S from './LoginModal.styled';
 import Tooltip from '@/components/Tooltip';
 import { useTheme } from '@emotion/react';
+import type { LoginData } from '@/pages/CheckEventPage';
 
 export interface LoginModalProps {
   isLoginModalOpen: boolean;
   setIsLoginModalOpen: (isOpen: boolean) => void;
-  handleModalLogin: () => void;
+  handleModalLogin: ({ userid, password }: LoginData) => void;
+  userData: LoginData;
+  setUserData: (data: LoginData) => void;
 }
 export const LoginModal = ({
   isLoginModalOpen,
   setIsLoginModalOpen,
   handleModalLogin,
+  userData,
+  setUserData,
 }: LoginModalProps) => {
   const theme = useTheme();
   return (
     <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} position="center">
-      <Modal.Container>
-        <Modal.Header>
-          <Flex justify="space-between" align="center" gap="var(--gap-1)">
-            <Tooltip content="서비스를 이용하기 위해 로그인이 필요합니다.">
-              <Flex align="center" gap="var(--gap-4)">
-                <Text variant="h3">로그인</Text>
-                <IInfo aria-hidden="true" color={theme.colors.text} />
-              </Flex>
-            </Tooltip>
-          </Flex>
-        </Modal.Header>
+      <S.LoginModalContainer>
         <Modal.Content>
+          <S.LoginModalHeader>
+            <Flex justify="space-between" align="center" gap="var(--gap-2)">
+              <Tooltip content="서비스를 이용하기 위해 로그인이 필요합니다.">
+                <Flex align="center" gap="var(--gap-4)">
+                  <Text variant="h3">로그인</Text>
+                  <IInfo aria-hidden="true" color={theme.colors.text} />
+                </Flex>
+              </Tooltip>
+            </Flex>
+          </S.LoginModalHeader>
+
           <Flex gap="var(--gap-6)" direction="column">
             <Flex justify="space-between" align="center" gap="var(--gap-6)">
               <Flex.Item flex={1}>
@@ -41,7 +47,13 @@ export const LoginModal = ({
                 </S.LoginLabel>
               </Flex.Item>
               <Flex.Item flex={4}>
-                <Input id="userid" placeholder="아이디를 입력해주세요." autoFocus={true} />
+                <Input
+                  id="userid"
+                  placeholder="아이디를 입력해주세요."
+                  maxLength={12}
+                  autoFocus={true}
+                  onChange={(e) => setUserData({ ...userData, userid: e.target.value })}
+                />
               </Flex.Item>
             </Flex>
             <Flex justify="space-between" align="center" gap="var(--gap-6)">
@@ -49,11 +61,21 @@ export const LoginModal = ({
                 <S.LoginLabel htmlFor="user-password">비밀번호(선택)</S.LoginLabel>
               </Flex.Item>
               <Flex.Item flex={4}>
-                <Input type="password" id="user-password" placeholder="비밀번호를 입력해주세요." />
+                <Input
+                  type="password"
+                  id="user-password"
+                  maxLength={8}
+                  placeholder="비밀번호를 입력해주세요."
+                  onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+                />
               </Flex.Item>
             </Flex>
             <Flex.Item flex={1}>
-              <Button color="primary" selected onClick={handleModalLogin}>
+              <Button
+                color="primary"
+                selected
+                onClick={() => handleModalLogin({ userid: '', password: '' })}
+              >
                 <Text variant="body" color="gray10">
                   저장하고 계속하기
                 </Text>
@@ -61,7 +83,7 @@ export const LoginModal = ({
             </Flex.Item>
           </Flex>
         </Modal.Content>
-      </Modal.Container>
+      </S.LoginModalContainer>
     </Modal>
   );
 };
