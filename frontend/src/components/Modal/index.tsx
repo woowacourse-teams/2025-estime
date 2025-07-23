@@ -1,5 +1,5 @@
 import * as S from './Modal.styled';
-import { PropsWithChildren, ComponentProps, useContext } from 'react';
+import { PropsWithChildren, ComponentProps, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ModalContext } from '@/contexts/ModalContext';
 import { useEscapeClose } from '@/hooks/Modal/useEscapeClose';
@@ -10,15 +10,15 @@ import IClose from '@/icons/IClose';
 export interface ModalProps extends PropsWithChildren {
   isOpen: boolean;
   onClose: () => void;
-  position: 'bottom' | 'center';
+  position: 'bottom' | 'center' | 'inside';
   portalToWhere?: Element | DocumentFragment;
   blur?: boolean;
+  shouldCloseOnOverlayAction?: boolean;
 }
 
 interface ModalHeaderProps extends PropsWithChildren, ComponentProps<'header'> {}
 interface ModalContainerProps extends PropsWithChildren, ComponentProps<'div'> {
-  size?: 'small' | 'medium' | 'large';
-  position?: 'center' | 'bottom';
+  size?: 'small' | 'medium' | 'large' | 'full';
 }
 interface ModalContentProps extends ComponentProps<'div'> {}
 
@@ -28,16 +28,23 @@ function Modal({
   position = 'center',
   portalToWhere = document.body,
   blur = false,
+  shouldCloseOnOverlayAction = true,
   children,
 }: ModalProps) {
   if (!isOpen) return null;
 
-  useEscapeClose(isOpen, onClose);
+  if (shouldCloseOnOverlayAction) {
+    useEscapeClose(isOpen, onClose);
+  }
 
   return createPortal(
-    <ModalContext.Provider value={{ onClose, position }}>
+    <ModalContext.Provider value={{ onClose, shouldCloseOnOverlayAction, position }}>
       <FocusTrap>
-        <S.ModalBackground onClick={onClose} position={position} blur={blur}>
+        <S.ModalBackground
+          onClick={shouldCloseOnOverlayAction ? onClose : undefined}
+          position={position}
+          blur={blur}
+        >
           {children}
         </S.ModalBackground>
       </FocusTrap>
@@ -75,9 +82,17 @@ function ModalHeader({ children, ...props }: ModalHeaderProps) {
           {children}
         </Text>
       </S.HeaderTitle>
-      <S.CloseButton aria-label="모달 닫기" title="모달 닫기" onClick={ctx?.onClose} type="button">
-        <IClose aria-hidden="true" />
-      </S.CloseButton>
+
+      {ctx?.shouldCloseOnOverlayAction && (
+        <S.CloseButton
+          aria-label="모달 닫기"
+          title="모달 닫기"
+          onClick={ctx?.onClose}
+          type="button"
+        >
+          <IClose aria-hidden="true" />
+        </S.CloseButton>
+      )}
     </S.ModalHeader>
   );
 }

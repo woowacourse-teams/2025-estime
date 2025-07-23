@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { keyframes, css } from '@emotion/react';
 import { zIndex } from '@/constants/styles';
 
+const modalBackgroundColor = 'rgba(0, 0, 0, 0.4)';
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -23,20 +24,38 @@ const zoomIn = keyframes`
 `;
 
 export const ModalBackground = styled.div<{
-  position?: 'center' | 'bottom';
+  position?: 'center' | 'bottom' | 'inside';
   blur?: boolean;
 }>`
-  position: fixed;
-  display: flex;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  animation: ${fadeIn} 0.3s ease-in-out;
-  justify-content: center;
-  align-items: ${(props) => (props.position === 'center' ? 'center' : 'end')};
-  z-index: ${zIndex.modal};
+  ${(props) => {
+    if (props.position === 'inside') {
+      return css`
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background-color: ${modalBackgroundColor};
+        justify-content: center;
+        align-items: center;
+      `;
+    }
+
+    return css`
+      position: absolute;
+      display: flex;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: ${modalBackgroundColor};
+      justify-content: center;
+      align-items: ${props.position === 'center' ? 'center' : 'end'};
+      z-index: ${zIndex.modal};
+    `;
+  }}
   backdrop-filter: ${(props) => (props.blur ? 'blur(5px)' : 'none')};
 `;
 

@@ -30,30 +30,50 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
     return (
       <Flex>
-        <Button onClick={() => setIsOpen(true)} color="primary" size="small" selected={true}>
+        <Button
+          onClick={() => setIsLoginModalOpen(true)}
+          color="primary"
+          size="small"
+          selected={true}
+        >
           <Text variant="body" color="background">
             Open Modal
           </Text>
         </Button>
-        <LoginModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        <LoginModal
+          isLoginModalOpen={isLoginModalOpen}
+          setIsLoginModalOpen={setIsLoginModalOpen}
+          handleModalLogin={() => {}}
+        />
       </Flex>
     );
   },
 };
 export const PreOpenModal: Story = {
   render: () => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
+    const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
     return (
       <Flex>
-        <Button onClick={() => setIsOpen(true)} color="primary" size="small" selected={true}>
+        <Button
+          onClick={() => setIsLoginModalOpen(true)}
+          color="primary"
+          size="small"
+          selected={true}
+        >
           <Text variant="body" color="background">
             Open Modal
           </Text>
         </Button>
-        <LoginModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        <LoginModal
+          isLoginModalOpen={isLoginModalOpen}
+          setIsLoginModalOpen={setIsLoginModalOpen}
+          handleModalLogin={() => {}}
+        />
       </Flex>
     );
   },

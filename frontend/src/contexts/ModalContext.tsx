@@ -1,8 +1,9 @@
 import { createContext, useContext } from 'react';
 
 export interface ModalContextType {
-  onClose: () => void;
-  position: 'bottom' | 'center';
+  onClose?: () => void;
+  position: 'bottom' | 'center' | 'inside';
+  shouldCloseOnOverlayAction?: boolean;
 }
 
 export const ModalContext = createContext<ModalContextType | null>(null);
