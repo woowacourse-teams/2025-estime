@@ -1,6 +1,10 @@
 import api from '../common';
 import { ROOM_API_PATH } from '../common/constant';
-import { CreateRoomResponseType, CreateRoomRequestType, GetRoomInfoResponseType } from './type';
+import type {
+  CreateRoomResponseType,
+  CreateRoomRequestType,
+  GetRoomInfoResponseType,
+} from './type';
 
 export const createRoom = async (body: CreateRoomRequestType): Promise<CreateRoomResponseType> => {
   return await api.post(`${ROOM_API_PATH}`, body);
