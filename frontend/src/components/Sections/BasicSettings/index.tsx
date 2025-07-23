@@ -12,7 +12,7 @@ import { Field } from '@/types/field';
 
 type BasicSettingsProps = {
   title: Field<string>;
-  time: Field<{ startTime: string; endTime: string }>;
+  time: Field<{ startTime: string; endTime: string }> & { valid: boolean };
 };
 
 const BasicSettings = ({ title, time }: BasicSettingsProps) => {
@@ -98,26 +98,33 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
         </S.ButtonWrapper>
 
         {selectedButtons.includes('custom') && (
-          <S.CustomTimeWrapper selected={selectedButtons.includes('custom')}>
-            <S.Label>
-              <Text variant="body">시작 시간</Text>
-              <TimePicker
-                selectedHour={timeRange.startTime}
-                selectHour={handleCustomStartClick}
-                toggleOpen={toggleStartOpen}
-                isOpen={isStartOpen}
-              />
-            </S.Label>
-            <S.Label>
-              <Text variant="body">종료 시간</Text>
-              <TimePicker
-                selectedHour={timeRange.endTime}
-                selectHour={handleCustomEndClick}
-                toggleOpen={toggleEndOpen}
-                isOpen={isEndOpen}
-              />
-            </S.Label>
-          </S.CustomTimeWrapper>
+          <>
+            <S.CustomTimeWrapper selected={selectedButtons.includes('custom')}>
+              <S.Label>
+                <Text variant="body">시작 시간</Text>
+                <TimePicker
+                  selectedHour={timeRange.startTime}
+                  selectHour={handleCustomStartClick}
+                  toggleOpen={toggleStartOpen}
+                  isOpen={isStartOpen}
+                />
+              </S.Label>
+              <S.Label>
+                <Text variant="body">종료 시간</Text>
+                <TimePicker
+                  selectedHour={timeRange.endTime}
+                  selectHour={handleCustomEndClick}
+                  toggleOpen={toggleEndOpen}
+                  isOpen={isEndOpen}
+                />
+              </S.Label>
+            </S.CustomTimeWrapper>
+            {!time.valid && (
+              <Text variant="caption" color="red40">
+                종료시간은 시작시간보다 늦어야한다핑~~
+              </Text>
+            )}
+          </>
         )}
       </S.InfoWrapper>
     </S.Container>
