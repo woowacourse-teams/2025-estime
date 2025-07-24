@@ -1,7 +1,7 @@
 package com.bether.bether.connection.discord.config;
 
-import com.bether.bether.connection.discord.application.service.DiscordSlashCommandListener;
-import com.bether.bether.connection.discord.application.service.DiscordSlashCommandRegistrar;
+import com.bether.bether.connection.discord.infrastructure.DiscordSlashCommandListener;
+import com.bether.bether.connection.discord.infrastructure.DiscordSlashCommandRegistrar;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.beans.factory.annotation.Value;
