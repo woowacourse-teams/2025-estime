@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-export function useEscapeClose(isOpen: boolean, onClose: () => void) {
+export function useEscapeClose(isOpen: boolean, onClose: () => void, shouldClose: boolean = true) {
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !shouldClose) return;
 
     const keyDownHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -13,5 +13,5 @@ export function useEscapeClose(isOpen: boolean, onClose: () => void) {
     return () => {
       document.removeEventListener('keydown', keyDownHandler);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, shouldClose]);
 }
