@@ -1,4 +1,4 @@
-package com.bether.bether.timeslot.domain;
+package com.bether.bether.datetimeslot.domain;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -12,55 +12,55 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class TimeSlots {
+public class DateTimeSlots {
 
-    private final List<TimeSlot> timeSlots;
+    private final List<DateTimeSlot> dateTimeSlots;
 
-    public static TimeSlots from(final List<TimeSlot> timeSlots) {
-        if (timeSlots == null) {
+    public static DateTimeSlots from(final List<DateTimeSlot> dateTimeSlots) {
+        if (dateTimeSlots == null) {
             throw new IllegalArgumentException("Time slots cannot be null");
         }
-        return new TimeSlots(List.copyOf(timeSlots));
+        return new DateTimeSlots(List.copyOf(dateTimeSlots));
     }
 
-    public TimeSlotStatistic calculateStatistic() {
-        final Map<LocalDateTime, TimeSlotParticipants> participantsByDateTime = new HashMap<>();
+    public DateTimeSlotStatistic calculateStatistic() {
+        final Map<LocalDateTime, DateTimeSlotParticipants> participantsByDateTime = new HashMap<>();
 
-        timeSlots.forEach(timeSlot -> {
+        dateTimeSlots.forEach(timeSlot -> {
             final LocalDateTime dateTime = timeSlot.getStartAt();
-            participantsByDateTime.putIfAbsent(dateTime, TimeSlotParticipants.from(dateTime));
+            participantsByDateTime.putIfAbsent(dateTime, DateTimeSlotParticipants.from(dateTime));
             participantsByDateTime.get(dateTime).addUserName(timeSlot.getUserName());
         });
 
-        return TimeSlotStatistic.from(participantsByDateTime);
+        return DateTimeSlotStatistic.from(participantsByDateTime);
     }
 
     public Set<LocalDateTime> calculateUniqueStartAts() {
-        return timeSlots.stream()
-                .map(TimeSlot::getStartAt)
+        return dateTimeSlots.stream()
+                .map(DateTimeSlot::getStartAt)
                 .collect(Collectors.toSet());
     }
 
-    public TimeSlots findSlotsToSave(
+    public DateTimeSlots findSlotsToSave(
             final Set<LocalDateTime> requestedStartAts,
             final Long roomId,
             final String userName
     ) {
         final Set<LocalDateTime> existingStartAts = calculateUniqueStartAts();
-        return new TimeSlots(requestedStartAts.stream()
+        return new DateTimeSlots(requestedStartAts.stream()
                 .filter(startAt -> !existingStartAts.contains(startAt))
-                .map(startAt -> TimeSlot.withoutId(roomId, userName, startAt))
+                .map(startAt -> DateTimeSlot.withoutId(roomId, userName, startAt))
                 .toList());
     }
 
-    public TimeSlots findSlotsToDelete(final Set<LocalDateTime> requestedStartAts) {
-        return new TimeSlots(timeSlots.stream()
+    public DateTimeSlots findSlotsToDelete(final Set<LocalDateTime> requestedStartAts) {
+        return new DateTimeSlots(dateTimeSlots.stream()
                 .filter(timeSlot -> !requestedStartAts.contains(timeSlot.getStartAt()))
                 .toList());
     }
 
     public boolean isEmpty() {
-        return timeSlots.isEmpty();
+        return dateTimeSlots.isEmpty();
     }
 
     public boolean isNotEmpty() {

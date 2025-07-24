@@ -1,4 +1,4 @@
-package com.bether.bether.timeslot.domain;
+package com.bether.bether.datetimeslot.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,13 +9,13 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class TimeSlotParticipants {
+public class DateTimeSlotParticipants {
 
     private final LocalDateTime dateTime;
     private final List<String> userNames;
 
-    public static TimeSlotParticipants from(final LocalDateTime dateTime) {
-        return new TimeSlotParticipants(dateTime, new ArrayList<>());
+    public static DateTimeSlotParticipants from(final LocalDateTime dateTime) {
+        return new DateTimeSlotParticipants(dateTime, new ArrayList<>());
     }
 
     public void addUserName(final String userName) {
