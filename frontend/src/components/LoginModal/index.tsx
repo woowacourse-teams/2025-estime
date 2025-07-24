@@ -12,7 +12,7 @@ import type { LoginData } from '@/pages/CheckEventPage';
 export interface LoginModalProps {
   isLoginModalOpen: boolean;
   setIsLoginModalOpen: (isOpen: boolean) => void;
-  handleModalLogin: ({ userid, password }: LoginData) => void;
+  handleModalLogin: () => void;
   userData: LoginData;
   setUserData: (data: LoginData) => void;
 }
@@ -71,11 +71,7 @@ export const LoginModal = ({
               </Flex.Item>
             </Flex>
             <Flex.Item flex={1}>
-              <Button
-                color="primary"
-                selected
-                onClick={() => handleModalLogin({ userid: '', password: '' })}
-              >
+              <Button color="primary" selected onClick={handleModalLogin}>
                 <Text variant="body" color="gray10">
                   저장하고 계속하기
                 </Text>

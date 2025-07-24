@@ -6,7 +6,7 @@ import LoginModal from '@/components/LoginModal';
 import * as S from './styles/CheckEventPage.styled';
 import LoginSuggestModal from '@/components/LoginSuggestModal';
 import { joinPerson } from '@/apis/room/room';
-// import CheckEventPageHeader from '@/components/CheckEventPageHeader';
+import { useExtractQueryParam } from '@/hooks/common/useExtractQueryParam';
 
 export type LoginData = {
   userid: string;
@@ -16,7 +16,6 @@ const CheckEventPage = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
   const [userData, setUserData] = useState<LoginData>({ userid: '', password: '' });
-  const [sessionId, setSessionId] = useState<string>('');
   const modalTargetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,14 +24,12 @@ const CheckEventPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const sessionId = new URLSearchParams(window.location.search).get('id');
-    if (sessionId) {
-      setSessionId(sessionId);
-    }
-  }, []);
+  const sessionId = useExtractQueryParam('id');
 
   const handleModalLogin = async () => {
+    if (!sessionId) {
+      return;
+    }
     try {
       const response = await joinPerson(sessionId, {
         name: userData.userid,
@@ -42,18 +39,13 @@ const CheckEventPage = () => {
       setIsLoginModalOpen(false);
     } catch (e) {
       console.error('Error closing suggest modal:', e);
-      alert(`${e}로그인 실패! 꺄약!`);
+      alert(`${e}로그인 실패!  꺄약!`);
     }
-  };
-
-  const handleLoginClick = () => {
-    setIsLoginModalOpen(true);
   };
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex direction="column" gap="var(--gap-6)">
-        {/* <CheckEventPageHeader /> */}
         <Flex justify="center" align="center" gap="var(--gap-9)">
           <Flex.Item flex={2}>
             <S.Container id="login-suggest-modal" ref={modalTargetRef}>
@@ -61,7 +53,9 @@ const CheckEventPage = () => {
               <LoginSuggestModal
                 target={modalTargetRef.current}
                 isOpen={isSuggestModalOpen}
-                onLoginClick={handleLoginClick}
+                onLoginClick={() => {
+                  setIsLoginModalOpen(true);
+                }}
               />
             </S.Container>
           </Flex.Item>
