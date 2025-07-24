@@ -9,13 +9,13 @@ import java.util.List;
 public record RoomCreateInput(
         String title,
         List<LocalDate> availableDates,
-        LocalTime startTime,
-        LocalTime endTime,
+        LocalTime startTimeStartAt,
+        LocalTime endTimeStartAt,
         LocalDateTime deadLine,
         boolean isPublic
 ) {
 
     public Room toEntity() {
-        return Room.withoutId(title, availableDates, startTime, endTime, deadLine, isPublic);
+        return Room.withoutId(title, availableDates, startTimeStartAt, endTimeStartAt, deadLine, isPublic);
     }
 }

@@ -45,8 +45,8 @@ public interface ConnectedRoomControllerSpecification {
                                             "2026-07-15",
                                             "2026-07-16"
                                         ],
-                                        "startTime": "09:00",
-                                        "endTime": "23:00",
+                                        "startTimeStartAt": "09:00",
+                                        "endTimeStartAt": "23:00",
                                         "deadLine": "2026-07-14T23:00",
                                         "isPublic": true,
                                         "platform": "DISCORD",

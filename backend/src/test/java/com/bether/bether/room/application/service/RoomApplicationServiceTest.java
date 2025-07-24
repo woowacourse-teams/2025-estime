@@ -70,10 +70,10 @@ class RoomApplicationServiceTest {
                     .isEqualTo(input.title());
             softAssertions.assertThat(output.availableDates())
                     .containsExactlyInAnyOrderElementsOf(input.availableDates());
-            softAssertions.assertThat(output.startTime())
-                    .isEqualTo(input.startTime());
-            softAssertions.assertThat(output.endTime())
-                    .isEqualTo(input.endTime());
+            softAssertions.assertThat(output.startTimeStartAt())
+                    .isEqualTo(input.startTimeStartAt());
+            softAssertions.assertThat(output.endTimeStartAt())
+                    .isEqualTo(input.endTimeStartAt());
             softAssertions.assertThat(output.deadLine())
                     .isEqualTo(input.deadLine());
             softAssertions.assertThat(output.isPublic())
@@ -180,25 +180,6 @@ class RoomApplicationServiceTest {
                 List.of(LocalDate.now()),
                 LocalTime.of(20, 0),
                 LocalTime.of(7, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
-                true
-        );
-
-        // when // then
-        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("startTime cannot be after endTime");
-    }
-
-    @DisplayName("시작 시간이 종료 시간과 같으면 예외가 발생한다.")
-    @Test
-    void saveWithStartTimeEqualsEndTime() {
-        // given
-        final RoomCreateInput input = new RoomCreateInput(
-                "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(10, 30),
-                LocalTime.of(10, 30),
                 LocalDateTime.of(2026, 1, 1, 0, 0),
                 true
         );

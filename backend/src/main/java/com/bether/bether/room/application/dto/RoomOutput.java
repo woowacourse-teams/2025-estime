@@ -10,8 +10,8 @@ import java.util.UUID;
 public record RoomOutput(
         String title,
         List<LocalDate> availableDates,
-        LocalTime startTime,
-        LocalTime endTime,
+        LocalTime startTimeStartAt,
+        LocalTime endTimeStartAt,
         LocalDateTime deadLine,
         boolean isPublic,
         UUID roomSession
@@ -21,8 +21,8 @@ public record RoomOutput(
         return new RoomOutput(
                 room.getTitle(),
                 room.getAvailableDates(),
-                room.getStartTime(),
-                room.getEndTime(),
+                room.getStartTimeStartAt(),
+                room.getEndTimeStartAt(),
                 room.getDeadLine(),
                 room.isPublic(),
                 room.getSession()
