@@ -45,7 +45,7 @@ export const Default: Story = {
         </Button>
         <LoginModal
           isLoginModalOpen={isLoginModalOpen}
-          setIsLoginModalOpen={setIsLoginModalOpen}
+          handleCloseLoginModal={() => {}}
           handleModalLogin={() => {}}
           userData={{ userid: '', password: '' }}
           setUserData={() => {}}
@@ -71,7 +71,7 @@ export const PreOpenModal: Story = {
         </Button>
         <LoginModal
           isLoginModalOpen={isLoginModalOpen}
-          setIsLoginModalOpen={setIsLoginModalOpen}
+          handleCloseLoginModal={() => {}}
           handleModalLogin={() => {}}
           userData={{ userid: '', password: '' }}
           setUserData={() => {}}

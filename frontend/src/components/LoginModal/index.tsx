@@ -11,21 +11,21 @@ import type { LoginData } from '@/pages/CheckEventPage';
 
 export interface LoginModalProps {
   isLoginModalOpen: boolean;
-  setIsLoginModalOpen: (isOpen: boolean) => void;
+  handleCloseLoginModal: () => void;
   handleModalLogin: () => void;
   userData: LoginData;
   setUserData: (data: LoginData) => void;
 }
 export const LoginModal = ({
   isLoginModalOpen,
-  setIsLoginModalOpen,
+  handleCloseLoginModal,
   handleModalLogin,
   userData,
   setUserData,
 }: LoginModalProps) => {
   const theme = useTheme();
   return (
-    <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} position="center">
+    <Modal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal} position="center">
       <S.LoginModalContainer>
         <Modal.Content>
           <S.LoginModalHeader>
