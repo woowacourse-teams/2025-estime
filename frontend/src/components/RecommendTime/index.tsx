@@ -5,7 +5,7 @@ import Flex from '@/components/Layout/Flex';
 import { useTheme } from '@emotion/react';
 import * as S from './RecommendTime.styled';
 
-const RecommendTime = ({ dateTimes }: { dateTimes: string[] }) => {
+const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic: boolean }) => {
   const { colors } = useTheme();
 
   const parsedDateTimes = dateTimes.map((dateTime) => {
@@ -18,6 +18,32 @@ const RecommendTime = ({ dateTimes }: { dateTimes: string[] }) => {
       time: timePart,
     };
   });
+
+  if (dateTimes.length === 0 || !isPublic) {
+    return (
+      <Wrapper
+        padding="var(--padding-7)"
+        backgroundColor={colors.gray20}
+        borderRadius="var(--radius-4)"
+      >
+        <Flex direction="column" gap="var(--gap-5)">
+          <Text variant="button">추천 시간대</Text>
+          <Wrapper
+            center={false}
+            maxWidth="100%"
+            backgroundColor={colors.gray10}
+            borderRadius="var(--radius-4)"
+            paddingTop="var(--padding-6)"
+            paddingBottom="var(--padding-6)"
+            paddingLeft="var(--padding-10)"
+            paddingRight="var(--padding-10)"
+          >
+            <Text>추천 시간대를 확인할 수 없습니다</Text>
+          </Wrapper>
+        </Flex>
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper
