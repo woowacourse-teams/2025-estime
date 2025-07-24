@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import LoginSuggestModal from '.';
 import { ModalContext } from '@/contexts/ModalContext';
 import { useEffect, useRef, useState } from 'react';

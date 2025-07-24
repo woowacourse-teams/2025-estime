@@ -1,10 +1,10 @@
 import React, { ComponentProps } from 'react';
 import * as S from './Button.styled';
-import { ColorsKey, LIGHT_THEME } from '@/styles/theme';
+import { ColorsKey } from '@/styles/theme';
 
 interface ButtonProps extends ComponentProps<'button'> {
   size?: 'small' | 'medium' | 'large';
-  color: ColorsKey
+  color: ColorsKey;
   selected?: boolean;
   children: React.ReactNode;
 }

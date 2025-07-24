@@ -4,14 +4,14 @@ import { zIndex } from '@/constants/styles';
 import { ModalSize } from '.';
 
 const modalBackgroundColor = 'rgba(0, 0, 0, 0.4)';
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
+// const fadeIn = keyframes`
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// `;
 
 const zoomIn = keyframes`
   from {

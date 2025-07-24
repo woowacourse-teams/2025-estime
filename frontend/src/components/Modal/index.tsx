@@ -1,5 +1,5 @@
 import * as S from './Modal.styled';
-import { PropsWithChildren, ComponentProps, useContext, useEffect, useState } from 'react';
+import { PropsWithChildren, ComponentProps, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { ModalContext } from '@/contexts/ModalContext';
 import { useEscapeClose } from '@/hooks/Modal/useEscapeClose';
@@ -21,7 +21,7 @@ interface ModalHeaderProps extends PropsWithChildren, ComponentProps<'header'> {
 interface ModalContainerProps extends PropsWithChildren, ComponentProps<'div'> {
   size?: ModalSize;
 }
-interface ModalContentProps extends ComponentProps<'div'> {}
+interface ModalContentProps extends PropsWithChildren, ComponentProps<'div'> {}
 
 function Modal({
   isOpen,
@@ -32,11 +32,9 @@ function Modal({
   shouldCloseOnOverlayAction = true,
   children,
 }: ModalProps) {
-  if (!isOpen) return null;
+  useEscapeClose(isOpen, onClose, shouldCloseOnOverlayAction);
 
-  if (shouldCloseOnOverlayAction) {
-    useEscapeClose(isOpen, onClose);
-  }
+  if (!isOpen) return null;
 
   return createPortal(
     <ModalContext.Provider value={{ onClose, shouldCloseOnOverlayAction, position }}>

@@ -14,10 +14,11 @@ interface LoginSuggestModalProps {
 }
 
 const LoginSuggestModal = ({ target, isOpen, onClose, onLoginClick }: LoginSuggestModalProps) => {
+  const theme = useTheme();
   if (!target) {
     return null;
   }
-  const theme = useTheme();
+
   return (
     <Modal
       position="inside"

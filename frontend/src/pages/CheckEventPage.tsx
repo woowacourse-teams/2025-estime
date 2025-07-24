@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
@@ -10,13 +9,11 @@ import { joinPerson } from '@/apis/room/room';
 import { useExtractQueryParam } from '@/hooks/common/useExtractQueryParam';
 // import useCheckRoomSession from '@/hooks/useCheckRoomSession';
 
-
 export type LoginData = {
   userid: string;
   password: string;
 };
 const CheckEventPage = () => {
-
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
   const [userData, setUserData] = useState<LoginData>({ userid: '', password: '' });
@@ -39,6 +36,7 @@ const CheckEventPage = () => {
         name: userData.userid,
         password: userData.password,
       });
+      console.log(response);
       setIsSuggestModalOpen(false);
       setIsLoginModalOpen(false);
     } catch (e) {
@@ -62,8 +60,8 @@ const CheckEventPage = () => {
             </S.Container>
           </Flex.Item>
         </Flex>
-  // const roomInfo = useCheckRoomSession();
-  // ex) 사용시, roomInfo.title, room.availableDates
+        {/* const roomInfo = useCheckRoomSession(); // ex) 사용시, roomInfo.title,
+        room.availableDates */}
         <LoginSuggestModal
           target={modalTargetRef.current}
           isOpen={isSuggestModalOpen}
