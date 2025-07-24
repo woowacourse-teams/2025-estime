@@ -70,10 +70,10 @@ class RoomApplicationServiceTest {
                     .isEqualTo(input.title());
             softAssertions.assertThat(output.availableDates())
                     .containsExactlyInAnyOrderElementsOf(input.availableDates());
-            softAssertions.assertThat(output.startTimeStartAt())
-                    .isEqualTo(input.startTimeStartAt());
-            softAssertions.assertThat(output.endTimeStartAt())
-                    .isEqualTo(input.endTimeStartAt());
+            softAssertions.assertThat(output.startTime())
+                    .isEqualTo(input.startTime());
+            softAssertions.assertThat(output.endTime())
+                    .isEqualTo(input.endTime());
             softAssertions.assertThat(output.deadLine())
                     .isEqualTo(input.deadLine());
             softAssertions.assertThat(output.isPublic())
@@ -187,7 +187,7 @@ class RoomApplicationServiceTest {
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("startTimeStartAt cannot be after endTimeStartAt");
+                .hasMessage("startTime cannot be after endTime");
     }
 
     @DisplayName("마감 시간이 현재 시간 보다 빠르면 예외가 발생한다.")

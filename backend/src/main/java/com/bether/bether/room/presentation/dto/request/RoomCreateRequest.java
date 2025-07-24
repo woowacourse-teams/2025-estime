@@ -9,13 +9,13 @@ import java.util.List;
 public record RoomCreateRequest(
         String title,
         List<LocalDate> availableDates,
-        LocalTime startTimeStartAt,
-        LocalTime endTimeStartAt,
+        LocalTime startTime,
+        LocalTime endTime,
         LocalDateTime deadLine,
         Boolean isPublic
 ) {
 
     public RoomCreateInput toInput() {
-        return new RoomCreateInput(title, availableDates, startTimeStartAt, endTimeStartAt, deadLine, isPublic);
+        return new RoomCreateInput(title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 }

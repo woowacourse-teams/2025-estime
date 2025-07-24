@@ -43,8 +43,8 @@ public interface RoomControllerSpecification {
                                                 "result": {
                                                     "title": "Bether 스터디",
                                                     "availableDates": ["2026-07-15", "2026-07-16"],
-                                                    "startTimeStartAt": "09:00",
-                                                    "endTimeStartAt": "23:00",
+                                                    "startTime": "09:00",
+                                                    "endTime": "23:00",
                                                     "deadLine": "2026-07-14T23:00",
                                                     "isPublic": true,
                                                     "roomSession": "a4b1c2d3-e4f5-6789-0123-456789abcdef"
@@ -82,8 +82,8 @@ public interface RoomControllerSpecification {
                                             "2026-07-15",
                                             "2026-07-16"
                                         ],
-                                        "startTimeStartAt": "09:00",
-                                        "endTimeStartAt": "23:00",
+                                        "startTime": "09:00",
+                                        "endTime": "23:00",
                                         "deadLine": "2026-07-30T16:00",
                                         "isPublic": true
                                     }

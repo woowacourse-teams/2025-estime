@@ -18,8 +18,8 @@ public record SlackRoomCreatedInput(
         return new SlackRoomCreatedInput(
                 request.title(),
                 request.availableDates(),
-                request.startTimeStartAt(),
-                request.endTimeStartAt(),
+                request.startTime(),
+                request.endTime(),
                 response.session()
         );
     }

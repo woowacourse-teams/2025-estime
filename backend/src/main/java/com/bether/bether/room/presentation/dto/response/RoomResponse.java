@@ -13,10 +13,10 @@ public record RoomResponse(
         List<LocalDate> availableDates,
 
         @JsonFormat(pattern = "HH:mm")
-        LocalTime startTimeStartAt,
+        LocalTime startTime,
 
         @JsonFormat(pattern = "HH:mm")
-        LocalTime endTimeStartAt,
+        LocalTime endTime,
 
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
         LocalDateTime deadLine,
@@ -30,8 +30,8 @@ public record RoomResponse(
         return new RoomResponse(
                 output.title(),
                 output.availableDates(),
-                output.startTimeStartAt(),
-                output.endTimeStartAt(),
+                output.startTime(),
+                output.endTime(),
                 output.deadLine(),
                 output.isPublic(),
                 output.roomSession().toString()

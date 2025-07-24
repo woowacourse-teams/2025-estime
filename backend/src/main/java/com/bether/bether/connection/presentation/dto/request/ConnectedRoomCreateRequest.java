@@ -10,8 +10,8 @@ import java.util.List;
 public record ConnectedRoomCreateRequest(
         String title,
         List<LocalDate> availableDates,
-        LocalTime startTimeStartAt,
-        LocalTime endTimeStartAt,
+        LocalTime startTime,
+        LocalTime endTime,
         LocalDateTime deadLine,
         Boolean isPublic,
         Platform platform,
@@ -20,7 +20,7 @@ public record ConnectedRoomCreateRequest(
 
     public ConnectedRoomCreateInput toInput() {
         return new ConnectedRoomCreateInput(
-                title, availableDates, startTimeStartAt, endTimeStartAt, deadLine, isPublic, platform, channelId
+                title, availableDates, startTime, endTime, deadLine, isPublic, platform, channelId
         );
     }
 }

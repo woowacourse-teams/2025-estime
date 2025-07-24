@@ -40,12 +40,12 @@ public class Room extends BaseEntity {
     )
     private List<LocalDate> availableDates = new ArrayList<>();
 
-    @Column(name = "start_time_start_at", nullable = false)
-    private LocalTime startTimeStartAt;
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
 
 
-    @Column(name = "end_time_start_at", nullable = false)
-    private LocalTime endTimeStartAt;
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
 
     @Column(name = "dead_line", nullable = false)
     private LocalDateTime deadLine;
@@ -56,29 +56,29 @@ public class Room extends BaseEntity {
     public static Room withoutId(
             final String title,
             final List<LocalDate> availableDates,
-            final LocalTime startTimeStartAt,
-            final LocalTime endTimeStartAt,
+            final LocalTime startTime,
+            final LocalTime endTime,
             final LocalDateTime deadLine,
             final Boolean isPublic
     ) {
-        validate(title, availableDates, startTimeStartAt, endTimeStartAt, deadLine);
+        validate(title, availableDates, startTime, endTime, deadLine);
         validateDates(availableDates);
-        validateTimes(startTimeStartAt, endTimeStartAt);
+        validateTimes(startTime, endTime);
         validateDeadLine(deadLine);
         final UUID session = UUID.randomUUID();
-        return new Room(session, title, availableDates, startTimeStartAt, endTimeStartAt, deadLine, isPublic);
+        return new Room(session, title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 
     private static void validate(
             final String title,
             final List<LocalDate> availableDates,
-            final LocalTime startTimeStartAt,
-            final LocalTime endTimeStartAt,
+            final LocalTime startTime,
+            final LocalTime endTime,
             final LocalDateTime deadLine) {
-        if (title == null || availableDates == null || startTimeStartAt == null || endTimeStartAt == null
+        if (title == null || availableDates == null || startTime == null || endTime == null
                 || deadLine == null) {
             throw new IllegalArgumentException(
-                    "title, availableDates, startTimeStartAt, endTimeStartAt, deadLine cannot be null");
+                    "title, availableDates, startTime, endTime, deadLine cannot be null");
         }
     }
 
@@ -93,12 +93,12 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateTimes(final LocalTime startTimeStartAt, final LocalTime endTimeStartAt) {
-        if (endTimeStartAt.isBefore(startTimeStartAt)) {
-            throw new IllegalArgumentException("startTimeStartAt cannot be after endTimeStartAt");
+    private static void validateTimes(final LocalTime startTime, final LocalTime endTime) {
+        if (endTime.isBefore(startTime)) {
+            throw new IllegalArgumentException("startTime cannot be after endTime");
         }
         final long timeSlotMinutes = DateTimeSlot.UNIT.toMinutes();
-        if (startTimeStartAt.getMinute() % timeSlotMinutes != 0 || endTimeStartAt.getMinute() % timeSlotMinutes != 0) {
+        if (startTime.getMinute() % timeSlotMinutes != 0 || endTime.getMinute() % timeSlotMinutes != 0) {
             throw new IllegalArgumentException("time must be in " + timeSlotMinutes + "-minute intervals");
         }
     }
