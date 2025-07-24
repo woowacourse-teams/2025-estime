@@ -14,7 +14,7 @@ export const toCreateRoomInfo = (roomInfo: RoomInfo): CreateRoomRequestType => {
   return {
     title,
     availableDates: Array.from(availableDates),
-    startTime: subtract30Minutes(time.startTime),
+    startTime: time.startTime,
     endTime: subtract30Minutes(time.endTime),
     deadLine: `${deadLine.date}T${subtract30Minutes(deadLine.time)}`,
     isPublic: isPublic === 'public',
