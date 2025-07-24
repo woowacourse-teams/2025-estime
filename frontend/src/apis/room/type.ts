@@ -33,5 +33,5 @@ export interface CreateUserResponseType {
   code: number;
   success: boolean;
   message: string;
-  result: { session: string };
+  result: { name: string };
 }
