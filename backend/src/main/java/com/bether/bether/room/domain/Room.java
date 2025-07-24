@@ -92,7 +92,7 @@ public class Room extends BaseEntity {
     }
 
     private static void validateTimes(final LocalTime startTime, final LocalTime endTime) {
-        if (!startTime.isBefore(endTime)) {
+        if (endTime.isBefore(startTime)) {
             throw new IllegalArgumentException("startTime cannot be after endTime");
         }
         final long timeSlotMinutes = DateTimeSlot.UNIT.toMinutes();
