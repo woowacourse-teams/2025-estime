@@ -13,9 +13,9 @@ import IInfo from '@/icons/IInfo';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom, roomInfoSubmit } =
     useCreateRoom();
-  const { colors } = useTheme();
 
   const handleCreateRoom = async () => {
     const session = await roomInfoSubmit();
