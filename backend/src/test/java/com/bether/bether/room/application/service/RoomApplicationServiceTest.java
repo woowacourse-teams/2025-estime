@@ -187,7 +187,7 @@ class RoomApplicationServiceTest {
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("startTime cannot be after endTime");
+                .hasMessage("startTimeStartAt cannot be after endTimeStartAt");
     }
 
     @DisplayName("마감 시간이 현재 시간 보다 빠르면 예외가 발생한다.")

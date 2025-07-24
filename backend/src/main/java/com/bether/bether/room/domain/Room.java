@@ -78,7 +78,7 @@ public class Room extends BaseEntity {
         if (title == null || availableDates == null || startTimeStartAt == null || endTimeStartAt == null
                 || deadLine == null) {
             throw new IllegalArgumentException(
-                    "title, availableDates, startTime, endTime, deadLine cannot be null");
+                    "title, availableDates, startTimeStartAt, endTimeStartAt, deadLine cannot be null");
         }
     }
 
@@ -95,7 +95,7 @@ public class Room extends BaseEntity {
 
     private static void validateTimes(final LocalTime startTimeStartAt, final LocalTime endTimeStartAt) {
         if (endTimeStartAt.isBefore(startTimeStartAt)) {
-            throw new IllegalArgumentException("startTime cannot be after endTime");
+            throw new IllegalArgumentException("startTimeStartAt cannot be after endTimeStartAt");
         }
         final long timeSlotMinutes = DateTimeSlot.UNIT.toMinutes();
         if (startTimeStartAt.getMinute() % timeSlotMinutes != 0 || endTimeStartAt.getMinute() % timeSlotMinutes != 0) {
