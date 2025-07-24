@@ -80,9 +80,9 @@ const Timetable = ({ time, availableDates, userAvailability, ref }: TimetablePro
                 {timeList.map(({ timeText }) => (
                   <S.HeaderCell
                     key={`${date} ${timeText}`}
-                    onMouseDown={() => onMouseDown(`${date} ${timeText}`)}
+                    onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
                     onMouseUp={() => onMouseUp()}
-                    onMouseMove={() => onMouseEnter(`${date} ${timeText}`)}
+                    onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
                     selectedTimes={userAvailability.selectedTimes.value}
                     date={date}
                     timeText={timeText}
