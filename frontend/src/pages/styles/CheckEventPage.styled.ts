@@ -11,6 +11,6 @@ export const Container = styled.div`
   border-radius: var(--radius-6);
   box-shadow: var(--shadow-card);
   background-color: ${({ theme }) => theme.colors.background};
-  // 지우시오.
+  // 레이아웃이 채워지면 지울 예정
   height: 600px;
 `;
