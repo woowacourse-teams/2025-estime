@@ -103,8 +103,8 @@ const Timetable = ({
                   {timeText === 'Dates' && (
                     <Text variant="body" color="text">
                       <Flex direction="column" justify="center" align="center">
-                        <div>{date.split('-').slice(1).join('.')}</div>
-                        <div>({getDayOfWeek(date)})</div>
+                        <Text>{date.split('-').slice(1).join('.')}</Text>
+                        <Text>({getDayOfWeek(date)})</Text>
                       </Flex>
                     </Text>
                   )}
