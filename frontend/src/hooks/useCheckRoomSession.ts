@@ -30,7 +30,7 @@ const useCheckRoomSession = () => {
     fetchSession();
   }, [session]);
 
-  return roomInfo;
+  return { roomInfo, session };
 };
 
 export default useCheckRoomSession;

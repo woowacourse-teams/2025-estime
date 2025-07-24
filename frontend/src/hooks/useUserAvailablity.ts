@@ -3,7 +3,13 @@ import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailabli
 import { UserAvailability } from '@/types/userAvailability';
 import { useState } from 'react';
 
-export const useUserAvailability = () => {
+export const useUserAvailability = ({
+  name,
+  session,
+}: {
+  name: string;
+  session: string | null;
+}) => {
   const initialUserAvailability = {
     userName: '메이토',
     selectedTimes: new Set<string>(),
@@ -12,7 +18,7 @@ export const useUserAvailability = () => {
     useState<UserAvailability>(initialUserAvailability);
 
   const userName = {
-    value: userAvailability.userName,
+    value: name,
     set: (userName: string) => setUserAvailability((prev) => ({ ...prev, userName })),
   };
 
@@ -22,7 +28,7 @@ export const useUserAvailability = () => {
       setUserAvailability((prev) => ({ ...prev, selectedTimes })),
   };
 
-  const userAvailabilitySubmit = async (session: string) => {
+  const userAvailabilitySubmit = async () => {
     try {
       const payload = toCreateUserAvailability(userAvailability);
       const response = await createUserAvailableTime(session, payload);
