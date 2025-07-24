@@ -13,6 +13,7 @@ const DatePicker = ({ isError = false, ...props }: DatePickerProps) => {
       type="date"
       value={date}
       onClick={(e) => e.currentTarget.showPicker()}
+      min={new Date().toISOString().split('T')[0]}
       isError={isError}
       {...props}
     />
