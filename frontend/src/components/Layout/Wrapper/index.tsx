@@ -3,10 +3,10 @@ import * as S from './Wrapper.styled';
 import { CSSPaddingVar, CSSRadiusVar } from '@/types/designTokenType';
 
 export interface WrapperProps extends ComponentProps<'div'> {
+  position?: 'relative' | 'absolute' | 'fixed' | 'sticky';
   maxWidth?: number | 'fit-content' | 'max-content' | 'min-content' | '100%' | 'auto';
   fullHeight?: boolean;
   backgroundColor?: string;
-
   padding?: CSSPaddingVar;
   paddingTop?: CSSPaddingVar;
   paddingRight?: CSSPaddingVar;

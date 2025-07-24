@@ -2,10 +2,11 @@ export const getDefaultDeadLine = () => {
   const today = new Date();
 
   const formattedMonth = formatTime(today.getMonth() + 1);
+  const formattedHour = formatTime(today.getHours());
   const formattedDate = formatTime(today.getDate() + 1);
 
   const defaultDate = `${today.getFullYear()}-${formattedMonth}-${formattedDate}`;
-  const defaultTime = `${today.getHours()}:00`;
+  const defaultTime = `${formattedHour}:00`;
   return { defaultDate: defaultDate, defaultTime: defaultTime };
 };
 
