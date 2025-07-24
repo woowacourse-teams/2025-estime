@@ -22,10 +22,10 @@ const CheckEventPage = () => {
     handleCloseLoginModal,
   } = useModalControl();
 
-  const { handleModalLogin, userData, handleUserData, name } = useUserLogin(
+  const { handleModalLogin, userData, handleUserData, name } = useUserLogin({
     session,
-    handleCloseAllModal
-  );
+    handleCloseAllModal,
+  });
 
   const userAvailability = useUserAvailability({ name, session });
 

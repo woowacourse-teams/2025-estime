@@ -5,15 +5,21 @@ export type LoginData = {
   name: string;
   password: string;
 };
-export function useUserLogin(session: string | null, handleCloseAllModal: () => void) {
+export function useUserLogin({
+  session,
+  handleCloseAllModal,
+}: {
+  session: string | null;
+  handleCloseAllModal: () => void;
+}) {
   if (!session) {
     throw new Error('Session ID is required for user login');
   }
   const [userData, setUserData] = useState<LoginData>({ name: '', password: '' });
   const [name, setName] = useState<string>('앙구일구');
-  const handleUserData = (data: LoginData) => {
-    setUserData(data);
-  };
+
+  const handleUserData = (data: LoginData) => setUserData(data);
+
   const handleModalLogin = async () => {
     try {
       if (!session) {
