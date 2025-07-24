@@ -10,7 +10,7 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
     throw new Error('Session ID is required for user login');
   }
   const [userData, setUserData] = useState<LoginData>({ name: '', password: '' });
-  const [responseUserName, setResponseUserName] = useState<string | null>(null);
+  const [responseName, setResponseName] = useState<string>('앙구일구');
   const handleUserData = (data: LoginData) => {
     setUserData(data);
   };
@@ -26,7 +26,7 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
         name: userData.name,
         password: userData.password,
       });
-      setResponseUserName(response.name);
+      setResponseName(response.name);
       handleCloseAllModal();
     } catch (e) {
       console.error('Error closing suggest modal:', e);
@@ -38,6 +38,6 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
     userData,
     handleUserData,
     handleModalLogin,
-    responseUserName,
+    responseName,
   };
 }
