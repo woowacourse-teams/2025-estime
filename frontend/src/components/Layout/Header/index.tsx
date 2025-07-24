@@ -2,8 +2,11 @@ import Text from '@/components/Text';
 import * as S from './Header.styled';
 import ThemeButton from '@/components/ThemeButton';
 import Logo from '@/icons/Logo';
+import PlatformLogo from '@/components/PlatformLogo';
+import { useExtractQueryParams } from '@/hooks/common/useExtractQueryParams';
 
 const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
+  const platform = useExtractQueryParams('platform') as 'DISCORD' | 'SLACK';
   return (
     <S.Container>
       <S.Content>
@@ -13,7 +16,10 @@ const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
             아인슈타임
           </Text>
         </S.Wrapper>
-        <ThemeButton isDark={isDark} onToggle={toggleTheme} />
+        <S.Wrapper>
+          {platform && <PlatformLogo platform={platform} />}
+          <ThemeButton isDark={isDark} onToggle={toggleTheme} />
+        </S.Wrapper>
       </S.Content>
     </S.Container>
   );
