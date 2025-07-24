@@ -9,8 +9,8 @@ import java.util.List;
 public record SlackRoomCreatedInput(
         String title,
         List<LocalDate> availableDates,
-        LocalTime startTimeStartAt,
-        LocalTime endTimeStartAt,
+        LocalTime startTime,
+        LocalTime endTime,
         String session
 ) {
 

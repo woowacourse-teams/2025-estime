@@ -16,8 +16,8 @@ public class SlackMessageBuilder {
                 .map(DATE_FORMATTER::format)
                 .collect(Collectors.joining(", "));
 
-        final String start = input.startTimeStartAt().format(TIME_FORMATTER);
-        final String end = input.endTimeStartAt().format(TIME_FORMATTER);
+        final String start = input.startTime().format(TIME_FORMATTER);
+        final String end = input.endTime().format(TIME_FORMATTER);
 
         return String.join("\n",
                 "🗓 *일정이 생성되었습니다!*",
