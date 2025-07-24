@@ -1,9 +1,14 @@
 package com.bether.bether.connection.slack.application.util;
 
 import com.bether.bether.connection.application.dto.input.ConnectedRoomCreateMessageInput;
+import com.bether.bether.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
+import com.bether.bether.connection.domain.PlatformMessage;
+import com.bether.bether.connection.domain.PlatformMessageStyle;
 import com.slack.api.model.block.ActionsBlock;
 import com.slack.api.model.block.HeaderBlock;
 import com.slack.api.model.block.LayoutBlock;
+import com.slack.api.model.block.SectionBlock;
+import com.slack.api.model.block.composition.MarkdownTextObject;
 import com.slack.api.model.block.composition.PlainTextObject;
 import com.slack.api.model.block.element.ButtonElement;
 import java.util.List;
@@ -13,15 +18,16 @@ import org.springframework.stereotype.Component;
 public class SlackMessageBuilder {
 
     public List<LayoutBlock> buildConnectedRoomCreateBlocks(final ConnectedRoomCreateMessageInput input) {
+        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATE;
         return List.of(
                 HeaderBlock.builder()
-                        .text(plain("💡 아인슈타임이 나타났어요!"))
+                        .text(plain(platformMessage.getTitle()))
                         .build(),
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plain("🔗 일정 조율 시작하기"))
-                                        .url(input.connectedRoomCreateUrl())
+                                        .text(plain(platformMessage.getShortcutDescription()))
+                                        .url(input.shortcut())
                                         .actionId("create-connected-room")
                                         .build()
                         ))
@@ -29,7 +35,33 @@ public class SlackMessageBuilder {
         );
     }
 
-    private PlainTextObject plain(final String text) {
+    public List<LayoutBlock> buildConnectedRoomCreatedBlocks(final ConnectedRoomCreatedMessageInput input) {
+        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
+        final String formattedDeadline = input.deadLine().format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
+        return List.of(
+                HeaderBlock.builder()
+                        .text(plain(platformMessage.getTitle()))
+                        .build(),
+                SectionBlock.builder()
+                        .text(markdown("> *제목:* " + input.title() + "\n> *마감기한:* " + formattedDeadline))
+                        .build(),
+                ActionsBlock.builder()
+                        .elements(List.of(
+                                ButtonElement.builder()
+                                        .text(plain(platformMessage.getShortcutDescription()))
+                                        .url(input.shortcut())
+                                        .actionId("view-created-room")
+                                        .build()
+                        ))
+                        .build()
+        );
+    }
+
+    private MarkdownTextObject markdown(String text) {
+        return MarkdownTextObject.builder().text(text).build();
+    }
+
+    private PlainTextObject plain(String text) {
         return PlainTextObject.builder().text(text).emoji(true).build();
     }
 }

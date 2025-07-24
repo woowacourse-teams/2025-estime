@@ -50,7 +50,7 @@ class ConnectedRoomApplicationServiceTest {
                 "testChannelId"
         );
 
-        doNothing().when(discordMessageSender).execute(any(), any());
+        doNothing().when(discordMessageSender).sendConnectedRoomCreateEphemeralMessage(any(), any());
 
         // when
         final ConnectedRoomCreateOutput saved = connectedRoomApplicationService.save(input);
