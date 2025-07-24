@@ -38,7 +38,7 @@ const CheckEventPage = () => {
           title={roomInfo.title}
         />
         <Flex direction="column" gap="var(--gap-6)">
-          <Flex justify="center" align="center" gap="var(--gap-9)">
+          <Flex justify="center" align="flex-start" gap="var(--gap-9)">
             <Flex.Item flex={2}>
               <Timetable
                 time={roomInfo.time}

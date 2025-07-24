@@ -6,6 +6,8 @@ import { useTheme } from '@emotion/react';
 import * as S from './RecommendTime.styled';
 
 const RecommendTime = ({ dateTimes }: { dateTimes: string[] }) => {
+  const { colors } = useTheme();
+
   const parsedDateTimes = dateTimes.map((dateTime) => {
     const [datePart, timePart] = dateTime.split('T');
     const [month, day] = datePart.split('-').slice(1);
@@ -16,8 +18,6 @@ const RecommendTime = ({ dateTimes }: { dateTimes: string[] }) => {
       time: timePart,
     };
   });
-
-  const { colors } = useTheme();
 
   return (
     <Wrapper
