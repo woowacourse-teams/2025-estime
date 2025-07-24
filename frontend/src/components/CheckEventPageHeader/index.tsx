@@ -16,25 +16,19 @@ const CheckEventPageHeader = ({ deadLine, isPublic, title }: CheckEventPageHeade
         {title}
       </Text>
       <Flex gap="var(--gap-6)" justify="flex-start" align="center">
-        <Flex justify="space-between" align="center" gap="var(--gap-4)">
-          <Flex.Item>
-            {isPublic ? <IGlobe color={theme.colors.text} /> : <ILock color={theme.colors.red40} />}
-          </Flex.Item>
-          <Flex.Item>
-            <Text variant="body" color="text">
-              공개 여부 : {isPublic ? '공개' : '비공개'}
-            </Text>
-          </Flex.Item>
+        <Flex justify="space-between" align="center" gap="var(--gap-3)">
+          {isPublic ? <IGlobe color={theme.colors.text} /> : <ILock color={theme.colors.red40} />}
+
+          <Text variant="body" color="text">
+            공개 여부 : {isPublic ? '공개' : '비공개'}
+          </Text>
         </Flex>
-        <Flex justify="space-between" align="center" gap="var(--gap-4)">
-          <Flex.Item>
-            <IClock color={theme.colors.text} />
-          </Flex.Item>
-          <Flex.Item>
-            <Text variant="body" color="text">
-              마감일 : {deadLine ? deadLine.date : '설정되지 않음'}
-            </Text>
-          </Flex.Item>
+        <Flex justify="space-between" align="center" gap="var(--gap-3)">
+          <IClock color={theme.colors.text} />
+
+          <Text variant="body" color="text">
+            마감일 : {deadLine ? deadLine.date : '설정되지 않음'}
+          </Text>
         </Flex>
       </Flex>
     </Flex>
