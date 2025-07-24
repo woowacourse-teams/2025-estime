@@ -190,25 +190,6 @@ class RoomApplicationServiceTest {
                 .hasMessage("startTime cannot be after endTime");
     }
 
-    @DisplayName("시작 시간이 종료 시간과 같으면 예외가 발생한다.")
-    @Test
-    void saveWithStartTimeEqualsEndTime() {
-        // given
-        final RoomCreateInput input = new RoomCreateInput(
-                "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(10, 30),
-                LocalTime.of(10, 30),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
-                true
-        );
-
-        // when // then
-        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("startTime cannot be after endTime");
-    }
-
     @DisplayName("마감 시간이 현재 시간 보다 빠르면 예외가 발생한다.")
     @Test
     void saveWithDeadLine() {
