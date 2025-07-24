@@ -22,7 +22,7 @@ public class SlackMessageBuilder {
                                 ButtonElement.builder()
                                         .text(plain("🔗 일정 조율 시작하기"))
                                         .url(input.connectedRoomCreateUrl())
-                                        .actionId("view-created-room")
+                                        .actionId("create-connected-room")
                                         .build()
                         ))
                         .build()
