@@ -7,9 +7,8 @@ import useTimePicker from '@/hooks/useTimePicker';
 import useSelectTime from '@/hooks/useSelectTime';
 import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
-import { useTheme } from '@emotion/react';
 import { Field } from '@/types/field';
-import changeIconColor from '@/utils/changeIconColor';
+import useChangeIconColor from '@/hooks/common/useChangeIconColor';
 
 type BasicSettingsProps = {
   title: Field<string>;
@@ -17,8 +16,6 @@ type BasicSettingsProps = {
 };
 
 const BasicSettings = ({ title, time }: BasicSettingsProps) => {
-  const { colors } = useTheme();
-
   const { isOpen: isStartOpen, toggleOpen: toggleStartOpen } = useTimePicker();
 
   const { isOpen: isEndOpen, toggleOpen: toggleEndOpen } = useTimePicker();
@@ -59,7 +56,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
             selected={selectedButtons.includes('day')}
           >
             <ISun
-              color={changeIconColor({
+              color={useChangeIconColor({
                 defaultColor: 'secondary',
                 isSelected: selectedButtons.includes('day'),
               })}
@@ -77,7 +74,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
             selected={selectedButtons.includes('night')}
           >
             <IMoon
-              color={changeIconColor({
+              color={useChangeIconColor({
                 defaultColor: 'primary',
                 isSelected: selectedButtons.includes('night'),
               })}

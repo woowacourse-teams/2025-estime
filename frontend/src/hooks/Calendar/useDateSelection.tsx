@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { isItPast, isValidDate } from '@/utils/Calendar/dateUtils';
 import { formatDateToString } from '@/utils/Calendar/format';
 
@@ -102,41 +102,41 @@ export const useDateSelection = ({
   // }, [draggingRef]);
 
   // 터치 이벤트 지원
-  const handleTouchStart = useCallback(
-    (date: Date | null) => {
-      onMouseDown(date);
-    },
-    [onMouseDown]
-  );
+  // const handleTouchStart = useCallback(
+  //   (date: Date | null) => {
+  //     onMouseDown(date);
+  //   },
+  //   [onMouseDown]
+  // );
 
-  const handleTouchMove = useCallback(
-    (
-      e: React.TouchEvent,
-      containerRef: React.RefObject<{ contains: (element: unknown) => boolean }>
-    ) => {
-      if (!draggingRef.current || !containerRef.current) return;
+  // const handleTouchMove = useCallback(
+  //   (
+  //     e: React.TouchEvent,
+  //     containerRef: React.RefObject<{ contains: (element: unknown) => boolean }>
+  //   ) => {
+  //     if (!draggingRef.current || !containerRef.current) return;
 
-      e.preventDefault();
+  //     e.preventDefault();
 
-      const touch = e.changedTouches[0];
-      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  //     const touch = e.changedTouches[0];
+  //     const target = document.elementFromPoint(touch.clientX, touch.clientY);
 
-      if (target && containerRef.current.contains(target)) {
-        const dateStr = target?.getAttribute('data-date');
-        if (dateStr) {
-          const date = new Date(dateStr);
-          if (isValidDate(date) || !isItPast(date, today)) {
-            addRemoveDate(date, dragState);
-          }
-        }
-      }
-    },
-    [dragState, addRemoveDate]
-  );
+  //     if (target && containerRef.current.contains(target)) {
+  //       const dateStr = target?.getAttribute('data-date');
+  //       if (dateStr) {
+  //         const date = new Date(dateStr);
+  //         if (isValidDate(date) || !isItPast(date, today)) {
+  //           addRemoveDate(date, dragState);
+  //         }
+  //       }
+  //     }
+  //   },
+  //   [dragState, addRemoveDate]
+  // );
 
-  const handleTouchEnd = useCallback(() => {
-    onMouseUp();
-  }, [onMouseUp]);
+  // const handleTouchEnd = useCallback(() => {
+  //   onMouseUp();
+  // }, [onMouseUp]);
 
   return {
     onMouseDown,
