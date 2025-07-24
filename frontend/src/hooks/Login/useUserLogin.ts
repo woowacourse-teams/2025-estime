@@ -10,7 +10,7 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
     throw new Error('Session ID is required for user login');
   }
   const [userData, setUserData] = useState<LoginData>({ name: '', password: '' });
-  const [responseName, setResponseName] = useState<string>('앙구일구');
+  const [name, setName] = useState<string>('앙구일구');
   const handleUserData = (data: LoginData) => {
     setUserData(data);
   };
@@ -26,7 +26,7 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
         name: userData.name,
         password: userData.password,
       });
-      setResponseName(response.name);
+      setName(response.name);
       handleCloseAllModal();
     } catch (err) {
       const e = err as Error;
@@ -39,6 +39,6 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
     userData,
     handleUserData,
     handleModalLogin,
-    responseName,
+    name,
   };
 }

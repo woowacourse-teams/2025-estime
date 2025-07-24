@@ -22,12 +22,12 @@ const CheckEventPage = () => {
     handleCloseLoginModal,
   } = useModalControl();
 
-  const { handleModalLogin, userData, handleUserData, responseName } = useUserLogin(
+  const { handleModalLogin, userData, handleUserData, name } = useUserLogin(
     session,
     handleCloseAllModal
   );
 
-  const userAvailability = useUserAvailability({ name: responseName, session });
+  const userAvailability = useUserAvailability({ name, session });
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
