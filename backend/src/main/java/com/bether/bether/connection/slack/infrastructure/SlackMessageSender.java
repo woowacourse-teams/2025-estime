@@ -58,6 +58,7 @@ public class SlackMessageSender implements MessageSender {
                 .channel(channelId)
                 .user(userId)
                 .blocks(blocks)
+                .text("Slack Ephemeral Message")
                 .build();
 
         sendSlackEphemeralMessage(request, "Connected room create ephemeral message",

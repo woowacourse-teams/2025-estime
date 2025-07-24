@@ -19,14 +19,15 @@ public class SlackMessageBuilder {
 
     public List<LayoutBlock> buildConnectedRoomCreateBlocks(final ConnectedRoomCreateMessageInput input) {
         final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATE;
+
         return List.of(
                 HeaderBlock.builder()
-                        .text(plain(platformMessage.getTitle()))
+                        .text(plainText(platformMessage.getTitle()))
                         .build(),
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plain(platformMessage.getShortcutDescription()))
+                                        .text(plainText(platformMessage.getShortcutDescription()))
                                         .url(input.shortcut())
                                         .actionId("create-connected-room")
                                         .build()
@@ -38,9 +39,10 @@ public class SlackMessageBuilder {
     public List<LayoutBlock> buildConnectedRoomCreatedBlocks(final ConnectedRoomCreatedMessageInput input) {
         final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
         final String formattedDeadline = input.deadLine().format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
+
         return List.of(
                 HeaderBlock.builder()
-                        .text(plain(platformMessage.getTitle()))
+                        .text(plainText(platformMessage.getTitle()))
                         .build(),
                 SectionBlock.builder()
                         .text(markdown("> *제목:* " + input.title() + "\n> *마감기한:* " + formattedDeadline))
@@ -48,7 +50,7 @@ public class SlackMessageBuilder {
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plain(platformMessage.getShortcutDescription()))
+                                        .text(plainText(platformMessage.getShortcutDescription()))
                                         .url(input.shortcut())
                                         .actionId("view-created-room")
                                         .build()
@@ -58,10 +60,15 @@ public class SlackMessageBuilder {
     }
 
     private MarkdownTextObject markdown(String text) {
-        return MarkdownTextObject.builder().text(text).build();
+        return MarkdownTextObject.builder()
+                .text(text)
+                .build();
     }
 
-    private PlainTextObject plain(String text) {
-        return PlainTextObject.builder().text(text).emoji(true).build();
+    private PlainTextObject plainText(String text) {
+        return PlainTextObject.builder()
+                .text(text)
+                .emoji(true)
+                .build();
     }
 }
