@@ -1,30 +1,67 @@
 package com.bether.bether.connection.slack.application.util;
 
-import com.bether.bether.connection.slack.application.dto.SlackRoomCreatedInput;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
+import com.bether.bether.connection.application.dto.input.ConnectedRoomCreateMessageInput;
+import com.bether.bether.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
+import com.bether.bether.connection.domain.PlatformMessage;
+import com.bether.bether.connection.domain.PlatformMessageStyle;
+import com.slack.api.model.block.ActionsBlock;
+import com.slack.api.model.block.HeaderBlock;
+import com.slack.api.model.block.LayoutBlock;
+import com.slack.api.model.block.SectionBlock;
+import com.slack.api.model.block.composition.MarkdownTextObject;
+import com.slack.api.model.block.composition.PlainTextObject;
+import com.slack.api.model.block.element.ButtonElement;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SlackMessageBuilder {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-    public String buildRoomCreatedMessage(final SlackRoomCreatedInput input, final String scheduleLink) {
-        final String dates = input.availableDates().stream()
-                .map(DATE_FORMATTER::format)
-                .collect(Collectors.joining(", "));
-
-        final String start = input.startTime().format(TIME_FORMATTER);
-        final String end = input.endTime().format(TIME_FORMATTER);
-
-        return String.join("\n",
-                "🗓 *일정이 생성되었습니다!*",
-                "> <" + scheduleLink + "|*일정조율 링크바로가기*>",
-                "> 제목 : " + input.title(),
-                "> 날짜 : " + dates,
-                "> 시간 : " + start + " ~ " + end
+    public List<LayoutBlock> buildConnectedRoomCreateBlocks(final ConnectedRoomCreateMessageInput input) {
+        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATE;
+        return List.of(
+                HeaderBlock.builder()
+                        .text(plain(platformMessage.getTitle()))
+                        .build(),
+                ActionsBlock.builder()
+                        .elements(List.of(
+                                ButtonElement.builder()
+                                        .text(plain(platformMessage.getShortcutDescription()))
+                                        .url(input.shortcut())
+                                        .actionId("create-connected-room")
+                                        .build()
+                        ))
+                        .build()
         );
+    }
+
+    public List<LayoutBlock> buildConnectedRoomCreatedBlocks(final ConnectedRoomCreatedMessageInput input) {
+        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
+        final String formattedDeadline = input.deadLine().format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
+        return List.of(
+                HeaderBlock.builder()
+                        .text(plain(platformMessage.getTitle()))
+                        .build(),
+                SectionBlock.builder()
+                        .text(markdown("> *제목:* " + input.title() + "\n> *마감기한:* " + formattedDeadline))
+                        .build(),
+                ActionsBlock.builder()
+                        .elements(List.of(
+                                ButtonElement.builder()
+                                        .text(plain(platformMessage.getShortcutDescription()))
+                                        .url(input.shortcut())
+                                        .actionId("view-created-room")
+                                        .build()
+                        ))
+                        .build()
+        );
+    }
+
+    private MarkdownTextObject markdown(String text) {
+        return MarkdownTextObject.builder().text(text).build();
+    }
+
+    private PlainTextObject plain(String text) {
+        return PlainTextObject.builder().text(text).emoji(true).build();
     }
 }
