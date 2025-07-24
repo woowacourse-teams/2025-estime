@@ -1,6 +1,6 @@
 package com.bether.bether.room.presentation.dto.response;
 
-import com.bether.bether.timeslot.domain.TimeSlots;
+import com.bether.bether.datetimeslot.domain.DateTimeSlots;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,8 +9,8 @@ public record TotalTimeSlotResponse(
         List<TimeSlotResponse> timeSlots
 ) {
 
-    public static TotalTimeSlotResponse from(final TimeSlots timeSlots) {
-        return new TotalTimeSlotResponse(timeSlots.getTimeSlots().stream()
+    public static TotalTimeSlotResponse from(final DateTimeSlots dateTimeSlots) {
+        return new TotalTimeSlotResponse(dateTimeSlots.getDateTimeSlots().stream()
                 .map(timeSlot -> new TimeSlotResponse(timeSlot.getUserName(), timeSlot.getStartAt()))
                 .toList()
         );

@@ -1,15 +1,18 @@
 package com.bether.bether.room.application.service;
 
+import com.bether.bether.datetimeslot.application.dto.input.DateTimeSlotInput;
+import com.bether.bether.datetimeslot.application.dto.input.DateTimeSlotUpdateInput;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotRecommendationsOutput;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotStatisticOutput;
+import com.bether.bether.datetimeslot.application.service.DateTimeSlotService;
+import com.bether.bether.datetimeslot.domain.DateTimeSlots;
 import com.bether.bether.room.application.dto.RoomCreateInput;
 import com.bether.bether.room.application.dto.RoomCreateOutput;
 import com.bether.bether.room.application.dto.RoomOutput;
 import com.bether.bether.room.domain.Room;
-import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
-import com.bether.bether.timeslot.application.dto.input.TimeSlotUpdateInput;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
-import com.bether.bether.timeslot.application.service.TimeSlotService;
-import com.bether.bether.timeslot.domain.TimeSlots;
+import com.bether.bether.user.application.dto.input.UserCreateInput;
+import com.bether.bether.user.application.dto.output.UserCreateOutput;
+import com.bether.bether.user.application.service.UserDomainService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoomApplicationService {
 
     private final RoomDomainService roomDomainService;
-    private final TimeSlotService timeSlotService;
+    private final DateTimeSlotService dateTimeSlotService;
+    private final UserDomainService userDomainService;
 
     @Transactional(readOnly = true)
     public RoomOutput getBySession(final UUID session) {
@@ -36,38 +40,44 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public TimeSlots getTimeSlotsBySession(final UUID session) {
+    public DateTimeSlots getTimeSlotsBySession(final UUID session) {
         final Long id = roomDomainService.getIdBySession(session);
-        return timeSlotService.getAllByRoomId(id);
+        return dateTimeSlotService.getAllByRoomId(id);
     }
 
     @Transactional(readOnly = true)
-    public TimeSlots getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
+    public DateTimeSlots getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
         final Long id = roomDomainService.getIdBySession(session);
-        return timeSlotService.getAllByRoomIdAndUserName(id, userName);
+        return dateTimeSlotService.getAllByRoomIdAndUserName(id, userName);
     }
 
     @Transactional
-    public TimeSlots saveTimeSlots(final TimeSlotInput input) {
+    public DateTimeSlots saveTimeSlots(final DateTimeSlotInput input) {
         final Long id = roomDomainService.getIdBySession(input.roomSession());
-        return timeSlotService.saveAll(id, input);
+        return dateTimeSlotService.saveAll(id, input);
     }
 
     @Transactional(readOnly = true)
-    public TimeSlotStatisticOutput generateTimeSlotStatistic(final UUID session) {
+    public DateTimeSlotStatisticOutput generateTimeSlotStatistic(final UUID session) {
         final Long id = roomDomainService.getIdBySession(session);
-        return timeSlotService.generateTimeSlotStatistic(id);
+        return dateTimeSlotService.generateTimeSlotStatistic(id);
     }
 
     @Transactional(readOnly = true)
-    public TimeSlotRecommendationsOutput recommendTopTimeSlots(final UUID session) {
+    public DateTimeSlotRecommendationsOutput recommendTopTimeSlots(final UUID session) {
         final Long id = roomDomainService.getIdBySession(session);
-        return timeSlotService.recommendTopTimeSlots(id);
+        return dateTimeSlotService.recommendTopTimeSlots(id);
     }
 
     @Transactional
-    public void updateTimeSlots(final TimeSlotUpdateInput input) {
+    public void updateTimeSlots(final DateTimeSlotUpdateInput input) {
         final Long roomId = roomDomainService.getIdBySession(input.roomSession());
-        timeSlotService.updateTimeSlots(roomId, input);
+        dateTimeSlotService.updateTimeSlots(roomId, input);
+    }
+
+    @Transactional
+    public UserCreateOutput saveUser(final UUID session, final UserCreateInput input) {
+        final Long id = roomDomainService.getIdBySession(session);
+        return UserCreateOutput.from(userDomainService.getByRoomIdAndName(id, input));
     }
 }

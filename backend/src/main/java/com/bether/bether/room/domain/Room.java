@@ -1,7 +1,7 @@
 package com.bether.bether.room.domain;
 
 import com.bether.bether.common.BaseEntity;
-import com.bether.bether.timeslot.domain.TimeSlot;
+import com.bether.bether.datetimeslot.domain.DateTimeSlot;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -95,7 +95,7 @@ public class Room extends BaseEntity {
         if (!startTime.isBefore(endTime)) {
             throw new IllegalArgumentException("startTime cannot be after endTime");
         }
-        final long timeSlotMinutes = TimeSlot.UNIT.toMinutes();
+        final long timeSlotMinutes = DateTimeSlot.UNIT.toMinutes();
         if (startTime.getMinute() % timeSlotMinutes != 0 || endTime.getMinute() % timeSlotMinutes != 0) {
             throw new IllegalArgumentException("time must be in " + timeSlotMinutes + "-minute intervals");
         }

@@ -1,7 +1,7 @@
 package com.bether.bether.connection.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
 import com.bether.bether.connection.application.dto.input.ConnectedRoomCreateInput;
@@ -50,7 +50,7 @@ class ConnectedRoomApplicationServiceTest {
                 "testChannelId"
         );
 
-        doNothing().when(discordMessageSender).execute(anyString(), anyString());
+        doNothing().when(discordMessageSender).execute(any(), any());
 
         // when
         final ConnectedRoomCreateOutput saved = connectedRoomApplicationService.save(input);
@@ -60,8 +60,6 @@ class ConnectedRoomApplicationServiceTest {
                 .isTrue();
 
         final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
-        System.out.println(connectedRoom.getRoom());
-        System.out.println(input.toRoomEntity());
         assertThat(connectedRoom.getRoom().getSession()).isEqualTo(saved.session());
     }
 
