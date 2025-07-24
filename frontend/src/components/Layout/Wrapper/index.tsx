@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import * as S from './Wrapper.styled';
-import { CSSPaddingVar } from '@/types/designTokenType';
+import { CSSPaddingVar, CSSRadiusVar } from '@/types/designTokenType';
 
-export interface WrapperProps {
+export interface WrapperProps extends ComponentProps<'div'> {
   maxWidth?: number | 'fit-content' | 'max-content' | 'min-content' | '100%' | 'auto';
   fullHeight?: boolean;
   backgroundColor?: string;
@@ -14,6 +14,8 @@ export interface WrapperProps {
   paddingLeft?: CSSPaddingVar;
 
   center?: boolean; // margin: 0 auto 로 가운데 정렬 여부
+
+  borderRadius?: CSSRadiusVar;
 
   children: React.ReactNode;
 }

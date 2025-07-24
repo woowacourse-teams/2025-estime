@@ -4,5 +4,4 @@ export interface RoomInfo {
   time: { startTime: string; endTime: string };
   deadLine: { date: string; time: string };
   isPublic: 'public' | 'private';
-  roomSession?: string;
 }
