@@ -4,11 +4,7 @@ export function useModalControl() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
   const modalTargetRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (modalTargetRef.current) {
-      setIsSuggestModalOpen(true);
-    }
-  }, []);
+
   const handleCloseAllModal = () => {
     setIsLoginModalOpen(false);
     setIsSuggestModalOpen(false);
@@ -19,6 +15,12 @@ export function useModalControl() {
   const handleCloseLoginModal = () => {
     setIsLoginModalOpen(false);
   };
+
+  useEffect(() => {
+    if (modalTargetRef.current) {
+      setIsSuggestModalOpen(true);
+    }
+  }, []);
 
   return {
     isLoginModalOpen,
