@@ -11,9 +11,11 @@ import { subtract30Minutes } from '@/utils/Time/subtract30Minutes';
 export const toCreateRoomInfo = (roomInfo: RoomInfo): CreateRoomRequestType => {
   const { title, availableDates, time, deadLine, isPublic } = roomInfo;
 
+  const sortedAvailableDates = Array.from(availableDates).sort();
+
   return {
     title,
-    availableDates: Array.from(availableDates),
+    availableDates: sortedAvailableDates,
     startTime: time.startTime,
     endTime: subtract30Minutes(time.endTime),
     deadLine: `${deadLine.date}T${subtract30Minutes(deadLine.time)}`,
