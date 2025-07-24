@@ -1,6 +1,5 @@
 import Flex from '../Layout/Flex';
 import Wrapper from '../Layout/Wrapper';
-import { useState } from 'react';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
 import { useTheme } from '@emotion/react';
 import Text from '../Text';
