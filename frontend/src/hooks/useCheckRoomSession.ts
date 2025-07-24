@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useExtractQueryParam } from './common/useExtractQueryParam';
 import { getRoomInfo } from '@/apis/room/room';
-import { RoomInfo } from '@/types/roomInfo';
+import type { RoomInfo } from '@/types/roomInfo';
 import { initialRoomInfo } from '@/constants/initialRoomInfo';
 import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 

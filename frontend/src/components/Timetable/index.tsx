@@ -41,7 +41,7 @@ const Timetable = ({ time, availableDates, userAvailability, ref }: TimetablePro
   });
 
   return (
-    <Wrapper maxWidth={800} ref={ref}>
+    <Wrapper maxWidth="100%" ref={ref}>
       <S.Container>
         <Flex direction="column" gap="var(--gap-6)">
           <S.TimetableHeader>
@@ -61,7 +61,7 @@ const Timetable = ({ time, availableDates, userAvailability, ref }: TimetablePro
               </Button>
             </Wrapper>
           </S.TimetableHeader>
-          <S.TimetableContent onMouseLeave={() => onMouseLeave()}>
+          <S.TimetableContent onMouseLeave={onMouseLeave}>
             <S.TimeSlotColumn>
               {timeList.map(({ timeText, isHour }) => (
                 <S.GridContainer key={timeText}>

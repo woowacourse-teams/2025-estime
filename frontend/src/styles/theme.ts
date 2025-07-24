@@ -84,7 +84,7 @@ export const DARK_THEME = {
   typography: {
     h1: {
       fontSize: '2.25rem',
-      fontWeight: 'medium',
+      fontWeight: 'bold',
     },
     h2: {
       fontSize: '1.5rem',

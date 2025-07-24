@@ -9,6 +9,7 @@ import useCheckRoomSession from '@/hooks/useCheckRoomSession';
 import { useModalControl } from '@/hooks/TimeTableRoom/useModalControl';
 import { useUserLogin } from '@/hooks/Login/useUserLogin';
 import useUserAvailability from '@/hooks/useUserAvailability';
+import CheckEventPageHeader from '@/components/CheckEventPageHeader';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -30,35 +31,42 @@ const CheckEventPage = () => {
   const userAvailability = useUserAvailability({ name, session });
 
   return (
-    <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
+    <Wrapper maxWidth={1280} paddingTop="var(--padding-10)" paddingBottom="var(--padding-8)">
       <Flex direction="column" gap="var(--gap-6)">
-        <Flex justify="center" align="center" gap="var(--gap-9)">
-          <Flex.Item flex={2}>
-            <Timetable
-              time={roomInfo.time}
-              availableDates={roomInfo.availableDates}
-              userAvailability={userAvailability}
-              ref={modalTargetRef}
-            />
-          </Flex.Item>
-          <Flex.Item flex={1}>
-            <S.Container>
-              <Text variant="h2">이벤트 확인 페이지</Text>
-            </S.Container>
-          </Flex.Item>
+        <CheckEventPageHeader
+          deadLine={roomInfo.deadLine}
+          isPublic={roomInfo.isPublic}
+          title={roomInfo.title}
+        />
+        <Flex direction="column" gap="var(--gap-6)">
+          <Flex justify="center" align="center" gap="var(--gap-9)">
+            <Flex.Item flex={2}>
+              <Timetable
+                time={roomInfo.time}
+                availableDates={roomInfo.availableDates}
+                userAvailability={userAvailability}
+                ref={modalTargetRef}
+              />
+            </Flex.Item>
+            <Flex.Item flex={1}>
+              <S.Container>
+                <Text variant="h2">이벤트 확인 페이지</Text>
+              </S.Container>
+            </Flex.Item>
+          </Flex>
+          <LoginSuggestModal
+            target={modalTargetRef.current}
+            isOpen={isSuggestModalOpen}
+            onLoginClick={handleOpenLoginModal}
+          />
+          <LoginModal
+            isLoginModalOpen={isLoginModalOpen}
+            handleCloseLoginModal={handleCloseLoginModal}
+            handleModalLogin={handleModalLogin}
+            userData={userData}
+            handleUserData={handleUserData}
+          />
         </Flex>
-        <LoginSuggestModal
-          target={modalTargetRef.current}
-          isOpen={isSuggestModalOpen}
-          onLoginClick={handleOpenLoginModal}
-        />
-        <LoginModal
-          isLoginModalOpen={isLoginModalOpen}
-          handleCloseLoginModal={handleCloseLoginModal}
-          handleModalLogin={handleModalLogin}
-          userData={userData}
-          handleUserData={handleUserData}
-        />
       </Flex>
     </Wrapper>
   );
