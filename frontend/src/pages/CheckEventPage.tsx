@@ -1,19 +1,25 @@
 import Timetable from '@/components/Timetable';
 import useCheckRoomSession from '@/hooks/useCheckRoomSession';
 import useUserAvailability from '@/hooks/useUserAvailablity';
+import { useEffect, useRef } from 'react';
 
 const CheckEventPage = () => {
-  const roomInfo = useCheckRoomSession();
-  const userAvailability = useUserAvailability();
+  const { roomInfo, session } = useCheckRoomSession();
+  const name = '메이토';
+  const userAvailability = useUserAvailability({ name, session });
+  const ref = useRef(null);
+
+  useEffect(() => {
+    console.log(ref.current);
+  }, []);
 
   return (
     <div>
       <Timetable
-        startTime={roomInfo.time.startTime}
-        endTime={roomInfo.time.endTime}
+        time={roomInfo.time}
         availableDates={roomInfo.availableDates}
-        session={roomInfo.roomSession}
         userAvailability={userAvailability}
+        ref={ref}
       />
     </div>
   );

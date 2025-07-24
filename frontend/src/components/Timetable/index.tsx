@@ -11,24 +11,22 @@ import Button from '../Button';
 import { Field } from '@/types/field';
 
 interface TimetableProps {
+  time: {
+    startTime: string;
+    endTime: string;
+  };
   availableDates: Set<string>;
-  startTime: string;
-  endTime: string;
-  session: string;
   userAvailability: {
     userName: Field<string>;
     selectedTimes: Field<Set<string>>;
-    userAvailabilitySubmit: (session: string) => Promise<unknown>;
+    userAvailabilitySubmit: () => Promise<unknown>;
   };
+  ref: React.RefObject<HTMLDivElement | null>;
 }
 
-const Timetable = ({
-  availableDates,
-  startTime,
-  endTime,
-  session,
-  userAvailability,
-}: TimetableProps) => {
+const Timetable = ({ time, availableDates, userAvailability, ref }: TimetableProps) => {
+  const { startTime, endTime } = time;
+
   const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
   const endTimeInMinutes = endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
   const interval = 30;
@@ -52,6 +50,7 @@ const Timetable = ({
       backgroundColor={theme.colors.background}
       paddingTop="var(--padding-9)"
       padding="var(--padding-9)"
+      ref={ref}
     >
       <Flex direction="column" gap="var(--gap-6)">
         <S.TimetableHeader>
@@ -64,10 +63,7 @@ const Timetable = ({
             </Text>
           </Flex>
           <Wrapper maxWidth={100} center={false}>
-            <Button
-              color="primary"
-              onClick={() => userAvailability.userAvailabilitySubmit(session)}
-            >
+            <Button color="primary" onClick={userAvailability.userAvailabilitySubmit}>
               <Text variant="button" color="text">
                 저장하기
               </Text>
