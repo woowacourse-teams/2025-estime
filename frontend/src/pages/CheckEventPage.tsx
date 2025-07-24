@@ -9,6 +9,7 @@ import { useUserLogin } from '@/hooks/Login/useUserLogin';
 import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
 import RecommendTime from '@/components/RecommendTime';
+import useRecommendTime from '@/hooks/RecommendTime/useRecommendTime';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -29,6 +30,8 @@ const CheckEventPage = () => {
 
   const userAvailability = useUserAvailability({ name, session });
 
+  const { recommendTimeData } = useRecommendTime(session);
+
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
       <Flex direction="column" gap="var(--gap-6)">
@@ -48,7 +51,10 @@ const CheckEventPage = () => {
               />
             </Flex.Item>
             <Flex.Item flex={1}>
-              <RecommendTime dateTimes={['2025-07-24T10:00:00', '2025-07-24T11:00:00']} />
+              <RecommendTime
+                dateTimes={recommendTimeData.map((item) => item.dateTime)}
+                isPublic={roomInfo.isPublic === 'public'}
+              />
             </Flex.Item>
           </Flex>
           <LoginSuggestModal
