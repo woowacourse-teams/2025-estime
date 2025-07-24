@@ -10,6 +10,9 @@ jobs:
   frontend-quality-check:
     name: Lint, Build, Test
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Seoul
+
     defaults:
       run:
         working-directory: ./frontend
