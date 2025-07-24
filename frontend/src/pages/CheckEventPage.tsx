@@ -8,6 +8,9 @@ import LoginSuggestModal from '@/components/LoginSuggestModal';
 import { joinPerson } from '@/apis/room/room';
 import { useExtractQueryParam } from '@/hooks/common/useExtractQueryParam';
 // import useCheckRoomSession from '@/hooks/useCheckRoomSession';
+import Timetable from '@/components/Timetable';
+import useCheckRoomSession from '@/hooks/useCheckRoomSession';
+import useUserAvailability from '@/hooks/useUserAvailablity';
 
 export type LoginData = {
   userid: string;
@@ -18,6 +21,9 @@ const CheckEventPage = () => {
   const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
   const [userData, setUserData] = useState<LoginData>({ userid: '', password: '' });
   const modalTargetRef = useRef<HTMLDivElement>(null);
+  const { roomInfo, session } = useCheckRoomSession();
+  const name = '메이토';
+  const userAvailability = useUserAvailability({ name, session });
 
   useEffect(() => {
     if (modalTargetRef.current) {
@@ -50,9 +56,12 @@ const CheckEventPage = () => {
       <Flex direction="column" gap="var(--gap-6)">
         <Flex justify="center" align="center" gap="var(--gap-9)">
           <Flex.Item flex={2}>
-            <S.Container ref={modalTargetRef}>
-              <Text variant="h2">이벤트 확인 페이지</Text>
-            </S.Container>
+            <Timetable
+              time={roomInfo.time}
+              availableDates={roomInfo.availableDates}
+              userAvailability={userAvailability}
+              ref={modalTargetRef}
+            />
           </Flex.Item>
           <Flex.Item flex={1}>
             <S.Container>

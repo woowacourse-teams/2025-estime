@@ -17,4 +17,6 @@ export const Container = styled.div<WrapperProps>`
           padding-bottom: ${paddingBottom ?? '0'};
           padding-left: ${paddingLeft ?? '0'};
         `}
+
+  border-radius: ${({ borderRadius }) => borderRadius ?? '0'};
 `;

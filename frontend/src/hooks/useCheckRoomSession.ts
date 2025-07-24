@@ -7,7 +7,10 @@ import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 
 const useCheckRoomSession = () => {
   const session = useExtractQueryParam('id');
-  const [roomInfo, setRoomInfo] = useState<RoomInfo>(initialRoomInfo);
+  const [roomInfo, setRoomInfo] = useState<RoomInfo & { roomSession: string }>({
+    ...initialRoomInfo,
+    roomSession: '',
+  });
 
   const fetchSession = async () => {
     if (!session) return;
@@ -27,7 +30,7 @@ const useCheckRoomSession = () => {
     fetchSession();
   }, [session]);
 
-  return roomInfo;
+  return { roomInfo, session };
 };
 
 export default useCheckRoomSession;
