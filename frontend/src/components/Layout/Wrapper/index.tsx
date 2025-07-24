@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import * as S from './Wrapper.styled';
 import { CSSPaddingVar, CSSRadiusVar } from '@/types/designTokenType';
 
-export interface WrapperProps {
+export interface WrapperProps extends ComponentProps<'div'> {
   maxWidth?: number | 'fit-content' | 'max-content' | 'min-content' | '100%' | 'auto';
   fullHeight?: boolean;
   backgroundColor?: string;
