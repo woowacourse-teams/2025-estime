@@ -5,7 +5,7 @@ import Text from '@/components/Text';
 
 const CopyLinkButton = ({ sessionId }: { sessionId: string }) => {
   const handleCopyLink = () => {
-    const link = `${process.env.LOCAL_URL}/check?id=${sessionId}`;
+    const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
     navigator.clipboard.writeText(link);
   };
   const theme = useTheme();
