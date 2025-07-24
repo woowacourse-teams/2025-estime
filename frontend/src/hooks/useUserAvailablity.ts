@@ -1,7 +1,11 @@
-import { createUserAvailableTime } from '@/apis/time/time';
+import {
+  createUserAvailableTime,
+  getUserAvailableTime,
+  updateUserAvailableTime,
+} from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { UserAvailability } from '@/types/userAvailability';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useUserAvailability = ({
   name,
@@ -10,6 +14,22 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
+  useEffect(() => {
+    const fetchUserAvailableTime = async () => {
+      if (!session) {
+        alert('세션이 없습니다. 다시 시도해주세요.');
+        return;
+      }
+
+      const userAvailableTimeInfo = await getUserAvailableTime(session, name);
+      if (userAvailableTimeInfo.timeSlots.length > 0) {
+        initialUserAvailability.selectedTimes = new Set(userAvailableTimeInfo.timeSlots);
+      }
+    };
+
+    fetchUserAvailableTime();
+  }, []);
+
   const initialUserAvailability = {
     userName: '메이토',
     selectedTimes: new Set<string>(),
@@ -31,7 +51,7 @@ export const useUserAvailability = ({
   const userAvailabilitySubmit = async () => {
     try {
       const payload = toCreateUserAvailability(userAvailability);
-      const response = await createUserAvailableTime(session, payload);
+      const response = await updateUserAvailableTime(session, payload);
       return response;
     } catch (err) {
       const e = err as Error;
