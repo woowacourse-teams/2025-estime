@@ -48,15 +48,8 @@ const CheckEventPage = () => {
       <Flex direction="column" gap="var(--gap-6)">
         <Flex justify="center" align="center" gap="var(--gap-9)">
           <Flex.Item flex={2}>
-            <S.Container id="login-suggest-modal" ref={modalTargetRef}>
+            <S.Container ref={modalTargetRef}>
               <Text variant="h2">이벤트 확인 페이지</Text>
-              <LoginSuggestModal
-                target={modalTargetRef.current}
-                isOpen={isSuggestModalOpen}
-                onLoginClick={() => {
-                  setIsLoginModalOpen(true);
-                }}
-              />
             </S.Container>
           </Flex.Item>
           <Flex.Item flex={1}>
@@ -66,6 +59,13 @@ const CheckEventPage = () => {
           </Flex.Item>
         </Flex>
 
+        <LoginSuggestModal
+          target={modalTargetRef.current}
+          isOpen={isSuggestModalOpen}
+          onLoginClick={() => {
+            setIsLoginModalOpen(true);
+          }}
+        />
         <LoginModal
           isLoginModalOpen={isLoginModalOpen}
           setIsLoginModalOpen={setIsLoginModalOpen}
