@@ -10,8 +10,8 @@ import java.util.List;
 public record ConnectedRoomCreateInput(
         String title,
         List<LocalDate> availableDates,
-        LocalTime startTimeStartAt,
-        LocalTime endTimeStartAt,
+        LocalTime startTime,
+        LocalTime endTime,
         LocalDateTime deadLine,
         Boolean isPublic,
         Platform platform,
@@ -19,6 +19,6 @@ public record ConnectedRoomCreateInput(
 ) {
 
     public Room toRoomEntity() {
-        return Room.withoutId(title, availableDates, startTimeStartAt, endTimeStartAt, deadLine, isPublic);
+        return Room.withoutId(title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 }
