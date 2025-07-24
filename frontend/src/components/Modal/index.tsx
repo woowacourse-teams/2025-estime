@@ -9,7 +9,7 @@ import IClose from '@/icons/IClose';
 
 export interface ModalProps extends PropsWithChildren {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   position: 'bottom' | 'center' | 'inside';
   portalToWhere?: Element | DocumentFragment;
   blur?: boolean;
@@ -32,7 +32,7 @@ function Modal({
   shouldCloseOnOverlayAction = true,
   children,
 }: ModalProps) {
-  useEscapeClose(isOpen, onClose, shouldCloseOnOverlayAction);
+  useEscapeClose({ isOpen, onClose, shouldClose: shouldCloseOnOverlayAction });
 
   if (!isOpen) return null;
 
