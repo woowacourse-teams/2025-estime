@@ -1,6 +1,6 @@
 import api from '../common';
 import { ROOM_API_PATH } from '../common/constant';
-import {
+import type {
   CombinedAvailableTimesResponseType,
   UserAvailableTimeResponseType,
   RecommendationTimeResponseType,
