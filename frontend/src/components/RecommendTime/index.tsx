@@ -1,4 +1,4 @@
-import { getDayOfWeek } from '@/utils/getDayOfWeek';
+import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import Wrapper from '../Layout/Wrapper';
 import Text from '../Text';
 import Flex from '@/components/Layout/Flex';
