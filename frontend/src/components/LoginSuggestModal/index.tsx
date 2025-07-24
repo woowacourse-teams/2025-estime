@@ -43,7 +43,7 @@ const LoginSuggestModal = ({ target, isOpen, onClose, onLoginClick }: LoginSugge
                 있습니다.
               </Text>
               <Button color="primary" onClick={onLoginClick} selected size="medium">
-                <IPerson color="currentColor" />
+                <IPerson color={theme.colors.gray10} />
                 <Text variant="body" color="gray10">
                   정보 입력하기
                 </Text>

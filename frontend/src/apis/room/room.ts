@@ -15,7 +15,7 @@ export const createRoom = async (body: CreateRoomRequestType): Promise<CreateRoo
 export const getRoomInfo = async (sessionId: string): Promise<GetRoomInfoResponseType> => {
   return await api.get(`${ROOM_API_PATH}/${sessionId}`);
 };
-export const joinPerson = async (
+export const joinUser = async (
   sessionId: string,
   body: CreateUserType
 ): Promise<CreateUserResponseType> => {

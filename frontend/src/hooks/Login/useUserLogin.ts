@@ -1,4 +1,4 @@
-import { joinPerson } from '@/apis/room/room';
+import { joinUser } from '../../apis/room/room';
 import { useState } from 'react';
 
 export type LoginData = {
@@ -28,7 +28,7 @@ export function useUserLogin({
       if (userData.name.trim().length === 0) {
         throw new Error('아이디를 입력해주세요.');
       }
-      const response = await joinPerson(session, {
+      const response = await joinUser(session, {
         name: userData.name,
         password: userData.password,
       });
