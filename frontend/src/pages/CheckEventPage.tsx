@@ -22,12 +22,15 @@ const CheckEventPage = () => {
     handleCloseLoginModal,
   } = useModalControl();
 
-  const { handleModalLogin, userData, handleUserData, name } = useUserLogin({
+  const { handleLogin, userData, handleUserData, name } = useUserLogin({
     session,
-    handleCloseAllModal,
   });
 
-  const userAvailability = useUserAvailability({ name, session });
+  const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
+    useUserAvailability({
+      name,
+      session,
+    });
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -41,9 +44,11 @@ const CheckEventPage = () => {
           <Flex justify="center" align="flex-start" gap="var(--gap-9)">
             <Flex.Item flex={2}>
               <Timetable
+                name={userName.value}
                 time={roomInfo.time}
                 availableDates={roomInfo.availableDates}
-                userAvailability={userAvailability}
+                selectedTimes={selectedTimes}
+                userAvailabilitySubmit={userAvailabilitySubmit}
                 ref={modalTargetRef}
               />
             </Flex.Item>
@@ -59,7 +64,11 @@ const CheckEventPage = () => {
           <LoginModal
             isLoginModalOpen={isLoginModalOpen}
             handleCloseLoginModal={handleCloseLoginModal}
-            handleModalLogin={handleModalLogin}
+            handleModalLogin={() => {
+              handleLogin();
+              handleCloseAllModal();
+              fetchUserAvailableTime();
+            }}
             userData={userData}
             handleUserData={handleUserData}
           />
