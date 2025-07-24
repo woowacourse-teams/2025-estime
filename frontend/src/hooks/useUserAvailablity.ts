@@ -19,20 +19,6 @@ export const useUserAvailability = ({
     fetchUserAvailableTime();
   }, []);
 
-  const fetchUserAvailableTime = async () => {
-    if (!session) {
-      alert('세션이 없습니다. 다시 시도해주세요.');
-      return;
-    }
-
-    const userAvailableTimeInfo = await getUserAvailableTime(session, name);
-
-    if (userAvailableTimeInfo.timeSlots.length > 0) {
-      const selectedTimes = new Set(userAvailableTimeInfo.timeSlots.map((item) => item.dateTime));
-      setUserAvailability((prev) => ({ ...prev, selectedTimes }));
-    }
-  };
-
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
@@ -56,6 +42,23 @@ export const useUserAvailability = ({
       const e = err as Error;
       alert(e.message);
       console.error(err);
+    }
+  };
+
+  const fetchUserAvailableTime = async () => {
+    if (!session) {
+      alert('세션이 없습니다. 다시 시도해주세요.');
+      return;
+    }
+
+    const userAvailableTimeInfo = await getUserAvailableTime(session, name);
+
+    if (userAvailableTimeInfo.timeSlots.length > 0) {
+      const selectedTimesResponse = new Set(
+        userAvailableTimeInfo.timeSlots.map((item) => item.dateTime)
+      );
+      selectedTimes.set(selectedTimesResponse);
+      userName.set(name);
     }
   };
 
