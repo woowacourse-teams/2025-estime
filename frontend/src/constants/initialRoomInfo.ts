@@ -1,4 +1,7 @@
 import { RoomInfo } from '@/types/roomInfo';
+import { getDefaultDeadLine } from '@/utils/getDefaultDeadLine';
+
+const { defaultTime, defaultDate } = getDefaultDeadLine();
 
 export const initialRoomInfo: RoomInfo = {
   title: '',
@@ -8,8 +11,8 @@ export const initialRoomInfo: RoomInfo = {
     endTime: '',
   },
   deadLine: {
-    date: '2025-07-25',
-    time: '16:00',
+    date: defaultDate,
+    time: defaultTime,
   },
   isPublic: 'public',
   roomSession: '',
