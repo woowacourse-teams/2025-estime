@@ -1,6 +1,5 @@
 import { ColorsKey } from '@/styles/theme';
 import styled from '@emotion/styled';
-import { background } from 'storybook/internal/theming';
 
 export const Container = styled.div<{
   color: ColorsKey;
@@ -26,7 +25,7 @@ export const Container = styled.div<{
   align-items: center;
   user-select: none;
   padding-left: var(--padding-5);
-  border: 2px solid ${({ theme }) => theme.colors.orange30};
+  border: 2px solid ${({ theme, color }) => theme.colors[color]};
 
   gap: var(--gap-3);
   background-color: ${({ backgroundColor }) =>
