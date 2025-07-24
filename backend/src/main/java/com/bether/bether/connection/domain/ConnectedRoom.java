@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,4 +30,14 @@ public class ConnectedRoom extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "platform", nullable = false)
     private Platform platform;
+
+    public static ConnectedRoom withoutId(final Room room, final Platform platform) {
+        validate(room, platform);
+        return new ConnectedRoom(room, platform);
+    }
+
+    private static void validate(final Room room, final Platform platform) {
+        Objects.requireNonNull(room, "room cannot be null");
+        Objects.requireNonNull(platform, "platform cannot be null");
+    }
 }
