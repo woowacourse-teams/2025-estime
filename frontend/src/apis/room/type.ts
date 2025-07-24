@@ -7,6 +7,11 @@ export interface CreateRoomRequestType {
   isPublic: boolean;
 }
 
+export interface CreateChannelRoomRequestType extends CreateRoomRequestType {
+  platform: 'DISCORD' | 'SLACK';
+  channelId: string;
+}
+
 export interface CreateRoomResponseType {
   session: string;
 }
