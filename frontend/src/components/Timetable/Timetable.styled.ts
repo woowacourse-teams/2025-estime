@@ -50,7 +50,7 @@ export const HeaderCell = styled.div<{
   background-color: ${({ selectedTimes, date, timeText, theme }) =>
     timeText === 'Dates'
       ? theme.colors.background
-      : selectedTimes.has(`${date} ${timeText}`)
+      : selectedTimes.has(`${date}T${timeText}`)
         ? theme.colors.primary
         : theme.colors.gray10};
   cursor: pointer;
@@ -58,6 +58,11 @@ export const HeaderCell = styled.div<{
   height: ${({ timeText }) => (timeText === 'Dates' ? '3rem' : '1.5rem')};
   width: 5rem;
   user-select: none;
+  ${({ timeText }) =>
+    timeText === 'Dates' &&
+    `
+    pointer-events: none;
+  `}
 `;
 
 export const TimeLabel = styled.div`
