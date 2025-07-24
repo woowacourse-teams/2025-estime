@@ -12,5 +12,4 @@ export const initialRoomInfo: RoomInfo = {
     time: '16:00',
   },
   isPublic: 'public',
-  roomSession: '',
 };
