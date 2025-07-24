@@ -3,9 +3,10 @@ import Button from '../Button';
 import { useTheme } from '@emotion/react';
 import Text from '@/components/Text';
 
-const CopyLinkButton = () => {
+const CopyLinkButton = ({ sessionId }: { sessionId: string }) => {
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const link = `${process.env.LOCAL_URL}/check?id=${sessionId}`;
+    navigator.clipboard.writeText(link);
   };
   const theme = useTheme();
   return (
