@@ -1,84 +1,62 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import globals from 'globals';
+import js from '@eslint/js';
+import react from 'eslint-plugin-react';
+import hooks from 'eslint-plugin-react-hooks';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import jest from 'eslint-plugin-jest';
 import storybook from 'eslint-plugin-storybook';
 
-import js from '@eslint/js';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import react from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
-import prettier from 'eslint-config-prettier';
-
 export default [
+  /* ───────── 공통(JS·TS) ───────── */
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
-      env: {
-        browser: true,
-        es2020: true,
-      },
+      parserOptions: { ecmaVersion: 2024, sourceType: 'module' },
       globals: {
-        console: 'readonly',
-        document: 'readonly',
+        ...globals.browser, // window·document 등
+        ...globals.node, // process·__dirname 등
+        RequestInit: 'readonly', // 아직 node 세트에 없음
       },
     },
-  },
-  {
-    files: ['.storybook/**/*.{js,ts}'],
-    languageOptions: {
-      globals: {
-        __dirname: 'readonly',
-      },
-    },
-  },
-  {
-    files: ['**/__tests__/**/*.{js,jsx,ts,tsx}', '**/*.test.{js,jsx,ts,tsx}'],
-    languageOptions: {
-      globals: {
-        test: 'readonly',
-        expect: 'readonly',
-        describe: 'readonly',
-        it: 'readonly',
-        beforeEach: 'readonly',
-        afterEach: 'readonly',
-        beforeAll: 'readonly',
-        afterAll: 'readonly',
-        jest: 'readonly',
-      },
-    },
-    rules: {
-      'padding-line-between-statements': [
-        'error',
-        { blankLine: 'always', prev: 'import', next: '*' },
-        { blankLine: 'any', prev: 'import', next: 'import' },
-      ],
-    },
-  },
-  js.configs.recommended,
-  {
-    files: ['**/*.jsx', '**/*.tsx'],
-    plugins: { react, 'react-hooks': reactHooks },
+    plugins: { react, 'react-hooks': hooks },
     rules: {
       ...react.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
+      ...hooks.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
     },
   },
+
+  /* ───────── Jest 테스트 ───────── */
+  {
+    files: ['**/__tests__/**/*', '**/*.test.*'],
+    languageOptions: { globals: globals.jest },
+    plugins: { jest },
+    rules: { ...jest.configs.recommended.rules },
+  },
+
+  /* ───────── Storybook ─────────── */
+  {
+    files: ['.storybook/**/*.{js,ts}'],
+    languageOptions: { globals: globals.node },
+  },
+
+  /* ───────── JS 기본 preset ─────── */
+  js.configs.recommended,
+
+  /* ───────── TypeScript(마지막!) ─ */
   {
     files: ['**/*.ts', '**/*.tsx'],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: 'module',
-      },
-    },
+    languageOptions: { parser: tsParser },
     plugins: { '@typescript-eslint': tsPlugin },
     rules: {
       ...tsPlugin.configs.recommended.rules,
-      'no-var': 'error',
-      'prefer-const': 'error',
+      'no-undef': 'off', // JS preset보다 뒤에 위치해야 효과 있음
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-  prettier,
+
+  /* ───────── Storybook preset ─── */
   ...storybook.configs['flat/recommended'],
 ];

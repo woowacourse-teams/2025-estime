@@ -20,18 +20,3 @@ export interface GetRoomInfoResponseType {
   isPublic: boolean;
   roomSession: string;
 }
-
-export interface GetRoomInfoResponseType extends CreateRoomRequestType {
-  roomSession: string;
-}
-
-export interface CreateUserType {
-  name: string;
-  password: string;
-}
-export interface CreateUserResponseType {
-  code: number;
-  success: boolean;
-  message: string;
-  result: { name: string };
-}
