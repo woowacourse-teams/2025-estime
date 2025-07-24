@@ -1,6 +1,9 @@
 package com.bether.bether.room.presentation;
 
 import com.bether.bether.common.CustomApiResponse;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotRecommendationsOutput;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotStatisticOutput;
+import com.bether.bether.datetimeslot.domain.DateTimeSlots;
 import com.bether.bether.room.application.dto.RoomCreateOutput;
 import com.bether.bether.room.application.dto.RoomOutput;
 import com.bether.bether.room.application.service.RoomApplicationService;
@@ -14,9 +17,6 @@ import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsR
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import com.bether.bether.room.presentation.dto.response.UserCreateResponse;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
-import com.bether.bether.timeslot.domain.TimeSlots;
 import com.bether.bether.user.application.dto.output.UserCreateOutput;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -46,14 +46,14 @@ public class RoomController implements RoomControllerSpecification {
     @Override
     public CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(
             @PathVariable("session") final UUID session) {
-        final TimeSlotStatisticOutput output = roomApplicationService.generateTimeSlotStatistic(session);
+        final DateTimeSlotStatisticOutput output = roomApplicationService.generateTimeSlotStatistic(session);
         return CustomApiResponse.ok(TimeSlotStatisticResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(
             @PathVariable("session") final UUID session) {
-        final TimeSlotRecommendationsOutput output = roomApplicationService.recommendTopTimeSlots(session);
+        final DateTimeSlotRecommendationsOutput output = roomApplicationService.recommendTopTimeSlots(session);
         return CustomApiResponse.ok(TimeSlotRecommendationsResponse.from(output));
     }
 
@@ -71,8 +71,8 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final UUID session,
             @RequestParam("name") final String userName
     ) {
-        final TimeSlots timeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
-        return CustomApiResponse.ok(TotalTimeSlotResponse.from(timeSlots));
+        final DateTimeSlots dateTimeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
+        return CustomApiResponse.ok(TotalTimeSlotResponse.from(dateTimeSlots));
     }
 
     @Override

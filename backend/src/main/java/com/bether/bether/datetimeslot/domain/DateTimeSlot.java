@@ -1,4 +1,4 @@
-package com.bether.bether.timeslot.domain;
+package com.bether.bether.datetimeslot.domain;
 
 import com.bether.bether.common.BaseEntity;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
-public class TimeSlot extends BaseEntity {
+public class DateTimeSlot extends BaseEntity {
 
     public static final Duration UNIT = Duration.ofMinutes(30);
 
@@ -23,9 +23,9 @@ public class TimeSlot extends BaseEntity {
     private String userName;
     private LocalDateTime startAt;
 
-    public static TimeSlot withoutId(final Long roomId, final String userName, final LocalDateTime startAt) {
+    public static DateTimeSlot withoutId(final Long roomId, final String userName, final LocalDateTime startAt) {
         validate(roomId, userName, startAt);
-        return new TimeSlot(roomId, userName, startAt);
+        return new DateTimeSlot(roomId, userName, startAt);
     }
 
     private static void validate(final Long roomId, final String userName, final LocalDateTime startAt) {

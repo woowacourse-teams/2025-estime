@@ -99,7 +99,7 @@ public interface RoomControllerSpecification {
                                 "success": true,
                                 "message": null,
                                 "result": {
-                                    "timeSlots": [
+                                    "dateTimeSlots": [
                                         {
                                             "startTime": "2025-07-17T10:00",
                                             "userNames": ["플린트", "강산", "리버", "제프리"]
@@ -180,7 +180,7 @@ public interface RoomControllerSpecification {
                                 "message": null,
                                 "result": {
                                     "userName": "홍길동",
-                                    "timeSlots": [
+                                    "dateTimeSlots": [
                                         "2025-07-17T11:00",
                                         "2025-07-17T12:00",
                                         "2025-07-17T14:00"

@@ -1,9 +1,9 @@
-package com.bether.bether.timeslot.application.dto.output;
+package com.bether.bether.datetimeslot.application.dto.output;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record TimeSlotRecommendationOutput(
+public record DateTimeSlotRecommendationOutput(
         LocalDateTime dateTime,
         List<String> userNames
 ) {
