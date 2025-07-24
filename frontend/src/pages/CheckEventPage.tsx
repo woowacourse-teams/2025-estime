@@ -30,7 +30,6 @@ const CheckEventPage = () => {
 
   const userAvailability = useUserAvailability({ name, session });
 
-  if (session === null) return;
   const { recommendTimeData } = useRecommendTime(session);
 
   return (
