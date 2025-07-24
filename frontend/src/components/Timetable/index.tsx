@@ -51,10 +51,7 @@ const Timetable = ({
       maxWidth={800}
       backgroundColor={theme.colors.background}
       paddingTop="var(--padding-9)"
-      paddingRight="var(--padding-9)"
-      paddingBottom="var(--padding-9)"
-      paddingLeft="var(--padding-9)"
-      borderRadius="var(--radius-6)"
+      padding="var(--padding-9)"
     >
       <Flex direction="column" gap="var(--gap-6)">
         <S.TimetableHeader>
