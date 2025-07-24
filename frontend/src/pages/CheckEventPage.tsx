@@ -1,3 +1,4 @@
+
 import * as S from './styles/CheckEventPage.styled';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
@@ -61,7 +62,6 @@ const CheckEventPage = () => {
         />
       </Flex>
     </Wrapper>
-  );
-};
+
 
 export default CheckEventPage;
