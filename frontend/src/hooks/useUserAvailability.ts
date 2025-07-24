@@ -1,7 +1,7 @@
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { UserAvailability } from '@/types/userAvailability';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const initialUserAvailability = {
   userName: '앙부일구',
@@ -15,15 +15,11 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
-  useEffect(() => {
-    fetchUserAvailableTime();
-  }, []);
-
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
   const userName = {
-    value: name,
+    value: userAvailability.userName,
     set: (userName: string) => setUserAvailability((prev) => ({ ...prev, userName })),
   };
 
@@ -50,23 +46,17 @@ export const useUserAvailability = ({
       alert('세션이 없습니다. 다시 시도해주세요.');
       return;
     }
-
     const userAvailableTimeInfo = await getUserAvailableTime(session, name);
-
+    userName.set(name);
     if (userAvailableTimeInfo.timeSlots.length > 0) {
       const selectedTimesResponse = new Set(
         userAvailableTimeInfo.timeSlots.map((item) => item.dateTime)
       );
       selectedTimes.set(selectedTimesResponse);
-      userName.set(name);
     }
   };
 
-  return {
-    userName,
-    selectedTimes,
-    userAvailabilitySubmit,
-  };
+  return { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime };
 };
 
 export default useUserAvailability;
