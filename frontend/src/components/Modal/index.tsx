@@ -32,7 +32,11 @@ function Modal({
   shouldCloseOnOverlayAction = true,
   children,
 }: ModalProps) {
-  useEscapeClose({ isOpen, onClose, shouldClose: shouldCloseOnOverlayAction });
+  useEscapeClose({
+    isOpen,
+    onClose,
+    shouldCloseOnOverlayAction,
+  });
 
   if (!isOpen) return null;
 

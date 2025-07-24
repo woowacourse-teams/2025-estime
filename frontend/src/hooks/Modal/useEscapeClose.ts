@@ -3,12 +3,16 @@ import { useEffect } from 'react';
 interface useEscapeCloseProps {
   isOpen: boolean;
   onClose?: () => void;
-  shouldClose?: boolean;
+  shouldCloseOnOverlayAction?: boolean;
 }
 
-export function useEscapeClose({ isOpen, onClose, shouldClose }: useEscapeCloseProps) {
+export function useEscapeClose({
+  isOpen,
+  onClose,
+  shouldCloseOnOverlayAction,
+}: useEscapeCloseProps) {
   useEffect(() => {
-    if (!isOpen || !shouldClose || !onClose) return;
+    if (!isOpen || !shouldCloseOnOverlayAction || !onClose) return;
 
     const keyDownHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -19,5 +23,5 @@ export function useEscapeClose({ isOpen, onClose, shouldClose }: useEscapeCloseP
     return () => {
       document.removeEventListener('keydown', keyDownHandler);
     };
-  }, [isOpen, onClose, shouldClose]);
+  }, [isOpen, onClose, shouldCloseOnOverlayAction]);
 }
