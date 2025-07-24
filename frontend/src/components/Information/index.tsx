@@ -1,6 +1,6 @@
 import { ColorsKey } from '@/styles/theme';
 import { ComponentProps } from 'react';
-import * as S from './Info.styled';
+import * as S from './Information.styled';
 
 interface InfoProps extends ComponentProps<'div'> {
   size?: 'small' | 'medium' | 'large';
@@ -9,7 +9,7 @@ interface InfoProps extends ComponentProps<'div'> {
   children: React.ReactNode;
 }
 
-const Info = ({ size, color, backgroundColor, children, ...props }: InfoProps) => {
+const Information = ({ size, color, backgroundColor, children, ...props }: InfoProps) => {
   return (
     <S.Container size={size} color={color} backgroundColor={backgroundColor} {...props}>
       {children}
@@ -17,4 +17,4 @@ const Info = ({ size, color, backgroundColor, children, ...props }: InfoProps) =
   );
 };
 
-export default Info;
+export default Information;
