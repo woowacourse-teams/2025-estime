@@ -60,8 +60,6 @@ class ConnectedRoomApplicationServiceTest {
                 .isTrue();
 
         final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
-        System.out.println(connectedRoom.getRoom());
-        System.out.println(input.toRoomEntity());
         assertThat(connectedRoom.getRoom().getSession()).isEqualTo(saved.session());
     }
 

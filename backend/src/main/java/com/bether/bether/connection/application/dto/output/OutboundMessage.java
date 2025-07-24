@@ -4,7 +4,10 @@ import com.bether.bether.connection.domain.ConnectedRoom;
 import com.bether.bether.room.domain.Room;
 import java.time.format.DateTimeFormatter;
 
-public record OutboundMessage(String text, String shortcut) {
+public record OutboundMessage(
+        String text,
+        String shortcut
+) {
 
     // TODO refactor
     public static OutboundMessage roomCreated(final ConnectedRoom connectedRoom, final String url) {
