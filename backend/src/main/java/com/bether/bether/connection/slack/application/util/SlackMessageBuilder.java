@@ -19,13 +19,10 @@ public class SlackMessageBuilder {
 
     public List<LayoutBlock> buildRoomCreateBlocks(ConnectedRoomCreateMessageInput input) {
         return List.of(
-                SectionBlock.builder()
-                        .text(markdown("*🗓 일정조율 시작하기*"))
-                        .build(),
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plain("아인슈타임 바로가기"))
+                                        .text(plain("🗓 일정 조율 시작하기"))
                                         .url(input.connectedRoomCreateUrl())
                                         .actionId("create-room")
                                         .build()
@@ -39,12 +36,12 @@ public class SlackMessageBuilder {
 
         return List.of(
                 SectionBlock.builder()
-                        .text(markdown("*🗓 일정이 생성되었습니다!*"))
+                        .text(markdown("*일정이 생성되었습니다!*"))
                         .build(),
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plain("아인슈타임 바로가기"))
+                                        .text(plain("🗓 일정 조율 참여하기"))
                                         .url(input.connectedRoomCreatedUrl())
                                         .actionId("view-created-room")
                                         .build()
