@@ -54,7 +54,7 @@ describe('makeMonthMatrix는', () => {
     const base = new Date(2025, 6, 1);
     expect(makeMonthMatrix(base)).toEqual(expected);
   });
-  it('올바른 Date를 넣지 않았을때, ', () => {
+  it('올바른 Date를 넣지 않았을때', () => {
     expect(() => makeMonthMatrix(new Date('invalid'))).toThrow(
       '유효한 날짜 객체를 제공해야 합니다.'
     );
