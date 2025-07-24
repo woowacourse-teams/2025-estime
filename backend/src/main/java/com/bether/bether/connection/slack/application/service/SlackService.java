@@ -6,6 +6,8 @@ import com.bether.bether.connection.domain.PlatformCommand;
 import com.bether.bether.connection.slack.application.dto.SlackSlashCommandInput;
 import com.bether.bether.connection.slack.application.util.SlackMessageBuilder;
 import com.bether.bether.connection.slack.infrastructure.SlackMessageSender;
+import com.slack.api.model.block.LayoutBlock;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,10 @@ public class SlackService {
 
     public void handleSlashCommand(final SlackSlashCommandInput input) {
         if (PlatformCommand.CREATE.getCommandWithSlash().equals(input.command())) {
-            String url = generateConnectedRoomCreateUrl(input);
-            ConnectedRoomCreateMessageInput messageInput = new ConnectedRoomCreateMessageInput(url);
-            slackMessageSender.execute(input.channelId(), slackMessageBuilder.buildRoomCreateBlocks(messageInput));
+            final String url = generateConnectedRoomCreateUrl(input);
+            final ConnectedRoomCreateMessageInput messageInput = new ConnectedRoomCreateMessageInput(url);
+            final List<LayoutBlock> blocks = slackMessageBuilder.buildConnectedRoomCreateBlocks(messageInput);
+            slackMessageSender.execute(input.channelId(), blocks);
         } else {
             slackMessageSender.execute(input.channelId(), DEFAULT_MESSAGE);
         }
