@@ -28,9 +28,10 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
       });
       setResponseName(response.name);
       handleCloseAllModal();
-    } catch (e) {
-      console.error('Error closing suggest modal:', e);
-      alert(`${e}로그인 실패! 다시 시도해주세요.`);
+    } catch (err) {
+      const e = err as Error;
+      alert(e.message);
+      console.error(err);
     }
   };
 
