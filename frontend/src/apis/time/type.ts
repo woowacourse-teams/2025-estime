@@ -16,12 +16,12 @@ export interface RecommendationTimeResponseType {
   recommendations: RecommendedTimeSlotType[];
 }
 
-interface TimeSlotStatType {
+export interface TimeSlotStatType {
   startTime: string;
   availableMembers: number;
 }
 
-interface RecommendedTimeSlotType {
+export interface RecommendedTimeSlotType {
   dateTime: string;
   userNames: string[];
 }
