@@ -47,8 +47,8 @@ export const Default: Story = {
           isLoginModalOpen={isLoginModalOpen}
           handleCloseLoginModal={() => {}}
           handleModalLogin={() => {}}
-          userData={{ userid: '', password: '' }}
-          setUserData={() => {}}
+          userData={{ name: '', password: '' }}
+          handleUserData={() => {}}
         />
       </Flex>
     );
@@ -73,8 +73,8 @@ export const PreOpenModal: Story = {
           isLoginModalOpen={isLoginModalOpen}
           handleCloseLoginModal={() => {}}
           handleModalLogin={() => {}}
-          userData={{ userid: '', password: '' }}
-          setUserData={() => {}}
+          userData={{ name: '', password: '' }}
+          handleUserData={() => {}}
         />
       </Flex>
     );

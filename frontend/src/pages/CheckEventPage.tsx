@@ -22,7 +22,7 @@ const CheckEventPage = () => {
     handleCloseLoginModal,
   } = useModalControl();
 
-  const { handleModalLogin, userData, setUserData, responseUserName } = useUserLogin(
+  const { handleModalLogin, userData, handleUserData, responseUserName } = useUserLogin(
     session,
     handleCloseAllModal
   );
@@ -57,7 +57,7 @@ const CheckEventPage = () => {
           handleCloseLoginModal={handleCloseLoginModal}
           handleModalLogin={handleModalLogin}
           userData={userData}
-          setUserData={setUserData}
+          handleUserData={handleUserData}
         />
       </Flex>
     </Wrapper>

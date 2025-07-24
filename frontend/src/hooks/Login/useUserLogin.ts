@@ -2,25 +2,28 @@ import { joinPerson } from '@/apis/room/room';
 import { useState } from 'react';
 
 export type LoginData = {
-  userid: string;
+  name: string;
   password: string;
 };
 export function useUserLogin(session: string | null, handleCloseAllModal: () => void) {
   if (!session) {
     throw new Error('Session ID is required for user login');
   }
-  const [userData, setUserData] = useState<LoginData>({ userid: '', password: '' });
+  const [userData, setUserData] = useState<LoginData>({ name: '', password: '' });
   const [responseUserName, setResponseUserName] = useState<string | null>(null);
+  const handleUserData = (data: LoginData) => {
+    setUserData(data);
+  };
   const handleModalLogin = async () => {
     try {
       if (!session) {
         throw new Error('세션이 없습니다. 로그인에 실패했습니다.');
       }
-      if (userData.userid.trim().length === 0) {
+      if (userData.name.trim().length === 0) {
         throw new Error('아이디를 입력해주세요.');
       }
       const response = await joinPerson(session, {
-        name: userData.userid,
+        name: userData.name,
         password: userData.password,
       });
       setResponseUserName(response.name);
@@ -30,9 +33,10 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
       alert(`${e}로그인 실패! 다시 시도해주세요.`);
     }
   };
+
   return {
     userData,
-    setUserData,
+    handleUserData,
     handleModalLogin,
     responseUserName,
   };

@@ -14,14 +14,14 @@ export interface LoginModalProps {
   handleCloseLoginModal: () => void;
   handleModalLogin: () => void;
   userData: LoginData;
-  setUserData: (data: LoginData) => void;
+  handleUserData: (data: LoginData) => void;
 }
 export const LoginModal = ({
   isLoginModalOpen,
   handleCloseLoginModal,
   handleModalLogin,
   userData,
-  setUserData,
+  handleUserData,
 }: LoginModalProps) => {
   const theme = useTheme();
   return (
@@ -52,7 +52,7 @@ export const LoginModal = ({
                   placeholder="아이디를 입력해주세요."
                   maxLength={12}
                   autoFocus={true}
-                  onChange={(e) => setUserData({ ...userData, userid: e.target.value })}
+                  onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
                 />
               </Flex.Item>
             </Flex>
@@ -66,7 +66,7 @@ export const LoginModal = ({
                   id="user-password"
                   maxLength={8}
                   placeholder="비밀번호를 입력해주세요."
-                  onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+                  onChange={(e) => handleUserData({ ...userData, password: e.target.value })}
                 />
               </Flex.Item>
             </Flex>
