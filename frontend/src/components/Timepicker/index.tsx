@@ -4,19 +4,21 @@ import Text from '../Text';
 import IClock from '@/icons/IClock';
 import { useTheme } from '@emotion/react';
 
-const hourOptions = Array.from({ length: 24 }, (_, i) => {
-  const hour = `${String(i).padStart(2, '0')} : 00`;
-  return hour;
-});
-
 interface TimePickerProps extends ComponentProps<'input'> {
   selectedHour: string | null;
   selectHour: (hour: string, e: React.MouseEvent<HTMLLIElement>) => void;
   toggleOpen: () => void;
   isOpen: boolean;
+  hourOptions: string[];
 }
 
-const TimePicker = ({ selectedHour, selectHour, toggleOpen, isOpen }: TimePickerProps) => {
+const TimePicker = ({
+  selectedHour,
+  selectHour,
+  toggleOpen,
+  isOpen,
+  hourOptions,
+}: TimePickerProps) => {
   const { colors } = useTheme();
 
   return (
