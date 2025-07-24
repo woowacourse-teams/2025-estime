@@ -7,10 +7,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum PlatformCommand {
 
-    CREATE("estime-create"),
+    CREATE("estime-create", "아인슈타임에게 도움 요청하기"),
     ;
 
     private final String command;
+    private final String description;
 
     public String getCommandWithSlash() {
         return "/" + command;

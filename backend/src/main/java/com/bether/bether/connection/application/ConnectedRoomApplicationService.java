@@ -2,8 +2,8 @@ package com.bether.bether.connection.application;
 
 import com.bether.bether.common.config.WebConfigProperties;
 import com.bether.bether.connection.application.dto.input.ConnectedRoomCreateInput;
+import com.bether.bether.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
 import com.bether.bether.connection.application.dto.output.ConnectedRoomCreateOutput;
-import com.bether.bether.connection.application.dto.output.OutboundMessage;
 import com.bether.bether.connection.domain.ConnectedRoom;
 import com.bether.bether.connection.domain.Platform;
 import com.bether.bether.room.application.service.RoomDomainService;
@@ -36,18 +36,16 @@ public class ConnectedRoomApplicationService {
 
     // TODO refactor separate class
     /*
-     * 1. 일정 조율 룸 생성 페이지 메시지 (나한테만)
+     * 1. 일정 조율 룸 생성 페이지 메시지 (나에게만)
      * 2. 일정 조율 룸 참여 메시지
      * 3. 마감 기한 임박 알림 메시지
      * 4. 일정 확정 메시지
      */
     private void sendConnectedRoomCreatedMessage(final ConnectedRoom connectRoom, final String channelId) {
         final Room room = connectRoom.getRoom();
-        final String url = webConfigProperties.dev() + room.getSession();
-
-        messageSenders.get(connectRoom.getPlatform()).execute(
-                channelId,
-                OutboundMessage.roomCreated(connectRoom, url));
+        final String shortcut = webConfigProperties.dev() + room.getSession();
+        final ConnectedRoomCreatedMessageInput input = ConnectedRoomCreatedMessageInput.of(shortcut, room);
+        messageSenders.get(connectRoom.getPlatform()).sendConnectedRoomCreatedMessage(channelId, input);
     }
 }
 

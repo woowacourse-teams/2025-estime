@@ -1,8 +1,11 @@
 package com.bether.bether.connection.application;
 
-import com.bether.bether.connection.application.dto.output.OutboundMessage;
+import com.bether.bether.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
 
 public interface MessageSender {
 
-    void execute(String channelId, OutboundMessage message);
+    void sendTextMessage(String channelId, String message);
+
+    void sendConnectedRoomCreatedMessage(String channelId, ConnectedRoomCreatedMessageInput input);
+
 }
