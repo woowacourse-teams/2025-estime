@@ -26,6 +26,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Run Chromatic
+        id: chromatic
         if: |
           github.event_name == 'push' ||
           (github.event_name == 'pull_request' &&
@@ -35,3 +36,11 @@ jobs:
           workingDir: ./frontend
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: "🚀 Storybook preview: ${{ steps.chromatic.outputs.storybookUrl }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
