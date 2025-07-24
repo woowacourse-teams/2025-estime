@@ -21,7 +21,9 @@ const CheckEventPageHeader = ({ deadLine, isPublic, title }: CheckEventPageHeade
             {isPublic ? <IGlobe color={theme.colors.text} /> : <ILock color={theme.colors.red40} />}
           </Flex.Item>
           <Flex.Item>
-            <p>공개 여부 : {isPublic ? '공개' : '비공개'}</p>
+            <Text variant="body" color="text">
+              공개 여부 : {isPublic ? '공개' : '비공개'}
+            </Text>
           </Flex.Item>
         </Flex>
         <Flex justify="space-between" align="center" gap="var(--gap-4)">
@@ -29,7 +31,9 @@ const CheckEventPageHeader = ({ deadLine, isPublic, title }: CheckEventPageHeade
             <IClock color={theme.colors.text} />
           </Flex.Item>
           <Flex.Item>
-            <p>마감일 : {deadLine ? deadLine.date : '설정되지 않음'}</p>
+            <Text variant="body" color="text">
+              마감일 : {deadLine ? deadLine.date : '설정되지 않음'}
+            </Text>
           </Flex.Item>
         </Flex>
       </Flex>

@@ -31,7 +31,7 @@ const CheckEventPage = () => {
   const userAvailability = useUserAvailability({ name, session });
 
   return (
-    <Wrapper maxWidth={1280} paddingTop="var(--padding-10)" paddingBottom="var(--padding-8)">
+    <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
       <Flex direction="column" gap="var(--gap-6)">
         <CheckEventPageHeader
           deadLine={roomInfo.deadLine}
