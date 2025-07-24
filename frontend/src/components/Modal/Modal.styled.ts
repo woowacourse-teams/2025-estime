@@ -67,22 +67,18 @@ const getSizeStyles = (size?: 'small' | 'medium' | 'large' | '85%') => {
     case '85%':
       return css`
         width: 85%;
-        animation: ${zoomIn} 0.3s ease-in-out;
       `;
     case 'small':
       return css`
         min-width: min(430px, 95vw);
-        animation: ${zoomIn} 0.3s ease-in-out;
       `;
     case 'medium':
       return css`
         min-width: min(520px, 95vw);
-        animation: ${zoomIn} 0.3s ease-in-out;
       `;
     case 'large':
       return css`
         min-width: min(800px, 95vw);
-        animation: ${zoomIn} 0.3s ease-in-out;
       `;
     default:
       return null;
