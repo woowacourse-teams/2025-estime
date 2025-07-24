@@ -5,16 +5,27 @@ import IGlobe from '@/icons/IGlobe';
 import Text from '@/components/Text';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/types/roomInfo';
+import CopyLinkButton from '../CopyLinkButton';
 
-type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadLine' | 'isPublic' | 'title'>;
+type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadLine' | 'isPublic' | 'title'> & {
+  roomSession: string;
+};
 
-const CheckEventPageHeader = ({ deadLine, isPublic, title }: CheckEventPageHeaderProps) => {
+const CheckEventPageHeader = ({
+  deadLine,
+  isPublic,
+  title,
+  roomSession,
+}: CheckEventPageHeaderProps) => {
   const theme = useTheme();
   return (
     <Flex gap="var(--gap-5)" justify="space-between" direction="column">
-      <Text variant="h1" color="primary">
-        {title}
-      </Text>
+      <Flex gap="var(--gap-6)" align="center">
+        <Text variant="h1" color="primary">
+          {title}
+        </Text>
+        <CopyLinkButton sessionId={roomSession} />
+      </Flex>
       <Flex gap="var(--gap-6)" justify="flex-start" align="center">
         <Flex justify="space-between" align="center" gap="var(--gap-3)">
           {isPublic ? <IGlobe color={theme.colors.text} /> : <ILock color={theme.colors.red40} />}

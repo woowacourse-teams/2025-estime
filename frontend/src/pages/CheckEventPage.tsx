@@ -42,6 +42,7 @@ const CheckEventPage = () => {
           deadLine={roomInfo.deadLine}
           isPublic={roomInfo.isPublic}
           title={roomInfo.title}
+          roomSession={roomInfo.roomSession}
         />
         <Flex direction="column" gap="var(--gap-6)">
           <Flex justify="center" align="flex-start" gap="var(--gap-9)">
