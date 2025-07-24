@@ -1,7 +1,7 @@
 import { useDayState } from '@/hooks/Calendar/useDayState';
 import * as S from './DayCell.styled';
 
-interface DayCellProps {
+export interface DayCellProps {
   day: Date | null;
   today: Date;
   selectedDates: Set<string>;
