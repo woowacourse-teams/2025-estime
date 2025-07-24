@@ -7,7 +7,7 @@ import Button from '@/components/Button';
 import * as S from './LoginModal.styled';
 import Tooltip from '@/components/Tooltip';
 import { useTheme } from '@emotion/react';
-import type { LoginData } from '@/pages/CheckEventPage';
+import type { LoginData } from '@/hooks/Login/useUserLogin';
 
 export interface LoginModalProps {
   isLoginModalOpen: boolean;

@@ -32,6 +32,7 @@ export const useUserAvailability = ({
     try {
       const payload = toCreateUserAvailability(userAvailability);
       const response = await createUserAvailableTime(session, payload);
+      console.log('User availability submitted successfully:', response);
       return response;
     } catch (err) {
       const e = err as Error;

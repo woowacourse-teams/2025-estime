@@ -16,8 +16,8 @@ export function useUserLogin(session: string | null, handleCloseAllModal: () => 
       if (!session) {
         throw new Error('세션이 없습니다. 로그인에 실패했습니다.');
       }
-      if (userData.userid.trim().length === 0 || userData.password.trim().length === 0) {
-        throw new Error('아이디와 비밀번호를 입력해주세요.');
+      if (userData.userid.trim().length === 0) {
+        throw new Error('아이디를 입력해주세요.');
       }
       const response = await joinPerson(session, {
         name: userData.userid,

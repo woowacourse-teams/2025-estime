@@ -6,14 +6,10 @@ import LoginModal from '@/components/LoginModal';
 import LoginSuggestModal from '@/components/LoginSuggestModal';
 import Timetable from '@/components/Timetable';
 import useCheckRoomSession from '@/hooks/useCheckRoomSession';
-import useUserAvailability from '@/hooks/useUserAvailablity';
 import { useModalControl } from '@/hooks/TimeTableRoom/useModalControl';
-import { useUserLogin } from '@/hooks/Login /useUserLogin';
+import { useUserLogin } from '@/hooks/Login/useUserLogin';
+import useUserAvailability from '@/hooks/useUserAvailability';
 
-export type LoginData = {
-  userid: string;
-  password: string;
-};
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
 
