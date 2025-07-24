@@ -8,7 +8,7 @@ import type {
 } from './type';
 
 export const updateUserAvailableTime = async (
-  session: string,
+  session: string | null,
   body: UserAvailableTimeRequestType
 ) => {
   return await api.put(`${ROOM_API_PATH}/${session}/time-slots`, body);

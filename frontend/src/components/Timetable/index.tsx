@@ -8,7 +8,6 @@ import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import Button from '@/components/Button';
 
-
 interface TimetableProps {
   time: {
     startTime: string;
@@ -40,7 +39,6 @@ const Timetable = ({ time, availableDates, userAvailability, ref }: TimetablePro
     setSelectedTimes: userAvailability.selectedTimes.set,
     time: '',
   });
-
 
   return (
     <Wrapper maxWidth={800} ref={ref}>
@@ -104,7 +102,7 @@ const Timetable = ({ time, availableDates, userAvailability, ref }: TimetablePro
           </S.TimetableContent>
         </Flex>
       </S.Container>
-      </Wrapper>
-      )
+    </Wrapper>
+  );
 };
 export default Timetable;

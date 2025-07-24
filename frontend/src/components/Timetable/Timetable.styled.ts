@@ -52,7 +52,7 @@ export const HeaderCell = styled.div<{
   background-color: ${({ selectedTimes, date, timeText, theme }) =>
     timeText === 'Dates'
       ? theme.colors.background
-      : selectedTimes.has(`${date} ${timeText}`)
+      : selectedTimes.has(`${date}T${timeText}`)
         ? theme.colors.primary
         : theme.colors.gray10};
   cursor: pointer;
