@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 
-
 export const Container = styled.div`
   padding: var(--padding-9);
   background-color: ${({ theme }) => theme.colors.background};
@@ -8,7 +7,6 @@ export const Container = styled.div`
   border-radius: var(--radius-4);
   box-shadow: var(--shadow-card);
 `;
-
 
 export const TimetableHeader = styled.div`
   width: 100%;

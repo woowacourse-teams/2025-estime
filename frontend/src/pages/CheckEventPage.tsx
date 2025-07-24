@@ -1,7 +1,5 @@
-import * as S from './styles/CheckEventPage.styled';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
-import Text from '@/components/Text';
 import LoginModal from '@/components/LoginModal';
 import LoginSuggestModal from '@/components/LoginSuggestModal';
 import Timetable from '@/components/Timetable';
@@ -10,6 +8,7 @@ import { useModalControl } from '@/hooks/TimeTableRoom/useModalControl';
 import { useUserLogin } from '@/hooks/Login/useUserLogin';
 import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
+import RecommendTime from '@/components/RecommendTime';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -49,9 +48,7 @@ const CheckEventPage = () => {
               />
             </Flex.Item>
             <Flex.Item flex={1}>
-              <S.Container>
-                <Text variant="h2">이벤트 확인 페이지</Text>
-              </S.Container>
+              <RecommendTime dateTimes={['2025-07-24T10:00:00', '2025-07-24T11:00:00']} />
             </Flex.Item>
           </Flex>
           <LoginSuggestModal
