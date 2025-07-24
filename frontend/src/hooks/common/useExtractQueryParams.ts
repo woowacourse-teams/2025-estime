@@ -2,7 +2,7 @@ import { useLocation } from 'react-router';
 
 type QueryParamResult<T extends string | string[]> = T extends string
   ? string
-  : Record<string, string | null>;
+  : { [K in T[number]]: string | null };
 
 export const useExtractQueryParams = <T extends string | string[]>(
   keys: T
@@ -12,18 +12,15 @@ export const useExtractQueryParams = <T extends string | string[]>(
 
   if (typeof keys === 'string') {
     const value = params.get(keys);
-    if (value === null) throw new Error('key 값이 null 입니다.');
     return value as QueryParamResult<T>;
   }
 
   const result = keys.reduce(
     (acc, key) => {
-      const value = params.get(key);
-      if (value === null) throw new Error('key 값이 null 입니다.');
-      acc[key] = value;
+      acc[key as T[number]] = params.get(key);
       return acc;
     },
-    {} as Record<string, string>
+    {} as { [K in T[number]]: string | null }
   );
 
   return result as QueryParamResult<T>;
