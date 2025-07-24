@@ -1,19 +1,19 @@
-package com.bether.bether.timeslot.application.service;
+package com.bether.bether.datetimeslot.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.assertj.core.groups.Tuple.tuple;
 
+import com.bether.bether.datetimeslot.application.dto.input.DateTimeSlotInput;
+import com.bether.bether.datetimeslot.application.dto.input.DateTimeSlotUpdateInput;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotRecommendationOutput;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotRecommendationsOutput;
+import com.bether.bether.datetimeslot.application.dto.output.DateTimeSlotStatisticOutput;
+import com.bether.bether.datetimeslot.domain.DateTimeSlot;
+import com.bether.bether.datetimeslot.domain.DateTimeSlotRepository;
+import com.bether.bether.datetimeslot.domain.DateTimeSlots;
 import com.bether.bether.room.domain.Room;
 import com.bether.bether.room.domain.RoomRepository;
-import com.bether.bether.timeslot.application.dto.input.TimeSlotInput;
-import com.bether.bether.timeslot.application.dto.input.TimeSlotUpdateInput;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationOutput;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotRecommendationsOutput;
-import com.bether.bether.timeslot.application.dto.output.TimeSlotStatisticOutput;
-import com.bether.bether.timeslot.domain.TimeSlot;
-import com.bether.bether.timeslot.domain.TimeSlotRepository;
-import com.bether.bether.timeslot.domain.TimeSlots;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,13 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class TimeSlotServiceTest {
+class DateDateTimeSlotServiceTest {
 
     @Autowired
-    private TimeSlotService timeSlotService;
+    private DateTimeSlotService dateTimeSlotService;
 
     @Autowired
-    private TimeSlotRepository timeSlotRepository;
+    private DateTimeSlotRepository dateTimeSlotRepository;
 
     @Autowired
     private RoomRepository roomRepository;
@@ -82,11 +82,13 @@ class TimeSlotServiceTest {
                         true
                 ));
 
-        final TimeSlot saved1 = timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
-        final TimeSlot saved2 = timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
+        final DateTimeSlot saved1 = dateTimeSlotRepository.save(
+                DateTimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
+        final DateTimeSlot saved2 = dateTimeSlotRepository.save(
+                DateTimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomId(room.getId()).getTimeSlots();
+        final List<DateTimeSlot> found = dateTimeSlotService.getAllByRoomId(room.getId()).getDateTimeSlots();
 
         // then
         assertThat(found)
@@ -97,7 +99,7 @@ class TimeSlotServiceTest {
     @Test
     void getAllByNonExistingRoomId() {
         // given // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomId(1234L).getTimeSlots();
+        final List<DateTimeSlot> found = dateTimeSlotService.getAllByRoomId(1234L).getDateTimeSlots();
 
         // then
         assertThat(found)
@@ -118,13 +120,14 @@ class TimeSlotServiceTest {
                         true
                 ));
 
-        final TimeSlot saved1 = timeSlotRepository.save(
-                TimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
-        final TimeSlot saved2 = timeSlotRepository.save(
-                TimeSlot.withoutId(room.getId(), "user2", LocalDateTime.now()));
+        final DateTimeSlot saved1 = dateTimeSlotRepository.save(
+                DateTimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
+        final DateTimeSlot saved2 = dateTimeSlotRepository.save(
+                DateTimeSlot.withoutId(room.getId(), "user2", LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomIdAndUserName(room.getId(), "user1").getTimeSlots();
+        final List<DateTimeSlot> found = dateTimeSlotService.getAllByRoomIdAndUserName(room.getId(), "user1")
+                .getDateTimeSlots();
 
         // then
         assertThat(found)
@@ -145,13 +148,14 @@ class TimeSlotServiceTest {
                         true
                 ));
 
-        final TimeSlot saved1 = timeSlotRepository.save(
-                TimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
-        final TimeSlot saved2 = timeSlotRepository.save(
-                TimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
+        final DateTimeSlot saved1 = dateTimeSlotRepository.save(
+                DateTimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
+        final DateTimeSlot saved2 = dateTimeSlotRepository.save(
+                DateTimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> found = timeSlotService.getAllByRoomIdAndUserName(room.getId(), "user2").getTimeSlots();
+        final List<DateTimeSlot> found = dateTimeSlotService.getAllByRoomIdAndUserName(room.getId(), "user2")
+                .getDateTimeSlots();
 
         // then
         assertThat(found)
@@ -172,11 +176,11 @@ class TimeSlotServiceTest {
                         true
                 ));
 
-        final TimeSlotInput input = new TimeSlotInput(UUID.randomUUID(), "user",
+        final DateTimeSlotInput input = new DateTimeSlotInput(UUID.randomUUID(), "user",
                 List.of(LocalDateTime.now(), LocalDateTime.now()));
 
         // when
-        final List<TimeSlot> actual = timeSlotService.saveAll(room.getId(), input).getTimeSlots();
+        final List<DateTimeSlot> actual = dateTimeSlotService.saveAll(room.getId(), input).getDateTimeSlots();
 
         // then
         assertThat(actual)
@@ -200,12 +204,12 @@ class TimeSlotServiceTest {
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
         final LocalDateTime dateTime2 = LocalDateTime.of(2024, 3, 1, 2, 30);
 
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime1));
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime2));
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime2));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final TimeSlotStatisticOutput output = timeSlotService.generateTimeSlotStatistic(room.getId());
+        final DateTimeSlotStatisticOutput output = dateTimeSlotService.generateTimeSlotStatistic(room.getId());
 
         // then
         assertThat(output.statistic())
@@ -234,19 +238,19 @@ class TimeSlotServiceTest {
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
         final LocalDateTime dateTime2 = LocalDateTime.of(2024, 3, 1, 2, 30);
 
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime1));
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime2));
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime2));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final TimeSlotRecommendationsOutput output = timeSlotService.recommendTopTimeSlots(room.getId());
+        final DateTimeSlotRecommendationsOutput output = dateTimeSlotService.recommendTopTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())
                 .hasSize(2)
                 .containsExactly(
-                        new TimeSlotRecommendationOutput(dateTime1, List.of("user", "user2")),
-                        new TimeSlotRecommendationOutput(dateTime2, List.of("user"))
+                        new DateTimeSlotRecommendationOutput(dateTime1, List.of("user", "user2")),
+                        new DateTimeSlotRecommendationOutput(dateTime2, List.of("user"))
                 );
     }
 
@@ -266,19 +270,19 @@ class TimeSlotServiceTest {
                 ));
 
         final String userName = "user";
-        final List<TimeSlot> existedTimeSlot = existed.stream()
-                .map(dateTime -> TimeSlot.withoutId(room.getId(), "existed", dateTime))
+        final List<DateTimeSlot> existedDateTimeSlot = existed.stream()
+                .map(dateTime -> DateTimeSlot.withoutId(room.getId(), "existed", dateTime))
                 .toList();
-        timeSlotRepository.saveAll(TimeSlots.from(existedTimeSlot));
+        dateTimeSlotRepository.saveAll(DateTimeSlots.from(existedDateTimeSlot));
 
-        final TimeSlotUpdateInput input = new TimeSlotUpdateInput(UUID.randomUUID(), userName, updated);
+        final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(UUID.randomUUID(), userName, updated);
 
         // when
-        timeSlotService.updateTimeSlots(room.getId(), input);
+        dateTimeSlotService.updateTimeSlots(room.getId(), input);
 
         // then
-        final List<TimeSlot> saved = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(), userName)
-                .getTimeSlots();
+        final List<DateTimeSlot> saved = dateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(), userName)
+                .getDateTimeSlots();
 
         assertThat(saved)
                 .hasSize(updated.size())
@@ -301,22 +305,22 @@ class TimeSlotServiceTest {
                 ));
         final String userName = "user";
 
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), userName, LocalDateTime.of(2026, 1, 1, 0, 0)));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), userName, LocalDateTime.of(2026, 1, 1, 0, 0)));
 
         final List<LocalDateTime> updatedSlots = List.of(
                 LocalDateTime.of(2026, 1, 2, 10, 0),
                 LocalDateTime.of(2026, 1, 2, 11, 0)
         );
-        final TimeSlotUpdateInput input = new TimeSlotUpdateInput(UUID.randomUUID(), userName, updatedSlots);
+        final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(UUID.randomUUID(), userName, updatedSlots);
 
         // when
-        timeSlotService.updateTimeSlots(room.getId(), input);
-        final List<TimeSlot> resultAfterFirstCall = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
-                userName).getTimeSlots();
+        dateTimeSlotService.updateTimeSlots(room.getId(), input);
+        final List<DateTimeSlot> resultAfterFirstCall = dateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
+                userName).getDateTimeSlots();
 
-        timeSlotService.updateTimeSlots(room.getId(), input);
-        final List<TimeSlot> resultAfterSecondCall = timeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
-                userName).getTimeSlots();
+        dateTimeSlotService.updateTimeSlots(room.getId(), input);
+        final List<DateTimeSlot> resultAfterSecondCall = dateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
+                userName).getDateTimeSlots();
 
         // then
         assertSoftly(softly -> {
@@ -349,17 +353,17 @@ class TimeSlotServiceTest {
 
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
 
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user", dateTime1));
-        timeSlotRepository.save(TimeSlot.withoutId(room.getId(), "user2", dateTime1));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
+        dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final TimeSlotRecommendationsOutput output = timeSlotService.recommendTopTimeSlots(room.getId());
+        final DateTimeSlotRecommendationsOutput output = dateTimeSlotService.recommendTopTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())
                 .hasSize(1)
                 .containsExactly(
-                        new TimeSlotRecommendationOutput(dateTime1, List.of("user", "user2"))
+                        new DateTimeSlotRecommendationOutput(dateTime1, List.of("user", "user2"))
                 );
     }
 }

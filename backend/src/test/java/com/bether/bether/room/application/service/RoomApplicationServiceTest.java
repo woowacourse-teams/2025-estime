@@ -23,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class RoomApplicationServiceTest {
 
-    private static final int TIME_SLOT_MINUTES = 30;
-
     @Autowired
     private RoomApplicationService roomApplicationService;
 
@@ -113,7 +111,7 @@ class RoomApplicationServiceTest {
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
+                .hasMessage("time must be in 30-minute intervals");
     }
 
     @DisplayName("종료 시간의 분(minute)이 30분 단위가 아니면 예외가 발생한다.")
@@ -132,7 +130,7 @@ class RoomApplicationServiceTest {
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("time must be in " + TIME_SLOT_MINUTES + "-minute intervals");
+                .hasMessage("time must be in 30-minute intervals");
     }
 
     @DisplayName("날짜 리스트가 비어있으면 예외가 발생한다.")
