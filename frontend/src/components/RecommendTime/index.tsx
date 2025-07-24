@@ -27,7 +27,7 @@ const RecommendTime = ({ dateTimes }: { dateTimes: string[] }) => {
     >
       <Flex direction="column" gap="var(--gap-5)">
         <Text variant="button">추천 시간대</Text>
-        <Wrapper center={false} maxWidth={'100%'}>
+        <Wrapper center={false} maxWidth="100%">
           <Flex justify="space-around">
             {parsedDateTimes.map(({ month, day, dayOfWeek, time }, index) => (
               <Wrapper
