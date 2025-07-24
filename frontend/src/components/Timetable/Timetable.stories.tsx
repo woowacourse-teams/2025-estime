@@ -39,7 +39,7 @@ const createUserAvailability = (
 ): {
   userName: Field<string>;
   selectedTimes: Field<Set<string>>;
-  userAvailabilitySubmit: (session: string | undefined) => Promise<unknown>;
+  userAvailabilitySubmit: (session: string) => Promise<unknown>;
 } => {
   const selected = new Set<string>();
   return {
@@ -51,7 +51,7 @@ const createUserAvailability = (
       value: selected,
       set: (times: Set<string>) => console.log('setSelectedTimes:', times),
     },
-    userAvailabilitySubmit: async (session: string | undefined) => {
+    userAvailabilitySubmit: async (session: string) => {
       console.log('submit availability for session', session);
       return Promise.resolve();
     },

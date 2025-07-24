@@ -2,7 +2,6 @@ import { createUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { UserAvailability } from '@/types/userAvailability';
 import { useState } from 'react';
-import { useExtractQueryParam } from './common/useExtractQueryParam';
 
 export const useUserAvailability = () => {
   const initialUserAvailability = {
@@ -23,7 +22,7 @@ export const useUserAvailability = () => {
       setUserAvailability((prev) => ({ ...prev, selectedTimes })),
   };
 
-  const userAvailabilitySubmit = async (session: string | undefined) => {
+  const userAvailabilitySubmit = async (session: string) => {
     try {
       const payload = toCreateUserAvailability(userAvailability);
       const response = await createUserAvailableTime(session, payload);

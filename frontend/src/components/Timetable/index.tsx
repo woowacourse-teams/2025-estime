@@ -14,11 +14,11 @@ interface TimetableProps {
   availableDates: Set<string>;
   startTime: string;
   endTime: string;
-  session: string | undefined;
+  session: string;
   userAvailability: {
     userName: Field<string>;
     selectedTimes: Field<Set<string>>;
-    userAvailabilitySubmit: (session: string | undefined) => Promise<unknown>;
+    userAvailabilitySubmit: (session: string) => Promise<unknown>;
   };
 }
 
