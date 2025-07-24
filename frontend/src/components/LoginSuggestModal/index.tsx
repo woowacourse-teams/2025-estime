@@ -29,7 +29,12 @@ const LoginSuggestModal = ({ target, isOpen, onClose, onLoginClick }: LoginSugge
       blur={true}
     >
       <Modal.Container size="85%">
-        <Wrapper backgroundColor={theme.colors.gray20} maxWidth="100%" padding="var(--padding-11)">
+        <Wrapper
+          backgroundColor={theme.colors.gray20}
+          maxWidth="100%"
+          padding="var(--padding-11)"
+          borderRadius="var(--radius-4)"
+        >
           <Modal.Content>
             <Flex direction="column" gap="var(--gap-6)" align="center">
               <Text variant="h2">로그인하고 내 일정을 등록하세요.</Text>

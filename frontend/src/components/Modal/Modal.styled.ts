@@ -47,7 +47,7 @@ export const ModalBackground = styled.div<{
     }
 
     return css`
-      position: absolute;
+      position: fixed;
       display: flex;
       top: 0;
       left: 0;

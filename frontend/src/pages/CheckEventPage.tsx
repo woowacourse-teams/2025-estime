@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import * as S from './styles/CheckEventPage.styled';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import LoginModal from '@/components/LoginModal';
-import * as S from './styles/CheckEventPage.styled';
 import LoginSuggestModal from '@/components/LoginSuggestModal';
 import Timetable from '@/components/Timetable';
 import useCheckRoomSession from '@/hooks/useCheckRoomSession';
@@ -16,12 +15,7 @@ export type LoginData = {
   password: string;
 };
 const CheckEventPage = () => {
-  const [userData, setUserData] = useState<LoginData>({ userid: '', password: '' });
-
   const { roomInfo, session } = useCheckRoomSession();
-  const name = '메이토';
-  const userAvailability = useUserAvailability({ name, session });
-
   const {
     modalTargetRef,
     handleOpenLoginModal,
@@ -30,8 +24,12 @@ const CheckEventPage = () => {
     isLoginModalOpen,
     handleCloseLoginModal,
   } = useModalControl();
+  const { handleModalLogin, userData, setUserData, responseUserName } = useUserLogin(
+    session,
+    handleCloseAllModal
+  );
 
-  const { handleModalLogin } = useUserLogin(session, handleCloseAllModal);
+  const userAvailability = useUserAvailability({ name: responseUserName ?? '앙구일구', session });
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">

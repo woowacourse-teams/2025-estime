@@ -25,10 +25,5 @@ export interface CreateUserType {
   password: string;
 }
 export interface CreateUserResponseType {
-  code: number;
-  success: boolean;
-  message: string;
-  result: {
-    name: string;
-  };
+  name: string;
 }
