@@ -16,6 +16,7 @@ export type LoginData = {
 };
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
+
   const {
     modalTargetRef,
     handleOpenLoginModal,
@@ -24,6 +25,7 @@ const CheckEventPage = () => {
     isLoginModalOpen,
     handleCloseLoginModal,
   } = useModalControl();
+
   const { handleModalLogin, userData, setUserData, responseUserName } = useUserLogin(
     session,
     handleCloseAllModal
