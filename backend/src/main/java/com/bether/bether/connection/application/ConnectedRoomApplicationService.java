@@ -43,7 +43,7 @@ public class ConnectedRoomApplicationService {
      */
     private void sendConnectedRoomCreatedMessage(final ConnectedRoom connectRoom, final String channelId) {
         final Room room = connectRoom.getRoom();
-        final String shortcut = webConfigProperties.dev() + "/check?id=" + room.getSession();
+        final String shortcut = webConfigProperties.dev() + "check?id=" + room.getSession();
         final ConnectedRoomCreatedMessageInput input = ConnectedRoomCreatedMessageInput.of(shortcut, room);
         messageSenders.get(connectRoom.getPlatform()).sendConnectedRoomCreatedMessage(channelId, input);
     }
