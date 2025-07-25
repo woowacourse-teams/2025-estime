@@ -46,6 +46,7 @@ const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Prom
     headers: {
       accept: 'application/json',
       'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': '1',
     },
     ...(body && method !== 'GET' && method !== 'DELETE' ? { body: JSON.stringify(body) } : {}),
   };

@@ -16,7 +16,7 @@ interface TimetableProps {
   };
   availableDates: Set<string>;
   selectedTimes: Field<Set<string>>;
-  userAvailabilitySubmit: () => Promise<unknown>;
+  userAvailabilitySubmit: () => void;
   ref: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -46,7 +46,7 @@ const Timetable = ({
   });
 
   return (
-    <Wrapper maxWidth="100%" ref={ref}>
+    <Wrapper maxWidth={780} ref={ref}>
       <S.Container>
         <Flex direction="column" gap="var(--gap-6)">
           <S.TimetableHeader>

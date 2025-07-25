@@ -36,4 +36,7 @@ export const Container = styled.button<{
       `background-color: ${color === 'primary' ? theme.colors.plum30 : theme.colors.gray10};
       `}
   }
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;

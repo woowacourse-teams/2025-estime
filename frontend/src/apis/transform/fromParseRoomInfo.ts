@@ -1,5 +1,6 @@
 import { RoomInfo } from '@/types/roomInfo';
 import { GetRoomInfoResponseType } from '../room/type';
+import { add30Minutes } from '@/utils/Time/add30Minutes';
 
 /**
  * 서버에서 받은 방 정보를 클라이언트 상태(RoomInfo) 형식으로 변환합니다.
@@ -13,13 +14,14 @@ export const fromParseRoomInfo = (
   const { title, availableDates, startTime, endTime, deadLine, isPublic, roomSession } = data;
 
   const [date, time] = deadLine.split('T');
+  const calculatedEndTime = add30Minutes(endTime);
 
   return {
     title,
     availableDates: new Set(availableDates),
     time: {
       startTime,
-      endTime,
+      endTime: calculatedEndTime,
     },
     deadLine: {
       date,

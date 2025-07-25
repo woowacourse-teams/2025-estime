@@ -17,6 +17,7 @@ const useRecommendTime = (session: string | null) => {
 
   return {
     recommendTimeData,
+    fetchRecommendTimes,
   };
 };
 
