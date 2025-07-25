@@ -23,4 +23,14 @@ public class DiscordSlashCommandRegistrar extends ListenerAdapter {
         // 불필요한 추가 등록 방지
         jda.removeEventListener(this);
     }
+
+//    // 특정 길드 설정 (n초 후 갱신)
+//    @Override
+//    public void onReady(final ReadyEvent e) {
+//        final Guild guild = e.getJDA().getGuildById("1393585305713512478");
+//        if (guild != null) {
+//            guild.upsertCommand("estime-create", PlatformCommand.CREATE.getDescription())
+//                    .queue();
+//        }
+//    }
 }
