@@ -9,6 +9,7 @@ import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
 import com.bether.bether.room.presentation.dto.response.RoomResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
+import com.bether.bether.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import com.bether.bether.room.presentation.dto.response.UserCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -201,26 +202,34 @@ public interface RoomControllerSpecification {
                                         "code": 200,
                                         "success": true,
                                         "message": null,
-                                        "result": null
+                                        "result": {
+                                                   "message": "저장이 완료되었습니다!",
+                                                   "userName": "강감찬",
+                                                   "dateTimes": [
+                                                       "2025-07-21T16:00",
+                                                       "2025-07-21T17:00",
+                                                       "2025-07-22T20:00"
+                                                   ]
+                                               }
                                     }
                                     """)))})
     @PutMapping("/{session}/time-slots")
-    CustomApiResponse<Void> updateTimeSlots(@PathVariable("session") final UUID session,
-                                            @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
-                                                    examples = @ExampleObject(
-                                                            summary = "시간 수정 예시",
-                                                            value = """
-                                                                    {
-                                                                        "userName": "강감찬",
-                                                                        "dateTimes": [
-                                                                            "2025-07-21T16:00",
-                                                                            "2025-07-21T17:00",
-                                                                            "2025-07-22T20:00"
-                                                                        ]
-                                                                    }
-                                                                    """
-                                                    )
-                                            )) TimeSlotUpdateRequest request);
+    CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateTimeSlots(@PathVariable("session") final UUID session,
+                                                                       @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
+                                                                               examples = @ExampleObject(
+                                                                                       summary = "시간 수정 예시",
+                                                                                       value = """
+                                                                                               {
+                                                                                                   "userName": "강감찬",
+                                                                                                   "dateTimes": [
+                                                                                                       "2025-07-21T16:00",
+                                                                                                       "2025-07-21T17:00",
+                                                                                                       "2025-07-22T20:00"
+                                                                                                   ]
+                                                                                               }
+                                                                                               """
+                                                                               )
+                                                                       )) TimeSlotUpdateRequest request);
 
 
     @Operation(summary = "룸 사용자 로그인", description = "💡 특정 룸에 새로운 사용자를 생성(로그인)합니다. 사용자는 이름과 비밀번호로 식별됩니다.")
