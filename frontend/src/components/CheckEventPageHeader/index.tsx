@@ -28,10 +28,14 @@ const CheckEventPageHeader = ({
       </Flex>
       <Flex gap="var(--gap-6)" justify="flex-start" align="center">
         <Flex justify="space-between" align="center" gap="var(--gap-3)">
-          {isPublic ? <IGlobe color={theme.colors.text} /> : <ILock color={theme.colors.red40} />}
+          {isPublic === 'public' ? (
+            <IGlobe color={theme.colors.text} />
+          ) : (
+            <ILock color={theme.colors.text} />
+          )}
 
           <Text variant="body" color="text">
-            공개 여부 : {isPublic ? '공개' : '비공개'}
+            공개 여부 : {isPublic === 'public' ? '공개' : '비공개'}
           </Text>
         </Flex>
         <Flex justify="space-between" align="center" gap="var(--gap-3)">
