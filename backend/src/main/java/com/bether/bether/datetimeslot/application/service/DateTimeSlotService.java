@@ -48,13 +48,14 @@ public class DateTimeSlotService {
     }
 
     @Transactional
-    public void updateTimeSlots(final Long roomId, final DateTimeSlotUpdateInput input) {
+    public DateTimeSlots updateTimeSlots(final Long roomId, final DateTimeSlotUpdateInput input) {
         final DateTimeSlots existing = dateTimeSlotRepository.findAllByRoomIdAndUserName(roomId, input.userName());
         final Set<LocalDateTime> existingStartAts = existing.calculateUniqueStartAts();
         final Set<LocalDateTime> requestedStartAts = Set.copyOf(input.dateTimes());
 
+        // TODO DB 조회 로직 최적화 필요
         if (existingStartAts.equals(requestedStartAts)) {
-            return;
+            return getAllByRoomIdAndUserName(roomId, input.userName());
         }
 
         final DateTimeSlots dateTimeSlotsToSave = existing.findSlotsToSave(requestedStartAts, roomId, input.userName());
@@ -66,5 +67,7 @@ public class DateTimeSlotService {
         if (dateTimeSlotsToDelete.isNotEmpty()) {
             dateTimeSlotRepository.deleteAllInBatch(dateTimeSlotsToDelete);
         }
+
+        return getAllByRoomIdAndUserName(roomId, input.userName());
     }
 }

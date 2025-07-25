@@ -70,9 +70,9 @@ public class RoomApplicationService {
     }
 
     @Transactional
-    public void updateTimeSlots(final DateTimeSlotUpdateInput input) {
+    public DateTimeSlots updateTimeSlots(final DateTimeSlotUpdateInput input) {
         final Long roomId = roomDomainService.getIdBySession(input.roomSession());
-        dateTimeSlotService.updateTimeSlots(roomId, input);
+        return dateTimeSlotService.updateTimeSlots(roomId, input);
     }
 
     @Transactional
