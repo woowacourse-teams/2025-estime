@@ -47,13 +47,18 @@ export const LoginModal = ({
                 </S.LoginLabel>
               </Flex.Item>
               <Flex.Item flex={4}>
-                <Input
-                  id="userid"
-                  placeholder="아이디를 입력해주세요."
-                  maxLength={12}
-                  autoFocus={true}
-                  onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
-                />
+                <Flex direction="column" gap="var(--gap-2)">
+                  <Input
+                    id="userid"
+                    placeholder="아이디를 입력해주세요."
+                    maxLength={12}
+                    autoFocus={true}
+                    onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
+                  />
+                  <Text variant="caption" color="red40" aria-hidden="true">
+                    {userData.name.trim().length === 0 && '아이디를 입력해주세요.'}
+                  </Text>
+                </Flex>
               </Flex.Item>
             </Flex>
             <Flex justify="space-between" align="center" gap="var(--gap-6)">
@@ -71,8 +76,13 @@ export const LoginModal = ({
               </Flex.Item>
             </Flex>
             <Flex.Item flex={1}>
-              <Button color="primary" selected onClick={handleModalLogin}>
-                <Text variant="body" color="gray10">
+              <Button
+                color={userData.name.trim().length > 0 ? 'primary' : 'plum40'}
+                selected={true}
+                onClick={handleModalLogin}
+                disabled={!userData.name.trim()}
+              >
+                <Text variant="button" color="background">
                   저장하고 계속하기
                 </Text>
               </Button>

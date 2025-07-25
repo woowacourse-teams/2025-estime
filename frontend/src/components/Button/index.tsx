@@ -6,12 +6,13 @@ interface ButtonProps extends ComponentProps<'button'> {
   size?: 'small' | 'medium' | 'large';
   color: ColorsKey;
   selected?: boolean;
+  disabled?: boolean;
   children: React.ReactNode;
 }
 
-const Button = ({ size, color, selected, children, ...props }: ButtonProps) => {
+const Button = ({ size, color, selected, disabled, children, ...props }: ButtonProps) => {
   return (
-    <S.Container size={size} color={color} selected={selected} {...props}>
+    <S.Container size={size} color={color} selected={selected} disabled={disabled} {...props}>
       {children}
     </S.Container>
   );

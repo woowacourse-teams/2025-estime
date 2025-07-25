@@ -42,15 +42,13 @@ function Modal({
 
   return createPortal(
     <ModalContext.Provider value={{ onClose, shouldCloseOnOverlayAction, position }}>
-      <FocusTrap>
-        <S.ModalBackground
-          onClick={shouldCloseOnOverlayAction ? onClose : undefined}
-          position={position}
-          blur={blur}
-        >
-          {children}
-        </S.ModalBackground>
-      </FocusTrap>
+      <S.ModalBackground
+        onClick={shouldCloseOnOverlayAction ? onClose : undefined}
+        position={position}
+        blur={blur}
+      >
+        {children}
+      </S.ModalBackground>
     </ModalContext.Provider>,
     portalToWhere
   );
@@ -58,17 +56,19 @@ function Modal({
 
 function ModalContainer({ children, size = 'medium', ...props }: ModalContainerProps) {
   return (
-    <S.ModalContainer
-      {...props}
-      size={size}
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-      role="dialog"
-      aria-modal="true"
-    >
-      {children}
-    </S.ModalContainer>
+    <FocusTrap>
+      <S.ModalContainer
+        size={size}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        role="dialog"
+        aria-modal="true"
+        {...props}
+      >
+        {children}
+      </S.ModalContainer>
+    </FocusTrap>
   );
 }
 
