@@ -38,7 +38,9 @@ const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic:
             paddingLeft="var(--padding-10)"
             paddingRight="var(--padding-10)"
           >
-            <Text>추천 시간대를 확인하려면 시간을 등록해주세요!</Text>
+            <Flex direction="column" gap="var(--gap-2)" align="center">
+              <Text>아직 충분한 시간 데이터가 없어요.</Text>
+            </Flex>
           </Wrapper>
         </Flex>
       </Wrapper>
