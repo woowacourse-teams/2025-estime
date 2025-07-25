@@ -23,13 +23,13 @@ const CopyLinkButton = ({ sessionId }: { sessionId: string }) => {
         <Button color="primary" size="small" onClick={handleCopyLink}>
           <ILink color={theme.colors.primary} />
           <Text variant="button" color="primary">
-            {'링크 복사'}
+            링크 복사
           </Text>
         </Button>
 
         <MiniPopup isVisible={isCopied}>
           <Text variant="caption" color="background">
-            {'링크 복사되었습니다!'}
+            링크 복사되었습니다!
           </Text>
         </MiniPopup>
       </Flex>
