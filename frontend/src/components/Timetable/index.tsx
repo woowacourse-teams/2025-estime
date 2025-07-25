@@ -7,6 +7,8 @@ import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import Button from '@/components/Button';
+import { useState } from 'react';
+import { UserAvailableTimeResponseType } from '@/apis/time/type';
 
 interface TimetableProps {
   name: string;
@@ -45,6 +47,24 @@ const Timetable = ({
     time: '',
   });
 
+  const [, setMessage] = useState<string>('');
+
+  const handleSubmit = async () => {
+    try {
+      const response = (await userAvailabilitySubmit()) as {
+        message: string;
+        timeSlots: UserAvailableTimeResponseType;
+      };
+      setMessage(response.message);
+      alert(response.message);
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Error) {
+        setMessage('저장 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
   return (
     <Wrapper maxWidth="100%" ref={ref}>
       <S.Container>
@@ -59,7 +79,7 @@ const Timetable = ({
               </Text>
             </Flex>
             <Wrapper maxWidth={100} center={false}>
-              <Button color="primary" onClick={userAvailabilitySubmit}>
+              <Button color="primary" onClick={handleSubmit}>
                 <Text variant="button" color="text">
                   저장하기
                 </Text>
