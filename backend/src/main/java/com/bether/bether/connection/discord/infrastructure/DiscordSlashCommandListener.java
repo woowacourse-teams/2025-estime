@@ -19,6 +19,7 @@ public class DiscordSlashCommandListener extends ListenerAdapter {
     private final WebConfigProperties webConfigProperties;
     private final DiscordMessageBuilder discordMessageBuilder;
 
+    @Override
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         if (event.getName().equals(PlatformCommand.CREATE.getCommand())) {
             final ConnectedRoomCreateMessageInput input = new ConnectedRoomCreateMessageInput(
