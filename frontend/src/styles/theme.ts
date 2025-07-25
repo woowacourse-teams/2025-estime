@@ -15,6 +15,7 @@ export const LIGHT_THEME = {
     orange30: '#FFC64C',
     orange40: '#FFAE00',
     red40: '#EF4444',
+    green30: '#27874D',
 
     gray10: '#F4F4F4',
     gray20: '#C6C6C6',
@@ -70,6 +71,7 @@ export const DARK_THEME = {
     orange30: '#FFC64C',
     orange40: '#FFAE00',
     red40: '#7F1E1D',
+    green30: '#27874D',
 
     gray10: '#1C1C1E',
     gray20: '#2C2C2E',
