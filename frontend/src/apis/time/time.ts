@@ -5,12 +5,13 @@ import type {
   UserAvailableTimeResponseType,
   RecommendationTimeResponseType,
   UserAvailableTimeRequestType,
+  updateUserAvailableTimeType,
 } from './type';
 
 export const updateUserAvailableTime = async (
   session: string | null,
   body: UserAvailableTimeRequestType
-) => {
+): Promise<updateUserAvailableTimeType> => {
   return await api.put(`${ROOM_API_PATH}/${session}/time-slots`, body);
 };
 
