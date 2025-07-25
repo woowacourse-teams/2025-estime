@@ -33,7 +33,7 @@ export const useUserAvailability = ({
     try {
       const payload = toCreateUserAvailability(userAvailability);
       const response = await updateUserAvailableTime(session, payload);
-      return response;
+      alert(response.message);
     } catch (err) {
       const e = err as Error;
       alert(e.message);

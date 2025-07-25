@@ -25,3 +25,6 @@ export interface RecommendedTimeSlotType {
   dateTime: string;
   userNames: string[];
 }
+export interface updateUserAvailableTimeType {
+  message: string;
+}
