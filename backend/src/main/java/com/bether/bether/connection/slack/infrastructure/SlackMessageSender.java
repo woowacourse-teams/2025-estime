@@ -79,9 +79,9 @@ public class SlackMessageSender implements MessageSender {
             } else {
                 log.warn("{} failed: {}", failLogPrefix, response.getError());
             }
-        } catch (SlackApiException e) {
+        } catch (final SlackApiException e) {
             log.error("Slack API exception during {}: {}", failLogPrefix, e.getError(), e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error("I/O error during {}: {}", failLogPrefix, e.getMessage(), e);
         }
     }
@@ -98,9 +98,9 @@ public class SlackMessageSender implements MessageSender {
             } else {
                 log.warn("{} failed: {}", failLogPrefix, response.getError());
             }
-        } catch (SlackApiException e) {
+        } catch (final SlackApiException e) {
             log.error("Slack API exception during {}: {}", failLogPrefix, e.getError(), e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error("I/O error during {}: {}", failLogPrefix, e.getMessage(), e);
         }
     }
