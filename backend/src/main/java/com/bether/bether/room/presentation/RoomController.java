@@ -15,6 +15,7 @@ import com.bether.bether.room.presentation.dto.response.RoomCreateResponse;
 import com.bether.bether.room.presentation.dto.response.RoomResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotRecommendationsResponse;
 import com.bether.bether.room.presentation.dto.response.TimeSlotStatisticResponse;
+import com.bether.bether.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import com.bether.bether.room.presentation.dto.response.UserCreateResponse;
 import com.bether.bether.user.application.dto.output.UserCreateOutput;
@@ -76,10 +77,11 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<Void> updateTimeSlots(@PathVariable("session") final UUID session,
-                                                   @RequestBody final TimeSlotUpdateRequest request) {
-        roomApplicationService.updateTimeSlots(request.toInput(session));
-        return CustomApiResponse.ok();
+    public CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateTimeSlots(
+            @PathVariable("session") final UUID session,
+            @RequestBody final TimeSlotUpdateRequest request) {
+        final DateTimeSlots dateTimeSlots = roomApplicationService.updateTimeSlots(request.toInput(session));
+        return CustomApiResponse.ok(TotalDateTimeSlotUpdateResponse.from(dateTimeSlots));
     }
 
     @Override
