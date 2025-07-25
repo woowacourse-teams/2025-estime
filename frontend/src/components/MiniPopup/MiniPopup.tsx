@@ -1,7 +1,12 @@
 import * as S from './MiniPopup.styled';
 
-const MiniPopup = ({ children }: { children: React.ReactNode }) => {
-  return <S.Container>{children}</S.Container>;
+interface MiniPopupProps {
+  children: React.ReactNode;
+  isVisible: boolean;
+}
+
+const MiniPopup = ({ children, isVisible }: MiniPopupProps) => {
+  return <S.Container isVisible={isVisible}>{children}</S.Container>;
 };
 
 export default MiniPopup;

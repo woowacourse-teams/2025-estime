@@ -26,13 +26,12 @@ const CopyLinkButton = ({ sessionId }: { sessionId: string }) => {
             {'링크 복사'}
           </Text>
         </Button>
-        {isCopied && (
-          <MiniPopup>
-            <Text variant="caption" color="background">
-              {'링크 복사되었습니다.'}
-            </Text>
-          </MiniPopup>
-        )}
+
+        <MiniPopup isVisible={isCopied}>
+          <Text variant="caption" color="background">
+            {'링크 복사되었습니다.'}
+          </Text>
+        </MiniPopup>
       </Flex>
     </>
   );

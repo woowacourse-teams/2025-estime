@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.div`
+export const Container = styled.div<{ isVisible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,4 +11,7 @@ export const Container = styled.div`
   font-size: ${({ theme }) => theme.typography.caption.fontSize};
   white-space: nowrap;
   height: 24px;
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
+  transition: opacity 0.25s ease;
 `;
