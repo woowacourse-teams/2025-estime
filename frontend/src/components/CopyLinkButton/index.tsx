@@ -9,7 +9,7 @@ import Flex from '@/components/Layout/Flex';
 const CopyLinkButton = ({ sessionId }: { sessionId: string }) => {
   const [isCopied, setIsCopied] = useState(false);
   const handleCopyLink = () => {
-    const link = `${process.env.DOMAIN_URL}check?id=${sessionId}`;
+    const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
     navigator.clipboard.writeText(link);
     setIsCopied(true);
     setTimeout(() => {
