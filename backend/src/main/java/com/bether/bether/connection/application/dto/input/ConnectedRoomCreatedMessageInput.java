@@ -10,8 +10,8 @@ public record ConnectedRoomCreatedMessageInput(
 ) {
 
     public static ConnectedRoomCreatedMessageInput of(
-            String shortcut,
-            Room room
+            final String shortcut,
+            final Room room
     ) {
         return new ConnectedRoomCreatedMessageInput(shortcut, room.getTitle(), room.getDeadLine());
     }

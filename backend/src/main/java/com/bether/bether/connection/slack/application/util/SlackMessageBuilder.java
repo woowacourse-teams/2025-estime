@@ -59,13 +59,13 @@ public class SlackMessageBuilder {
         );
     }
 
-    private MarkdownTextObject markdown(String text) {
+    private MarkdownTextObject markdown(final String text) {
         return MarkdownTextObject.builder()
                 .text(text)
                 .build();
     }
 
-    private PlainTextObject plainText(String text) {
+    private PlainTextObject plainText(final String text) {
         return PlainTextObject.builder()
                 .text(text)
                 .emoji(true)
