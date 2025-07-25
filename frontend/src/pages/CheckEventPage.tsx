@@ -33,7 +33,21 @@ const CheckEventPage = () => {
       session,
     });
 
-  const { recommendTimeData } = useRecommendTime(session);
+  const { recommendTimeData, fetchRecommendTimes } = useRecommendTime(session);
+
+  const handleInitAfterLogin = async () => {
+    try {
+      await handleLogin();
+      handleCloseAllModal();
+      await fetchUserAvailableTime();
+      await fetchRecommendTimes();
+    } catch (err) {
+      const e = err as Error;
+      console.log(e);
+      alert(e.message);
+      console.error(err);
+    }
+  };
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -52,7 +66,10 @@ const CheckEventPage = () => {
                 time={roomInfo.time}
                 availableDates={roomInfo.availableDates}
                 selectedTimes={selectedTimes}
-                userAvailabilitySubmit={userAvailabilitySubmit}
+                userAvailabilitySubmit={async () => {
+                  await userAvailabilitySubmit();
+                  await fetchRecommendTimes();
+                }}
                 ref={modalTargetRef}
               />
             </Flex.Item>
@@ -71,11 +88,7 @@ const CheckEventPage = () => {
           <LoginModal
             isLoginModalOpen={isLoginModalOpen}
             handleCloseLoginModal={handleCloseLoginModal}
-            handleModalLogin={() => {
-              handleLogin();
-              handleCloseAllModal();
-              fetchUserAvailableTime();
-            }}
+            handleModalLogin={handleInitAfterLogin}
             userData={userData}
             handleUserData={handleUserData}
           />

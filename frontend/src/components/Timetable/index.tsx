@@ -16,7 +16,7 @@ interface TimetableProps {
   };
   availableDates: Set<string>;
   selectedTimes: Field<Set<string>>;
-  userAvailabilitySubmit: () => Promise<unknown>;
+  userAvailabilitySubmit: () => void;
   ref: React.RefObject<HTMLDivElement | null>;
 }
 
