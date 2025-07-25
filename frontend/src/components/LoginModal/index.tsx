@@ -47,7 +47,7 @@ export const LoginModal = ({
                 </S.LoginLabel>
               </Flex.Item>
               <Flex.Item flex={4}>
-                <Flex direction="column" gap="var(--gap-2)">
+                <Flex direction="column" gap="var(--gap-3)">
                   <Input
                     id="userid"
                     placeholder="아이디를 입력해주세요."
@@ -55,8 +55,13 @@ export const LoginModal = ({
                     autoFocus={true}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
                   />
-                  <Text variant="caption" color="red40" aria-hidden="true">
-                    {userData.name.trim().length === 0 && '아이디를 입력해주세요.'}
+                  <Text
+                    variant="caption"
+                    color="red40"
+                    aria-hidden="true"
+                    opacity={userData.name.trim().length === 0}
+                  >
+                    아이디를 입력해주세요.
                   </Text>
                 </Flex>
               </Flex.Item>
