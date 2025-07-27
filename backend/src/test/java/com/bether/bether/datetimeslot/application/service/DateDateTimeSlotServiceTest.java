@@ -14,11 +14,11 @@ import com.bether.bether.datetimeslot.domain.DateTimeSlotRepository;
 import com.bether.bether.datetimeslot.domain.DateTimeSlots;
 import com.bether.bether.room.domain.Room;
 import com.bether.bether.room.domain.RoomRepository;
+import com.bether.bether.room.infrastructure.RoomSessionGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -176,7 +176,7 @@ class DateDateTimeSlotServiceTest {
                         true
                 ));
 
-        final DateTimeSlotInput input = new DateTimeSlotInput(UUID.randomUUID(), "user",
+        final DateTimeSlotInput input = new DateTimeSlotInput(RoomSessionGenerator.generateTsid(), "user",
                 List.of(LocalDateTime.now(), LocalDateTime.now()));
 
         // when
@@ -275,7 +275,8 @@ class DateDateTimeSlotServiceTest {
                 .toList();
         dateTimeSlotRepository.saveAll(DateTimeSlots.from(existedDateTimeSlot));
 
-        final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(UUID.randomUUID(), userName, updated);
+        final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(RoomSessionGenerator.generateTsid(), userName,
+                updated);
 
         // when
         dateTimeSlotService.updateTimeSlots(room.getId(), input);
@@ -311,7 +312,8 @@ class DateDateTimeSlotServiceTest {
                 LocalDateTime.of(2026, 1, 2, 10, 0),
                 LocalDateTime.of(2026, 1, 2, 11, 0)
         );
-        final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(UUID.randomUUID(), userName, updatedSlots);
+        final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(RoomSessionGenerator.generateTsid(), userName,
+                updatedSlots);
 
         // when
         dateTimeSlotService.updateTimeSlots(room.getId(), input);
