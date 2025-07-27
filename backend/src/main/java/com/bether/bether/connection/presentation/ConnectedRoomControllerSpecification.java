@@ -28,7 +28,7 @@ public interface ConnectedRoomControllerSpecification {
                                                 "success": true,
                                                 "message": null,
                                                 "result": {
-                                                    "session": "a4b1c2d3-e4f5-6789-0123-456789abcdef",
+                                                    "session": "0MERYHCK3MCYH",
                                                     "platform": "DISCORD"
                                                 }
                                             }
