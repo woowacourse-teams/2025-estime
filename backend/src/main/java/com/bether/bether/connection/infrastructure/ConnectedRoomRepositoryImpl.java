@@ -3,7 +3,6 @@ package com.bether.bether.connection.infrastructure;
 import com.bether.bether.connection.domain.ConnectedRoom;
 import com.bether.bether.connection.domain.ConnectedRoomRepository;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,7 @@ public class ConnectedRoomRepositoryImpl implements ConnectedRoomRepository {
     }
 
     @Override
-    public Optional<ConnectedRoom> findBySession(final UUID session) {
+    public Optional<ConnectedRoom> findBySession(final String session) {
         return jpaRepository.findByRoomSession(session);
     }
 }

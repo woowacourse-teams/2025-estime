@@ -3,7 +3,6 @@ package com.bether.bether.room.infrastructure;
 import com.bether.bether.room.domain.Room;
 import com.bether.bether.room.domain.RoomRepository;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,7 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Optional<Room> findBySession(final UUID session) {
+    public Optional<Room> findBySession(final String session) {
         return roomJpaRepository.findBySession(session);
     }
 }
