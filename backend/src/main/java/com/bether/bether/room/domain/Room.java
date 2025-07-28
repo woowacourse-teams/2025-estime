@@ -27,7 +27,7 @@ import lombok.ToString;
 @ToString
 public class Room extends BaseEntity {
 
-    @Column(name = "session", nullable = false)
+    @Column(name = "session", nullable = false, length = 13, columnDefinition = "CHAR(13) CHARACTER SET ascii")
     private String session;
 
     @Column(name = "title", nullable = false)
