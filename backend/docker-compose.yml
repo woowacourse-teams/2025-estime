@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: bether-mysql
+    container_name: estime-mysql
     restart: unless-stopped
     env_file:
       - .env.docker
@@ -14,7 +14,7 @@ services:
       retries: 5
 
   app:
-    container_name: bether-app
+    container_name: estime-app
     depends_on:
       - mysql
     env_file:

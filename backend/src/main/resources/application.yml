@@ -36,3 +36,6 @@ slack:
 springdoc:
   swagger-ui:
     path: /docs
+
+server:
+  forward-headers-strategy: framework
