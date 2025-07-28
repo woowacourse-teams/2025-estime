@@ -40,7 +40,7 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 
-    implementation 'com.github.f4b6a3:tsid-creator:5.2.6' // for TSID generation
+    implementation 'com.github.f4b6a3:tsid-creator:5.2.6' // for Tsid generation
 }
 
 tasks.named('test') {

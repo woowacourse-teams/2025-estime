@@ -56,14 +56,14 @@ class ConnectedRoomApplicationServiceTest {
         final ConnectedRoomCreateOutput saved = connectedRoomApplicationService.save(input);
 
         // then
-        assertThat(isValidTSID(saved.session()))
+        assertThat(isValidTsid(saved.session()))
                 .isTrue();
 
         final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
         assertThat(connectedRoom.getRoom().getSession()).isEqualTo(saved.session());
     }
 
-    private boolean isValidTSID(final String tsid) {
+    private boolean isValidTsid(final String tsid) {
         if (tsid == null || tsid.isEmpty()) {
             return false;
         }

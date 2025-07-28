@@ -43,7 +43,7 @@ class RoomApplicationServiceTest {
         final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
 
         // then
-        assertThat(isValidTSID(saved.session()))
+        assertThat(isValidTsid(saved.session()))
                 .isTrue();
     }
 
@@ -228,7 +228,7 @@ class RoomApplicationServiceTest {
                 .hasMessage("The deadline must be set in 30-minute intervals.");
     }
 
-    private boolean isValidTSID(final String tsid) {
+    private boolean isValidTsid(final String tsid) {
         if (tsid == null || tsid.isEmpty()) {
             return false;
         }
