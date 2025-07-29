@@ -68,13 +68,8 @@ export const HeaderCell = styled.div<{
     pointer-events: none;
   `}
   &:hover {
-    transition: background-color 0.2s;
-    background-color: ${({ theme, selectedTimes, date, timeText }) => {
-      if (selectedTimes.has(`${date}T${timeText}`)) {
-        return theme.colors.plum40;
-      }
-      return theme.colors.plum30;
-    }}};
+    transition: background-color border 0.2s;
+    border: 1.2px dotted ${({ theme }) => theme.colors.text};
   }
 
   transition: background-color 0.2s;
