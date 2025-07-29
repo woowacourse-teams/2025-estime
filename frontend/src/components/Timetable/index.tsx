@@ -1,12 +1,12 @@
 import * as S from './Timetable.styled';
 import { Field } from '@/types/field';
-import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
 import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import Button from '@/components/Button';
+import useSimpleTimeSelection from '@/hooks/TimeTable/useSimpleTimeSelection';
 
 interface TimetableProps {
   name: string;
@@ -39,11 +39,13 @@ const Timetable = ({
     ...generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
   ];
 
-  const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
-    selectedTimes: selectedTimes.value,
-    setSelectedTimes: selectedTimes.set,
-    time: '',
-  });
+  const {
+    containerRef,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerLeave,
+  } = useSimpleTimeSelection(selectedTimes);
 
   return (
     <Wrapper maxWidth={780} ref={ref}>
@@ -66,7 +68,13 @@ const Timetable = ({
               </Button>
             </Wrapper>
           </S.TimetableHeader>
-          <S.TimetableContent onMouseLeave={onMouseLeave}>
+          <S.TimetableContent
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerLeave}
+            ref={containerRef}
+          >
             <S.TimeSlotColumn>
               {timeList.map(({ timeText, isHour }) => (
                 <S.GridContainer key={timeText}>
@@ -84,10 +92,8 @@ const Timetable = ({
               <Wrapper key={date} center={false}>
                 {timeList.map(({ timeText }) => (
                   <S.HeaderCell
-                    key={`${date} ${timeText}`}
-                    onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
-                    onMouseUp={() => onMouseUp()}
-                    onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
+                    data-item={`${date}T${timeText}`}
+                    key={`${date}T${timeText}`}
                     selectedTimes={selectedTimes.value}
                     date={date}
                     timeText={timeText}

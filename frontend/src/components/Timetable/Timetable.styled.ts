@@ -16,6 +16,7 @@ export const TimetableHeader = styled.div`
 `;
 
 export const TimetableContent = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -47,12 +48,15 @@ export const HeaderCell = styled.div<{
 }>`
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   border-right: 1px solid ${({ theme }) => theme.colors.gray20};
-  background-color: ${({ selectedTimes, date, timeText, theme }) =>
-    timeText === 'Dates'
-      ? theme.colors.background
-      : selectedTimes.has(`${date}T${timeText}`)
-        ? theme.colors.primary
-        : theme.colors.gray10};
+  background-color: ${({ selectedTimes, date, timeText, theme }) => {
+    if (timeText === 'Dates') {
+      return theme.colors.background;
+    } else if (selectedTimes.has(`${date}T${timeText}`)) {
+      return theme.colors.primary;
+    } else {
+      return theme.colors.gray10;
+    }
+  }};
   cursor: pointer;
   padding: var(--padding-4);
   height: ${({ timeText }) => (timeText === 'Dates' ? '3rem' : '1.5rem')};
@@ -63,6 +67,17 @@ export const HeaderCell = styled.div<{
     `
     pointer-events: none;
   `}
+  &:hover {
+    transition: background-color 0.2s;
+    background-color: ${({ theme, selectedTimes, date, timeText }) => {
+      if (selectedTimes.has(`${date}T${timeText}`)) {
+        return theme.colors.plum40;
+      }
+      return theme.colors.plum30;
+    }}};
+  }
+
+  transition: background-color 0.2s;
 `;
 
 export const TimeLabel = styled.div`
@@ -71,4 +86,17 @@ export const TimeLabel = styled.div`
   justify-content: center;
   height: 3rem;
   background-color: ${({ theme }) => theme.colors.background};
+`;
+export const SelectionRect = styled.div<{
+  rect: DOMRect;
+}>`
+  position: absolute;
+  left: ${({ rect }) => rect.x}px;
+  top: ${({ rect }) => rect.y}px;
+  width: ${({ rect }) => rect.width}px;
+  height: ${({ rect }) => rect.height}px;
+  border: 1px dashed ${({ theme }) => theme.colors.primary};
+  background-color: rgba(0, 123, 255, 0.1);
+  pointer-events: none;
+  z-index: 10;
 `;

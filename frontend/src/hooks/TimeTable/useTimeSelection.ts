@@ -16,7 +16,7 @@ const useTimeSelection = ({
   const draggingRef = useRef(false);
 
   const isHeaderTime = (time: string) => {
-    const [, timeText] = time.split(' ');
+    const [, timeText] = time.split('T');
     return timeText === 'Dates';
   };
   const determineDragState = useCallback(
