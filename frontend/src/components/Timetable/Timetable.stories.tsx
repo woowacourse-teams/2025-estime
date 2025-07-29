@@ -7,7 +7,7 @@ const meta: Meta<typeof Timetable> = {
   component: Timetable,
   tags: ['autodocs'],
   args: {
-    name: 'John Doe',
+    name: '앙구일구',
     time: {
       startTime: '09:00',
       endTime: '18:00',
