@@ -2,6 +2,7 @@ package com.bether.bether.room.domain;
 
 import com.bether.bether.common.BaseEntity;
 import com.bether.bether.datetimeslot.domain.DateTimeSlot;
+import com.bether.bether.room.infrastructure.RoomSessionGenerator;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,8 +27,8 @@ import lombok.ToString;
 @ToString
 public class Room extends BaseEntity {
 
-    @Column(name = "session", nullable = false)
-    private UUID session;
+    @Column(name = "session", nullable = false, length = 13, columnDefinition = "CHAR(13) CHARACTER SET ascii")
+    private String session;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -64,7 +64,7 @@ public class Room extends BaseEntity {
         validateDates(availableDates);
         validateTimes(startTime, endTime);
         validateDeadLine(deadLine);
-        final UUID session = UUID.randomUUID();
+        final String session = RoomSessionGenerator.generateTsid();
         return new Room(session, title, availableDates, startTime, endTime, deadLine, isPublic);
     }
 

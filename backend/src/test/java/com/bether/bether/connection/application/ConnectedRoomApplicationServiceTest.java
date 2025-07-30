@@ -10,11 +10,11 @@ import com.bether.bether.connection.discord.infrastructure.DiscordMessageSender;
 import com.bether.bether.connection.domain.ConnectedRoom;
 import com.bether.bether.connection.domain.ConnectedRoomRepository;
 import com.bether.bether.connection.domain.Platform;
+import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,22 +56,17 @@ class ConnectedRoomApplicationServiceTest {
         final ConnectedRoomCreateOutput saved = connectedRoomApplicationService.save(input);
 
         // then
-        assertThat(isValidUUID(saved.session().toString()))
+        assertThat(isValidTsid(saved.session()))
                 .isTrue();
 
         final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
         assertThat(connectedRoom.getRoom().getSession()).isEqualTo(saved.session());
     }
 
-    private boolean isValidUUID(final String uuid) {
-        if (uuid == null || uuid.isEmpty()) {
+    private boolean isValidTsid(final String tsid) {
+        if (tsid == null || tsid.isEmpty()) {
             return false;
         }
-        try {
-            UUID.fromString(uuid);
-            return true;
-        } catch (final IllegalArgumentException e) {
-            return false;
-        }
+        return Tsid.isValid(tsid);
     }
 }
