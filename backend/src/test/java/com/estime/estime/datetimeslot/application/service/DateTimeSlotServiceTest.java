@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class DateDateTimeSlotServiceTest {
+class DateTimeSlotServiceTest {
 
     @Autowired
     private DateTimeSlotService dateTimeSlotService;
@@ -42,7 +42,7 @@ class DateDateTimeSlotServiceTest {
     @Autowired
     private RoomRepository roomRepository;
 
-    private static Stream<Arguments> provideUpdateTimeSlotsArguments() {
+    private static Stream<Arguments> provideUpdateDateTimeSlotsArguments() {
         return Stream.of(
                 Arguments.of(
                         "1번 케이스: 기존 데이터를 새 데이터로 교체",
@@ -68,7 +68,7 @@ class DateDateTimeSlotServiceTest {
         );
     }
 
-    @DisplayName("룸 아이디로 타임슬롯을 가져올 수 있다.")
+    @DisplayName("룸 아이디로 DT슬롯을 가져올 수 있다.")
     @Test
     void getAllByRoomId() {
         // given
@@ -106,7 +106,7 @@ class DateDateTimeSlotServiceTest {
                 .isEmpty();
     }
 
-    @DisplayName("룸 아이디와 유저 이름으로 타임슬롯을 가져올 수 있다.")
+    @DisplayName("룸 아이디와 유저 이름으로 DT슬롯을 가져올 수 있다.")
     @Test
     void getAllByRoomSessionAndUserName() {
         // given
@@ -162,7 +162,7 @@ class DateDateTimeSlotServiceTest {
                 .isEmpty();
     }
 
-    @DisplayName("다수의 타임슬롯을 저장할 수 있다.")
+    @DisplayName("다수의 DT슬롯을 저장할 수 있다.")
     @Test
     void saveAll() {
         // given
@@ -187,7 +187,7 @@ class DateDateTimeSlotServiceTest {
                 .hasSize(2);
     }
 
-    @DisplayName("타임슬롯 통계를 계산한다.")
+    @DisplayName("DT슬롯 통계를 계산한다.")
     @Test
     void calculateStatistic() {
         // given
@@ -209,7 +209,7 @@ class DateDateTimeSlotServiceTest {
         dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final DateTimeSlotStatisticOutput output = dateTimeSlotService.generateTimeSlotStatistic(room.getId());
+        final DateTimeSlotStatisticOutput output = dateTimeSlotService.generateDateTimeSlotStatistic(room.getId());
 
         // then
         assertThat(output.statistic())
@@ -221,7 +221,7 @@ class DateDateTimeSlotServiceTest {
                 );
     }
 
-    @DisplayName("타임슬롯 추천 시간 순위를 계산한다.")
+    @DisplayName("DT슬롯 추천 시간 순위를 계산한다.")
     @Test
     void calculateRecommendations() {
         // given
@@ -243,7 +243,7 @@ class DateDateTimeSlotServiceTest {
         dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final DateTimeSlotRecommendationsOutput output = dateTimeSlotService.recommendTopTimeSlots(room.getId());
+        final DateTimeSlotRecommendationsOutput output = dateTimeSlotService.recommendTopDateTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())
@@ -254,10 +254,10 @@ class DateDateTimeSlotServiceTest {
                 );
     }
 
-    @DisplayName("특정 사용자가 저장한 타임슬롯을 제시한 날짜로 변경할 수 있다.")
+    @DisplayName("특정 사용자가 저장한 DT슬롯을 제시한 날짜로 변경할 수 있다.")
     @ParameterizedTest(name = "{0}")
-    @MethodSource(value = "provideUpdateTimeSlotsArguments")
-    void updateTimeSlots(final String testName, final List<LocalDateTime> existed, final List<LocalDateTime> updated) {
+    @MethodSource(value = "provideUpdateDateTimeSlotsArguments")
+    void updateDateTimeSlots(final String testName, final List<LocalDateTime> existed, final List<LocalDateTime> updated) {
         // given
         final Room room = roomRepository.save(
                 Room.withoutId(
@@ -279,7 +279,7 @@ class DateDateTimeSlotServiceTest {
                 updated);
 
         // when
-        dateTimeSlotService.updateTimeSlots(room.getId(), input);
+        dateTimeSlotService.updateDateTimeSlots(room.getId(), input);
 
         // then
         final List<DateTimeSlot> saved = dateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(), userName)
@@ -292,8 +292,8 @@ class DateDateTimeSlotServiceTest {
     }
 
     @Test
-    @DisplayName("타임슬롯 변경은 멱등성을 보장한다.")
-    void updateTimeSlotsIsIdempotent() {
+    @DisplayName("DT슬롯 변경은 멱등성을 보장한다.")
+    void updateDateTimeSlotsIsIdempotent() {
         // given
         final Room room = roomRepository.save(
                 Room.withoutId(
@@ -316,22 +316,22 @@ class DateDateTimeSlotServiceTest {
                 updatedSlots);
 
         // when
-        dateTimeSlotService.updateTimeSlots(room.getId(), input);
+        dateTimeSlotService.updateDateTimeSlots(room.getId(), input);
         final List<DateTimeSlot> resultAfterFirstCall = dateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
                 userName).getDateTimeSlots();
 
-        dateTimeSlotService.updateTimeSlots(room.getId(), input);
+        dateTimeSlotService.updateDateTimeSlots(room.getId(), input);
         final List<DateTimeSlot> resultAfterSecondCall = dateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
                 userName).getDateTimeSlots();
 
         // then
         assertSoftly(softly -> {
             softly.assertThat(resultAfterFirstCall)
-                    .as("첫 번째 호출 후, 타임슬롯 개수가 기대값과 일치하는지 검증")
+                    .as("첫 번째 호출 후, DT슬롯 개수가 기대값과 일치하는지 검증")
                     .hasSize(updatedSlots.size());
             softly.assertThat(resultAfterFirstCall)
                     .extracting("startAt")
-                    .as("첫 번째 호출 후, 타임슬롯 내용이 기대값과 일치하는지 검증")
+                    .as("첫 번째 호출 후, DT슬롯 내용이 기대값과 일치하는지 검증")
                     .containsExactlyInAnyOrderElementsOf(updatedSlots);
             softly.assertThat(resultAfterSecondCall)
                     .as("두 번째 호출 결과가 첫 번째 호출 결과와 동일한지 멱등성 검증")
@@ -339,7 +339,7 @@ class DateDateTimeSlotServiceTest {
         });
     }
 
-    @DisplayName("타임슬롯 투표 시간이 최대 랭킹 수보다 적은 경우, 존재하는 개수 만큼 반환한다.")
+    @DisplayName("DT슬롯 투표 시간이 최대 랭킹 수보다 적은 경우, 존재하는 개수 만큼 반환한다.")
     @Test
     void whenSmallerThanMaxRankingNumber() {
         // given
@@ -359,7 +359,7 @@ class DateDateTimeSlotServiceTest {
         dateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final DateTimeSlotRecommendationsOutput output = dateTimeSlotService.recommendTopTimeSlots(room.getId());
+        final DateTimeSlotRecommendationsOutput output = dateTimeSlotService.recommendTopDateTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())

@@ -5,22 +5,22 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record TimeSlotRecommendationsResponse(
-        List<TimeSlotRecommendationResponse> recommendations
+public record DateTimeSlotRecommendationsResponse(
+        List<DateTimeSlotRecommendationResponse> recommendations
 ) {
 
-    public static TimeSlotRecommendationsResponse from(final DateTimeSlotRecommendationsOutput output) {
-        final List<TimeSlotRecommendationResponse> recommendations = output.recommendations()
+    public static DateTimeSlotRecommendationsResponse from(final DateTimeSlotRecommendationsOutput output) {
+        final List<DateTimeSlotRecommendationResponse> recommendations = output.recommendations()
                 .stream()
-                .map(rankOutput -> new TimeSlotRecommendationResponse(
+                .map(rankOutput -> new DateTimeSlotRecommendationResponse(
                         rankOutput.dateTime(),
                         rankOutput.userNames()
                 ))
                 .toList();
-        return new TimeSlotRecommendationsResponse(recommendations);
+        return new DateTimeSlotRecommendationsResponse(recommendations);
     }
 
-    private record TimeSlotRecommendationResponse(
+    private record DateTimeSlotRecommendationResponse(
             @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
             LocalDateTime dateTime,
 

@@ -4,7 +4,7 @@ import com.estime.estime.datetimeslot.application.dto.input.DateTimeSlotInput;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record TimeSlotCreateRequest(
+public record DateTimeSlotCreateRequest(
         String userName,
         List<LocalDateTime> dateTimes
 ) {

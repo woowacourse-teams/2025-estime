@@ -96,9 +96,9 @@ public class Room extends BaseEntity {
         if (endTime.isBefore(startTime)) {
             throw new IllegalArgumentException("startTime cannot be after endTime");
         }
-        final long timeSlotMinutes = DateTimeSlot.UNIT.toMinutes();
-        if (startTime.getMinute() % timeSlotMinutes != 0 || endTime.getMinute() % timeSlotMinutes != 0) {
-            throw new IllegalArgumentException("time must be in " + timeSlotMinutes + "-minute intervals");
+        final long dateTimeSlotMinutes = DateTimeSlot.UNIT.toMinutes();
+        if (startTime.getMinute() % dateTimeSlotMinutes != 0 || endTime.getMinute() % dateTimeSlotMinutes != 0) {
+            throw new IllegalArgumentException("time must be in " + dateTimeSlotMinutes + "-minute intervals");
         }
     }
 

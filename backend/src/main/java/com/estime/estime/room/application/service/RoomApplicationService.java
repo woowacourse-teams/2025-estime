@@ -39,39 +39,39 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlots getTimeSlotsBySession(final String session) {
+    public DateTimeSlots getDateTimeSlotsBySession(final String session) {
         final Long id = roomDomainService.getIdBySession(session);
         return dateTimeSlotService.getAllByRoomId(id);
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlots getTimeSlotsBySessionAndUserName(final String session, final String userName) {
+    public DateTimeSlots getDateTimeSlotsBySessionAndUserName(final String session, final String userName) {
         final Long id = roomDomainService.getIdBySession(session);
         return dateTimeSlotService.getAllByRoomIdAndUserName(id, userName);
     }
 
     @Transactional
-    public DateTimeSlots saveTimeSlots(final DateTimeSlotInput input) {
+    public DateTimeSlots saveDateTimeSlots(final DateTimeSlotInput input) {
         final Long id = roomDomainService.getIdBySession(input.roomSession());
         return dateTimeSlotService.saveAll(id, input);
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotStatisticOutput generateTimeSlotStatistic(final String session) {
+    public DateTimeSlotStatisticOutput generateDateTimeSlotStatistic(final String session) {
         final Long id = roomDomainService.getIdBySession(session);
-        return dateTimeSlotService.generateTimeSlotStatistic(id);
+        return dateTimeSlotService.generateDateTimeSlotStatistic(id);
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotRecommendationsOutput recommendTopTimeSlots(final String session) {
+    public DateTimeSlotRecommendationsOutput recommendTopDateTimeSlots(final String session) {
         final Long id = roomDomainService.getIdBySession(session);
-        return dateTimeSlotService.recommendTopTimeSlots(id);
+        return dateTimeSlotService.recommendTopDateTimeSlots(id);
     }
 
     @Transactional
     public DateTimeSlots updateTimeSlots(final DateTimeSlotUpdateInput input) {
         final Long roomId = roomDomainService.getIdBySession(input.roomSession());
-        return dateTimeSlotService.updateTimeSlots(roomId, input);
+        return dateTimeSlotService.updateDateTimeSlots(roomId, input);
     }
 
     @Transactional

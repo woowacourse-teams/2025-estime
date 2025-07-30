@@ -8,15 +8,15 @@ import com.estime.estime.room.application.dto.RoomCreateOutput;
 import com.estime.estime.room.application.dto.RoomOutput;
 import com.estime.estime.room.application.service.RoomApplicationService;
 import com.estime.estime.room.presentation.dto.request.RoomCreateRequest;
-import com.estime.estime.room.presentation.dto.request.TimeSlotCreateRequest;
-import com.estime.estime.room.presentation.dto.request.TimeSlotUpdateRequest;
+import com.estime.estime.room.presentation.dto.request.DateTimeSlotCreateRequest;
+import com.estime.estime.room.presentation.dto.request.DateTimeSlotUpdateRequest;
 import com.estime.estime.room.presentation.dto.request.UserCreateRequest;
 import com.estime.estime.room.presentation.dto.response.RoomCreateResponse;
 import com.estime.estime.room.presentation.dto.response.RoomResponse;
-import com.estime.estime.room.presentation.dto.response.TimeSlotRecommendationsResponse;
-import com.estime.estime.room.presentation.dto.response.TimeSlotStatisticResponse;
+import com.estime.estime.room.presentation.dto.response.DateTimeSlotRecommendationsResponse;
+import com.estime.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
-import com.estime.estime.room.presentation.dto.response.TotalTimeSlotResponse;
+import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotResponse;
 import com.estime.estime.room.presentation.dto.response.UserCreateResponse;
 import com.estime.estime.user.application.dto.output.UserCreateOutput;
 import lombok.RequiredArgsConstructor;
@@ -44,41 +44,41 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(
+    public CustomApiResponse<DateTimeSlotStatisticResponse> generateDateTimeSlotStatistic(
             @PathVariable("session") final String session) {
-        final DateTimeSlotStatisticOutput output = roomApplicationService.generateTimeSlotStatistic(session);
-        return CustomApiResponse.ok(TimeSlotStatisticResponse.from(output));
+        final DateTimeSlotStatisticOutput output = roomApplicationService.generateDateTimeSlotStatistic(session);
+        return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
     }
 
     @Override
-    public CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(
+    public CustomApiResponse<DateTimeSlotRecommendationsResponse> recommendTopDateTimeSlots(
             @PathVariable("session") final String session) {
-        final DateTimeSlotRecommendationsOutput output = roomApplicationService.recommendTopTimeSlots(session);
-        return CustomApiResponse.ok(TimeSlotRecommendationsResponse.from(output));
+        final DateTimeSlotRecommendationsOutput output = roomApplicationService.recommendTopDateTimeSlots(session);
+        return CustomApiResponse.ok(DateTimeSlotRecommendationsResponse.from(output));
     }
 
     @Override
-    public CustomApiResponse<Void> createTimeSlots(
+    public CustomApiResponse<Void> createDateTimeSlots(
             @PathVariable("session") final String session,
-            @RequestBody final TimeSlotCreateRequest request
+            @RequestBody final DateTimeSlotCreateRequest request
     ) {
-        roomApplicationService.saveTimeSlots(request.toInput(session));
+        roomApplicationService.saveDateTimeSlots(request.toInput(session));
         return CustomApiResponse.ok();
     }
 
     @Override
-    public CustomApiResponse<TotalTimeSlotResponse> getByUserName(
+    public CustomApiResponse<TotalDateTimeSlotResponse> getByUserName(
             @PathVariable("session") final String session,
             @RequestParam("name") final String userName
     ) {
-        final DateTimeSlots dateTimeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
-        return CustomApiResponse.ok(TotalTimeSlotResponse.from(dateTimeSlots));
+        final DateTimeSlots dateTimeSlots = roomApplicationService.getDateTimeSlotsBySessionAndUserName(session, userName);
+        return CustomApiResponse.ok(TotalDateTimeSlotResponse.from(dateTimeSlots));
     }
 
     @Override
-    public CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateTimeSlots(
+    public CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateDateTimeSlots(
             @PathVariable("session") final String session,
-            @RequestBody final TimeSlotUpdateRequest request) {
+            @RequestBody final DateTimeSlotUpdateRequest request) {
         final DateTimeSlots dateTimeSlots = roomApplicationService.updateTimeSlots(request.toInput(session));
         return CustomApiResponse.ok(TotalDateTimeSlotUpdateResponse.from(dateTimeSlots));
     }

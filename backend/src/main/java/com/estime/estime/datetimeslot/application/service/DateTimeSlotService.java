@@ -36,19 +36,19 @@ public class DateTimeSlotService {
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotStatisticOutput generateTimeSlotStatistic(final Long roomId) {
+    public DateTimeSlotStatisticOutput generateDateTimeSlotStatistic(final Long roomId) {
         final DateTimeSlotStatistic statistic = getAllByRoomId(roomId).calculateStatistic();
         return DateTimeSlotStatisticOutput.from(statistic.getStatistic());
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotRecommendationsOutput recommendTopTimeSlots(final Long roomId) {
+    public DateTimeSlotRecommendationsOutput recommendTopDateTimeSlots(final Long roomId) {
         final DateTimeSlotStatistic statistic = getAllByRoomId(roomId).calculateStatistic();
         return DateTimeSlotRecommendationsOutput.from(statistic.getRecommendation());
     }
 
     @Transactional
-    public DateTimeSlots updateTimeSlots(final Long roomId, final DateTimeSlotUpdateInput input) {
+    public DateTimeSlots updateDateTimeSlots(final Long roomId, final DateTimeSlotUpdateInput input) {
         final DateTimeSlots existing = dateTimeSlotRepository.findAllByRoomIdAndUserName(roomId, input.userName());
         final Set<LocalDateTime> existingStartAts = existing.calculateUniqueStartAts();
         final Set<LocalDateTime> requestedStartAts = Set.copyOf(input.dateTimes());
