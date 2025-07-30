@@ -13,7 +13,6 @@ import com.bether.bether.room.domain.Room;
 import com.bether.bether.user.application.dto.input.UserCreateInput;
 import com.bether.bether.user.application.dto.output.UserCreateOutput;
 import com.bether.bether.user.application.service.UserDomainService;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class RoomApplicationService {
     private final UserDomainService userDomainService;
 
     @Transactional(readOnly = true)
-    public RoomOutput getBySession(final UUID session) {
+    public RoomOutput getBySession(final String session) {
         final Room room = roomDomainService.getBySession(session);
         return RoomOutput.from(room);
     }
@@ -40,13 +39,13 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlots getTimeSlotsBySession(final UUID session) {
+    public DateTimeSlots getTimeSlotsBySession(final String session) {
         final Long id = roomDomainService.getIdBySession(session);
         return dateTimeSlotService.getAllByRoomId(id);
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlots getTimeSlotsBySessionAndUserName(final UUID session, final String userName) {
+    public DateTimeSlots getTimeSlotsBySessionAndUserName(final String session, final String userName) {
         final Long id = roomDomainService.getIdBySession(session);
         return dateTimeSlotService.getAllByRoomIdAndUserName(id, userName);
     }
@@ -58,13 +57,13 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotStatisticOutput generateTimeSlotStatistic(final UUID session) {
+    public DateTimeSlotStatisticOutput generateTimeSlotStatistic(final String session) {
         final Long id = roomDomainService.getIdBySession(session);
         return dateTimeSlotService.generateTimeSlotStatistic(id);
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotRecommendationsOutput recommendTopTimeSlots(final UUID session) {
+    public DateTimeSlotRecommendationsOutput recommendTopTimeSlots(final String session) {
         final Long id = roomDomainService.getIdBySession(session);
         return dateTimeSlotService.recommendTopTimeSlots(id);
     }
@@ -76,7 +75,7 @@ public class RoomApplicationService {
     }
 
     @Transactional
-    public UserCreateOutput saveUser(final UUID session, final UserCreateInput input) {
+    public UserCreateOutput saveUser(final String session, final UserCreateInput input) {
         final Long id = roomDomainService.getIdBySession(session);
         return UserCreateOutput.from(userDomainService.getByRoomIdAndName(id, input));
     }

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 public record RoomOutput(
         String title,
@@ -14,7 +13,7 @@ public record RoomOutput(
         LocalTime endTime,
         LocalDateTime deadLine,
         boolean isPublic,
-        UUID roomSession
+        String roomSession
 ) {
 
     public static RoomOutput from(final Room room) {

@@ -34,7 +34,7 @@ public record RoomResponse(
                 output.endTime(),
                 output.deadLine(),
                 output.isPublic(),
-                output.roomSession().toString()
+                output.roomSession()
         );
     }
 }

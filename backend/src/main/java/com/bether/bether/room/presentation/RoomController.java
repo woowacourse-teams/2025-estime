@@ -19,7 +19,6 @@ import com.bether.bether.room.presentation.dto.response.TotalDateTimeSlotUpdateR
 import com.bether.bether.room.presentation.dto.response.TotalTimeSlotResponse;
 import com.bether.bether.room.presentation.dto.response.UserCreateResponse;
 import com.bether.bether.user.application.dto.output.UserCreateOutput;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,28 +38,28 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") final UUID session) {
+    public CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") final String session) {
         final RoomOutput output = roomApplicationService.getBySession(session);
         return CustomApiResponse.ok(RoomResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(
-            @PathVariable("session") final UUID session) {
+            @PathVariable("session") final String session) {
         final DateTimeSlotStatisticOutput output = roomApplicationService.generateTimeSlotStatistic(session);
         return CustomApiResponse.ok(TimeSlotStatisticResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(
-            @PathVariable("session") final UUID session) {
+            @PathVariable("session") final String session) {
         final DateTimeSlotRecommendationsOutput output = roomApplicationService.recommendTopTimeSlots(session);
         return CustomApiResponse.ok(TimeSlotRecommendationsResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<Void> createTimeSlots(
-            @PathVariable("session") final UUID session,
+            @PathVariable("session") final String session,
             @RequestBody final TimeSlotCreateRequest request
     ) {
         roomApplicationService.saveTimeSlots(request.toInput(session));
@@ -69,7 +68,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<TotalTimeSlotResponse> getByUserName(
-            @PathVariable("session") final UUID session,
+            @PathVariable("session") final String session,
             @RequestParam("name") final String userName
     ) {
         final DateTimeSlots dateTimeSlots = roomApplicationService.getTimeSlotsBySessionAndUserName(session, userName);
@@ -78,14 +77,14 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateTimeSlots(
-            @PathVariable("session") final UUID session,
+            @PathVariable("session") final String session,
             @RequestBody final TimeSlotUpdateRequest request) {
         final DateTimeSlots dateTimeSlots = roomApplicationService.updateTimeSlots(request.toInput(session));
         return CustomApiResponse.ok(TotalDateTimeSlotUpdateResponse.from(dateTimeSlots));
     }
 
     @Override
-    public CustomApiResponse<UserCreateResponse> createUser(@PathVariable("session") final UUID session,
+    public CustomApiResponse<UserCreateResponse> createUser(@PathVariable("session") final String session,
                                                             @RequestBody final UserCreateRequest request) {
         final UserCreateOutput output = roomApplicationService.saveUser(session, request.toInput(session));
         return CustomApiResponse.ok(UserCreateResponse.from(output));

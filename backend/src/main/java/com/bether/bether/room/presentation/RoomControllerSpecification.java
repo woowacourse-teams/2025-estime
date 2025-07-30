@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,13 +47,13 @@ public interface RoomControllerSpecification {
                                                     "endTime": "23:00",
                                                     "deadLine": "2026-07-14T23:00",
                                                     "isPublic": true,
-                                                    "roomSession": "a4b1c2d3-e4f5-6789-0123-456789abcdef"
+                                                    "roomSession": "0MERYHCK3MCYH"
                                                 }
                                             }
                                             """)))
     })
     @GetMapping("/{session}")
-    CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") UUID session);
+    CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") String session);
 
     @Operation(summary = "룸 생성", description = "💡 새로운 룸을 생성합니다.")
     @ApiResponses(value = {
@@ -67,7 +66,7 @@ public interface RoomControllerSpecification {
                                                 "success": true,
                                                 "message": null,
                                                 "result": {
-                                                    "session": "a4b1c2d3-e4f5-6789-0123-456789abcdef"
+                                                    "session": "0MERYHCK3MCYH"
                                                 }
                                             }
                                             """)))})
@@ -114,7 +113,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/statistic")
-    CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotStatisticResponse> generateTimeSlotStatistic(@PathVariable("session") String session);
 
     @Operation(summary = "추천 시간대 순위 조회", description = "💡 가장 많은 인원이 가능한 시간대를 순위별로 추천받습니다.")
     @ApiResponses(value = {
@@ -139,7 +138,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/recommendation")
-    CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(@PathVariable("session") UUID session);
+    CustomApiResponse<TimeSlotRecommendationsResponse> recommendTopTimeSlots(@PathVariable("session") String session);
 
     @Operation(summary = "사용자 가능 시간 제출", description = "💡 특정 룸에 사용자의 가능 시간을 제출(등록)합니다.")
     @ApiResponses(value = {
@@ -153,7 +152,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @PostMapping("/{session}/time-slots")
-    CustomApiResponse<Void> createTimeSlots(@PathVariable("session") UUID session,
+    CustomApiResponse<Void> createTimeSlots(@PathVariable("session") String session,
                                             @RequestBody(description = "제출할 사용자의 이름과 가능한 시간 목록을 입력합니다.", required = true, content = @Content(
                                                     examples = @ExampleObject(
                                                             summary = "시간 제출 예시",
@@ -190,7 +189,7 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/user")
-    CustomApiResponse<TotalTimeSlotResponse> getByUserName(@PathVariable("session") UUID session,
+    CustomApiResponse<TotalTimeSlotResponse> getByUserName(@PathVariable("session") String session,
                                                            @RequestParam("name") String userName);
 
     @Operation(summary = "사용자 제출 시간 수정", description = "💡 특정 룸에 사용자가 제출한 시간 정보를 수정합니다.")
@@ -214,7 +213,7 @@ public interface RoomControllerSpecification {
                                     }
                                     """)))})
     @PutMapping("/{session}/time-slots")
-    CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateTimeSlots(@PathVariable("session") final UUID session,
+    CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateTimeSlots(@PathVariable("session") final String session,
                                                                        @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
                                                                                examples = @ExampleObject(
                                                                                        summary = "시간 수정 예시",
@@ -248,7 +247,7 @@ public interface RoomControllerSpecification {
                                     """)))
     })
     @PostMapping("/{session}/users")
-    CustomApiResponse<UserCreateResponse> createUser(@PathVariable("session") final UUID session,
+    CustomApiResponse<UserCreateResponse> createUser(@PathVariable("session") final String session,
                                                      @RequestBody(description = "생성할 사용자의 이름과 비밀번호를 입력합니다.", required = true,
                                                              content = @Content(
                                                                      examples = @ExampleObject(

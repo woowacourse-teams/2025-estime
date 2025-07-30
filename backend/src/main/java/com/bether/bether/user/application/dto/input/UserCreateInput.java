@@ -1,10 +1,9 @@
 package com.bether.bether.user.application.dto.input;
 
 import com.bether.bether.user.domain.User;
-import java.util.UUID;
 
 public record UserCreateInput(
-        UUID roomSession,
+        String roomSession,
         String name,
         String password
 ) {
