@@ -27,4 +27,5 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    workingDir = rootDir // TODO real hard trouble
 }
