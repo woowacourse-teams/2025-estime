@@ -1,5 +1,5 @@
 services:
-  app:
+  api:
     image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
     ports:
       - "127.0.0.1:8080:8080"
