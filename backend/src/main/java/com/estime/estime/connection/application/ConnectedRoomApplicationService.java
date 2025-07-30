@@ -1,6 +1,5 @@
 package com.estime.estime.connection.application;
 
-import com.estime.estime.common.config.WebConfigProperties;
 import com.estime.estime.connection.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.estime.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
 import com.estime.estime.connection.application.dto.output.ConnectedRoomCreateOutput;

@@ -1,6 +1,5 @@
 package com.estime.estime.connection.slack.application.service;
 
-import com.estime.estime.common.config.WebConfigProperties;
 import com.estime.estime.connection.application.dto.input.ConnectedRoomCreateMessageInput;
 import com.estime.estime.connection.domain.Platform;
 import com.estime.estime.connection.domain.PlatformCommand;
@@ -9,7 +8,6 @@ import com.estime.estime.connection.slack.infrastructure.SlackMessageSender;
 import com.estime.estime.connection.util.ConnectionUrlBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor

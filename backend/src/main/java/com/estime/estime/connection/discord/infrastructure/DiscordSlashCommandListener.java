@@ -4,7 +4,6 @@ import com.estime.estime.connection.application.dto.input.ConnectedRoomCreateMes
 import com.estime.estime.connection.discord.application.util.DiscordMessageBuilder;
 import com.estime.estime.connection.domain.Platform;
 import com.estime.estime.connection.domain.PlatformCommand;
-import com.estime.estime.connection.slack.application.dto.SlackSlashCommandInput;
 import com.estime.estime.connection.util.ConnectionUrlBuilder;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

@@ -86,8 +86,11 @@ public class SlackMessageSender implements MessageSender {
         }
     }
 
-    private void sendSlackEphemeralMessage(final ChatPostEphemeralRequest request, final String successLogPrefix,
-                                           final String failLogPrefix) {
+    private void sendSlackEphemeralMessage(
+            final ChatPostEphemeralRequest request,
+            final String successLogPrefix,
+            final String failLogPrefix
+    ) {
         try {
             final ChatPostEphemeralResponse response = slack.methods(slackProps.token())
                     .chatPostEphemeral(request);

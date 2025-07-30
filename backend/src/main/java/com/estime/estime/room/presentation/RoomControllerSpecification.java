@@ -1,16 +1,16 @@
 package com.estime.estime.room.presentation;
 
 import com.estime.estime.common.CustomApiResponse;
-import com.estime.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.estime.room.presentation.dto.request.DateTimeSlotCreateRequest;
 import com.estime.estime.room.presentation.dto.request.DateTimeSlotUpdateRequest;
+import com.estime.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.estime.room.presentation.dto.request.UserCreateRequest;
-import com.estime.estime.room.presentation.dto.response.RoomCreateResponse;
-import com.estime.estime.room.presentation.dto.response.RoomResponse;
 import com.estime.estime.room.presentation.dto.response.DateTimeSlotRecommendationsResponse;
 import com.estime.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
-import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
+import com.estime.estime.room.presentation.dto.response.RoomCreateResponse;
+import com.estime.estime.room.presentation.dto.response.RoomResponse;
 import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotResponse;
+import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
 import com.estime.estime.room.presentation.dto.response.UserCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -113,7 +113,8 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/statistic")
-    CustomApiResponse<DateTimeSlotStatisticResponse> generateDateTimeSlotStatistic(@PathVariable("session") String session);
+    CustomApiResponse<DateTimeSlotStatisticResponse> generateDateTimeSlotStatistic(
+            @PathVariable("session") String session);
 
     @Operation(summary = "추천 시간대 순위 조회", description = "💡 가장 많은 인원이 가능한 시간대를 순위별로 추천받습니다.")
     @ApiResponses(value = {
@@ -138,7 +139,8 @@ public interface RoomControllerSpecification {
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/recommendation")
-    CustomApiResponse<DateTimeSlotRecommendationsResponse> recommendTopDateTimeSlots(@PathVariable("session") String session);
+    CustomApiResponse<DateTimeSlotRecommendationsResponse> recommendTopDateTimeSlots(
+            @PathVariable("session") String session);
 
     @Operation(summary = "사용자 가능 시간 제출", description = "💡 특정 룸에 사용자의 가능 시간을 제출(등록)합니다.")
     @ApiResponses(value = {
@@ -154,21 +156,21 @@ public interface RoomControllerSpecification {
     @PostMapping("/{session}/time-slots")
     CustomApiResponse<Void> createDateTimeSlots(@PathVariable("session") String session,
                                                 @RequestBody(description = "제출할 사용자의 이름과 가능한 시간 목록을 입력합니다.", required = true, content = @Content(
-                                                    examples = @ExampleObject(
-                                                            summary = "시간 제출 예시",
-                                                            value = """
-                                                                    {
-                                                                        "userName": "강감찬",
-                                                                        "dateTimes": [
-                                                                            "2025-07-21T14:00",
-                                                                            "2025-07-21T15:00",
-                                                                            "2025-07-22T18:00",
-                                                                            "2025-07-22T19:00"
-                                                                        ]
-                                                                    }
-                                                                    """
-                                                    )
-                                            )) DateTimeSlotCreateRequest request);
+                                                        examples = @ExampleObject(
+                                                                summary = "시간 제출 예시",
+                                                                value = """
+                                                                        {
+                                                                            "userName": "강감찬",
+                                                                            "dateTimes": [
+                                                                                "2025-07-21T14:00",
+                                                                                "2025-07-21T15:00",
+                                                                                "2025-07-22T18:00",
+                                                                                "2025-07-22T19:00"
+                                                                            ]
+                                                                        }
+                                                                        """
+                                                        )
+                                                )) DateTimeSlotCreateRequest request);
 
     @Operation(summary = "특정 사용자 제출 시간 조회", description = "💡 룸에서 특정 사용자 이름으로 제출된 시간 정보를 조회합니다.")
     @ApiResponses(value = {
@@ -213,22 +215,23 @@ public interface RoomControllerSpecification {
                                     }
                                     """)))})
     @PutMapping("/{session}/time-slots")
-    CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateDateTimeSlots(@PathVariable("session") final String session,
-                                                                           @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
-                                                                               examples = @ExampleObject(
-                                                                                       summary = "시간 수정 예시",
-                                                                                       value = """
-                                                                                               {
-                                                                                                   "userName": "강감찬",
-                                                                                                   "dateTimes": [
-                                                                                                       "2025-07-21T16:00",
-                                                                                                       "2025-07-21T17:00",
-                                                                                                       "2025-07-22T20:00"
-                                                                                                   ]
-                                                                                               }
-                                                                                               """
-                                                                               )
-                                                                       )) DateTimeSlotUpdateRequest request);
+    CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateDateTimeSlots(
+            @PathVariable("session") final String session,
+            @RequestBody(description = "수정할 사용자의 이름과 새로운 시간 목록을 입력합니다.", required = true, content = @Content(
+                    examples = @ExampleObject(
+                            summary = "시간 수정 예시",
+                            value = """
+                                    {
+                                        "userName": "강감찬",
+                                        "dateTimes": [
+                                            "2025-07-21T16:00",
+                                            "2025-07-21T17:00",
+                                            "2025-07-22T20:00"
+                                        ]
+                                    }
+                                    """
+                    )
+            )) DateTimeSlotUpdateRequest request);
 
 
     @Operation(summary = "룸 사용자 로그인", description = "💡 특정 룸에 새로운 사용자를 생성(로그인)합니다. 사용자는 이름과 비밀번호로 식별됩니다.")
