@@ -8,8 +8,11 @@ phases:
   build:
     commands:
       - npm run build
+  post_build:
+    commands:
+      - ls -al dist
 
 artifacts:
   base-directory: frontend/dist
   files:
-    - "**/*"
+    - '**/*'
