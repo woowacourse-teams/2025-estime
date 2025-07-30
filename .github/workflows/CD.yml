@@ -52,11 +52,11 @@ jobs:
           distribution: corretto
           java-version: 21
 
-      - name: Grant execute to Gradle
-        run: chmod +x ./estime-api/gradlew
+      - name: Gradle Wrapper 실행 권한 부여
+        run: chmod +x ./gradlew
 
-      - name: Build & Test
-        run: ./estime-api/gradlew clean build
+      - name: 전체 빌드 및 테스트
+        run: ./gradlew clean build
 
       - name: Docker Hub Login
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \
