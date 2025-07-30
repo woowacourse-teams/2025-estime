@@ -5,7 +5,7 @@ export interface UserAvailableTimeRequestType {
 
 export type UserAvailableTimeResponseType = {
   userName: string;
-  timeSlots: Record<'userName' | 'dateTime', string>[];
+  dateTimeSlots: string[];
 };
 
 export interface CombinedAvailableTimesResponseType {
