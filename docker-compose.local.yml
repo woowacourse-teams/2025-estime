@@ -1,7 +1,7 @@
 services:
   app:
     build:
-      context: .
+      context: estime-api
       dockerfile: Dockerfile
     ports:
       - "8081:8080"
