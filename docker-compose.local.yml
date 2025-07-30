@@ -1,5 +1,5 @@
 services:
-  app:
+  api:
     build:
       context: estime-api
       dockerfile: Dockerfile
