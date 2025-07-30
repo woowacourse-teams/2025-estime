@@ -50,9 +50,7 @@ export const useUserAvailability = ({
     userName.set(name);
 
     if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
-      const selectedTimesResponse = new Set(
-        userAvailableTimeInfo.dateTimeSlots.map((item) => item.dateTime)
-      );
+      const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
       selectedTimes.set(selectedTimesResponse);
     }
   };
