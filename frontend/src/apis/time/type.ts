@@ -3,9 +3,13 @@ export interface UserAvailableTimeRequestType {
   dateTimes: string[];
 }
 
-export type UserAvailableTimeResponseType = {
+type UserAvailableTimeInnerType = {
   userName: string;
-  timeSlots: Record<'userName' | 'dateTime', string>[];
+  dateTime: string;
+};
+
+export type UserAvailableTimeResponseType = {
+  dateTimeSlots: UserAvailableTimeInnerType[];
 };
 
 export interface CombinedAvailableTimesResponseType {

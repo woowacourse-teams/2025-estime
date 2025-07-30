@@ -47,11 +47,11 @@ export const useUserAvailability = ({
       return;
     }
     const userAvailableTimeInfo = await getUserAvailableTime(session, name);
+    const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
+    const dateTimeSlots = dateTimeSlotsResponse.map((item) => item.dateTime);
     userName.set(name);
-    if (userAvailableTimeInfo.timeSlots.length > 0) {
-      const selectedTimesResponse = new Set(
-        userAvailableTimeInfo.timeSlots.map((item) => item.dateTime)
-      );
+    if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
+      const selectedTimesResponse = new Set(dateTimeSlots);
       selectedTimes.set(selectedTimesResponse);
     }
   };
