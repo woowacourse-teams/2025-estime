@@ -4,10 +4,6 @@ on:
   push:
     branches: [ be/dev ]
 
-defaults:
-  run:
-    working-directory: ./backend
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -56,11 +52,11 @@ jobs:
           distribution: corretto
           java-version: 21
 
-      - name: Grant execute to Gradle
+      - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: Build & Test
-        run: ./gradlew build
+      - name: 전체 빌드 및 테스트
+        run: ./gradlew clean build
 
       - name: Docker Hub Login
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \
@@ -75,8 +71,8 @@ jobs:
       - name: Build & Push (multi-arch)
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./estime-api
+          file: ./estime-api/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |

@@ -4,7 +4,7 @@ services:
     container_name: estime-mysql
     restart: unless-stopped
     env_file:
-      - .env.docker
+      - ./estime-api/.env.docker
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -13,12 +13,12 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
-    container_name: estime-app
+  api:
+    container_name: estime-api
     depends_on:
       - mysql
     env_file:
-      - .env.docker
+      - ./estime-api/.env.docker
 
 volumes:
   db_data:

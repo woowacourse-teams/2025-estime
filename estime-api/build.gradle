@@ -1,0 +1,31 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+group = 'com.estime'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation("net.dv8tion:JDA:5.6.1")
+    implementation "org.apache.commons:commons-collections4:4.4" // for jda
+
+    implementation 'com.slack.api:slack-api-client:1.45.3'
+    implementation 'org.json:json:20240303' // for JSONObject
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
+
+    implementation 'com.github.f4b6a3:tsid-creator:5.2.6' // for Tsid generation
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    workingDir = rootDir // TODO real hard trouble
+}
