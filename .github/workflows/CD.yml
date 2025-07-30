@@ -87,11 +87,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create .env file for Docker Compose
+      - name: Create env file for Docker Compose
+        working-directory: ./estime-api
         run: |
           printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
           printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
-
+          
       - name: Deploy with Docker Compose
         run: |
           docker compose -f docker-compose.yml -f docker-compose.dev.yml pull api
