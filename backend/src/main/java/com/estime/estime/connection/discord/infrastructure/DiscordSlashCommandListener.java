@@ -1,40 +1,41 @@
 package com.estime.estime.connection.discord.infrastructure;
 
-import com.estime.estime.common.config.WebConfigProperties;
 import com.estime.estime.connection.application.dto.input.ConnectedRoomCreateMessageInput;
 import com.estime.estime.connection.discord.application.util.DiscordMessageBuilder;
 import com.estime.estime.connection.domain.Platform;
 import com.estime.estime.connection.domain.PlatformCommand;
+import com.estime.estime.connection.slack.application.dto.SlackSlashCommandInput;
+import com.estime.estime.connection.util.ConnectionUrlBuilder;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @RequiredArgsConstructor
 public class DiscordSlashCommandListener extends ListenerAdapter {
 
-    private final WebConfigProperties webConfigProperties;
+    private final ConnectionUrlBuilder connectionUrlBuilder;
     private final DiscordMessageBuilder discordMessageBuilder;
 
     @Override
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         if (event.getName().equals(PlatformCommand.CREATE.getCommand())) {
-            final ConnectedRoomCreateMessageInput input = new ConnectedRoomCreateMessageInput(
-                    // TODO refactor with UTIL class
-                    UriComponentsBuilder.fromUriString(webConfigProperties.dev())
-                            .queryParam("platform", Platform.DISCORD.name())
-                            .queryParam("channelId", event.getChannelId())
-                            .build()
-                            .toUriString()
-            );
+            final String url = generateConnectedRoomCreateUrl(event);
+            final ConnectedRoomCreateMessageInput input = new ConnectedRoomCreateMessageInput(url);
 
             final MessageCreateData messageData = discordMessageBuilder.buildConnectedRoomCreateMessage(input);
             event.reply(messageData)
                     .setEphemeral(true)
                     .queue();
         }
+    }
+
+    private String generateConnectedRoomCreateUrl(final SlashCommandInteractionEvent event) {
+        return connectionUrlBuilder.buildConnectedRoomCreateUrl(
+                Platform.DISCORD.name(),
+                event.getChannelId()
+        );
     }
 }
