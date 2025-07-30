@@ -53,10 +53,10 @@ jobs:
           java-version: 21
 
       - name: Grant execute to Gradle
-        run: chmod +x ./gradlew
+        run: chmod +x ./estime-api/gradlew
 
       - name: Build & Test
-        run: ./gradlew clean build
+        run: ./estime-api/gradlew clean build
 
       - name: Docker Hub Login
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \
