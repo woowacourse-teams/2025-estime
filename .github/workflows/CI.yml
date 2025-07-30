@@ -51,14 +51,11 @@ jobs:
           distribution: corretto
           java-version: 21
 
-      - name: 빌드 권한 부여
-        working-directory: ./backend
+      - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
-        shell: bash
 
-      - name: 빌드 및 테스트
-        working-directory: ./backend
-        run: ./gradlew build
+      - name: 전체 빌드 및 테스트
+        run: ./gradlew clean build
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
