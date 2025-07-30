@@ -11,7 +11,8 @@ phases:
   post_build:
     commands:
       - ls -al dist
+
 artifacts:
   base-directory: frontend/dist
   files:
-    - "**/*"
+    - '**/*'
