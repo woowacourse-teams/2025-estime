@@ -88,10 +88,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create env file for Docker Compose
+        run: |
+          printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
+
+      - name: Create env file for env.docker file
         working-directory: ./estime-api
         run: |
           printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
-          printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
           
       - name: Deploy with Docker Compose
         run: |
