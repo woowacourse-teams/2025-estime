@@ -7,16 +7,16 @@ import com.estime.estime.datetimeslot.domain.DateTimeSlots;
 import com.estime.estime.room.application.dto.RoomCreateOutput;
 import com.estime.estime.room.application.dto.RoomOutput;
 import com.estime.estime.room.application.service.RoomApplicationService;
-import com.estime.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.estime.room.presentation.dto.request.DateTimeSlotCreateRequest;
 import com.estime.estime.room.presentation.dto.request.DateTimeSlotUpdateRequest;
+import com.estime.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.estime.room.presentation.dto.request.UserCreateRequest;
-import com.estime.estime.room.presentation.dto.response.RoomCreateResponse;
-import com.estime.estime.room.presentation.dto.response.RoomResponse;
 import com.estime.estime.room.presentation.dto.response.DateTimeSlotRecommendationsResponse;
 import com.estime.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
-import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
+import com.estime.estime.room.presentation.dto.response.RoomCreateResponse;
+import com.estime.estime.room.presentation.dto.response.RoomResponse;
 import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotResponse;
+import com.estime.estime.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
 import com.estime.estime.room.presentation.dto.response.UserCreateResponse;
 import com.estime.estime.user.application.dto.output.UserCreateOutput;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,8 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final String session,
             @RequestParam("name") final String userName
     ) {
-        final DateTimeSlots dateTimeSlots = roomApplicationService.getDateTimeSlotsBySessionAndUserName(session, userName);
+        final DateTimeSlots dateTimeSlots = roomApplicationService.getDateTimeSlotsBySessionAndUserName(session,
+                userName);
         return CustomApiResponse.ok(TotalDateTimeSlotResponse.from(dateTimeSlots));
     }
 

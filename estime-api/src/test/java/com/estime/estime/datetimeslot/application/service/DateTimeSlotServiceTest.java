@@ -257,7 +257,8 @@ class DateTimeSlotServiceTest {
     @DisplayName("특정 사용자가 저장한 DT슬롯을 제시한 날짜로 변경할 수 있다.")
     @ParameterizedTest(name = "{0}")
     @MethodSource(value = "provideUpdateDateTimeSlotsArguments")
-    void updateDateTimeSlots(final String testName, final List<LocalDateTime> existed, final List<LocalDateTime> updated) {
+    void updateDateTimeSlots(final String testName, final List<LocalDateTime> existed,
+                             final List<LocalDateTime> updated) {
         // given
         final Room room = roomRepository.save(
                 Room.withoutId(
