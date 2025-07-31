@@ -1,11 +1,11 @@
 package com.estime.estime.connection.application;
 
-import com.estime.estime.common.config.WebConfigProperties;
 import com.estime.estime.connection.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.estime.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
 import com.estime.estime.connection.application.dto.output.ConnectedRoomCreateOutput;
 import com.estime.estime.connection.domain.ConnectedRoom;
 import com.estime.estime.connection.domain.Platform;
+import com.estime.estime.connection.util.ConnectionUrlBuilder;
 import com.estime.estime.room.application.service.RoomDomainService;
 import com.estime.estime.room.domain.Room;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class ConnectedRoomApplicationService {
     private final RoomDomainService roomDomainService;
     private final ConnectedRoomDomainService connectedRoomDomainService;
     private final Map<Platform, MessageSender> messageSenders;
-    private final WebConfigProperties webConfigProperties; // TODO rename
+    private final ConnectionUrlBuilder connectionUrlBuilder;
 
     @Transactional
     public ConnectedRoomCreateOutput save(final ConnectedRoomCreateInput input) {
@@ -43,7 +43,7 @@ public class ConnectedRoomApplicationService {
      */
     private void sendConnectedRoomCreatedMessage(final ConnectedRoom connectRoom, final String channelId) {
         final Room room = connectRoom.getRoom();
-        final String shortcut = webConfigProperties.dev() + "check?id=" + room.getSession();
+        final String shortcut = connectionUrlBuilder.buildConnectedRoomCreatedUrl(room.getSession());
         final ConnectedRoomCreatedMessageInput input = ConnectedRoomCreatedMessageInput.of(shortcut, room);
         messageSenders.get(connectRoom.getPlatform()).sendConnectedRoomCreatedMessage(channelId, input);
     }
