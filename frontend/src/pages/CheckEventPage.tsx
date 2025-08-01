@@ -44,6 +44,7 @@ const CheckEventPage = () => {
     } else {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
+      selectedTimes.value.clear();
       setMode('view');
     }
   };
@@ -87,7 +88,6 @@ const CheckEventPage = () => {
                       roomName={roomInfo.title}
                       time={roomInfo.time}
                       availableDates={roomInfo.availableDates}
-                      selectedTimes={selectedTimes}
                       roomStatistics={roomStatistics}
                     />
                   ) : (
