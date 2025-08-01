@@ -1,7 +1,10 @@
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
-import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
-import { UserAvailability } from '@/types/userAvailability';
 import { useState } from 'react';
+
+interface UserAvailability {
+  userName: string;
+  selectedTimes: Set<string>;
+}
 
 const initialUserAvailability = {
   userName: '앙부일구',
@@ -31,8 +34,10 @@ export const useUserAvailability = ({
 
   const userAvailabilitySubmit = async () => {
     try {
-      const payload = toCreateUserAvailability(userAvailability);
-      const response = await updateUserAvailableTime(session, payload);
+      const response = await updateUserAvailableTime(session, {
+        userName: userName.value,
+        dateTimes: Array.from(selectedTimes.value),
+      });
       alert(response.message);
     } catch (err) {
       const e = err as Error;
