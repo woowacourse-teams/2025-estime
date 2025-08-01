@@ -19,6 +19,7 @@ services:
       - mysql
     env_file:
       - ./estime-api/.env.docker
-
+    volumes:
+      - ./logs:/app/logs
 volumes:
   db_data:
