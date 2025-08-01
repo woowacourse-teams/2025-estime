@@ -9,18 +9,16 @@ import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
 import RecommendTime from '@/components/RecommendTime';
 import useRecommendTime from '@/hooks/RecommendTime/useRecommendTime';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import TimeTableHeader from '@/components/TimeTableHeader';
 import Heatmap from '@/components/Heatmap';
 import * as S from './styles/CheckEventPage.styled';
-import { getRoomStatistics } from '@/apis/room/room';
-import type { StatisticItem } from '@/apis/room/type';
+import useRoomStatistics from '@/hooks/useRoomStatistics';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { handleCloseAllModal, isLoginModalOpen, handleCloseLoginModal, handleOpenLoginModal } =
-    useModalControl();
+  const { isLoginModalOpen, handleOpenLoginModal, handleCloseLoginModal } = useModalControl();
 
   const { handleLogin, userData, handleUserData, name } = useUserLogin({
     session,
@@ -34,26 +32,28 @@ const CheckEventPage = () => {
 
   const { recommendTimeData, fetchRecommendTimes } = useRecommendTime(session);
 
-  const fetchRoomStatistics = async (sessionId: string) => {
-    if (!sessionId) return;
-    try {
-      const res = await getRoomStatistics(sessionId);
-      setRoomStatistics(res.statistic);
-    } catch (err) {
-      const e = err as Error;
-      console.error(e);
-      alert(e.message);
+  const { roomStatistics, fetchRoomStatistics } = useRoomStatistics({ session });
+
+  // 훅분리... 애매하긴 해..
+
+  const [mode, setMode] = useState<'view' | 'edit'>('view');
+
+  const handleToggleEditMode = async () => {
+    if (mode === 'view') {
+      handleOpenLoginModal();
+    } else {
+      await userAvailabilitySubmit();
+      await fetchRoomStatistics(session);
+      setMode('view');
     }
   };
 
-  const [roomStatistics, setRoomStatistics] = useState<StatisticItem[] | []>([]);
-  const handleInitAfterLogin = async () => {
+  const loginAndLoadSchedulingData = async () => {
     try {
       await handleLogin();
       await fetchUserAvailableTime();
       await fetchRecommendTimes();
-      await fetchRoomStatistics(session);
-      handleCloseAllModal();
+      handleCloseLoginModal();
       setMode('edit');
     } catch (err) {
       const e = err as Error;
@@ -62,21 +62,6 @@ const CheckEventPage = () => {
       console.error(err);
     }
   };
-  const [mode, setMode] = useState<'view' | 'edit'>('view');
-
-  const handleToggleEditMode = async () => {
-    if (mode === 'view') {
-      handleOpenLoginModal();
-    } else {
-      await userAvailabilitySubmit();
-      setMode('view');
-    }
-  };
-  useEffect(() => {
-    if (session) {
-      fetchRoomStatistics(session);
-    }
-  }, [session]);
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -126,7 +111,7 @@ const CheckEventPage = () => {
           <LoginModal
             isLoginModalOpen={isLoginModalOpen}
             handleCloseLoginModal={handleCloseLoginModal}
-            handleModalLogin={handleInitAfterLogin}
+            handleModalLogin={loginAndLoadSchedulingData}
             userData={userData}
             handleUserData={handleUserData}
           />
