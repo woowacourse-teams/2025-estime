@@ -1,0 +1,41 @@
+package com.estime.room.infrastructure.participant;
+
+import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.Participant;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@RequiredArgsConstructor
+public class ParticipantRepositoryImpl implements ParticipantRepository {
+
+    private final ParticipantJpaRepository jpaRepository;
+
+    @Override
+    public Participant save(final Participant participant) {
+        return jpaRepository.save(participant);
+    }
+
+    @Override
+    public boolean existsByRoomIdAndName(final Long roomId, final String name) {
+        return jpaRepository.existsByRoomIdAndName(roomId, name);
+    }
+
+    @Override
+    public Optional<Participant> findByRoomIdAndName(final Long roomId, final String name) {
+        return jpaRepository.findByRoomIdAndName(roomId, name);
+    }
+
+    @Override
+    public List<Long> findIdsByRoomId(final Long roomId) {
+        return jpaRepository.findIdsByRoomId(roomId);
+    }
+
+    @Override
+    public Set<String> findParticipantNamesByIdIn(final Set<Long> participantsIds) {
+        return jpaRepository.findNamesByIdIn(participantsIds);
+    }
+}
