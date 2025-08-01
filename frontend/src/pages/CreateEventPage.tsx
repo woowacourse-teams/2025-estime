@@ -47,6 +47,7 @@ const CreateEventPage = () => {
                 size="small"
                 disabled={!isReadyToCreateRoom}
                 onClick={handleCreateRoom}
+                data-ga-id="create-event-button"
               >
                 <Text variant="button" color="background">
                   방 만들기
