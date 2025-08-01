@@ -19,16 +19,30 @@ public class SlackService {
     private final SlackMessageSender slackMessageSender;
 
     public void handleSlashCommand(final SlackSlashCommandInput input) {
-        if (PlatformCommand.CREATE.getCommandWithSlash().equals(input.command())) {
-            final String shortcut = generateConnectedRoomCreateUrl(input);
-            final ConnectedRoomCreateMessageInput messageInput = new ConnectedRoomCreateMessageInput(shortcut);
-            slackMessageSender.sendConnectedRoomCreateEphemeralMessage(input.channelId(), input.userId(), messageInput);
+        final String command = input.command();
+        if (!PlatformCommand.exists(command)) {
+            slackMessageSender.sendTextMessage(input.channelId(), UNSUPPORTED_COMMAND_MESSAGE);
+            return;
+        }
+
+        if (PlatformCommand.CREATE.getCommandWithSlash().equals(command)) {
+            handleCreateCommand(input);
         } else {
             slackMessageSender.sendTextMessage(input.channelId(), UNSUPPORTED_COMMAND_MESSAGE);
         }
     }
 
-    private String generateConnectedRoomCreateUrl(final SlackSlashCommandInput input) {
+    private void handleCreateCommand(final SlackSlashCommandInput input) {
+        final String shortcut = getConnectedRoomCreateUrl(input);
+        final ConnectedRoomCreateMessageInput messageInput = new ConnectedRoomCreateMessageInput(shortcut);
+        slackMessageSender.sendConnectedRoomCreateEphemeralMessage(
+                input.channelId(),
+                input.userId(),
+                messageInput
+        );
+    }
+
+    private String getConnectedRoomCreateUrl(final SlackSlashCommandInput input) {
         return connectionUrlBuilder.buildConnectedRoomCreateUrl(Platform.SLACK, input.channelId());
     }
 }
