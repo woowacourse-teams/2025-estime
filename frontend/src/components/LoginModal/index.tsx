@@ -86,6 +86,7 @@ export const LoginModal = ({
                 selected={true}
                 onClick={handleModalLogin}
                 disabled={!userData.name.trim()}
+                data-ga-id="submit-button"
               >
                 <Text variant="button" color="background">
                   저장하고 계속하기
