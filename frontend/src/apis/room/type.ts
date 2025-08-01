@@ -32,3 +32,12 @@ export interface CreateUserType {
 export interface CreateUserResponseType {
   name: string;
 }
+
+export type StatisticItem = {
+  dateTime: string;
+  userNames: string[];
+};
+
+export type GetRoomStatisticsResponseType = {
+  statistic: StatisticItem[] | [];
+};

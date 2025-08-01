@@ -5,6 +5,7 @@ import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import * as S from './Heatmap.styled';
+import type { StatisticItem } from '@/apis/room/type';
 
 interface HeatmapProps {
   roomName: string;
@@ -14,9 +15,10 @@ interface HeatmapProps {
   };
   availableDates: Set<string>;
   selectedTimes: Field<Set<string>>;
+  roomStatistics: StatisticItem[] | [];
 }
 
-const Heatmap = ({ time, availableDates, selectedTimes }: HeatmapProps) => {
+const Heatmap = ({ time, availableDates, selectedTimes, roomStatistics }: HeatmapProps) => {
   const { startTime, endTime } = time;
 
   const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
