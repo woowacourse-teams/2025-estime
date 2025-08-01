@@ -1,12 +1,10 @@
-import { Field } from '@/types/field';
-import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import * as S from './Heatmap.styled';
-import type { StatisticItem } from '@/apis/room/type';
-
+import HeatMapCell from './HeatMapCell';
+import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 interface HeatmapProps {
   roomName: string;
   time: {
@@ -14,11 +12,9 @@ interface HeatmapProps {
     endTime: string;
   };
   availableDates: Set<string>;
-  selectedTimes: Field<Set<string>>;
-  roomStatistics: StatisticItem[] | [];
+  roomStatistics: Map<string, DateCellInfo>;
 }
-
-const Heatmap = ({ time, availableDates, selectedTimes, roomStatistics }: HeatmapProps) => {
+const Heatmap = ({ time, availableDates, roomStatistics }: HeatmapProps) => {
   const { startTime, endTime } = time;
 
   const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
@@ -49,21 +45,12 @@ const Heatmap = ({ time, availableDates, selectedTimes, roomStatistics }: Heatma
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false}>
             {timeList.map(({ timeText }) => (
-              <S.HeatMapCell
-                key={`${date} ${timeText}`}
-                selectedTimes={selectedTimes.value}
+              <HeatMapCell
+                key={`${date}T${timeText}`}
                 date={date}
                 timeText={timeText}
-              >
-                {timeText === 'Dates' && (
-                  <Text variant="body" color="text">
-                    <Flex direction="column" justify="center" align="center">
-                      <Text>{date.split('-').slice(1).join('.')}</Text>
-                      <Text>({getDayOfWeek(date)})</Text>
-                    </Flex>
-                  </Text>
-                )}
-              </S.HeatMapCell>
+                roomStatistics={roomStatistics}
+              />
             ))}
           </Wrapper>
         ))}
