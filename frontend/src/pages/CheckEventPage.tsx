@@ -9,10 +9,12 @@ import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
 import RecommendTime from '@/components/RecommendTime';
 import useRecommendTime from '@/hooks/RecommendTime/useRecommendTime';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TimeTableHeader from '@/components/TimeTableHeader';
 import Heatmap from '@/components/Heatmap';
 import * as S from './styles/CheckEventPage.styled';
+import { getRoomStatistics } from '@/apis/room/room';
+import type { StatisticItem } from '@/apis/room/type';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -32,11 +34,25 @@ const CheckEventPage = () => {
 
   const { recommendTimeData, fetchRecommendTimes } = useRecommendTime(session);
 
+  const fetchRoomStatistics = async (sessionId: string) => {
+    if (!sessionId) return;
+    try {
+      const res = await getRoomStatistics(sessionId);
+      setRoomStatistics(res.statistic);
+    } catch (err) {
+      const e = err as Error;
+      console.error(e);
+      alert(e.message);
+    }
+  };
+
+  const [roomStatistics, setRoomStatistics] = useState<StatisticItem[] | []>([]);
   const handleInitAfterLogin = async () => {
     try {
       await handleLogin();
       await fetchUserAvailableTime();
       await fetchRecommendTimes();
+      await fetchRoomStatistics(session);
       handleCloseAllModal();
       setMode('edit');
     } catch (err) {
@@ -48,14 +64,19 @@ const CheckEventPage = () => {
   };
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
-  const handleToggleEditMode = () => {
+  const handleToggleEditMode = async () => {
     if (mode === 'view') {
       handleOpenLoginModal();
     } else {
-      userAvailabilitySubmit();
+      await userAvailabilitySubmit();
       setMode('view');
     }
   };
+  useEffect(() => {
+    if (session) {
+      fetchRoomStatistics(session);
+    }
+  }, [session]);
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -82,6 +103,7 @@ const CheckEventPage = () => {
                       time={roomInfo.time}
                       availableDates={roomInfo.availableDates}
                       selectedTimes={selectedTimes}
+                      roomStatistics={roomStatistics}
                     />
                   ) : (
                     <Timetable
