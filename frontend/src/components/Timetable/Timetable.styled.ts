@@ -1,20 +1,5 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.div`
-  padding: var(--padding-9);
-  background-color: ${({ theme }) => theme.colors.background};
-  border: 1px solid ${({ theme }) => theme.colors.gray20};
-  border-radius: var(--radius-4);
-  box-shadow: var(--shadow-card);
-`;
-
-export const TimetableHeader = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
 export const TimetableContent = styled.div`
   display: flex;
   flex-direction: row;
