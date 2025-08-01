@@ -5,7 +5,7 @@ import com.estime.estime.connection.domain.Platform;
 import com.estime.estime.connection.domain.PlatformCommand;
 import com.estime.estime.connection.slack.application.dto.SlackSlashCommandInput;
 import com.estime.estime.connection.slack.infrastructure.SlackMessageSender;
-import com.estime.estime.connection.util.ConnectionUrlBuilder;
+import com.estime.estime.connection.support.ConnectionUrlHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class SlackService {
 
     private static final String UNSUPPORTED_COMMAND_MESSAGE = "지원하지 않는 아인슈타임 슬랙 커맨드입니다.";
 
-    private final ConnectionUrlBuilder connectionUrlBuilder;
+    private final ConnectionUrlHelper connectionUrlHelper;
     private final SlackMessageSender slackMessageSender;
 
     public void handleSlashCommand(final SlackSlashCommandInput input) {
@@ -43,6 +43,6 @@ public class SlackService {
     }
 
     private String getConnectedRoomCreateUrl(final SlackSlashCommandInput input) {
-        return connectionUrlBuilder.buildConnectedRoomCreateUrl(Platform.SLACK, input.channelId());
+        return connectionUrlHelper.buildConnectedRoomCreateUrl(Platform.SLACK, input.channelId());
     }
 }

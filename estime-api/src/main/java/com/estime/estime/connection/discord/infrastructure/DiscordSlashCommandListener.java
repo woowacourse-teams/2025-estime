@@ -4,7 +4,7 @@ import com.estime.estime.connection.application.dto.input.ConnectedRoomCreateMes
 import com.estime.estime.connection.discord.application.util.DiscordMessageBuilder;
 import com.estime.estime.connection.domain.Platform;
 import com.estime.estime.connection.domain.PlatformCommand;
-import com.estime.estime.connection.util.ConnectionUrlBuilder;
+import com.estime.estime.connection.support.ConnectionUrlHelper;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DiscordSlashCommandListener extends ListenerAdapter {
 
-    private final ConnectionUrlBuilder connectionUrlBuilder;
+    private final ConnectionUrlHelper connectionUrlHelper;
     private final DiscordMessageBuilder discordMessageBuilder;
 
     @Override
@@ -31,6 +31,6 @@ public class DiscordSlashCommandListener extends ListenerAdapter {
     }
 
     private String getConnectedRoomCreateUrl(final SlashCommandInteractionEvent event) {
-        return connectionUrlBuilder.buildConnectedRoomCreateUrl(Platform.DISCORD, event.getChannelId());
+        return connectionUrlHelper.buildConnectedRoomCreateUrl(Platform.DISCORD, event.getChannelId());
     }
 }

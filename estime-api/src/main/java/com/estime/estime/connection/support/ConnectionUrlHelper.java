@@ -1,4 +1,4 @@
-package com.estime.estime.connection.util;
+package com.estime.estime.connection.support;
 
 import com.estime.estime.common.config.WebConfigProperties;
 import com.estime.estime.connection.domain.Platform;
@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @RequiredArgsConstructor
-public class ConnectionUrlBuilder {
+public class ConnectionUrlHelper {
 
     private final WebConfigProperties webConfigProperties;
 
