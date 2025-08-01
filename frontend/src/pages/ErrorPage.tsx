@@ -1,6 +1,6 @@
 import Text from '@/components/Text';
 import Button from '@/components/Button';
-import * as S from './ErrorPage.styled';
+import * as S from './styles/ErrorPage.styled';
 import Flex from '@/components/Layout/Flex';
 
 const ErrorPage = () => {
