@@ -20,20 +20,39 @@ export interface DateCellInfo {
 
 // 가중치 함수 + // 최소 가시치(minVisible) 적용
 // 조금 작은 수는 안보이더라구요. (예 0.02-> 0.2)
-function getWeight(value: number, min: number, max: number, minVisible = 0.2): number {
-  // 0 으로 나누기 방지.
+// 정책:
+// - 값이 모두 동일하고 그 값이 0이면 0 (완전 투명)
+// - 값이 모두 동일하고 그 값이 >0이면 minVisible (최소 가시치)
+// - 일반 구간은 [min, max]를 0~1로 선형 정규화하고, 0이면 0, 그 외는 minVisible~1로 매핑
+// - 표본이 적어 range가 작을 때 극단값 방지를 위해 최소 범위 적용
+export function getWeight(value: number, min: number, max: number, minVisible = 0.2): number {
+  minVisible = Math.min(1, Math.max(0, minVisible));
+
+  // 표본이 적을 때 극단값 방지를 위한 최소 범위 설정
+  const minRange = 3; // 최소 3단계 구분
+  const actualRange = max - min;
+
   if (max <= min) {
-    if (value <= min) return 0;
-    return minVisible;
+    // 값이 모두 동일한 경우
+    if (value === 0) return 0; // 모든 값이 0이면 완전 투명
+    return 1; // 모든 값이 0보다 크면 최대값 (상대적으로 모두 최대)
   }
-  let n = (value - min) / (max - min); // 0~1 정규화
 
-  if (n <= 0) return 0; // 완전 투명
+  // 범위가 너무 작으면 인위적으로 확장하여 부드러운 정규화
+  let adjustedMin = min;
+  let adjustedMax = max;
 
-  // 1 넘아가면 1 이상 못가게! (클램프)
+  if (actualRange < minRange) {
+    const center = (min + max) / 2;
+    const halfRange = minRange / 2;
+    adjustedMin = center - halfRange;
+    adjustedMax = center + halfRange;
+  }
+
+  let n = (value - adjustedMin) / (adjustedMax - adjustedMin);
+  if (n <= 0) return 0;
   if (n >= 1) n = 1;
-
-  return minVisible + (1 - minVisible) * n; // 최소 가시치부터 선형 증가
+  return minVisible + (1 - minVisible) * n;
 }
 
 export default function useRoomStatistics({ session }: { session: string }) {

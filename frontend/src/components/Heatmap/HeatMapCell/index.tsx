@@ -16,7 +16,8 @@ const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
   const theme = useTheme();
   const isHeader = timeText === 'Dates';
   const cellInfo = roomStatistics.get(`${date}T${timeText}`);
-  const weight = isHeader ? 0 : Math.min(cellInfo?.weight ?? 0, 1);
+
+  const weight = isHeader ? 0 : (cellInfo?.weight ?? 0);
 
   const backgroundColor = getHeatMapCellBackgroundColor({
     theme,
