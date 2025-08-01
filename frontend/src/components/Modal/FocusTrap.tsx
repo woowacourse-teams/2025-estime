@@ -64,6 +64,7 @@ const FocusTrap = ({ children }: { children: React.ReactNode }) => {
 
   if (React.isValidElement(children)) {
     const element = children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const originalRef = (element as any).ref;
 
     return React.cloneElement(element, {
