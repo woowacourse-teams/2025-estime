@@ -66,20 +66,7 @@ export const LoginModal = ({
                 </Flex>
               </Flex.Item>
             </Flex>
-            <Flex justify="space-between" align="center" gap="var(--gap-6)">
-              <Flex.Item flex={1}>
-                <S.LoginLabel htmlFor="user-password">비밀번호(선택)</S.LoginLabel>
-              </Flex.Item>
-              <Flex.Item flex={4}>
-                <Input
-                  type="password"
-                  id="user-password"
-                  maxLength={8}
-                  placeholder="비밀번호를 입력해주세요."
-                  onChange={(e) => handleUserData({ ...userData, password: e.target.value })}
-                />
-              </Flex.Item>
-            </Flex>
+
             <Flex.Item flex={1}>
               <Button
                 color={userData.name.trim().length > 0 ? 'primary' : 'plum40'}
