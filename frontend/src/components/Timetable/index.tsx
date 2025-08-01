@@ -6,7 +6,6 @@ import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
-import Button from '@/components/Button';
 
 interface TimetableProps {
   name: string;
