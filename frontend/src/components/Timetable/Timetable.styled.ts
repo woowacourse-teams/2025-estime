@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { getHeaderCellBackgroundColor } from '@/utils/getBackgroundColor';
 
 export const TimetableContent = styled.div`
   display: flex;
@@ -32,22 +33,14 @@ export const HeaderCell = styled.div<{
 }>`
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   border-right: 1px solid ${({ theme }) => theme.colors.gray20};
-  background-color: ${({ selectedTimes, date, timeText, theme }) =>
-    timeText === 'Dates'
-      ? theme.colors.background
-      : selectedTimes.has(`${date}T${timeText}`)
-        ? theme.colors.primary
-        : theme.colors.gray10};
+  background-color: ${({ selectedTimes, date, timeText, theme }) => {
+    return getHeaderCellBackgroundColor({ selectedTimes, date, timeText, theme });
+  }};
   cursor: pointer;
   padding: var(--padding-4);
   height: ${({ timeText }) => (timeText === 'Dates' ? '3rem' : '1.5rem')};
   width: 5rem;
   user-select: none;
-  ${({ timeText }) =>
-    timeText === 'Dates' &&
-    `
-    pointer-events: none;
-  `}
 `;
 
 export const TimeLabel = styled.div`
