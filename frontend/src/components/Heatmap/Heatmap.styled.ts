@@ -40,21 +40,6 @@ export const GridContainer = styled.div`
   user-select: none;
 `;
 
-export const HeatMapCell = styled.div<{
-  selectedTimes: Set<string>;
-  date: string;
-  timeText: string;
-}>`
-  border-top: 1px solid ${({ theme }) => theme.colors.gray20};
-  border-right: 1px solid ${({ theme }) => theme.colors.gray20};
-  cursor: pointer;
-  padding: var(--padding-4);
-  height: ${({ timeText }) => (timeText === 'Dates' ? '3rem' : '1.5rem')};
-  width: 5rem;
-  user-select: none;
-  pointer-events: none;
-`;
-
 export const TimeLabel = styled.div`
   display: flex;
   align-items: center;
