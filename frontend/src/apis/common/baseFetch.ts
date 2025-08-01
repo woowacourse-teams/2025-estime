@@ -3,11 +3,11 @@ import { HTTPMethod, QueryParams } from './type';
 const BASE_URL = process.env.API_BASE_URL;
 // const BASE_URL = 'http://localhost:8080';
 
-interface baseFetchProps {
+interface baseFetchProps<K> {
   path: string;
   method: HTTPMethod;
   query?: QueryParams;
-  body?: Record<string, any>;
+  body?: K;
 }
 
 interface ApiResponse<T> {
@@ -24,7 +24,12 @@ interface ApiErrorResponse {
   path: string;
 }
 
-const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Promise<T> => {
+const baseFetch = async <T, K = undefined>({
+  path,
+  method,
+  query,
+  body,
+}: baseFetchProps<K>): Promise<T> => {
   const url = new URL(path, BASE_URL);
 
   if (query) {
