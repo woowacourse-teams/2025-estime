@@ -1,23 +1,31 @@
-import { merge } from "webpack-merge";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
-import common from "./webpack.common.js";
+import { merge } from 'webpack-merge';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+// import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import common from './webpack.common.js';
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
 export default merge(common, {
-  mode: "production",
-  devtool: "source-map",
+  mode: 'production',
+  devtool: 'source-map',
   module: {
     rules: [
       {
         // CSS는 별도 파일로 뽑아야 캐싱에 유리
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css",
+      filename: '[name].[contenthash].css',
+    }),
+    sentryWebpackPlugin({
+      org: 'estime',
+      project: 'javascript-react',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+
+      // deleteAfterCompile: true,
     }),
   ],
   //   optimization: {
