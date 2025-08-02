@@ -14,6 +14,7 @@ import TimeTableHeader from '@/components/TimeTableHeader';
 import Heatmap from '@/components/Heatmap';
 import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
+import { marvinWeightStrategy } from '@/utils/getWeight';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -32,7 +33,10 @@ const CheckEventPage = () => {
 
   const { recommendTimeData, fetchRecommendTimes } = useRecommendTime(session);
 
-  const { roomStatistics, fetchRoomStatistics } = useRoomStatistics({ session });
+  const { roomStatistics, fetchRoomStatistics } = useRoomStatistics({
+    session,
+    weightCalculateStrat: marvinWeightStrategy,
+  });
 
   // 훅분리... 애매하긴 해..
 
@@ -43,7 +47,9 @@ const CheckEventPage = () => {
       handleOpenLoginModal();
     } else {
       await userAvailabilitySubmit();
+      await fetchRecommendTimes();
       await fetchRoomStatistics(session);
+      // 해당 코드가 없으면 기존 value가 남아 있음. 초기화 해줘야 함.
       selectedTimes.value.clear();
       setMode('view');
     }
