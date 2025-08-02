@@ -40,6 +40,23 @@ const CheckEventPage = () => {
 
   // 훅분리... 애매하긴 해..
 
+  // view와 edit, 모드별로 훅을 분리하는 것....
+  // 나쁘지 않을지도.
+
+  // const checkEventPage = useCheckEventPage(session);
+  // const switchToEditMode = async () => {
+  //   await editModeData.initializeEditMode();
+  //   setMode('edit');
+  // };
+
+  // const switchToViewMode = async () => {
+  //   await editModeData.submitAndRefresh();
+  //   await viewModeData.refreshData();
+  //   setMode('view');
+  // };
+
+  // 이런식으로 선언적인 핸들러를 만들면 좋을것 같다!
+
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
   const handleToggleEditMode = async () => {
