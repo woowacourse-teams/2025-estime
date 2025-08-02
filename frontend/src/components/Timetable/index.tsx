@@ -84,7 +84,7 @@ const Timetable = ({
               <Wrapper key={date} center={false}>
                 {timeList.map(({ timeText }) => (
                   <S.HeaderCell
-                    key={`${date} ${timeText}`}
+                    key={`${date}T${timeText}`}
                     onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
                     onMouseUp={() => onMouseUp()}
                     onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
