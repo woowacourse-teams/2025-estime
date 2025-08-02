@@ -14,7 +14,6 @@ export const initialCreateRoomInfo: RoomInfo & { time: { startTime: string; endT
     date: defaultDate,
     time: defaultTime,
   },
-  isPublic: 'public',
 };
 
 export const initialCheckRoomInfo: RoomInfo & {
@@ -28,6 +27,5 @@ export const initialCheckRoomInfo: RoomInfo & {
     date: defaultDate,
     time: defaultTime,
   },
-  isPublic: 'public',
   roomSession: '',
 };

@@ -38,11 +38,6 @@ export const useCreateRoom = () => {
       setRoomInfo((prev) => ({ ...prev, deadline: { date, time } })),
   };
 
-  const isPublic = {
-    value: roomInfo.isPublic,
-    set: (isPublic: 'public' | 'private') => setRoomInfo((prev) => ({ ...prev, isPublic })),
-  };
-
   const isReadyToCreateRoom =
     roomInfo.title.trim() !== '' &&
     roomInfo.availableDateSlots.size > 0 &&
@@ -79,7 +74,6 @@ export const useCreateRoom = () => {
     availableDateSlots,
     time,
     deadline,
-    isPublic,
     isReadyToCreateRoom,
     roomInfoSubmit,
   };
