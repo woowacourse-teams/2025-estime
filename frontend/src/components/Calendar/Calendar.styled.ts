@@ -65,5 +65,4 @@ export const Header = styled.header`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: var(--gap-6);
 `;
