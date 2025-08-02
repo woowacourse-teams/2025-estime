@@ -1,23 +1,20 @@
-import * as S from './Timetable.styled';
-import { Field } from '@/types/field';
-import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
-import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
-
-interface TimetableProps {
-  name: string;
+import * as S from './Heatmap.styled';
+import HeatMapCell from './HeatMapCell';
+import type { DateCellInfo } from '@/hooks/useRoomStatistics';
+interface HeatmapProps {
+  roomName: string;
   time: {
     startTime: string;
     endTime: string;
   };
   availableDates: Set<string>;
-  selectedTimes: Field<Set<string>>;
+  roomStatistics: Map<string, DateCellInfo>;
 }
-
-const Timetable = ({ time, availableDates, selectedTimes }: TimetableProps) => {
+const Heatmap = ({ time, availableDates, roomStatistics }: HeatmapProps) => {
   const { startTime, endTime } = time;
 
   const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
@@ -29,15 +26,9 @@ const Timetable = ({ time, availableDates, selectedTimes }: TimetableProps) => {
     ...generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
   ];
 
-  const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
-    selectedTimes: selectedTimes.value,
-    setSelectedTimes: selectedTimes.set,
-    time: '',
-  });
-
   return (
     <Flex direction="column" gap="var(--gap-6)">
-      <S.TimetableContent onMouseLeave={onMouseLeave}>
+      <S.HeatMapContent>
         <S.TimeSlotColumn>
           {timeList.map(({ timeText, isHour }) => (
             <S.GridContainer key={timeText}>
@@ -54,29 +45,17 @@ const Timetable = ({ time, availableDates, selectedTimes }: TimetableProps) => {
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false}>
             {timeList.map(({ timeText }) => (
-              <S.HeaderCell
-                key={`${date} ${timeText}`}
-                onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
-                onMouseUp={() => onMouseUp()}
-                onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
-                selectedTimes={selectedTimes.value}
+              <HeatMapCell
+                key={`${date}T${timeText}`}
                 date={date}
                 timeText={timeText}
-              >
-                {timeText === 'Dates' && (
-                  <Text variant="body" color="text">
-                    <Flex direction="column" justify="center" align="center">
-                      <Text>{date.split('-').slice(1).join('.')}</Text>
-                      <Text>({getDayOfWeek(date)})</Text>
-                    </Flex>
-                  </Text>
-                )}
-              </S.HeaderCell>
+                roomStatistics={roomStatistics}
+              />
             ))}
           </Wrapper>
         ))}
-      </S.TimetableContent>
+      </S.HeatMapContent>
     </Flex>
   );
 };
-export default Timetable;
+export default Heatmap;
