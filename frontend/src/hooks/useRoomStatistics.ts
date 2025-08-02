@@ -4,7 +4,6 @@ import type { WeightCalculateStrategy } from '@/utils/getWeight';
 import { useEffect, useState } from 'react';
 
 export interface DateCellInfo {
-  howMany: number;
   weight: number;
   userNames: string[];
 }
@@ -24,15 +23,15 @@ export default function useRoomStatistics({
       return roomStatistics;
     }
 
-    const howMany = statistics.map((stat) => stat.userNames.length);
-    const min = Math.min(...howMany);
+    const userCounts = statistics.map((stat) => stat.userNames.length);
+    const min = Math.min(...userCounts);
     // MAX 값은 나중에 API에서 제공으로 대체.
-    const max = Math.max(...howMany);
+    const max = Math.max(...userCounts);
 
     statistics.map((stat) =>
       roomStatistics.set(stat.dateTime, {
-        howMany: stat.userNames.length,
         weight: weightCalculateStrat(stat.userNames.length, min, max),
+        // userNames는 후에 툴팁 제작에 사용될 예정이라 미리 파두었음.
         userNames: stat.userNames,
       })
     );

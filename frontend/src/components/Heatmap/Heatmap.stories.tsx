@@ -38,11 +38,10 @@ type Story = StoryObj<typeof Heatmap>;
 // 기본 5일 스케줄 - 현실적인 패턴
 const defaultRoomStatistics = new Map<string, DateCellInfo>([
   // 월요일 - 느긋한 시작
-  ['2024-01-15T09:00', { howMany: 3, weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-15T09:00', { weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
   [
     '2024-01-15T10:00',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -50,7 +49,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-15T10:30',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
@@ -58,7 +56,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-15T14:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -66,7 +63,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-15T14:30',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
@@ -74,22 +70,17 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-15T15:00',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  ['2024-01-15T16:00', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-15T16:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
 
   // 화요일 - 가장 활발
-  [
-    '2024-01-16T09:00',
-    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
+  ['2024-01-16T09:00', { weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
   [
     '2024-01-16T09:30',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -97,7 +88,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T10:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -105,7 +95,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T10:30',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -113,7 +102,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T11:00',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
@@ -121,7 +109,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T14:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -129,7 +116,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T14:30',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -137,23 +123,18 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T15:00',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
-  [
-    '2024-01-16T16:00',
-    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
-  ['2024-01-16T17:00', { howMany: 3, weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-16T16:00', { weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
+  ['2024-01-16T17:00', { weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
 
   // 수요일 - 중간 밀도
-  ['2024-01-17T09:30', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-17T09:30', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
   [
     '2024-01-17T10:00',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
@@ -161,7 +142,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-17T10:30',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -169,7 +149,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-17T14:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -177,21 +156,16 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-17T14:30',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  [
-    '2024-01-17T15:00',
-    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
+  ['2024-01-17T15:00', { weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
 
   // 목요일 - 고밀도
   [
     '2024-01-18T09:00',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -199,7 +173,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T09:30',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
@@ -207,7 +180,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T10:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -215,7 +187,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T10:30',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -223,7 +194,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T11:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -231,7 +201,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T14:00',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -239,7 +208,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T14:30',
     {
-      howMany: 8,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
@@ -247,7 +215,6 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T15:00',
     {
-      howMany: 7,
       weight: 0.875,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
@@ -255,23 +222,18 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-18T16:00',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  ['2024-01-18T17:00', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-18T17:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
 
   // 금요일 - 여유로운 마무리
-  ['2024-01-19T09:30', { howMany: 3, weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
-  [
-    '2024-01-19T10:00',
-    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
+  ['2024-01-19T09:30', { weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-19T10:00', { weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
   [
     '2024-01-19T10:30',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -279,26 +241,21 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-19T14:00',
     {
-      howMany: 6,
       weight: 0.75,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  [
-    '2024-01-19T14:30',
-    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
-  ['2024-01-19T15:00', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
-  ['2024-01-19T16:00', { howMany: 2, weight: 0.25, userNames: ['마빈', '메이토'] }],
+  ['2024-01-19T14:30', { weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
+  ['2024-01-19T15:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-19T16:00', { weight: 0.25, userNames: ['마빈', '메이토'] }],
 ]);
 
 // 모닝 미팅 패턴
 const morningMeetingStatistics = new Map<string, DateCellInfo>([
-  ['2024-01-15T09:00', { howMany: 4, weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-15T09:00', { weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
   [
     '2024-01-15T09:30',
     {
-      howMany: 6,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -306,26 +263,18 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-15T10:00',
     {
-      howMany: 6,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  [
-    '2024-01-15T10:30',
-    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
-  ['2024-01-15T11:00', { howMany: 3, weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
-  ['2024-01-15T11:30', { howMany: 2, weight: 0.33, userNames: ['마빈', '메이토'] }],
+  ['2024-01-15T10:30', { weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
+  ['2024-01-15T11:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-15T11:30', { weight: 0.33, userNames: ['마빈', '메이토'] }],
 
-  [
-    '2024-01-16T09:00',
-    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
+  ['2024-01-16T09:00', { weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
   [
     '2024-01-16T09:30',
     {
-      howMany: 6,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -333,7 +282,6 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T10:00',
     {
-      howMany: 6,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
@@ -341,25 +289,18 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
   [
     '2024-01-16T10:30',
     {
-      howMany: 6,
       weight: 1.0,
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  ['2024-01-16T11:00', { howMany: 4, weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
-  ['2024-01-16T11:30', { howMany: 3, weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-16T11:00', { weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-16T11:30', { weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
 
-  ['2024-01-17T09:00', { howMany: 3, weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
-  [
-    '2024-01-17T09:30',
-    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
-  [
-    '2024-01-17T10:00',
-    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
-  ],
-  ['2024-01-17T10:30', { howMany: 4, weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
-  ['2024-01-17T11:00', { howMany: 2, weight: 0.33, userNames: ['마빈', '메이토'] }],
+  ['2024-01-17T09:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-17T09:30', { weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
+  ['2024-01-17T10:00', { weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] }],
+  ['2024-01-17T10:30', { weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-17T11:00', { weight: 0.33, userNames: ['마빈', '메이토'] }],
 ]);
 
 export const Default: Story = {
@@ -395,14 +336,10 @@ export const WeeklySchedule: Story = {
     },
     availableDates: new Set(['2024-01-15', '2024-01-16', '2024-01-17', '2024-01-18', '2024-01-19']),
     roomStatistics: new Map([
-      [
-        '2024-01-15T10:00',
-        { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] },
-      ],
+      ['2024-01-15T10:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
       [
         '2024-01-15T10:30',
         {
-          howMany: 6,
           weight: 0.75,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
@@ -410,7 +347,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-15T14:00',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -418,7 +354,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-15T14:30',
         {
-          howMany: 7,
           weight: 0.875,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
@@ -426,7 +361,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-15T15:00',
         {
-          howMany: 6,
           weight: 0.75,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
@@ -435,7 +369,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-16T10:00',
         {
-          howMany: 7,
           weight: 0.875,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
@@ -443,7 +376,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-16T10:30',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -451,7 +383,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-16T14:00',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -459,7 +390,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-16T14:30',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -467,7 +397,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-16T15:00',
         {
-          howMany: 7,
           weight: 0.875,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
@@ -476,7 +405,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-17T10:30',
         {
-          howMany: 5,
           weight: 0.625,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
         },
@@ -484,7 +412,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-17T14:00',
         {
-          howMany: 7,
           weight: 0.875,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
@@ -492,7 +419,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-17T14:30',
         {
-          howMany: 6,
           weight: 0.75,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
@@ -501,7 +427,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-18T10:00',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -509,7 +434,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-18T10:30',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -517,7 +441,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-18T14:00',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -525,7 +448,6 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-18T14:30',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -533,28 +455,20 @@ export const WeeklySchedule: Story = {
       [
         '2024-01-18T15:00',
         {
-          howMany: 6,
           weight: 0.75,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
       ],
 
-      [
-        '2024-01-19T10:30',
-        { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] },
-      ],
+      ['2024-01-19T10:30', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
       [
         '2024-01-19T14:00',
         {
-          howMany: 5,
           weight: 0.625,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
         },
       ],
-      [
-        '2024-01-19T14:30',
-        { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] },
-      ],
+      ['2024-01-19T14:30', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
     ]),
   },
 };
@@ -583,7 +497,6 @@ export const SingleDay: Story = {
       [
         '2024-01-15T13:00',
         {
-          howMany: 5,
           weight: 0.625,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
         },
@@ -591,7 +504,6 @@ export const SingleDay: Story = {
       [
         '2024-01-15T13:30',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -599,7 +511,6 @@ export const SingleDay: Story = {
       [
         '2024-01-15T14:00',
         {
-          howMany: 8,
           weight: 1.0,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
@@ -607,7 +518,6 @@ export const SingleDay: Story = {
       [
         '2024-01-15T14:30',
         {
-          howMany: 6,
           weight: 0.75,
           userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
@@ -619,34 +529,34 @@ export const SingleDay: Story = {
 // 가중치 전략 비교용 데이터 생성 함수
 const createSampleData = () => {
   const rawData = [
-    { dateTime: '2024-01-15T09:00', howMany: 2, userNames: ['마빈', '메이토'] },
+    { dateTime: '2024-01-15T09:00', userNames: ['마빈', '메이토'] },
     {
       dateTime: '2024-01-15T09:30',
-      howMany: 5,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
     },
     {
       dateTime: '2024-01-15T10:00',
-      howMany: 8,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버'],
     },
-    { dateTime: '2024-01-15T10:30', howMany: 3, userNames: ['마빈', '메이토', '강산'] },
+    { dateTime: '2024-01-15T10:30', userNames: ['마빈', '메이토', '강산'] },
     {
       dateTime: '2024-01-15T11:00',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
-    { dateTime: '2024-01-15T11:30', howMany: 1, userNames: ['마빈'] },
+    { dateTime: '2024-01-15T11:30', userNames: ['마빈'] },
     {
       dateTime: '2024-01-15T12:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ];
 
-  const howManyValues = rawData.map((d) => d.howMany);
-  const min = Math.min(...howManyValues);
-  const max = Math.max(...howManyValues);
+  const userCounts = rawData.map((d) => d.userNames.length);
+  const min = Math.min(...userCounts);
+  const max = Math.max(...userCounts);
 
   return { rawData, min, max };
 };
@@ -657,8 +567,7 @@ const applyWeightStrategy = (strategy: WeightCalculateStrategy) => {
 
   rawData.forEach((data) => {
     resultMap.set(data.dateTime, {
-      howMany: data.howMany,
-      weight: strategy(data.howMany, min, max),
+      weight: strategy(data.userNames.length, min, max),
       userNames: data.userNames,
     });
   });
@@ -687,20 +596,20 @@ export const WeightStrategy_Flint: Story = {
 // 소규모 투표 시나리오 (5명 이하) - Flint 전략에서 단순 분할 로직 사용
 const createSmallGroupData = () => {
   const rawData = [
-    { dateTime: '2024-01-15T14:00', howMany: 1, userNames: ['마빈'] },
-    { dateTime: '2024-01-15T14:30', howMany: 2, userNames: ['마빈', '메이토'] },
-    { dateTime: '2024-01-15T15:00', howMany: 3, userNames: ['마빈', '메이토', '강산'] },
-    { dateTime: '2024-01-15T15:30', howMany: 4, userNames: ['마빈', '메이토', '강산', '해삐'] },
+    { dateTime: '2024-01-15T14:00', userNames: ['마빈'] },
+    { dateTime: '2024-01-15T14:30', userNames: ['마빈', '메이토'] },
+    { dateTime: '2024-01-15T15:00', userNames: ['마빈', '메이토', '강산'] },
+    { dateTime: '2024-01-15T15:30', userNames: ['마빈', '메이토', '강산', '해삐'] },
     {
       dateTime: '2024-01-15T16:00',
-      howMany: 5,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
     },
   ];
 
-  const howManyValues = rawData.map((d) => d.howMany);
-  const min = Math.min(...howManyValues);
-  const max = Math.max(...howManyValues);
+  const userCounts = rawData.map((d) => d.userNames.length);
+  const min = Math.min(...userCounts);
+  const max = Math.max(...userCounts);
 
   return { rawData, min, max };
 };
@@ -711,8 +620,7 @@ const applyWeightStrategySmallGroup = (strategy: WeightCalculateStrategy) => {
 
   rawData.forEach((data) => {
     resultMap.set(data.dateTime, {
-      howMany: data.howMany,
-      weight: strategy(data.howMany, min, max),
+      weight: strategy(data.userNames.length, min, max),
       userNames: data.userNames,
     });
   });
@@ -741,11 +649,11 @@ export const SmallGroup_Flint: Story = {
 // 극단적인 차이 시나리오 - 최소값과 최대값의 차이가 큰 경우
 const createExtremeData = () => {
   const rawData = [
-    { dateTime: '2024-01-15T09:00', howMany: 1, userNames: ['마빈'] },
-    { dateTime: '2024-01-15T09:30', howMany: 2, userNames: ['마빈', '메이토'] },
+    { dateTime: '2024-01-15T09:00', userNames: ['마빈'] },
+    { dateTime: '2024-01-15T09:30', userNames: ['마빈', '메이토'] },
     {
       dateTime: '2024-01-15T10:00',
-      howMany: 15,
+
       userNames: [
         '마빈',
         '메이토',
@@ -764,10 +672,10 @@ const createExtremeData = () => {
         '윈터',
       ],
     },
-    { dateTime: '2024-01-15T10:30', howMany: 3, userNames: ['마빈', '메이토', '강산'] },
+    { dateTime: '2024-01-15T10:30', userNames: ['마빈', '메이토', '강산'] },
     {
       dateTime: '2024-01-15T11:00',
-      howMany: 12,
+
       userNames: [
         '마빈',
         '메이토',
@@ -785,9 +693,9 @@ const createExtremeData = () => {
     },
   ];
 
-  const howManyValues = rawData.map((d) => d.howMany);
-  const min = Math.min(...howManyValues);
-  const max = Math.max(...howManyValues);
+  const userCounts = rawData.map((d) => d.userNames.length);
+  const min = Math.min(...userCounts);
+  const max = Math.max(...userCounts);
 
   return { rawData, min, max };
 };
@@ -798,8 +706,7 @@ const applyWeightStrategyExtreme = (strategy: WeightCalculateStrategy) => {
 
   rawData.forEach((data) => {
     resultMap.set(data.dateTime, {
-      howMany: data.howMany,
-      weight: strategy(data.howMany, min, max),
+      weight: strategy(data.userNames.length, min, max),
       userNames: data.userNames,
     });
   });
@@ -830,34 +737,34 @@ const createSimilarData = () => {
   const rawData = [
     {
       dateTime: '2024-01-15T13:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
     {
       dateTime: '2024-01-15T13:30',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
     {
       dateTime: '2024-01-15T14:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
     {
       dateTime: '2024-01-15T14:30',
-      howMany: 8,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버'],
     },
     {
       dateTime: '2024-01-15T15:00',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ];
 
-  const howManyValues = rawData.map((d) => d.howMany);
-  const min = Math.min(...howManyValues);
-  const max = Math.max(...howManyValues);
+  const userCounts = rawData.map((d) => d.userNames.length);
+  const min = Math.min(...userCounts);
+  const max = Math.max(...userCounts);
 
   return { rawData, min, max };
 };
@@ -868,8 +775,7 @@ const applyWeightStrategySimilar = (strategy: WeightCalculateStrategy) => {
 
   rawData.forEach((data) => {
     resultMap.set(data.dateTime, {
-      howMany: data.howMany,
-      weight: strategy(data.howMany, min, max),
+      weight: strategy(data.userNames.length, min, max),
       userNames: data.userNames,
     });
   });
@@ -901,56 +807,56 @@ const createWeeklyComparisonData = () => {
     // 월요일 - 오전 블록(10:00-12:30) + 오후 블록(14:00-15:30)
     {
       dateTime: '2024-01-15T10:00',
-      howMany: 5,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
     },
     {
       dateTime: '2024-01-15T10:30',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
     {
       dateTime: '2024-01-15T11:00',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
     {
       dateTime: '2024-01-15T11:30',
-      howMany: 8,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버'],
     },
     {
       dateTime: '2024-01-15T12:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
-    { dateTime: '2024-01-15T12:30', howMany: 4, userNames: ['마빈', '메이토', '강산', '해삐'] },
+    { dateTime: '2024-01-15T12:30', userNames: ['마빈', '메이토', '강산', '해삐'] },
     {
       dateTime: '2024-01-15T14:00',
-      howMany: 8,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버'],
     },
     {
       dateTime: '2024-01-15T14:30',
-      howMany: 9,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버', '호이초이'],
     },
     {
       dateTime: '2024-01-15T15:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
-    { dateTime: '2024-01-15T15:30', howMany: 4, userNames: ['마빈', '메이토', '강산', '해삐'] },
+    { dateTime: '2024-01-15T15:30', userNames: ['마빈', '메이토', '강산', '해삐'] },
 
     // 화요일 - 오전 블록(9:00-12:30) + 오후 블록(13:00-16:30) - 가장 활발
     {
       dateTime: '2024-01-16T09:00',
-      howMany: 8,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버'],
     },
     {
       dateTime: '2024-01-16T09:30',
-      howMany: 10,
+
       userNames: [
         '마빈',
         '메이토',
@@ -966,7 +872,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T10:00',
-      howMany: 12,
+
       userNames: [
         '마빈',
         '메이토',
@@ -984,7 +890,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T10:30',
-      howMany: 14,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1004,7 +910,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T11:00',
-      howMany: 15,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1025,7 +931,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T11:30',
-      howMany: 14,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1045,7 +951,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T12:00',
-      howMany: 13,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1064,7 +970,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T12:30',
-      howMany: 11,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1081,7 +987,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T13:00',
-      howMany: 14,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1101,7 +1007,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T13:30',
-      howMany: 15,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1122,7 +1028,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T14:00',
-      howMany: 15,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1143,7 +1049,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T14:30',
-      howMany: 13,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1162,7 +1068,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T15:00',
-      howMany: 12,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1180,7 +1086,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T15:30',
-      howMany: 10,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1196,47 +1102,47 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-16T16:00',
-      howMany: 9,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버', '호이초이'],
     },
     {
       dateTime: '2024-01-16T16:30',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
 
     // 수요일 - 오후만 블록(14:00-16:30)
     {
       dateTime: '2024-01-17T14:00',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
     {
       dateTime: '2024-01-17T14:30',
-      howMany: 8,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버'],
     },
     {
       dateTime: '2024-01-17T15:00',
-      howMany: 9,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버', '호이초이'],
     },
     {
       dateTime: '2024-01-17T15:30',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
     {
       dateTime: '2024-01-17T16:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
-    { dateTime: '2024-01-17T16:30', howMany: 4, userNames: ['마빈', '메이토', '강산', '해삐'] },
+    { dateTime: '2024-01-17T16:30', userNames: ['마빈', '메이토', '강산', '해삐'] },
 
     // 목요일 - 오전 블록(10:00-11:30) + 오후 블록(13:00-15:30)
     {
       dateTime: '2024-01-18T10:00',
-      howMany: 10,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1252,7 +1158,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T10:30',
-      howMany: 11,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1269,7 +1175,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T11:00',
-      howMany: 12,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1287,7 +1193,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T11:30',
-      howMany: 11,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1304,7 +1210,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T13:00',
-      howMany: 11,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1321,7 +1227,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T13:30',
-      howMany: 12,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1339,7 +1245,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T14:00',
-      howMany: 13,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1358,7 +1264,7 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T14:30',
-      howMany: 12,
+
       userNames: [
         '마빈',
         '메이토',
@@ -1376,39 +1282,39 @@ const createWeeklyComparisonData = () => {
     },
     {
       dateTime: '2024-01-18T15:00',
-      howMany: 9,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '애버', '호이초이'],
     },
     {
       dateTime: '2024-01-18T15:30',
-      howMany: 7,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
 
     // 금요일 - 오전만 블록(10:00-12:30)
-    { dateTime: '2024-01-19T10:00', howMany: 4, userNames: ['마빈', '메이토', '강산', '해삐'] },
+    { dateTime: '2024-01-19T10:00', userNames: ['마빈', '메이토', '강산', '해삐'] },
     {
       dateTime: '2024-01-19T10:30',
-      howMany: 5,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
     },
     {
       dateTime: '2024-01-19T11:00',
-      howMany: 6,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
     {
       dateTime: '2024-01-19T11:30',
-      howMany: 5,
+
       userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
     },
-    { dateTime: '2024-01-19T12:00', howMany: 3, userNames: ['마빈', '메이토', '강산'] },
-    { dateTime: '2024-01-19T12:30', howMany: 2, userNames: ['마빈', '메이토'] },
+    { dateTime: '2024-01-19T12:00', userNames: ['마빈', '메이토', '강산'] },
+    { dateTime: '2024-01-19T12:30', userNames: ['마빈', '메이토'] },
   ];
 
-  const howManyValues = rawData.map((d) => d.howMany);
-  const min = Math.min(...howManyValues);
-  const max = Math.max(...howManyValues);
+  const userCounts = rawData.map((d) => d.userNames.length);
+  const min = Math.min(...userCounts);
+  const max = Math.max(...userCounts);
 
   return { rawData, min, max };
 };
@@ -1419,8 +1325,7 @@ const applyWeightStrategyWeekly = (strategy: WeightCalculateStrategy) => {
 
   rawData.forEach((data) => {
     resultMap.set(data.dateTime, {
-      howMany: data.howMany,
-      weight: strategy(data.howMany, min, max),
+      weight: strategy(data.userNames.length, min, max),
       userNames: data.userNames,
     });
   });
