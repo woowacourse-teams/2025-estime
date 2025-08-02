@@ -20,7 +20,7 @@ const CreateEventPage = () => {
   const handleCreateRoom = async () => {
     const session = await roomInfoSubmit();
     if (session) {
-      navigate(`/check?id=${session}`);
+      navigate(`/check?id=${session}`, { replace: true });
     }
   };
 
