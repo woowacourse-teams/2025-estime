@@ -1,4 +1,4 @@
-import { isItPast, isToday } from '@/utils/Calendar/dateUtils';
+import { isDateBlockedByLimit, isItPast, isToday } from '@/utils/Calendar/dateUtils';
 import { formatDateToString } from '@/utils/Calendar/format';
 
 interface UseDayStateProps {
@@ -17,6 +17,7 @@ export const useDayState = ({ day, today, selectedDates }: UseDayStateProps) => 
       isSelected: false,
       isEmpty: true,
       dateString: '',
+      isDateBlockedByLimit: false,
     };
   }
 
@@ -28,5 +29,6 @@ export const useDayState = ({ day, today, selectedDates }: UseDayStateProps) => 
     isSelected: selectedDates.has(formatDateToString(day)),
     isEmpty: false,
     dateString: day.getDate().toString(),
+    isDateBlockedByLimit: isDateBlockedByLimit(day, selectedDates),
   };
 };
