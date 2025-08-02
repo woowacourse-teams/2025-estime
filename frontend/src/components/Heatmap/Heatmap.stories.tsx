@@ -33,13 +33,13 @@ type Story = StoryObj<typeof Heatmap>;
 // 기본 5일 스케줄 - 현실적인 패턴
 const defaultRoomStatistics = new Map<string, DateCellInfo>([
   // 월요일 - 느긋한 시작
-  ['2024-01-15T09:00', { howMany: 3, weight: 0.375, userNames: ['김철수', '이영희', '박민수'] }],
+  ['2024-01-15T09:00', { howMany: 3, weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
   [
     '2024-01-15T10:00',
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -47,7 +47,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
@@ -55,7 +55,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -63,7 +63,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
@@ -71,25 +71,22 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  [
-    '2024-01-15T16:00',
-    { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
+  ['2024-01-15T16:00', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
 
   // 화요일 - 가장 활발
   [
     '2024-01-16T09:00',
-    { howMany: 5, weight: 0.625, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
   [
     '2024-01-16T09:30',
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -97,7 +94,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -105,7 +102,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -113,7 +110,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
@@ -121,7 +118,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -129,7 +126,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -137,26 +134,23 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
     '2024-01-16T16:00',
-    { howMany: 5, weight: 0.625, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
-  ['2024-01-16T17:00', { howMany: 3, weight: 0.375, userNames: ['김철수', '이영희', '박민수'] }],
+  ['2024-01-16T17:00', { howMany: 3, weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
 
   // 수요일 - 중간 밀도
-  [
-    '2024-01-17T09:30',
-    { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
+  ['2024-01-17T09:30', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
   [
     '2024-01-17T10:00',
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
@@ -164,7 +158,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -172,7 +166,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -180,12 +174,12 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
     '2024-01-17T15:00',
-    { howMany: 5, weight: 0.625, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
 
   // 목요일 - 고밀도
@@ -194,7 +188,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -202,7 +196,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
@@ -210,7 +204,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -218,7 +212,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -226,7 +220,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -234,7 +228,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -242,7 +236,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 8,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현', '배진우'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
     },
   ],
   [
@@ -250,7 +244,7 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 7,
       weight: 0.875,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
     },
   ],
   [
@@ -258,26 +252,23 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  [
-    '2024-01-18T17:00',
-    { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
+  ['2024-01-18T17:00', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
 
   // 금요일 - 여유로운 마무리
-  ['2024-01-19T09:30', { howMany: 3, weight: 0.375, userNames: ['김철수', '이영희', '박민수'] }],
+  ['2024-01-19T09:30', { howMany: 3, weight: 0.375, userNames: ['마빈', '메이토', '강산'] }],
   [
     '2024-01-19T10:00',
-    { howMany: 5, weight: 0.625, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
   [
     '2024-01-19T10:30',
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -285,32 +276,26 @@ const defaultRoomStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 0.75,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
     '2024-01-19T14:30',
-    { howMany: 5, weight: 0.625, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.625, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
-  [
-    '2024-01-19T15:00',
-    { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
-  ['2024-01-19T16:00', { howMany: 2, weight: 0.25, userNames: ['김철수', '이영희'] }],
+  ['2024-01-19T15:00', { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-19T16:00', { howMany: 2, weight: 0.25, userNames: ['마빈', '메이토'] }],
 ]);
 
 // 모닝 미팅 패턴
 const morningMeetingStatistics = new Map<string, DateCellInfo>([
-  [
-    '2024-01-15T09:00',
-    { howMany: 4, weight: 0.67, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
+  ['2024-01-15T09:00', { howMany: 4, weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
   [
     '2024-01-15T09:30',
     {
       howMany: 6,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -318,26 +303,26 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
     '2024-01-15T10:30',
-    { howMany: 5, weight: 0.83, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
-  ['2024-01-15T11:00', { howMany: 3, weight: 0.5, userNames: ['김철수', '이영희', '박민수'] }],
-  ['2024-01-15T11:30', { howMany: 2, weight: 0.33, userNames: ['김철수', '이영희'] }],
+  ['2024-01-15T11:00', { howMany: 3, weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
+  ['2024-01-15T11:30', { howMany: 2, weight: 0.33, userNames: ['마빈', '메이토'] }],
 
   [
     '2024-01-16T09:00',
-    { howMany: 5, weight: 0.83, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
   [
     '2024-01-16T09:30',
     {
       howMany: 6,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -345,7 +330,7 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
   [
@@ -353,29 +338,23 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
     {
       howMany: 6,
       weight: 1.0,
-      userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+      userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
     },
   ],
-  [
-    '2024-01-16T11:00',
-    { howMany: 4, weight: 0.67, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
-  ['2024-01-16T11:30', { howMany: 3, weight: 0.5, userNames: ['김철수', '이영희', '박민수'] }],
+  ['2024-01-16T11:00', { howMany: 4, weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-16T11:30', { howMany: 3, weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
 
-  ['2024-01-17T09:00', { howMany: 3, weight: 0.5, userNames: ['김철수', '이영희', '박민수'] }],
+  ['2024-01-17T09:00', { howMany: 3, weight: 0.5, userNames: ['마빈', '메이토', '강산'] }],
   [
     '2024-01-17T09:30',
-    { howMany: 5, weight: 0.83, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
   [
     '2024-01-17T10:00',
-    { howMany: 5, weight: 0.83, userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'] },
+    { howMany: 5, weight: 0.83, userNames: ['마빈', '메이토', '강산', '해삐', '제프리'] },
   ],
-  [
-    '2024-01-17T10:30',
-    { howMany: 4, weight: 0.67, userNames: ['김철수', '이영희', '박민수', '최수진'] },
-  ],
-  ['2024-01-17T11:00', { howMany: 2, weight: 0.33, userNames: ['김철수', '이영희'] }],
+  ['2024-01-17T10:30', { howMany: 4, weight: 0.67, userNames: ['마빈', '메이토', '강산', '해삐'] }],
+  ['2024-01-17T11:00', { howMany: 2, weight: 0.33, userNames: ['마빈', '메이토'] }],
 ]);
 
 export const Default: Story = {
@@ -413,14 +392,14 @@ export const WeeklySchedule: Story = {
     roomStatistics: new Map([
       [
         '2024-01-15T10:00',
-        { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
+        { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] },
       ],
       [
         '2024-01-15T10:30',
         {
           howMany: 6,
           weight: 0.75,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
       ],
       [
@@ -428,16 +407,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -445,7 +415,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 7,
           weight: 0.875,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
       ],
       [
@@ -453,7 +423,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 6,
           weight: 0.75,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
       ],
 
@@ -462,7 +432,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 7,
           weight: 0.875,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
       ],
       [
@@ -470,16 +440,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -487,16 +448,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -504,16 +456,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -521,7 +464,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 7,
           weight: 0.875,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
       ],
 
@@ -530,7 +473,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 5,
           weight: 0.625,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
         },
       ],
       [
@@ -538,7 +481,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 7,
           weight: 0.875,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연', '오승현'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트'],
         },
       ],
       [
@@ -546,7 +489,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 6,
           weight: 0.75,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
       ],
 
@@ -555,16 +498,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -572,16 +506,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -589,16 +514,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -606,16 +522,7 @@ export const WeeklySchedule: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -623,25 +530,25 @@ export const WeeklySchedule: Story = {
         {
           howMany: 6,
           weight: 0.75,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
       ],
 
       [
         '2024-01-19T10:30',
-        { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
+        { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] },
       ],
       [
         '2024-01-19T14:00',
         {
           howMany: 5,
           weight: 0.625,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
         },
       ],
       [
         '2024-01-19T14:30',
-        { howMany: 4, weight: 0.5, userNames: ['김철수', '이영희', '박민수', '최수진'] },
+        { howMany: 4, weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] },
       ],
     ]),
   },
@@ -673,7 +580,7 @@ export const SingleDay: Story = {
         {
           howMany: 5,
           weight: 0.625,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리'],
         },
       ],
       [
@@ -681,16 +588,7 @@ export const SingleDay: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -698,16 +596,7 @@ export const SingleDay: Story = {
         {
           howMany: 8,
           weight: 1.0,
-          userNames: [
-            '김철수',
-            '이영희',
-            '박민수',
-            '최수진',
-            '정태웅',
-            '한지연',
-            '오승현',
-            '배진우',
-          ],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버', '플린트', '호이초이'],
         },
       ],
       [
@@ -715,7 +604,7 @@ export const SingleDay: Story = {
         {
           howMany: 6,
           weight: 0.75,
-          userNames: ['김철수', '이영희', '박민수', '최수진', '정태웅', '한지연'],
+          userNames: ['마빈', '메이토', '강산', '해삐', '제프리', '리버'],
         },
       ],
     ]),
