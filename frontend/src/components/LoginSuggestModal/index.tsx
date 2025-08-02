@@ -38,7 +38,7 @@ const LoginSuggestModal = ({ target, isOpen, onClose, onLoginClick }: LoginSugge
           <Modal.Content>
             <Flex direction="column" gap="var(--gap-6)" align="center">
               <Text variant="h2">로그인하고 내 일정을 등록하세요.</Text>
-              <Text variant="body" color="gray50">
+              <Text variant="h4" color="gray50">
                 이름과 (선택적으로) 비밀번호를 입력하여 내 응답을 저장하고 나중에 수정할 수
                 있습니다.
               </Text>

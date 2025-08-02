@@ -34,15 +34,15 @@ const CheckEventPageHeader = ({
             <ILock color={theme.colors.text} />
           )}
 
-          <Text variant="body" color="text">
+          <Text variant="h4" color="text">
             공개 여부 : {isPublic === 'public' ? '공개' : '비공개'}
           </Text>
         </Flex>
         <Flex justify="space-between" align="center" gap="var(--gap-3)">
           <IClock color={theme.colors.text} />
 
-          <Text variant="body" color="text">
-            마감일 : {deadLine ? deadLine.date : '설정되지 않음'}
+          <Text variant="h4" color="text">
+            마감일 : {deadLine ? `${deadLine.date} ${deadLine.time}` : '설정되지 않음'}
           </Text>
         </Flex>
       </Flex>
