@@ -26,32 +26,33 @@ export interface DateCellInfo {
 // - 일반 구간은 [min, max]를 0~1로 선형 정규화하고, 0이면 0, 그 외는 minVisible~1로 매핑
 // - 표본이 적어 range가 작을 때 극단값 방지를 위해 최소 범위 적용
 export function getWeight(value: number, min: number, max: number, minVisible = 0.2): number {
+  // 0~1로 클램프
   minVisible = Math.min(1, Math.max(0, minVisible));
 
-  // 표본이 적을 때 극단값 방지를 위한 최소 범위 설정
-  const minRange = 3; // 최소 3단계 구분
+  // 모두 0
+  if (max === 0) return 0;
+
+  // 모두 동일(>0) — 상대적으로 모두 최대
+  if (max === min) return 1;
+
+  const minRange = 3; // 최소 단계
   const actualRange = max - min;
 
-  if (max <= min) {
-    // 값이 모두 동일한 경우
-    if (value === 0) return 0; // 모든 값이 0이면 완전 투명
-    return 1; // 모든 값이 0보다 크면 최대값 (상대적으로 모두 최대)
-  }
-
-  // 범위가 너무 작으면 인위적으로 확장하여 부드러운 정규화
+  // 범위가 너무 작으면 '최댓값 고정' 상태에서 하한만 끌어내리기
+  // => 최댓값은 항상 n=1이 됨
   let adjustedMin = min;
-  let adjustedMax = max;
+  let anchoredMax = max;
 
   if (actualRange < minRange) {
-    const center = (min + max) / 2;
-    const halfRange = minRange / 2;
-    adjustedMin = center - halfRange;
-    adjustedMax = center + halfRange;
+    adjustedMin = Math.min(min, max - minRange); // 하한만 확장
   }
 
-  let n = (value - adjustedMin) / (adjustedMax - adjustedMin);
-  if (n <= 0) return 0;
+  // anchoredMax를 분모에 써서 최댓값이 1.0이 되도록 앵커링
+  let n = (value - adjustedMin) / (anchoredMax - adjustedMin);
+
+  if (n <= 0) return 0; // 0표는 완전 투명
   if (n >= 1) n = 1;
+
   return minVisible + (1 - minVisible) * n;
 }
 
