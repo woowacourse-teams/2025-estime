@@ -5,11 +5,11 @@ import TimePicker from '@/components/Timepicker';
 import useTimePicker from '@/hooks/useTimePicker';
 import useSelectTime from '@/hooks/useSelectTime';
 import { Field } from '@/types/field';
-import { useMemo } from 'react';
 import { TimeManager } from '@/utils/common/TimeManager';
-import Flex from '@/components/Layout/Flex';
-import DatePicker from '@/components/DatePicker';
 import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
+import { useMemo } from 'react';
+import DatePicker from '@/components/DatePicker';
+import Flex from '@/components/Layout/Flex';
 
 type BasicSettingsProps = {
   title: Field<string>;
@@ -19,7 +19,6 @@ type BasicSettingsProps = {
 
 const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
   const { isOpen: isStartOpen, toggleOpen: toggleStartOpen } = useTimePicker();
-
   const { isOpen: isEndOpen, toggleOpen: toggleEndOpen } = useTimePicker();
 
   const { isOpen: isDeadLineOpen, toggleOpen: toggleDeadLineOpen } = useTimePicker();
