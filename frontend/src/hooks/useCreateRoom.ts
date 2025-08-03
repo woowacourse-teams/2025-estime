@@ -38,14 +38,21 @@ export const useCreateRoom = () => {
       setRoomInfo((prev) => ({ ...prev, deadline: { date, time } })),
   };
 
-  const isReadyToCreateRoom =
-    roomInfo.title.trim() !== '' &&
-    roomInfo.availableDateSlots.size > 0 &&
-    roomInfo.time.startTime.trim() !== '' &&
-    isTimeRangeValid &&
-    roomInfo.time.endTime.trim() !== '' &&
-    roomInfo.deadline.date.trim() !== '' &&
-    roomInfo.deadline.time.trim() !== '';
+  const isReadyToCreateRoom = () => {
+    const isCalendarReady = roomInfo.availableDateSlots.size > 0;
+    if (!isCalendarReady) return 'calendar';
+
+    const isBasicSettingsReady =
+      roomInfo.title.trim() !== '' &&
+      roomInfo.time.startTime.trim() !== '' &&
+      isTimeRangeValid &&
+      roomInfo.time.endTime.trim() !== '' &&
+      roomInfo.deadline.date.trim() !== '' &&
+      roomInfo.deadline.time.trim() !== '';
+    if (!isBasicSettingsReady) return 'basic';
+
+    return 'ready';
+  };
 
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
