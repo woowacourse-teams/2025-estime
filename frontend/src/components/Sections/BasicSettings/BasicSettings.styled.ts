@@ -5,7 +5,6 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: var(--gap-8);
-  border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-10);
   border-radius: var(--radius-6);
   max-width: 50rem;
