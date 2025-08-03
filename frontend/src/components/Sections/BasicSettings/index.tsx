@@ -13,6 +13,7 @@ import Flex from '@/components/Layout/Flex';
 type BasicSettingsProps = {
   title: Field<string>;
   time: Field<{ startTime: string; endTime: string }> & { valid: boolean };
+  isValid: boolean;
   deadline: Field<{ date: string; time: string }>;
 };
 
@@ -34,7 +35,7 @@ const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
     handleCustomEndClick,
   } = useSelectTime({ timeRange: time.value, setTimeRange: time.set });
   return (
-    <S.Container>
+    <S.Container isValid={isValid}>
       <S.InfoWrapper>
         <S.TextWrapper>
           <Text variant="h3">약속 제목</Text>
