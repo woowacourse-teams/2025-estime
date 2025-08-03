@@ -18,6 +18,7 @@ const Template: StoryFn = () => {
   };
 
   const [time, setTime] = useState({ startTime: '', endTime: '' });
+
   const timeField: Field<{ startTime: string; endTime: string }> & { valid: boolean } = {
     value: time,
     set: setTime,
