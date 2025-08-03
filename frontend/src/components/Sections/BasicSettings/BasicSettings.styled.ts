@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
-
 export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-6);
+  gap: var(--gap-8);
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-10);
   border-radius: var(--radius-6);
@@ -60,4 +59,5 @@ export const Label = styled.label`
   flex-direction: column;
   justify-content: center;
   padding-top: 0.125rem;
+  gap: var(--gap-3);
 `;
