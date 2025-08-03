@@ -36,7 +36,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
       <S.InfoWrapper>
         <S.TextWrapper>
           <Text variant="h3">방 제목</Text>
-          <Text variant="body">참여자들에게 표시될 방의 제목을 입력해주세요.</Text>
+          <Text variant="h4">참여자들에게 표시될 방의 제목을 입력해주세요.</Text>
         </S.TextWrapper>
         <S.InputWrapper>
           <Input
@@ -49,7 +49,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
       <S.InfoWrapper>
         <S.TextWrapper>
           <Text variant="h3">시간 선택</Text>
-          <Text variant="body">참여자가 선택할 수 있는 시간의 범위를 설정합니다.</Text>
+          <Text variant="h4">참여자가 선택할 수 있는 시간의 범위를 설정합니다.</Text>
         </S.TextWrapper>
         <S.ButtonWrapper>
           <Button
