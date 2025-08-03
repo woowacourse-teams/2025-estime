@@ -35,7 +35,7 @@ const CreateEventPage = () => {
             <Information color="orange30">
               <IInfo color={colors.orange40} />
               <Text variant="h4" color="orange40">
-                마감 기한은 방 생성 후 1일 이내로 설정되어 있습니다.
+                마감 기한은 약속을 생성한 시점으로부터 1일 뒤까지로 자동 설정되어 있습니다.
               </Text>
             </Information>
             <Flex justify="flex-end">
