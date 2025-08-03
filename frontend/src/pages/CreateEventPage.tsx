@@ -9,25 +9,41 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 import Information from '@/components/Information';
 import { useTheme } from '@emotion/react';
 import IInfo from '@/icons/IInfo';
+import { useEffect } from 'react';
+import useSectionValidation from '@/hooks/CreateRoom/useSectionValidation';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
   const { colors } = useTheme();
+
   const { title, availableDateSlots, time, deadline, isReadyToCreateRoom, roomInfoSubmit } =
     useCreateRoom();
+  const { CalendarRef, BasicSettingsRef, invalidSection, validateSection, handleSectionChange } =
+    useSectionValidation(isReadyToCreateRoom);
 
   const handleCreateRoom = async () => {
+    if (!validateSection()) {
+      return;
+    }
+
     const session = await roomInfoSubmit();
     if (session) {
       navigate(`/check?id=${session}`, { replace: true });
     }
   };
 
+  useEffect(() => {
+    handleSectionChange();
+  }, [handleSectionChange]);
+
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
-          <CalendarSettings availableDateSlots={availableDateSlots} />
+          <CalendarSettings
+            availableDateSlots={availableDateSlots}
+            isValid={invalidSection !== 'calendar'}
+          />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
@@ -40,10 +56,9 @@ const CreateEventPage = () => {
             </Information>
             <Flex justify="flex-end">
               <Button
-                color={isReadyToCreateRoom ? 'primary' : 'plum40'}
+                color="primary"
                 selected={true}
                 size="small"
-                disabled={!isReadyToCreateRoom}
                 onClick={handleCreateRoom}
                 data-ga-id="create-event-button"
               >
