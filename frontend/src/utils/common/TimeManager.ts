@@ -1,3 +1,4 @@
+import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
 import { FormatManager } from './FormatManager';
 
 const MINUTES_PER_HOUR = 60;
@@ -83,5 +84,29 @@ export const TimeManager = {
     const [sh, sm] = FormatManager.parseHourMinute(startTime);
     const [eh, em] = FormatManager.parseHourMinute(endTime);
     return eh * MINUTES_PER_HOUR + em > sh * MINUTES_PER_HOUR + sm;
+  },
+
+  /**
+   * 기준 시간보다 이후 시각만 필터링합니다.
+   */
+  filterLaterHoursFrom(timeStr: string): string[] {
+    const [startHour] = FormatManager.parseHourMinute(timeStr);
+
+    return DEFAULT_HOUR_OPTIONS.filter((option) => {
+      const [optionHour] = FormatManager.parseHourMinute(option);
+      return optionHour > startHour;
+    });
+  },
+
+  /**
+   * 기준 시간보다 이전 시각만 필터링합니다.
+   */
+  filterEarlierHoursUntil(timeStr: string): string[] {
+    const [endHour] = FormatManager.parseHourMinute(timeStr);
+
+    return DEFAULT_HOUR_OPTIONS.filter((option) => {
+      const [optionHour] = FormatManager.parseHourMinute(option);
+      return optionHour < endHour;
+    });
   },
 };
