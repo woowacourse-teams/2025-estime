@@ -1,5 +1,5 @@
-import { isDateBlockedByLimit, isItPast, isToday } from '@/utils/Calendar/dateUtils';
-import { formatDateToString } from '@/utils/Calendar/format';
+import { DateManager } from '@/utils/DateManager';
+import { FormatManager } from '@/utils/FormatManager';
 
 interface UseDayStateProps {
   day: Date | null;
@@ -22,13 +22,13 @@ export const useDayState = ({ day, today, selectedDates }: UseDayStateProps) => 
   }
 
   return {
-    isPast: isItPast(day, today),
+    isPast: DateManager.isPast(day, today),
     isSunday: day.getDay() === 0,
     isSaturday: day.getDay() === 6,
-    isToday: isToday(day, today),
-    isSelected: selectedDates.has(formatDateToString(day)),
+    isToday: DateManager.isToday(day, today),
+    isSelected: selectedDates.has(FormatManager.formatDate(day)),
     isEmpty: false,
     dateString: day.getDate().toString(),
-    isDateBlockedByLimit: isDateBlockedByLimit(day, selectedDates),
+    isDateBlockedByLimit: DateManager.isDateBlockedByLimit(day, selectedDates),
   };
 };

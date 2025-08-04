@@ -1,17 +1,13 @@
-import { column, row, ERROR_MESSAGE } from '@/constants/calender';
-import { daysInMonth } from './daysInMonth';
-import { isValidDate } from './dateUtils';
+import { column, row } from '@/constants/calender';
+import { DateManager } from '../DateManager';
 
 type Day = Date | null;
 
 export function makeMonthMatrix(base: Date): Day[][] {
-  if (!isValidDate(base)) {
-    throw new Error(ERROR_MESSAGE.INVALID_DATE);
-  }
   const y = base.getFullYear();
   const m = base.getMonth();
 
-  const total = daysInMonth(y, m);
+  const total = DateManager.daysInMonth(y, m);
   const firstWeekDay = new Date(y, m, 1).getDay();
 
   const cells = Array(row * column).fill(null);

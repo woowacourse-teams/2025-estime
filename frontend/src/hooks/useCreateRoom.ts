@@ -2,18 +2,15 @@ import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/types/roomInfo';
-import { checkTimeRangeValid } from '@/utils/Time/checkTimeRangeValid';
 import { useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
+import { TimeManager } from '@/utils/TimeManager';
 
 export const useCreateRoom = () => {
   const { platform, channelId } = useExtractQueryParams(['platform', 'channelId'] as const);
   const [roomInfo, setRoomInfo] = useState<RoomInfo>(initialRoomInfo);
 
-  const isTimeRangeValid = checkTimeRangeValid({
-    startTime: roomInfo.time.startTime,
-    endTime: roomInfo.time.endTime,
-  });
+  const isTimeRangeValid = TimeManager.isValidRange(roomInfo.time.startTime, roomInfo.time.endTime);
 
   const title = {
     value: roomInfo.title,
@@ -57,6 +54,7 @@ export const useCreateRoom = () => {
   const roomInfoSubmit = async () => {
     try {
       const payload = toCreateRoomInfo(roomInfo);
+      console.log(payload);
       if (platform && channelId) {
         const response = await createChannelRoom({
           ...payload,

@@ -2,7 +2,7 @@ import type { Meta, StoryFn } from '@storybook/react-webpack5';
 import BasicSettings from '.';
 import { useState } from 'react';
 import type { Field } from '@/types/field';
-import { checkTimeRangeValid } from '@/utils/Time/checkTimeRangeValid';
+import { TimeManager } from '@/utils/TimeManager';
 
 export default {
   title: 'Components/BasicSettings',
@@ -21,10 +21,7 @@ const Template: StoryFn = () => {
   const timeField: Field<{ startTime: string; endTime: string }> & { valid: boolean } = {
     value: time,
     set: setTime,
-    valid: checkTimeRangeValid({
-      startTime: time.startTime,
-      endTime: time.endTime,
-    }),
+    valid: TimeManager.isValidRange(time.startTime, time.endTime),
   };
 
   return <BasicSettings title={titleField} time={timeField} />;
