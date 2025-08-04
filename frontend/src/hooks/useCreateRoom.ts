@@ -4,7 +4,7 @@ import { initialRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/types/roomInfo';
 import { useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
-import { TimeManager } from '@/utils/TimeManager';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 export const useCreateRoom = () => {
   const { platform, channelId } = useExtractQueryParams(['platform', 'channelId'] as const);

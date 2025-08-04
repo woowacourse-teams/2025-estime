@@ -5,8 +5,8 @@ import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import Button from '@/components/Button';
-import { DateManager } from '@/utils/DateManager';
-import { TimeManager } from '@/utils/TimeManager';
+import { DateManager } from '@/utils/common/DateManager';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 interface TimetableProps {
   name: string;

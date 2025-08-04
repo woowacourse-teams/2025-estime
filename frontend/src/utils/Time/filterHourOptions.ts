@@ -1,5 +1,5 @@
 import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
-import { FormatManager } from '../FormatManager';
+import { FormatManager } from '../common/FormatManager';
 
 export const filterHourOptions = (deadLine: { date: string; time: string }) => {
   const { date, time } = deadLine;

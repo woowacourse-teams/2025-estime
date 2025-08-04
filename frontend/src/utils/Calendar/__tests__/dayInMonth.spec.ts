@@ -1,4 +1,4 @@
-import { DateManager } from '@/utils/DateManager';
+import { DateManager } from '@/utils/common/DateManager';
 
 describe('dayInMonth는', () => {
   describe('성공 케이스', () => {

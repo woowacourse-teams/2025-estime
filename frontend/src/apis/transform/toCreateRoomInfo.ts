@@ -1,6 +1,6 @@
 import { RoomInfo } from '@/types/roomInfo';
 import { CreateRoomRequestType } from '../room/type';
-import { TimeManager } from '@/utils/TimeManager';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 /**
  * 클라이언트 상태(RoomInfo)를 서버 요청 형식(CreateRoomRequestType)으로 변환합니다.

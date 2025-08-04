@@ -8,7 +8,7 @@ import Text from '@/components/Text';
 import IChevronLeft from '@/icons/IChevronLeft';
 import IChevronRight from '@/icons/IChevronRight';
 import Flex from '../Layout/Flex';
-import { DateManager } from '@/utils/DateManager';
+import { DateManager } from '@/utils/common/DateManager';
 
 interface CalenderProps {
   today: Date;

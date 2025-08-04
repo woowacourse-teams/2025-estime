@@ -1,5 +1,5 @@
 import { column, row } from '@/constants/calender';
-import { DateManager } from '../DateManager';
+import { DateManager } from '../common/DateManager';
 
 type Day = Date | null;
 

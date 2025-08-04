@@ -1,5 +1,5 @@
-import { DateManager } from '@/utils/DateManager';
-import { FormatManager } from '@/utils/FormatManager';
+import { DateManager } from '@/utils/common/DateManager';
+import { FormatManager } from '@/utils/common/FormatManager';
 
 interface UseDayStateProps {
   day: Date | null;

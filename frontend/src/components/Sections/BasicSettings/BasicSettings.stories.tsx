@@ -2,7 +2,7 @@ import type { Meta, StoryFn } from '@storybook/react-webpack5';
 import BasicSettings from '.';
 import { useState } from 'react';
 import type { Field } from '@/types/field';
-import { TimeManager } from '@/utils/TimeManager';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 export default {
   title: 'Components/BasicSettings',

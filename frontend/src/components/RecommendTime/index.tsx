@@ -3,7 +3,7 @@ import Text from '../Text';
 import Flex from '@/components/Layout/Flex';
 import { useTheme } from '@emotion/react';
 import * as S from './RecommendTime.styled';
-import { DateManager } from '@/utils/DateManager';
+import { DateManager } from '@/utils/common/DateManager';
 
 const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic: boolean }) => {
   const { colors } = useTheme();
