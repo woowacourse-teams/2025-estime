@@ -29,10 +29,10 @@ const hasReachedMaxSelection = (selectedDates: Set<string>) => {
 
 const isDateBlockedByLimit = (day: Date | null, selectedDates: Set<string>) => {
   if (!day) return false;
-  if (hasReachedMaxSelection(selectedDates)) {
-    return !selectedDates.has(formatDateToString(day));
-  }
-  return false;
+  const nowSelected = formatDateToString(day);
+  const isLimit = hasReachedMaxSelection(selectedDates);
+  const alreadySelected = selectedDates.has(nowSelected);
+  return isLimit && !alreadySelected;
 };
 
 export { isItCurrentMonth, isItPast, isToday, isValidDate, isDateBlockedByLimit };
