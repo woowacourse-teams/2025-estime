@@ -28,6 +28,7 @@ const DayCell = ({
       isToday={dayState.isToday}
       isSelected={dayState.isSelected}
       isEmpty={dayState.isEmpty}
+      isDateBlockedByLimit={dayState.isDateBlockedByLimit}
       onMouseDown={() => onMouseDown(day)}
       onMouseEnter={() => onMouseEnter(day)}
       onMouseUp={onMouseUp}

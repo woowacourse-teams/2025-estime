@@ -1,3 +1,5 @@
+import { formatDateToString } from './format';
+
 const isToday = (day: Date | null, today: Date) => {
   if (!day) return false;
   return (
@@ -21,4 +23,16 @@ const isValidDate = (day: Date | null) => {
   return day instanceof Date && !isNaN(day.getTime());
 };
 
-export { isItCurrentMonth, isItPast, isToday, isValidDate };
+const hasReachedMaxSelection = (selectedDates: Set<string>) => {
+  return selectedDates.size === 7;
+};
+
+const isDateBlockedByLimit = (day: Date | null, selectedDates: Set<string>) => {
+  if (!day) return false;
+  const nowSelected = formatDateToString(day);
+  const isLimit = hasReachedMaxSelection(selectedDates);
+  const alreadySelected = selectedDates.has(nowSelected);
+  return isLimit && !alreadySelected;
+};
+
+export { isItCurrentMonth, isItPast, isToday, isValidDate, isDateBlockedByLimit };
