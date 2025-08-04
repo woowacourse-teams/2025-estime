@@ -39,11 +39,20 @@ export default {
           },
         },
       },
-      { test: /\.(png|jpe?g|gif|svg)$/, type: 'asset/resource' },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name][ext]',
+        },
+      },
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      favicon: './src/assets/images/logo.svg',
+    }),
     new ForkTsCheckerPlugin(),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env),
