@@ -1,37 +1,44 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-type SectionState = 'calendar' | 'basic' | 'ready';
-
-const useSectionValidation = (isReadyToCreateRoom: () => SectionState) => {
-  const [invalidSection, setInvalidSection] = useState<SectionState>('ready');
-
+const useSectionValidation = (isCalendarReady: boolean, isBasicReady: boolean) => {
   const CalendarRef = useRef<HTMLDivElement | null>(null);
   const BasicSettingsRef = useRef<HTMLDivElement | null>(null);
 
+  const [showValidation, setShowValidation] = useState(true);
+  const [shouldShake, setShouldShake] = useState(false);
+
   const validateSection = useCallback(() => {
-    const status = isReadyToCreateRoom();
-    if (status !== 'ready') {
-      setInvalidSection(status);
-      if (status === 'calendar') CalendarRef.current?.scrollIntoView({ behavior: 'smooth' });
-      if (status === 'basic') BasicSettingsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setShowValidation(false);
+
+    if (!isCalendarReady) {
+      // CalendarRef.current?.focus();
+      setShouldShake(true);
+      return false;
+    }
+    if (!isBasicReady) {
+      // BasicSettingsRef.current?.focus();
+      setShouldShake(true);
       return false;
     }
     return true;
-  }, [isReadyToCreateRoom]);
+  }, [isCalendarReady, isBasicReady]);
 
-  const handleSectionChange = useCallback(() => {
-    const status = isReadyToCreateRoom();
-    if (invalidSection !== status) {
-      setInvalidSection('ready');
+  useEffect(() => {
+    if (shouldShake) {
+      const timer = setTimeout(() => {
+        setShouldShake(false);
+      }, 460);
+
+      return () => clearTimeout(timer);
     }
-  }, [invalidSection, isReadyToCreateRoom]);
+  }, [shouldShake]);
 
   return {
     CalendarRef,
     BasicSettingsRef,
-    invalidSection,
+    showValidation,
+    shouldShake,
     validateSection,
-    handleSectionChange,
   };
 };
 
