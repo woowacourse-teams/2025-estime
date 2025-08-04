@@ -53,7 +53,6 @@ export const List = styled.ul<{ isOpen: boolean }>`
   border-radius: var(--radius-4);
   box-shadow: var(--shadow-2);
   animation: ${({ isOpen }) => (isOpen ? slideDown : slideUp)} 0.3s ease-out forwards;
-  z-index: ${({ isOpen }) => (isOpen ? 100 : 1)};
 `;
 export const ListItemWrapper = styled.div`
   display: flex;
@@ -73,4 +72,5 @@ export const ListItem = styled.li`
     background-color: ${({ theme }) => theme.colors.plum40};
   }
   transition: background-color 0.2s ease-in-out;
+  z-index: 1;
 `;
