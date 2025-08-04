@@ -9,6 +9,7 @@ interface DayCellProps {
   isToday: boolean;
   isSelected: boolean;
   isEmpty: boolean;
+  isDateBlockedByLimit: boolean;
 }
 
 export const Container = styled.div<DayCellProps>`
@@ -48,4 +49,12 @@ export const Container = styled.div<DayCellProps>`
     cursor: ${({ isPast, isEmpty }) => (isPast || isEmpty ? 'not-allowed' : 'grab')};
   }
   transform: ${({ isSelected }) => (isSelected ? 'scale(1.05)' : 'scale(1)')};
+
+  ${({ isDateBlockedByLimit }) =>
+    isDateBlockedByLimit &&
+    `
+    pointer-events: none;
+    opacity: 0.3;
+
+  `}
 `;
