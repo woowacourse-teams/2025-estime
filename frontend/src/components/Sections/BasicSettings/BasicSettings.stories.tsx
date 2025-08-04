@@ -51,6 +51,7 @@ const Template: StoryFn<{ isValid: boolean }> = (args) => {
       deadline={deadlineField}
       BasicSettingsRef={BasicSettingsRef}
       isValid={args.isValid}
+      shouldShake={true}
     />
   );
 };
