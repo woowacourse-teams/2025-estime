@@ -9,7 +9,7 @@ import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 import useTimePicker from '@/hooks/useTimePicker';
 import { useMemo, useState } from 'react';
 import { Field } from '@/types/field';
-import { filterHourOptions } from '@/utils/Time/filterHourOptions';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 interface OptionSettingsProps {
   deadLine: Field<{ date: string; time: string }>;
@@ -33,7 +33,7 @@ const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
   const [isOpenAccordion, setIsOpenAccordion] = useState(false);
 
   const deadLineHourOptions = useMemo(() => {
-    return filterHourOptions(deadLine.value);
+    return TimeManager.filterHourOptions(deadLine.value);
   }, [deadLine.value.date, deadLine.value.time]);
 
   return (

@@ -109,4 +109,22 @@ export const TimeManager = {
       return optionHour < endHour;
     });
   },
+
+  /**
+   * 주어진 마감일이 오늘인 경우, 해당 시간 이후의 옵션만 반환합니다.
+   * 오늘이 아니면 전체 옵션을 반환합니다.
+   */
+  filterHourOptions(deadline: { date: string; time: string }): string[] {
+    const { date, time } = deadline;
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (date !== today) return DEFAULT_HOUR_OPTIONS;
+
+    const [targetHour] = FormatManager.parseHourMinute(time);
+
+    return DEFAULT_HOUR_OPTIONS.filter((option) => {
+      const [optionHour] = FormatManager.parseHourMinute(option);
+      return targetHour < optionHour;
+    });
+  },
 };
