@@ -47,7 +47,7 @@ public interface ConnectedRoomControllerSpecification {
                                         ],
                                         "startTime": "09:00",
                                         "endTime": "23:00",
-                                        "deadLine": "2026-07-14T23:00",
+                                        "deadline": "2026-07-14T23:00",
                                         "isPublic": true,
                                         "platform": "DISCORD",
                                         "channelId": "1393585306225348700"

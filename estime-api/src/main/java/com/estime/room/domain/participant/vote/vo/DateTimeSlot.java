@@ -1,4 +1,4 @@
-package com.estime.datetimeslot;
+package com.estime.room.domain.participant.vote.vo;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -26,5 +26,14 @@ public class DateTimeSlot {
 
     private static void validate(final LocalDateTime startAt) {
         Objects.requireNonNull(startAt, "startAt cannot be null");
+
+        if (startAt.getMinute() != 0 && startAt.getMinute() != UNIT.toMinutes()) {
+            throw new IllegalArgumentException(
+                    "DateTimeSlot must be set in %d-minute intervals.".formatted(UNIT.toMinutes()));
+        }
+    }
+
+    public boolean isBefore(final LocalDateTime other) {
+        return startAt.isBefore(other);
     }
 }

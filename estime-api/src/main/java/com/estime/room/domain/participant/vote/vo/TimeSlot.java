@@ -1,4 +1,4 @@
-package com.estime.datetimeslot;
+package com.estime.room.domain.participant.vote.vo;
 
 import java.time.Duration;
 import java.time.LocalTime;

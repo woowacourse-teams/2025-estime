@@ -1,6 +1,5 @@
-package com.estime.room.domain.participant;
+package com.estime.room.domain.participant.vote.vo;
 
-import com.estime.datetimeslot.DateTimeSlot;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,13 +12,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ParticipantDateTimeSlotId implements Serializable {
+public class VoteId implements Serializable {
 
     private Long participantId;
     private DateTimeSlot dateTimeSlot;
 
-    public static ParticipantDateTimeSlotId of(final Long userId, final DateTimeSlot dateTimeSlot) {
-        return new ParticipantDateTimeSlotId(userId, dateTimeSlot);
+    public static VoteId of(final Long participantId, final DateTimeSlot dateTimeSlot) {
+        return new VoteId(participantId, dateTimeSlot);
     }
 
     @Override
@@ -27,7 +26,7 @@ public class ParticipantDateTimeSlotId implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof final ParticipantDateTimeSlotId that)) {
+        if (!(o instanceof final VoteId that)) {
             return false;
         }
         return Objects.equals(participantId, that.participantId) &&

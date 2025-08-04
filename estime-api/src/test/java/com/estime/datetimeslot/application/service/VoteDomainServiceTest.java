@@ -9,17 +9,23 @@ import com.estime.estime.datetimeslot.application.dto.input.DateTimeSlotUpdateIn
 import com.estime.estime.datetimeslot.application.dto.output.DateTimeSlotRecommendationOutput;
 import com.estime.estime.datetimeslot.application.dto.output.DateTimeSlotRecommendations;
 import com.estime.estime.datetimeslot.application.dto.output.DateTimeSlotStatistic;
-import com.estime.datetimeslot.DateTimeSlot;
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlotRepository;
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlotDomainService;
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlots;
+import com.estime.room.application.service.RoomApplicationService;
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
+import com.estime.room.domain.participant.Participant;
+import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.vote.Vote;
+import com.estime.room.domain.participant.vote.VoteRepository;
+import com.estime.room.domain.participant.vote.vo.DateSlot;
+import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.vo.TimeSlot;
+import com.estime.room.domain.participant.vote.vo.Votes;
 import com.estime.room.infrastructure.RoomSessionGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,13 +38,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class ParticipantDateTimeSlotDomainServiceTest {
+class VoteDomainServiceTest {
 
     @Autowired
-    private ParticipantDateTimeSlotDomainService participantDateTimeSlotDomainService;
+    private RoomApplicationService roomApplicationService;
 
     @Autowired
-    private ParticipantDateTimeSlotRepository participantDateTimeSlotRepository;
+    private VoteRepository voteRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @Autowired
     private RoomRepository roomRepository;
@@ -76,20 +85,19 @@ class ParticipantDateTimeSlotDomainServiceTest {
         final Room room = roomRepository.save(
                 Room.withoutId(
                         "title",
-                        List.of(LocalDate.now()),
-                        LocalTime.of(7, 0),
-                        LocalTime.of(20, 0),
-                        LocalDateTime.of(2026, 1, 1, 0, 0),
+                        Set.of(DateSlot.from(LocalDate.now())),
+                        Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                         true
                 ));
 
-        final DateTimeSlot saved1 = participantDateTimeSlotRepository.save(
-                DateTimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
-        final DateTimeSlot saved2 = participantDateTimeSlotRepository.save(
-                DateTimeSlot.withoutId(room.getId(), "user", LocalDateTime.now()));
+        final Participant participant = participantRepository.save(Participant.withoutId(room.getId(), "test", "1234", Set.of()));
+
+        final Vote saved1 = voteRepository.save(
+                Vote.of(participant.getId(), DateTimeSlot.from(LocalDateTime.now())));
 
         // when
-        final List<DateTimeSlot> found = participantDateTimeSlotDomainService.getAllByRoomId(room.getId()).getParticipantDateTimeSlots();
+        final List<DateTimeSlot> found = voteDomainService.getAllByRoomId(room.getId()).getParticipantDateTimeSlots();
 
         // then
         assertThat(found)
@@ -100,7 +108,7 @@ class ParticipantDateTimeSlotDomainServiceTest {
     @Test
     void getAllByNonExistingRoomId() {
         // given // when
-        final List<DateTimeSlot> found = participantDateTimeSlotDomainService.getAllByRoomId(1234L).getParticipantDateTimeSlots();
+        final List<DateTimeSlot> found = voteDomainService.getAllByRoomId(1234L).getParticipantDateTimeSlots();
 
         // then
         assertThat(found)
@@ -109,7 +117,7 @@ class ParticipantDateTimeSlotDomainServiceTest {
 
     @DisplayName("룸 아이디와 유저 이름으로 DT슬롯을 가져올 수 있다.")
     @Test
-    void getAllByRoomSessionAndUserName() {
+    void getAllByRoomSessionAndParticpantName() {
         // given
         final Room room = roomRepository.save(
                 Room.withoutId(
@@ -121,13 +129,13 @@ class ParticipantDateTimeSlotDomainServiceTest {
                         true
                 ));
 
-        final DateTimeSlot saved1 = participantDateTimeSlotRepository.save(
+        final DateTimeSlot saved1 = voteRepository.save(
                 DateTimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
-        final DateTimeSlot saved2 = participantDateTimeSlotRepository.save(
+        final DateTimeSlot saved2 = voteRepository.save(
                 DateTimeSlot.withoutId(room.getId(), "user2", LocalDateTime.now()));
 
         // when
-        final List<DateTimeSlot> found = participantDateTimeSlotDomainService.getAllByRoomIdAndUserName(room.getId(), "user1")
+        final List<DateTimeSlot> found = voteDomainService.getAllByRoomIdAndParticipantName(room.getId(), "user1")
                 .getParticipantDateTimeSlots();
 
         // then
@@ -149,13 +157,13 @@ class ParticipantDateTimeSlotDomainServiceTest {
                         true
                 ));
 
-        final DateTimeSlot saved1 = participantDateTimeSlotRepository.save(
+        final DateTimeSlot saved1 = voteRepository.save(
                 DateTimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
-        final DateTimeSlot saved2 = participantDateTimeSlotRepository.save(
+        final DateTimeSlot saved2 = voteRepository.save(
                 DateTimeSlot.withoutId(room.getId(), "user1", LocalDateTime.now()));
 
         // when
-        final List<DateTimeSlot> found = participantDateTimeSlotDomainService.getAllByRoomIdAndUserName(room.getId(), "user2")
+        final List<DateTimeSlot> found = voteDomainService.getAllByRoomIdAndUserName(room.getId(), "user2")
                 .getParticipantDateTimeSlots();
 
         // then
@@ -181,7 +189,7 @@ class ParticipantDateTimeSlotDomainServiceTest {
                 List.of(LocalDateTime.now(), LocalDateTime.now()));
 
         // when
-        final List<DateTimeSlot> actual = participantDateTimeSlotDomainService.saveAll(room.getId(), input).getParticipantDateTimeSlots();
+        final List<DateTimeSlot> actual = voteDomainService.saveAll(room.getId(), input).getParticipantDateTimeSlots();
 
         // then
         assertThat(actual)
@@ -205,12 +213,12 @@ class ParticipantDateTimeSlotDomainServiceTest {
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
         final LocalDateTime dateTime2 = LocalDateTime.of(2024, 3, 1, 2, 30);
 
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime2));
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime2));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final DateTimeSlotStatistic output = participantDateTimeSlotDomainService.generateDateTimeSlotStatistic(room.getId());
+        final DateTimeSlotStatistic output = voteDomainService.generateDateTimeSlotStatistic(room.getId());
 
         // then
         assertThat(output.statistic())
@@ -239,12 +247,12 @@ class ParticipantDateTimeSlotDomainServiceTest {
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
         final LocalDateTime dateTime2 = LocalDateTime.of(2024, 3, 1, 2, 30);
 
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime2));
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime2));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final DateTimeSlotRecommendations output = participantDateTimeSlotDomainService.recommendTopDateTimeSlots(room.getId());
+        final DateTimeSlotRecommendations output = voteDomainService.recommendTopDateTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())
@@ -274,16 +282,16 @@ class ParticipantDateTimeSlotDomainServiceTest {
         final List<DateTimeSlot> existedDateTimeSlot = existed.stream()
                 .map(dateTime -> DateTimeSlot.withoutId(room.getId(), "existed", dateTime))
                 .toList();
-        participantDateTimeSlotRepository.saveAll(ParticipantDateTimeSlots.from(existedDateTimeSlot));
+        voteRepository.saveAll(Votes.from(existedDateTimeSlot));
 
         final DateTimeSlotUpdateInput input = new DateTimeSlotUpdateInput(RoomSessionGenerator.generateTsid(), userName,
                 updated);
 
         // when
-        participantDateTimeSlotDomainService.updateDateTimeSlots(room.getId(), input);
+        voteDomainService.updateDateTimeSlots(room.getId(), input);
 
         // then
-        final List<DateTimeSlot> saved = participantDateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(), userName)
+        final List<DateTimeSlot> saved = voteRepository.findAllByRoomIdAndUserName(room.getId(), userName)
                 .getParticipantDateTimeSlots();
 
         assertThat(saved)
@@ -307,7 +315,7 @@ class ParticipantDateTimeSlotDomainServiceTest {
                 ));
         final String userName = "user";
 
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), userName, LocalDateTime.of(2026, 1, 1, 0, 0)));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), userName, LocalDateTime.of(2026, 1, 1, 0, 0)));
 
         final List<LocalDateTime> updatedSlots = List.of(
                 LocalDateTime.of(2026, 1, 2, 10, 0),
@@ -317,12 +325,12 @@ class ParticipantDateTimeSlotDomainServiceTest {
                 updatedSlots);
 
         // when
-        participantDateTimeSlotDomainService.updateDateTimeSlots(room.getId(), input);
-        final List<DateTimeSlot> resultAfterFirstCall = participantDateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
+        voteDomainService.updateDateTimeSlots(room.getId(), input);
+        final List<DateTimeSlot> resultAfterFirstCall = voteRepository.findAllByRoomIdAndUserName(room.getId(),
                 userName).getParticipantDateTimeSlots();
 
-        participantDateTimeSlotDomainService.updateDateTimeSlots(room.getId(), input);
-        final List<DateTimeSlot> resultAfterSecondCall = participantDateTimeSlotRepository.findAllByRoomIdAndUserName(room.getId(),
+        voteDomainService.updateDateTimeSlots(room.getId(), input);
+        final List<DateTimeSlot> resultAfterSecondCall = voteRepository.findAllByRoomIdAndUserName(room.getId(),
                 userName).getParticipantDateTimeSlots();
 
         // then
@@ -356,11 +364,11 @@ class ParticipantDateTimeSlotDomainServiceTest {
 
         final LocalDateTime dateTime1 = LocalDateTime.of(2024, 1, 1, 0, 0);
 
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
-        participantDateTimeSlotRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user", dateTime1));
+        voteRepository.save(DateTimeSlot.withoutId(room.getId(), "user2", dateTime1));
 
         // when
-        final DateTimeSlotRecommendations output = participantDateTimeSlotDomainService.recommendTopDateTimeSlots(room.getId());
+        final DateTimeSlotRecommendations output = voteDomainService.recommendTopDateTimeSlots(room.getId());
 
         // then
         assertThat(output.recommendations())

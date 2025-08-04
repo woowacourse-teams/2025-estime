@@ -3,20 +3,22 @@ package com.estime.room.application.service;
 import com.estime.common.NotFoundException;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
+import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
+import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipantsOutput;
 import com.estime.room.application.dto.output.ParticipantCreateOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
-import com.estime.room.domain.participant.ParticipantDomainService;
+import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
-import com.estime.room.domain.participant.slot.DateTimeSlotParticipants;
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlotDomainService;
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlotRepository;
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlots;
+import com.estime.room.domain.participant.vote.VoteRepository;
+import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.vo.Votes;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RoomApplicationService {
 
-    private final ParticipantDateTimeSlotDomainService participantDateTimeSlotDomainService;
-    private final ParticipantDomainService participantDomainService;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
-    private final ParticipantDateTimeSlotRepository participantDateTimeSlotRepository;
+    private final VoteRepository voteRepository;
 
     @Transactional
     public RoomCreateOutput saveRoom(final RoomCreateInput input) {
@@ -48,48 +48,60 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotStatisticOutput generateDateTimeSlotStatistic(final String session) {
+    public DateTimeSlotStatisticOutput calculateVoteStatistic(final String session) {
         final Long roomId = roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
 
         final List<Long> participantIds = participantRepository.findIdsByRoomId(roomId);
 
-        final ParticipantDateTimeSlots slots = participantDateTimeSlotRepository.findAllByParticipantIds(
-                participantIds);
+        final Votes votes = voteRepository.findAllByParticipantIds(participantIds);
 
-        final Collection<DateTimeSlotParticipants> dateTimeSlotParticipants = slots.calculateStatistic();
+        final Map<DateTimeSlot, Set<Long>> dateTimeSlotParticipants = votes.calculateStatistic();
 
-        final Set<Long> participantsIds = dateTimeSlotParticipants.stream()
-                .map(DateTimeSlotParticipants::getParticipantIds)
+        final Set<Long> participantsIds = dateTimeSlotParticipants.values().stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        participantRepository.findByIds(participantsIds);
+        final Map<Long, String> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
+                .collect(Collectors.toMap(Participant::getId, Participant::getName));
 
+        return new DateTimeSlotStatisticOutput(
+                dateTimeSlotParticipants.keySet().stream()
+                        .map(dateTimeSlot ->
+                                new DateTimeParticipantsOutput(
+                                        dateTimeSlot,
+                                        dateTimeSlotParticipants.get(dateTimeSlot).stream()
+                                                .map(idToName::get)
+                                                .toList())
+                        ).toList());
 
+    }
+
+    public Votes getDateTimeSlotsBySessionAndParticipantName(final String session, final String participantName) {
+        final Long participantId = participantRepository.findIdBySessionAndName(session, participantName)
+                .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
+
+        return voteRepository.findAllByParticipantId(participantId);
     }
 
     @Transactional
-    public ParticipantDateTimeSlots saveDateTimeSlots(final DateTimeSlotInput input) {
-        final Long id = roomDomainService.getIdBySession(input.roomSession());
-        return participantDateTimeSlotDomainService.saveAll(id, input);
-    }
+    public Votes updateDateTimeSlots(final VotesUpdateInput input) {
+        final Long participantId = participantRepository.findIdBySessionAndName(
+                input.roomSession(),
+                        input.participantName())
+                .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
 
-    @Transactional(readOnly = true)
-    public DateTimeSlotRecommendations recommendTopDateTimeSlots(final String session) {
-        final Long id = roomDomainService.getIdBySession(session);
-        return participantDateTimeSlotDomainService.recommendTopDateTimeSlots(id);
-    }
+        final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
+        voteRepository.deleteAllInBatch(originVotes);
 
-    @Transactional
-    public ParticipantDateTimeSlots updateTimeSlots(final DateTimeSlotUpdateInput input) {
-        final Long roomId = roomDomainService.getIdBySession(input.roomSession());
-        return participantDateTimeSlotDomainService.updateDateTimeSlots(roomId, input);
+        return voteRepository.saveAll(Votes.from(input.toEntities(participantId)));
     }
 
     @Transactional
-    public ParticipantCreateOutput saveUser(final String session, final ParticipantCreateInput input) {
-        final Long id = roomDomainService.getIdBySession(session);
-        return ParticipantCreateOutput.from(participantDomainService.getByRoomIdAndName(id, input));
+    public ParticipantCreateOutput saveParticipant(final String session, final ParticipantCreateInput input) {
+        final Long roomId = roomRepository.findIdBySession(session)
+                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+
+        return ParticipantCreateOutput.from(participantRepository.save(input.toEntity(roomId)));
     }
 }

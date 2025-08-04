@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -25,25 +24,19 @@ public class Participant extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "password", nullable = false, length = 8)
-    private String password;
-
     public static Participant withoutId(
             final Long roomId,
-            final String name,
-            final String password
+            final String name
     ) {
-        validate(roomId, name, password);
-        return new Participant(roomId, name, password);
+        validate(roomId, name);
+        return new Participant(roomId, name);
     }
 
     private static void validate(
             final Long roomId,
-            final String userName,
-            final String password
+            final String name
     ) {
         Objects.requireNonNull(roomId, "roomId cannot be null");
-        Objects.requireNonNull(userName, "userName cannot be null");
-        Objects.requireNonNull(password, "password cannot be null");
+        Objects.requireNonNull(name, "name cannot be null");
     }
 }

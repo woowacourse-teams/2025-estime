@@ -2,10 +2,9 @@ package com.estime.room.presentation;
 
 import com.estime.common.CustomApiResponse;
 import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
-import com.estime.room.presentation.dto.request.ParticipantDateTimeSlotUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
-import com.estime.room.presentation.dto.response.DateTimeSlotRecommendationsResponse;
-import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
+import com.estime.room.presentation.dto.request.VotesUpdateRequest;
+import com.estime.room.presentation.dto.response.VoteStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCreateResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
 import com.estime.room.presentation.dto.response.RoomResponse;
@@ -44,7 +43,7 @@ public interface RoomControllerSpecification {
                                                     "availableDates": ["2026-07-15", "2026-07-16"],
                                                     "startTime": "09:00",
                                                     "endTime": "23:00",
-                                                    "deadLine": "2026-07-14T23:00",
+                                                    "deadline": "2026-07-14T23:00",
                                                     "isPublic": true,
                                                     "roomSession": "0MERYHCK3MCYH"
                                                 }
@@ -85,7 +84,7 @@ public interface RoomControllerSpecification {
                                         ],
                                         "startTime": "09:00",
                                         "endTime": "23:00",
-                                        "deadLine": "2026-07-30T16:00",
+                                        "deadline": "2026-07-30T16:00",
                                         "isPublic": true
                                     }
                                     """)))
@@ -105,18 +104,18 @@ public interface RoomControllerSpecification {
                                     "dateTimeSlots": [
                                         {
                                             "dateTime": "2025-07-17T10:00",
-                                            "userNames": ["플린트", "강산", "리버", "제프리"]
+                                            "participantNames": ["플린트", "강산", "리버", "제프리"]
                                         },
                                         {
                                             "dateTime": "2025-07-17T11:00",
-                                            "userNames": ["리버", "제프리"]
+                                            "participantNames": ["리버", "제프리"]
                                         }
                                     ]
                                 }
                             }
                             """)))})
     @GetMapping("/{session}/time-slots/statistic")
-    CustomApiResponse<DateTimeSlotStatisticResponse> generateDateTimeSlotStatistic(
+    CustomApiResponse<VoteStatisticResponse> getVoteStatistic(
             @PathVariable("session") String session);
 
     //
@@ -130,7 +129,7 @@ public interface RoomControllerSpecification {
                                 "success": true,
                                 "message": null,
                                 "result": {
-                                    "userName": "홍길동",
+                                    "participantName": "홍길동",
                                     "dateTimeSlots": [
                                         "2025-07-17T11:00",
                                         "2025-07-17T12:00",
@@ -139,9 +138,10 @@ public interface RoomControllerSpecification {
                                 }
                             }
                             """)))})
-    @GetMapping("/{session}/time-slots/user")
-    CustomApiResponse<TotalDateTimeSlotResponse> getByUserName(@PathVariable("session") String session,
-                                                               @RequestParam("name") String userName);
+    @GetMapping("/{session}/time-slots/participant")
+    CustomApiResponse<TotalDateTimeSlotResponse> getDateTimeSlotsBySessionAndParticipantName(
+            @PathVariable("session") String session,
+            @RequestParam("name") String participantName);
 
     //
 
@@ -156,7 +156,7 @@ public interface RoomControllerSpecification {
                                         "message": null,
                                         "result": {
                                                    "message": "저장이 완료되었습니다!",
-                                                   "userName": "강감찬",
+                                                   "participantName": "강감찬",
                                                    "dateTimes": [
                                                        "2025-07-21T16:00",
                                                        "2025-07-21T17:00",
@@ -173,7 +173,7 @@ public interface RoomControllerSpecification {
                             summary = "시간 수정 예시",
                             value = """
                                     {
-                                        "userName": "강감찬",
+                                        "participantName": "강감찬",
                                         "dateTimes": [
                                             "2025-07-21T16:00",
                                             "2025-07-21T17:00",
@@ -182,7 +182,7 @@ public interface RoomControllerSpecification {
                                     }
                                     """
                     )
-            )) ParticipantDateTimeSlotUpdateRequest request);
+            )) VotesUpdateRequest request);
 
     //
 
@@ -201,7 +201,7 @@ public interface RoomControllerSpecification {
                                     }
                                     """)))
     })
-    @PostMapping("/{session}/users")
+    @PostMapping("/{session}/participants")
     CustomApiResponse<ParticipantCreateResponse> createUser(@PathVariable("session") final String session,
                                                             @RequestBody(description = "생성할 사용자의 이름과 비밀번호를 입력합니다.", required = true,
                                                                     content = @Content(

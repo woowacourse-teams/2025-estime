@@ -1,4 +1,4 @@
-package com.estime.datetimeslot;
+package com.estime.room.domain.participant.vote.vo;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -26,13 +26,9 @@ public class DateSlot {
 
     private static void validate(final LocalDate startAt) {
         Objects.requireNonNull(startAt, "startAt cannot be null");
-    }
-
-    public boolean isBefore(final DateSlot other) {
-        return this.startAt.isBefore(other.startAt);
-    }
-
-    public boolean isBefore(final LocalDate other) {
-        return this.startAt.isBefore(other);
+        if (startAt.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException(
+                    "availableDates cannot contain past dates: " + startAt);
+        }
     }
 }

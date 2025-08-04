@@ -29,7 +29,7 @@ public class DiscordMessageBuilder {
 
     public MessageCreateData buildConnectedRoomCreatedMessage(final ConnectedRoomCreatedMessageInput input) {
         final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
-        final String formattedDeadline = input.deadLine().format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
+        final String formattedDeadline = input.deadline().format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
         final MessageEmbed embed = new EmbedBuilder()
                 .setTitle(platformMessage.getTitle())
                 .setDescription(String.format("""

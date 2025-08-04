@@ -25,17 +25,18 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     }
 
     @Override
-    public Optional<Participant> findByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.findByRoomIdAndName(roomId, name);
-    }
-
-    @Override
     public List<Long> findIdsByRoomId(final Long roomId) {
         return jpaRepository.findIdsByRoomId(roomId);
     }
 
     @Override
-    public Set<String> findParticipantNamesByIdIn(final Set<Long> participantsIds) {
-        return jpaRepository.findNamesByIdIn(participantsIds);
+    public List<Participant> findAllByIdIn(final Set<Long> ids) {
+        return jpaRepository.findByIdIn(ids);
+    }
+
+    @Override
+    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final String name) {
+        return jpaRepository.findByRoomIdAndName(roomId, name)
+                .map(Participant::getId);
     }
 }

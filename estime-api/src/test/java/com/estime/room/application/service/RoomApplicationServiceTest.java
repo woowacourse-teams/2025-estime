@@ -8,11 +8,14 @@ import com.estime.common.NotFoundException;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
+import com.estime.room.domain.participant.vote.vo.DateSlot;
+import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.vo.TimeSlot;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +35,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(7, 0),
-                LocalTime.of(20, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true
         );
 
@@ -53,10 +55,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(7, 0),
-                LocalTime.of(20, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true
         );
         final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
@@ -68,14 +69,12 @@ class RoomApplicationServiceTest {
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(output.title())
                     .isEqualTo(input.title());
-            softAssertions.assertThat(output.availableDates())
-                    .containsExactlyInAnyOrderElementsOf(input.availableDates());
-            softAssertions.assertThat(output.startTime())
-                    .isEqualTo(input.startTime());
-            softAssertions.assertThat(output.endTime())
-                    .isEqualTo(input.endTime());
-            softAssertions.assertThat(output.deadLine())
-                    .isEqualTo(input.deadLine());
+            softAssertions.assertThat(output.availableDateSlots())
+                    .containsExactlyInAnyOrderElementsOf(input.availableDateSlots());
+            softAssertions.assertThat(output.availableTimeSlots())
+                    .isEqualTo(input.availableTimeSlots());
+            softAssertions.assertThat(output.deadline())
+                    .isEqualTo(input.deadline());
             softAssertions.assertThat(output.isPublic())
                     .isEqualTo(input.isPublic());
             softAssertions.assertThat(output.roomSession())
@@ -101,10 +100,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(7, 15),
-                LocalTime.of(20, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true
         );
 
@@ -120,10 +118,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(7, 0),
-                LocalTime.of(20, 45),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true
         );
 
@@ -139,10 +136,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(),
-                LocalTime.of(7, 0),
-                LocalTime.of(20, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true
         );
 
@@ -158,10 +154,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now().minusDays(1)),
-                LocalTime.of(7, 0),
-                LocalTime.of(20, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now().minusDays(1))),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true
         );
 
@@ -171,61 +166,40 @@ class RoomApplicationServiceTest {
                 .hasMessage("availableDates cannot contain past dates: " + LocalDate.now().minusDays(1));
     }
 
-    @DisplayName("시작 시간이 종료 시간보다 늦으면 예외가 발생한다.")
-    @Test
-    void saveWithStartTimeAfterEndTime() {
-        // given
-        final RoomCreateInput input = new RoomCreateInput(
-                "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(20, 0),
-                LocalTime.of(7, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
-                true
-        );
-
-        // when // then
-        assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("startTime cannot be after endTime");
-    }
-
     @DisplayName("마감 시간이 현재 시간 보다 빠르면 예외가 발생한다.")
     @Test
-    void saveWithDeadLine() {
+    void saveWithDeadline() {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(10, 30),
-                LocalTime.of(11, 30),
-                LocalDateTime.of(2000, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2000, 1, 1, 0, 0)),
                 true
         );
 
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("The deadline cannot be in the past.");
+                .hasMessage("deadline cannot be in the past.");
     }
 
     @DisplayName("마감 시간이 30분 단위가 아니면 예외가 발생한다.")
     @Test
-    void saveWithDeadLinePer30Minutes() {
+    void saveWithDeadlinePer30Minutes() {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(10, 30),
-                LocalTime.of(11, 30),
-                LocalDateTime.of(2026, 1, 1, 0, 21),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 21)),
                 true
         );
 
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("The deadline must be set in 30-minute intervals.");
+                .hasMessage("deadline must be set in 30-minute intervals.");
     }
 
     private boolean isValidTsid(final String tsid) {

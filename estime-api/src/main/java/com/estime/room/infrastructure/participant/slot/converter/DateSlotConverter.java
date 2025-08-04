@@ -1,6 +1,6 @@
 package com.estime.room.infrastructure.participant.slot.converter;
 
-import com.estime.datetimeslot.DateSlot;
+import com.estime.room.domain.participant.vote.vo.DateSlot;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.time.LocalDate;

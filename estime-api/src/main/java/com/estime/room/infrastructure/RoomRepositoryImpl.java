@@ -24,7 +24,6 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public Optional<Long> findIdBySession(final String session) {
-        return roomJpaRepository.findIdBySession(session);
+        return findBySession(session).map(Room::getId);
     }
-
 }

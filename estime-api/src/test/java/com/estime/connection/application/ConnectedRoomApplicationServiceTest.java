@@ -10,11 +10,14 @@ import com.estime.connection.discord.infrastructure.DiscordMessageSender;
 import com.estime.connection.domain.ConnectedRoom;
 import com.estime.connection.domain.ConnectedRoomRepository;
 import com.estime.connection.domain.Platform;
+import com.estime.room.domain.participant.vote.vo.DateSlot;
+import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.vo.TimeSlot;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +44,9 @@ class ConnectedRoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                List.of(LocalDate.now()),
-                LocalTime.of(7, 0),
-                LocalTime.of(20, 0),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                Set.of(DateSlot.from(LocalDate.now())),
+                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 true,
                 Platform.DISCORD,
                 "testChannelId"

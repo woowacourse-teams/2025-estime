@@ -12,7 +12,7 @@ public record ConnectedRoomCreateRequest(
         List<LocalDate> availableDates,
         LocalTime startTime,
         LocalTime endTime,
-        LocalDateTime deadLine,
+        LocalDateTime deadline,
         Boolean isPublic,
         Platform platform,
         String channelId
@@ -20,7 +20,7 @@ public record ConnectedRoomCreateRequest(
 
     public ConnectedRoomCreateInput toInput() {
         return new ConnectedRoomCreateInput(
-                title, availableDates, startTime, endTime, deadLine, isPublic, platform, channelId
+                title, availableDates, startTime, endTime, deadline, isPublic, platform, channelId
         );
     }
 }

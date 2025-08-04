@@ -13,7 +13,7 @@ public record OutboundMessage(
     public static OutboundMessage roomCreated(final ConnectedRoom connectedRoom, final String url) {
         final Room room = connectedRoom.getRoom();
         final String subjectField = "**  제목  :  **" + room.getTitle();
-        final String deadlineField = "**  마감기한  :  **" + room.getDeadLine().format(
+        final String deadlineField = "**  마감기한  :  **" + room.getDeadline().format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // TODO DT Formatter 관리 필요
 
         final String text = """

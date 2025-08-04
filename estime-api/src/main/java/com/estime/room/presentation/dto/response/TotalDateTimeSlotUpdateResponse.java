@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.response;
 
-import com.estime.room.domain.participant.slot.ParticipantDateTimeSlots;
+import com.estime.room.domain.participant.vote.vo.Votes;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,9 +10,9 @@ public record TotalDateTimeSlotUpdateResponse(
         List<TimeSlotUpdateResponse> timeSlots
 ) {
 
-    public static TotalDateTimeSlotUpdateResponse from(final ParticipantDateTimeSlots dateTimeSlots) {
+    public static TotalDateTimeSlotUpdateResponse from(final Votes dateTimeSlots) {
         return new TotalDateTimeSlotUpdateResponse("저장이 완료되었습니다!",
-                dateTimeSlots.getParticipantDateTimeSlots().stream()
+                dateTimeSlots.getVotes().stream()
                         .map(timeSlot -> new TimeSlotUpdateResponse(timeSlot.getUserName(), timeSlot.getStartAt()))
                         .toList()
         );

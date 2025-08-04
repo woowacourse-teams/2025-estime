@@ -1,9 +1,9 @@
 package com.estime.room.domain;
 
 import com.estime.common.BaseEntity;
-import com.estime.datetimeslot.DateSlot;
-import com.estime.datetimeslot.DateTimeSlot;
-import com.estime.datetimeslot.TimeSlot;
+import com.estime.room.domain.participant.vote.vo.DateSlot;
+import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.vo.TimeSlot;
 import com.estime.room.infrastructure.participant.slot.converter.DateSlotConverter;
 import com.estime.room.infrastructure.participant.slot.converter.DateTimeSlotConverter;
 import com.estime.room.infrastructure.participant.slot.converter.TimeSlotConverter;
@@ -15,6 +15,8 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -56,9 +58,9 @@ public class Room extends BaseEntity {
     @Convert(converter = TimeSlotConverter.class)
     private Set<TimeSlot> availableTimeSlots = new HashSet<>();
 
-    @Column(name = "dead_line", nullable = false)
+    @Column(name = "deadline", nullable = false)
     @Convert(converter = DateTimeSlotConverter.class)
-    private DateTimeSlot deadLine;
+    private DateTimeSlot deadline;
 
     @Column(name = "is_public", nullable = false)
     private boolean isPublic;
@@ -67,17 +69,17 @@ public class Room extends BaseEntity {
             final String title,
             final Collection<DateSlot> availableDateSlots,
             final Collection<TimeSlot> availableTimeSlots,
-            final DateTimeSlot deadLine,
+            final DateTimeSlot deadline,
             final Boolean isPublic
     ) {
-        validateNonNull(title, availableDateSlots, availableTimeSlots, deadLine, isPublic);
+        validateNonNull(title, availableDateSlots, availableTimeSlots, deadline, isPublic);
         final String session = RoomSessionGenerator.generateTsid();
         return new Room(
                 session,
                 title,
                 (Set<DateSlot>) availableDateSlots,
                 (Set<TimeSlot>) availableTimeSlots,
-                deadLine,
+                deadline,
                 isPublic
         );
     }
@@ -86,36 +88,19 @@ public class Room extends BaseEntity {
             final String title,
             final Collection<DateSlot> availableDateSlots,
             final Collection<TimeSlot> availableTimeSlots,
-            final DateTimeSlot deadLine,
+            final DateTimeSlot deadline,
             final Boolean isPublic
     ) {
         Objects.requireNonNull(title, "title cannot be null");
         Objects.requireNonNull(availableDateSlots, "availableDateSlots cannot be null");
         Objects.requireNonNull(availableTimeSlots, "availableTimeSlots cannot be null");
-        Objects.requireNonNull(deadLine, "deadLine cannot be null");
+        Objects.requireNonNull(deadline, "deadline cannot be null");
         Objects.requireNonNull(isPublic, "isPublic cannot be null");
     }
 
-    //TODO 도메인 서비스로 이동
-//    private static void validateDates(final Collection<DateSlot> dateSlots) {
-//        if (dateSlots.isEmpty()) {
-//            throw new IllegalArgumentException("availableDates cannot be empty");
-//        }
-//        for (final DateSlot dateSlot : dateSlots) {
-//            if (dateSlot.isBefore(LocalDate.now())) {
-//                throw new IllegalArgumentException(
-//                        "availableDates cannot contain past dates: " + dateSlot.getStartAt());
-//            }
-//        }
-//    }
-
-    //TODO 도메인 서비스로 이동
-//    private static void validateDeadLine(final LocalDateTime deadLine) {
-//        if (deadLine.isBefore(LocalDateTime.now())) {
-//            throw new IllegalArgumentException("The deadline cannot be in the past.");
-//        }
-//        if (deadLine.getMinute() != 0 && deadLine.getMinute() != 30) {
-//            throw new IllegalArgumentException("The deadline must be set in 30-minute intervals.");
-//        }
-//    }
+    private static void validateDeadline(final DateTimeSlot deadline) {
+        if (deadline.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("deadline cannot be in the past.");
+        }
+    }
 }

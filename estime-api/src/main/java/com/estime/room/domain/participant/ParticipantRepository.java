@@ -10,9 +10,11 @@ public interface ParticipantRepository {
 
     boolean existsByRoomIdAndName(Long roomId, String name);
 
-    Optional<Participant> findByRoomIdAndName(Long roomId, String name);
+    Optional<Long> findIdByRoomIdAndName(Long roomId, String name);
 
     List<Long> findIdsByRoomId(Long roomId);
 
-    Set<String> findParticipantNamesByIdIn(Set<Long> participantsIds);
+    List<Participant> findAllByIdIn(Set<Long> ids);
+
+    Optional<Long> findIdBySessionAndName(String session, String name);
 }

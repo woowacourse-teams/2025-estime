@@ -1,8 +1,8 @@
 package com.estime.room.application.dto.output;
 
-import com.estime.datetimeslot.DateSlot;
-import com.estime.datetimeslot.DateTimeSlot;
-import com.estime.datetimeslot.TimeSlot;
+import com.estime.room.domain.participant.vote.vo.DateSlot;
+import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.vo.TimeSlot;
 import com.estime.room.domain.Room;
 import java.util.Set;
 
@@ -10,7 +10,7 @@ public record RoomOutput(
         String title,
         Set<DateSlot> availableDateSlots,
         Set<TimeSlot> availableTimeSlots,
-        DateTimeSlot deadLine,
+        DateTimeSlot deadline,
         boolean isPublic,
         String roomSession
 ) {
@@ -20,7 +20,7 @@ public record RoomOutput(
                 room.getTitle(),
                 room.getAvailableDateSlots(),
                 room.getAvailableTimeSlots(),
-                room.getDeadLine(),
+                room.getDeadline(),
                 room.isPublic(),
                 room.getSession()
         );

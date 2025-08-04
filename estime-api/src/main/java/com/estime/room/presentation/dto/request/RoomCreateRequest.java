@@ -11,11 +11,11 @@ public record RoomCreateRequest(
         List<LocalDate> availableDates,
         LocalTime startTime,
         LocalTime endTime,
-        LocalDateTime deadLine,
+        LocalDateTime deadline,
         Boolean isPublic
 ) {
 
     public RoomCreateInput toInput() {
-        return new RoomCreateInput(title, availableDates, startTime, endTime, deadLine, isPublic);
+        return new RoomCreateInput(title, availableDates, startTime, endTime, deadline, isPublic);
     }
 }
