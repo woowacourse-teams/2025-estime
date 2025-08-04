@@ -14,7 +14,7 @@ import TimeTableHeader from '@/components/TimeTableHeader';
 import Heatmap from '@/components/Heatmap';
 import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
-import { marvinWeightStrategy } from '@/utils/getWeight';
+import { simpleWeightStrategy } from '@/utils/getWeight';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -35,7 +35,7 @@ const CheckEventPage = () => {
 
   const { roomStatistics, fetchRoomStatistics } = useRoomStatistics({
     session,
-    weightCalculateStrat: marvinWeightStrategy,
+    weightCalculateStrat: simpleWeightStrategy,
   });
 
   // 훅분리... 애매하긴 해..
