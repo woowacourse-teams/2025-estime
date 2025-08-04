@@ -1,5 +1,4 @@
-import { IconType } from '@/types/iconType';
-
+import type { IconType } from '@/types/iconType';
 
 const IInfo = ({ color = '#fff', ...props }: IconType) => {
   return (
@@ -20,7 +19,6 @@ const IInfo = ({ color = '#fff', ...props }: IconType) => {
       <path d="M12 8h.01" />
     </svg>
   );
-}
-
+};
 
 export default IInfo;

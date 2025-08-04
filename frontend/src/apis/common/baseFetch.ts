@@ -1,4 +1,4 @@
-import { HTTPMethod, QueryParams } from './type';
+import type { HTTPMethod, QueryParams } from './type';
 
 const BASE_URL = process.env.API_BASE_URL;
 

@@ -1,5 +1,5 @@
 import baseFetch from './baseFetch';
-import { QueryParams } from './type';
+import type { QueryParams } from './type';
 
 const api = {
   get: <Res>(path: string, query?: QueryParams) => baseFetch<Res>({ path, method: 'GET', query }),

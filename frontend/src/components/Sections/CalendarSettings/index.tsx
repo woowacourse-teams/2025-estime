@@ -2,7 +2,7 @@ import Calender from '@/components/Calendar';
 import * as S from './CalendarSettings.styled';
 import { useDateSelection } from '@/hooks/Calendar/useDateSelection';
 import Text from '@/components/Text';
-import { Field } from '@/types/field';
+import type { Field } from '@/types/field';
 
 type CalendarSettingsProps = {
   availableDates: Field<Set<string>>;

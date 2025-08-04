@@ -1,4 +1,4 @@
-import { IconType } from '@/types/iconType';
+import type { IconType } from '@/types/iconType';
 
 const IClock = ({ color = '#fff', ...props }: IconType) => {
   return (

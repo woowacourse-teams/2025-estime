@@ -1,4 +1,4 @@
-import { ColorsKey } from '@/styles/theme';
+import type { ColorsKey } from '@/styles/theme';
 import { ComponentProps } from 'react';
 import * as S from './Information.styled';
 

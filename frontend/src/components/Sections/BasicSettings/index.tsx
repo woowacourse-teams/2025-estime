@@ -7,7 +7,7 @@ import useTimePicker from '@/hooks/useTimePicker';
 import useSelectTime from '@/hooks/useSelectTime';
 import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
-import { Field } from '@/types/field';
+import type { Field } from '@/types/field';
 import useChangeIconColor from '@/hooks/common/useChangeIconColor';
 import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
 

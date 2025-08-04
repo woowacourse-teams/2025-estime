@@ -1,4 +1,4 @@
-import { IconType } from '@/types/iconType';
+import type { IconType } from '@/types/iconType';
 
 const ILink = ({ color = '#FFF', ...props }: IconType) => {
   return (

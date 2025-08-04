@@ -1,5 +1,5 @@
-import { RoomInfo } from '@/types/roomInfo';
-import { CreateRoomRequestType } from '../room/type';
+import type { RoomInfo } from '@/types/roomInfo';
+import type { CreateRoomRequestType } from '../room/type';
 import { subtract30Minutes } from '@/utils/Time/subtract30Minutes';
 
 /**

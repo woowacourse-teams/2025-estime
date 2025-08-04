@@ -1,4 +1,4 @@
-const generateTimeList = ({
+export default function generateTimeList({
   startTimeInMinutes,
   endTimeInMinutes,
   interval,
@@ -6,7 +6,7 @@ const generateTimeList = ({
   startTimeInMinutes: number;
   endTimeInMinutes: number;
   interval: number;
-}) => {
+}) {
   const time = [];
   for (let i = startTimeInMinutes; i < endTimeInMinutes; i += interval) {
     const hour = Math.floor(i / 60)
@@ -19,6 +19,4 @@ const generateTimeList = ({
     time.push({ timeText, isHour: minuteValue === 0 });
   }
   return time;
-};
-
-export default generateTimeList;
+}

@@ -1,4 +1,4 @@
-import { IconType } from '@/types/iconType';
+import type { IconType } from '@/types/iconType';
 
 const Logo = ({ color = '#914DE7', ...props }: IconType) => {
   return (

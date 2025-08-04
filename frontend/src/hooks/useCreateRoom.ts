@@ -1,7 +1,7 @@
 import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialRoomInfo } from '@/constants/initialRoomInfo';
-import { RoomInfo } from '@/types/roomInfo';
+import type { RoomInfo } from '@/types/roomInfo';
 import { checkTimeRangeValid } from '@/utils/Time/checkTimeRangeValid';
 import { useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';

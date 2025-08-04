@@ -1,5 +1,5 @@
 import * as S from './Timetable.styled';
-import { Field } from '@/types/field';
+import type { Field } from '@/types/field';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
 import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import generateTimeList from '@/utils/Calendar/generateTimeList';

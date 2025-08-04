@@ -1,6 +1,6 @@
 import React from 'react';
 import * as S from './Flex.styled';
-import { CSSGapVar } from '@/types/designTokenType';
+import type { CSSGapVar } from '@/types/designTokenType';
 
 export interface FlexProps {
   children: React.ReactNode;

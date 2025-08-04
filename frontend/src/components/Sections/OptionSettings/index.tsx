@@ -8,7 +8,7 @@ import { useTheme } from '@emotion/react';
 import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 import useTimePicker from '@/hooks/useTimePicker';
 import { useMemo, useState } from 'react';
-import { Field } from '@/types/field';
+import type { Field } from '@/types/field';
 import { filterHourOptions } from '@/utils/Time/filterHourOptions';
 import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
 

@@ -1,6 +1,6 @@
 import React, { ComponentProps } from 'react';
 import * as S from './Wrapper.styled';
-import { CSSPaddingVar, CSSRadiusVar } from '@/types/designTokenType';
+import type { CSSPaddingVar, CSSRadiusVar } from '@/types/designTokenType';
 
 export interface WrapperProps extends ComponentProps<'div'> {
   position?: 'relative' | 'absolute' | 'fixed' | 'sticky';
