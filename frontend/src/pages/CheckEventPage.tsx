@@ -64,8 +64,7 @@ const CheckEventPage = () => {
       handleOpenLoginModal();
     } else {
       await userAvailabilitySubmit();
-      await fetchRecommendTimes();
-      await fetchRoomStatistics(session);
+      await Promise.all([fetchRecommendTimes(), fetchRoomStatistics(session)]);
       // 해당 코드가 없으면 기존 value가 남아 있음. 초기화 해줘야 함.
       selectedTimes.value.clear();
       setMode('view');
@@ -75,8 +74,7 @@ const CheckEventPage = () => {
   const loginAndLoadSchedulingData = async () => {
     try {
       await handleLogin();
-      await fetchUserAvailableTime();
-      await fetchRecommendTimes();
+      await Promise.all([fetchUserAvailableTime(), fetchRecommendTimes()]);
       handleCloseLoginModal();
       setMode('edit');
     } catch (err) {
