@@ -6,18 +6,27 @@ import useTimePicker from '@/hooks/useTimePicker';
 import useSelectTime from '@/hooks/useSelectTime';
 import { Field } from '@/types/field';
 import { TimeManager } from '@/utils/common/TimeManager';
-import { useMemo } from 'react';
+import { RefObject, useMemo } from 'react';
 import DatePicker from '@/components/DatePicker';
 import Flex from '@/components/Layout/Flex';
 
 type BasicSettingsProps = {
   title: Field<string>;
   time: Field<{ startTime: string; endTime: string }> & { valid: boolean };
-  isValid: boolean;
   deadline: Field<{ date: string; time: string }>;
+  BasicSettingsRef: RefObject<HTMLDivElement | null>;
+  isValid: boolean;
+  shouldShake: boolean;
 };
 
-const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
+const BasicSettings = ({
+  title,
+  time,
+  deadline,
+  BasicSettingsRef,
+  isValid,
+  shouldShake,
+}: BasicSettingsProps) => {
   const { isOpen: isStartOpen, toggleOpen: toggleStartOpen } = useTimePicker();
   const { isOpen: isEndOpen, toggleOpen: toggleEndOpen } = useTimePicker();
 
@@ -35,7 +44,7 @@ const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
     handleCustomEndClick,
   } = useSelectTime({ timeRange: time.value, setTimeRange: time.set });
   return (
-    <S.Container isValid={isValid}>
+    <S.Container ref={BasicSettingsRef} isValid={isValid} shouldShake={shouldShake}>
       <S.InfoWrapper>
         <S.TextWrapper>
           <Text variant="h3">약속 제목</Text>

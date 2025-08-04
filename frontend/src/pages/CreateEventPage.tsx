@@ -9,17 +9,23 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 import Information from '@/components/Information';
 import { useTheme } from '@emotion/react';
 import IInfo from '@/icons/IInfo';
-import { useEffect } from 'react';
 import useSectionValidation from '@/hooks/CreateRoom/useSectionValidation';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
   const { colors } = useTheme();
 
-  const { title, availableDateSlots, time, deadline, isReadyToCreateRoom, roomInfoSubmit } =
-    useCreateRoom();
-  const { CalendarRef, BasicSettingsRef, invalidSection, validateSection, handleSectionChange } =
-    useSectionValidation(isReadyToCreateRoom);
+  const {
+    title,
+    availableDateSlots,
+    time,
+    deadline,
+    isCalendarReady,
+    isBasicReady,
+    roomInfoSubmit,
+  } = useCreateRoom();
+  const { CalendarRef, BasicSettingsRef, showValidation, shouldShake, validateSection } =
+    useSectionValidation(isCalendarReady, isBasicReady);
 
   const handleCreateRoom = async () => {
     if (!validateSection()) {
@@ -32,22 +38,27 @@ const CreateEventPage = () => {
     }
   };
 
-  useEffect(() => {
-    handleSectionChange();
-  }, [handleSectionChange]);
-
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
           <CalendarSettings
             availableDateSlots={availableDateSlots}
-            isValid={invalidSection !== 'calendar'}
+            CalendarRef={CalendarRef}
+            isValid={showValidation || isCalendarReady}
+            shouldShake={shouldShake}
           />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <BasicSettings title={title} time={time} deadline={deadline} />
+            <BasicSettings
+              title={title}
+              time={time}
+              deadline={deadline}
+              BasicSettingsRef={BasicSettingsRef}
+              isValid={showValidation || isBasicReady}
+              shouldShake={shouldShake}
+            />
             <Information color="orange30">
               <IInfo color={colors.orange40} />
               <Text variant="h4" color="orange40">
