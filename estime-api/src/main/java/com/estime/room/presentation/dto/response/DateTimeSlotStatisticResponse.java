@@ -9,13 +9,13 @@ import java.util.List;
 
 public record DateTimeSlotStatisticResponse(
         @Schema(example = "5")
-        int totalParticipant,
+        int participantCount,
         List<DateTimeSlotVotesResponse> statistic
 ) {
 
     public static DateTimeSlotStatisticResponse from(final DateTimeSlotStatisticOutput output) {
         return new DateTimeSlotStatisticResponse(
-                output.totalParticipant(),
+                output.participantCount(),
                 output.statistic()
                         .stream()
                         .map(each -> new DateTimeSlotVotesResponse(

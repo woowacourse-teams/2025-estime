@@ -4,7 +4,7 @@ import com.estime.room.domain.vo.DateTimeSlot;
 import java.util.List;
 
 public record DateTimeSlotStatisticOutput(
-        int totalParticipant,
+        int participantCount,
         List<DateTimeParticipantsOutput> statistic
 ) {
 
