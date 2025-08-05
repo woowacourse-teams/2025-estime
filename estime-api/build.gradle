@@ -23,6 +23,21 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 
     implementation 'com.github.f4b6a3:tsid-creator:5.2.6' // for Tsid generation
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Spring Cloud AWS 의존성 관리를 위한 BOM (Bill of Materials)
+    dependencyManagement {
+        imports {
+            mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:3.4.0"
+        }
+    }
+
+    // Micrometer가 수집한 메트릭을 CloudWatch로 전송
+    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
+
+    // AWS 서비스와 자동 연동 설정 제공
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter'
 }
 
 tasks.named('test') {
