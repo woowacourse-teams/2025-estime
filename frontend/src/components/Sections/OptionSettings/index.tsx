@@ -12,7 +12,7 @@ import type { Field } from '@/types/field';
 import { TimeManager } from '@/utils/common/TimeManager';
 
 interface OptionSettingsProps {
-  deadLine: Field<{ date: string; time: string }>;
+  deadline: Field<{ date: string; time: string }>;
   isPublic: Field<'public' | 'private'>;
 }
 
@@ -27,14 +27,14 @@ export interface StyleProps {
   borderRadius?: string;
 }
 
-const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
+const OptionSettings = ({ deadline, isPublic }: OptionSettingsProps) => {
   const theme = useTheme();
   const { toggleOpen, isOpen } = useTimePicker();
   const [isOpenAccordion, setIsOpenAccordion] = useState(false);
 
-  const deadLineHourOptions = useMemo(() => {
-    return TimeManager.filterHourOptions(deadLine.value);
-  }, [deadLine.value.date, deadLine.value.time]);
+  const deadlineHourOptions = useMemo(() => {
+    return TimeManager.filterHourOptions(deadline.value);
+  }, [deadline.value.date, deadline.value.time]);
 
   return (
     <S.Container>
@@ -49,15 +49,15 @@ const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
           </S.Wrapper>
           <S.Wrapper gap="var(--gap-2)">
             <DatePicker
-              value={deadLine.value.date}
-              onChange={(e) => deadLine.set({ date: e.target.value, time: deadLine.value.time })}
+              value={deadline.value.date}
+              onChange={(e) => deadline.set({ date: e.target.value, time: deadline.value.time })}
             />
             <TimePicker
-              selectedHour={deadLine.value.time}
-              selectHour={(hour: string) => deadLine.set({ date: deadLine.value.date, time: hour })}
+              selectedHour={deadline.value.time}
+              selectHour={(hour: string) => deadline.set({ date: deadline.value.date, time: hour })}
               toggleOpen={toggleOpen}
               isOpen={isOpen}
-              hourOptions={deadLineHourOptions}
+              hourOptions={deadlineHourOptions}
             />
           </S.Wrapper>
         </S.Wrapper>

@@ -5,14 +5,14 @@ import Text from '@/components/Text';
 import type { Field } from '@/types/field';
 
 type CalendarSettingsProps = {
-  availableDates: Field<Set<string>>;
+  availableDateSlots: Field<Set<string>>;
 };
 
-const CalendarSettings = ({ availableDates }: CalendarSettingsProps) => {
+const CalendarSettings = ({ availableDateSlots }: CalendarSettingsProps) => {
   const today = new Date();
   const dateSelection = useDateSelection({
-    selectedDates: availableDates.value,
-    setSelectedDates: availableDates.set,
+    selectedDates: availableDateSlots.value,
+    setSelectedDates: availableDateSlots.set,
     today,
   });
   const mouseHandlers = {
@@ -28,7 +28,11 @@ const CalendarSettings = ({ availableDates }: CalendarSettingsProps) => {
         <Text variant="h3">날짜 선택</Text>
         <Text variant="h4">가능한 날짜를 드래그해서 선택해주세요!</Text>
       </S.TextWrapper>
-      <Calender today={today} selectedDates={availableDates.value} mouseHandlers={mouseHandlers} />
+      <Calender
+        today={today}
+        selectedDates={availableDateSlots.value}
+        mouseHandlers={mouseHandlers}
+      />
     </S.Container>
   );
 };

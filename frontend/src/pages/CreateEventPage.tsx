@@ -14,8 +14,15 @@ import IInfo from '@/icons/IInfo';
 const CreateEventPage = () => {
   const navigate = useNavigate();
   const { colors } = useTheme();
-  const { title, availableDates, time, deadLine, isPublic, isReadyToCreateRoom, roomInfoSubmit } =
-    useCreateRoom();
+  const {
+    title,
+    availableDateSlots,
+    time,
+    deadline,
+    isPublic,
+    isReadyToCreateRoom,
+    roomInfoSubmit,
+  } = useCreateRoom();
 
   const handleCreateRoom = async () => {
     const session = await roomInfoSubmit();
@@ -28,12 +35,12 @@ const CreateEventPage = () => {
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
-          <CalendarSettings availableDates={availableDates} />
+          <CalendarSettings availableDateSlots={availableDateSlots} />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings title={title} time={time} />
-            <OptionSettings deadLine={deadLine} isPublic={isPublic} />
+            <OptionSettings deadline={deadline} isPublic={isPublic} />
             <Information color="orange30">
               <IInfo color={colors.orange40} />
               <Text variant="h4" color="orange40">

@@ -35,8 +35,8 @@ export const useUserAvailability = ({
   const userAvailabilitySubmit = async () => {
     try {
       const response = await updateUserAvailableTime(session, {
-        userName: userName.value,
-        dateTimes: Array.from(selectedTimes.value),
+        participantName: userName.value,
+        dateTimeSlots: Array.from(selectedTimes.value),
       });
       alert(response.message);
     } catch (err) {
@@ -53,7 +53,7 @@ export const useUserAvailability = ({
     }
     const userAvailableTimeInfo = await getUserAvailableTime(session, name);
     const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-    const dateTimeSlots = dateTimeSlotsResponse.map((item) => item.dateTime);
+    const dateTimeSlots = dateTimeSlotsResponse.map((item) => item.dateTimeSlots);
     userName.set(name);
     if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
       const selectedTimesResponse = new Set(dateTimeSlots);

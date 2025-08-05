@@ -1,6 +1,6 @@
 import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
-import { initialRoomInfo } from '@/constants/initialRoomInfo';
+import { initialCreateRoomInfo } from '@/constants/initialRoomInfo';
 import type { RoomInfo } from '@/types/roomInfo';
 import { useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
@@ -8,7 +8,9 @@ import { TimeManager } from '@/utils/common/TimeManager';
 
 export const useCreateRoom = () => {
   const { platform, channelId } = useExtractQueryParams(['platform', 'channelId'] as const);
-  const [roomInfo, setRoomInfo] = useState<RoomInfo>(initialRoomInfo);
+  const [roomInfo, setRoomInfo] = useState<
+    RoomInfo & { time: { startTime: string; endTime: string } }
+  >(initialCreateRoomInfo);
 
   const isTimeRangeValid = TimeManager.isValidRange(roomInfo.time.startTime, roomInfo.time.endTime);
 
@@ -17,9 +19,10 @@ export const useCreateRoom = () => {
     set: (title: string) => setRoomInfo((prev) => ({ ...prev, title })),
   };
 
-  const availableDates = {
-    value: roomInfo.availableDates,
-    set: (availableDates: Set<string>) => setRoomInfo((prev) => ({ ...prev, availableDates })),
+  const availableDateSlots = {
+    value: roomInfo.availableDateSlots,
+    set: (availableDateSlots: Set<string>) =>
+      setRoomInfo((prev) => ({ ...prev, availableDateSlots })),
   };
 
   const time = {
@@ -29,10 +32,10 @@ export const useCreateRoom = () => {
       setRoomInfo((prev) => ({ ...prev, time: { startTime, endTime } })),
   };
 
-  const deadLine = {
-    value: roomInfo.deadLine,
+  const deadline = {
+    value: roomInfo.deadline,
     set: ({ date, time }: { date: string; time: string }) =>
-      setRoomInfo((prev) => ({ ...prev, deadLine: { date, time } })),
+      setRoomInfo((prev) => ({ ...prev, deadline: { date, time } })),
   };
 
   const isPublic = {
@@ -42,12 +45,12 @@ export const useCreateRoom = () => {
 
   const isReadyToCreateRoom =
     roomInfo.title.trim() !== '' &&
-    roomInfo.availableDates.size > 0 &&
+    roomInfo.availableDateSlots.size > 0 &&
     roomInfo.time.startTime.trim() !== '' &&
     isTimeRangeValid &&
     roomInfo.time.endTime.trim() !== '' &&
-    roomInfo.deadLine.date.trim() !== '' &&
-    roomInfo.deadLine.time.trim() !== '';
+    roomInfo.deadline.date.trim() !== '' &&
+    roomInfo.deadline.time.trim() !== '';
 
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
@@ -73,9 +76,9 @@ export const useCreateRoom = () => {
 
   return {
     title,
-    availableDates,
+    availableDateSlots,
     time,
-    deadLine,
+    deadline,
     isPublic,
     isReadyToCreateRoom,
     roomInfoSubmit,

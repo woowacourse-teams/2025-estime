@@ -85,7 +85,7 @@ export const DateManager = {
    * 기본 마감 기한으로 사용할 내일 날짜와 시각을 반환합니다.
    * @returns 'YYYY-MM-DD'와 'HH:00' 형식의 문자열 객체
    */
-  getDefaultDeadLine(): { defaultDate: string; defaultTime: string } {
+  getDefaultDeadline(): { defaultDate: string; defaultTime: string } {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 

@@ -7,12 +7,12 @@ import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/types/roomInfo';
 import CopyLinkButton from '../CopyLinkButton';
 
-type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadLine' | 'isPublic' | 'title'> & {
+type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'isPublic' | 'title'> & {
   roomSession: string;
 };
 
 const CheckEventPageHeader = ({
-  deadLine,
+  deadline,
   isPublic,
   title,
   roomSession,
@@ -42,7 +42,7 @@ const CheckEventPageHeader = ({
           <IClock color={theme.colors.text} />
 
           <Text variant="h4" color="text">
-            마감일 : {deadLine ? `${deadLine.date} ${deadLine.time}` : '설정되지 않음'}
+            마감일 : {deadline ? `${deadline.date} ${deadline.time}` : '설정되지 않음'}
           </Text>
         </Flex>
       </Flex>

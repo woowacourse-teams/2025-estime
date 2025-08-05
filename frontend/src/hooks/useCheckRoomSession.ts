@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
 import { getRoomInfo } from '@/apis/room/room';
 import type { RoomInfo } from '@/types/roomInfo';
-import { initialRoomInfo } from '@/constants/initialRoomInfo';
+import { initialCheckRoomInfo } from '@/constants/initialRoomInfo';
 import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 
 const useCheckRoomSession = () => {
   const session = useExtractQueryParams('id');
-  const [roomInfo, setRoomInfo] = useState<RoomInfo & { roomSession: string }>({
-    ...initialRoomInfo,
-    roomSession: '',
-  });
+  const [roomInfo, setRoomInfo] = useState<
+    RoomInfo & { roomSession: string; availableTimeSlots: string[] }
+  >(initialCheckRoomInfo);
 
   const fetchSession = async () => {
     if (!session) return;

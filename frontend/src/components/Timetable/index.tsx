@@ -6,15 +6,12 @@ import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import Button from '@/components/Button';
 import { DateManager } from '@/utils/common/DateManager';
-import { TimeManager } from '@/utils/common/TimeManager';
+import { FormatManager } from '@/utils/common/FormatManager';
 
 interface TimetableProps {
   name: string;
-  time: {
-    startTime: string;
-    endTime: string;
-  };
-  availableDates: Set<string>;
+  availableTimeSlots: string[];
+  availableDateSlots: Set<string>;
   selectedTimes: Field<Set<string>>;
   userAvailabilitySubmit: () => void;
   ref: React.RefObject<HTMLDivElement | null>;
@@ -22,22 +19,18 @@ interface TimetableProps {
 
 const Timetable = ({
   name,
-  time,
-  availableDates,
+  availableTimeSlots,
+  availableDateSlots,
   selectedTimes,
   userAvailabilitySubmit,
   ref,
 }: TimetableProps) => {
-  const { startTime, endTime } = time;
+  const parsedTimeSlots = availableTimeSlots.map((timeSlot) => {
+    const [, minute] = FormatManager.parseHourMinute(timeSlot);
+    return { timeText: timeSlot, isHour: minute === 0 };
+  });
 
-  const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-  const endTimeInMinutes = endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-  const interval = 30;
-
-  const timeList = [
-    { timeText: 'Dates', isHour: false },
-    ...TimeManager.generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
-  ];
+  const timeList = [{ timeText: 'Dates', isHour: false }, ...parsedTimeSlots];
 
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
     selectedTimes: selectedTimes.value,
@@ -80,7 +73,7 @@ const Timetable = ({
                 </S.GridContainer>
               ))}
             </S.TimeSlotColumn>
-            {[...availableDates].map((date) => (
+            {[...availableDateSlots].map((date) => (
               <Wrapper key={date} center={false}>
                 {timeList.map(({ timeText }) => (
                   <S.HeaderCell
