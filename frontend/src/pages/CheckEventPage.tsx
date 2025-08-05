@@ -118,7 +118,6 @@ const CheckEventPage = () => {
                     />
                   ) : (
                     <Timetable
-                      name={userName.value}
                       time={roomInfo.time}
                       availableDates={roomInfo.availableDates}
                       selectedTimes={selectedTimes}

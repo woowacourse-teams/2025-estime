@@ -8,7 +8,6 @@ import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 
 interface TimetableProps {
-  name: string;
   time: {
     startTime: string;
     endTime: string;
