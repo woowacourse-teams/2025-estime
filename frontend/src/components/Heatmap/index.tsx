@@ -6,23 +6,14 @@ import * as S from './Heatmap.styled';
 import HeatMapCell from './HeatMapCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 interface HeatmapProps {
-  time: {
-    startTime: string;
-    endTime: string;
-  };
+  dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
 }
-const Heatmap = ({ time, availableDates, roomStatistics }: HeatmapProps) => {
-  const { startTime, endTime } = time;
-
-  const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-  const endTimeInMinutes = endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-  const interval = 30;
-
+const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
   const timeList = [
     { timeText: 'Dates', isHour: false },
-    ...TimeManager.generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
+    ...dateTimeSlots.map((timeText) => ({ timeText, isHour: timeText.endsWith(':00') })),
   ];
 
   return (

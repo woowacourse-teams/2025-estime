@@ -7,7 +7,6 @@ import { useModalControl } from '@/hooks/TimeTableRoom/useModalControl';
 import { useUserLogin } from '@/hooks/Login/useUserLogin';
 import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
-import RecommendTime from '@/components/RecommendTime';
 import useRecommendTime from '@/hooks/RecommendTime/useRecommendTime';
 import { useState } from 'react';
 import TimeTableHeader from '@/components/TimeTableHeader';
@@ -30,8 +29,6 @@ const CheckEventPage = () => {
       name,
       session,
     });
-
-  const { recommendTimeData, fetchRecommendTimes } = useRecommendTime(session);
 
   const { roomStatistics, fetchRoomStatistics } = useRoomStatistics({
     session,
@@ -65,7 +62,7 @@ const CheckEventPage = () => {
       else handleOpenLoginModal();
     } else {
       await userAvailabilitySubmit();
-      await Promise.all([fetchRecommendTimes(), fetchRoomStatistics(session)]);
+      await fetchRoomStatistics(session);
       setMode('view');
     }
   };
@@ -73,7 +70,7 @@ const CheckEventPage = () => {
   const loginAndLoadSchedulingData = async () => {
     try {
       await handleLogin();
-      await Promise.all([fetchUserAvailableTime(), fetchRecommendTimes()]);
+      await fetchUserAvailableTime();
       handleCloseLoginModal();
       setMode('edit');
     } catch (err) {
@@ -105,14 +102,14 @@ const CheckEventPage = () => {
                   />
                   {mode === 'view' ? (
                     <Heatmap
-                      time={roomInfo.time}
-                      availableDates={roomInfo.availableDates}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={roomInfo.availableDateSlots}
                       roomStatistics={roomStatistics}
                     />
                   ) : (
                     <Timetable
-                      time={roomInfo.time}
-                      availableDates={roomInfo.availableDates}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={roomInfo.availableDateSlots}
                       selectedTimes={selectedTimes}
                     />
                   )}
