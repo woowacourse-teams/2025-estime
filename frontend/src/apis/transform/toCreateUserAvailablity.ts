@@ -4,7 +4,7 @@ export const toCreateUserAvailability = (userAvailability: UserAvailability) => 
   const { userName, selectedTimes } = userAvailability;
 
   return {
-    userName,
-    dateTimes: Array.from(selectedTimes),
+    participantName: userName,
+    dateTimeSlots: Array.from(selectedTimes),
   };
 };
