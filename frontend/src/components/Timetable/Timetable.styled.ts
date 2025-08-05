@@ -13,6 +13,7 @@ export const TimeSlotColumn = styled.div`
   background-color: ${({ theme }) => theme.colors.background};
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding-top: var(--padding-8);
 `;
 
