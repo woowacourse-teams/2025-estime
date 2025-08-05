@@ -67,6 +67,7 @@ public class RoomApplicationService {
                 .collect(Collectors.toMap(Participant::getId, Participant::getName));
 
         return new DateTimeSlotStatisticOutput(
+                participantIds.size(),
                 dateTimeSlotParticipants.keySet().stream()
                         .map(dateTimeSlot ->
                                 new DateTimeParticipantsOutput(
