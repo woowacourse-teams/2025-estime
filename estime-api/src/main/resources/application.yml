@@ -43,3 +43,27 @@ springdoc:
 
 server:
   forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      sla:
+        http.server.requests: 50ms, 100ms, 500ms
+
+    export:
+      cloudwatch:
+        namespace: "estime-api-dev"
+        step: 1m
+
+cloud:
+  aws:
+    region:
+      auto: true
+    stack:
+      auto: false
