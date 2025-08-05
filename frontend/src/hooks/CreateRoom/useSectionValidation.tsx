@@ -11,12 +11,10 @@ const useSectionValidation = (isCalendarReady: boolean, isBasicReady: boolean) =
     setShowValidation(false);
 
     if (!isCalendarReady) {
-      // CalendarRef.current?.focus();
       setShouldShake(true);
       return false;
     }
     if (!isBasicReady) {
-      // BasicSettingsRef.current?.focus();
       setShouldShake(true);
       return false;
     }
