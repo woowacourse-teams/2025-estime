@@ -46,7 +46,7 @@ public interface RoomControllerSpecification {
     @GetMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") String session,
-            @RequestParam("name") String participantName
+            @RequestParam("participantName") String participantName
     );
 
     @Operation(summary = "참여자 제출 시간 수정")
