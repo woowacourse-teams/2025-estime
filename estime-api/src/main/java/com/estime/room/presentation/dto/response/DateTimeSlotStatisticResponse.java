@@ -8,11 +8,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public record DateTimeSlotStatisticResponse(
+        @Schema(example = "5")
+        int totalParticipant,
         List<DateTimeSlotVotesResponse> statistic
 ) {
 
     public static DateTimeSlotStatisticResponse from(final DateTimeSlotStatisticOutput output) {
         return new DateTimeSlotStatisticResponse(
+                output.totalParticipant(),
                 output.statistic()
                         .stream()
                         .map(each -> new DateTimeSlotVotesResponse(
