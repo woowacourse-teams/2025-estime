@@ -7,7 +7,6 @@ import { useModalControl } from '@/hooks/TimeTableRoom/useModalControl';
 import { useUserLogin } from '@/hooks/Login/useUserLogin';
 import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
-import useRecommendTime from '@/hooks/RecommendTime/useRecommendTime';
 import { useState } from 'react';
 import TimeTableHeader from '@/components/TimeTableHeader';
 import Heatmap from '@/components/Heatmap';
