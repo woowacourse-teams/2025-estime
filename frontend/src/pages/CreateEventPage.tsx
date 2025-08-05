@@ -24,8 +24,11 @@ const CreateEventPage = () => {
     isBasicReady,
     roomInfoSubmit,
   } = useCreateRoom();
-  const { CalendarRef, BasicSettingsRef, showValidation, shouldShake, validateSection } =
-    useSectionValidation(isCalendarReady, isBasicReady);
+
+  const { showValidation, shouldShake, validateSection } = useSectionValidation(
+    isCalendarReady,
+    isBasicReady
+  );
 
   const handleCreateRoom = async () => {
     if (!validateSection()) {
@@ -44,7 +47,6 @@ const CreateEventPage = () => {
         <Flex.Item flex={1}>
           <CalendarSettings
             availableDateSlots={availableDateSlots}
-            CalendarRef={CalendarRef}
             isValid={!showValidation.current || isCalendarReady}
             shouldShake={shouldShake}
           />
@@ -55,7 +57,6 @@ const CreateEventPage = () => {
               title={title}
               time={time}
               deadline={deadline}
-              BasicSettingsRef={BasicSettingsRef}
               isValid={!showValidation.current || isBasicReady}
               shouldShake={shouldShake}
             />

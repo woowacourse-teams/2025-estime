@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const useSectionValidation = (isCalendarReady: boolean, isBasicReady: boolean) => {
-  const CalendarRef = useRef<HTMLDivElement | null>(null);
-  const BasicSettingsRef = useRef<HTMLDivElement | null>(null);
-
   const showValidation = useRef(false);
   const [shouldShake, setShouldShake] = useState(false);
 
@@ -32,8 +29,6 @@ const useSectionValidation = (isCalendarReady: boolean, isBasicReady: boolean) =
   }, [shouldShake]);
 
   return {
-    CalendarRef,
-    BasicSettingsRef,
     showValidation,
     shouldShake,
     validateSection,

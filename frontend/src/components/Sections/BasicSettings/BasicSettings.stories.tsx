@@ -1,6 +1,6 @@
 import type { Meta, StoryFn } from '@storybook/react-webpack5';
 import BasicSettings from '.';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import type { Field } from '@/types/field';
 import { TimeManager } from '@/utils/common/TimeManager';
 
@@ -11,7 +11,6 @@ export default {
   argTypes: {
     title: { control: false },
     time: { control: false },
-    BasicSettingsRef: { control: false },
     isValid: {
       control: 'boolean',
     },
@@ -24,7 +23,6 @@ const Template: StoryFn<{ isValid: boolean }> = (args) => {
     value: title,
     set: setTitle,
   };
-  const BasicSettingsRef = useRef<HTMLDivElement | null>(null);
 
   const [time, setTime] = useState({ startTime: '', endTime: '' });
 
@@ -49,7 +47,6 @@ const Template: StoryFn<{ isValid: boolean }> = (args) => {
       title={titleField}
       time={timeField}
       deadline={deadlineField}
-      BasicSettingsRef={BasicSettingsRef}
       isValid={args.isValid}
       shouldShake={true}
     />
