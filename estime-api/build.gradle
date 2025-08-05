@@ -26,18 +26,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // Spring Cloud AWS 의존성 관리를 위한 BOM (Bill of Materials)
-    dependencyManagement {
-        imports {
-            mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:3.4.0"
-        }
-    }
-
-    // Micrometer가 수집한 메트릭을 CloudWatch로 전송
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
-
-    // AWS 서비스와 자동 연동 설정 제공
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {
