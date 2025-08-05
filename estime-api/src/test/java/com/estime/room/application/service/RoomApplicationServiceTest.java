@@ -5,9 +5,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.common.NotFoundException;
+import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
+import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
+import com.estime.room.domain.Room;
+import com.estime.room.domain.RoomRepository;
+import com.estime.room.domain.participant.Participant;
+import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.vo.DateSlot;
 import com.estime.room.domain.vo.DateTimeSlot;
 import com.estime.room.domain.vo.TimeSlot;
@@ -28,6 +34,12 @@ class RoomApplicationServiceTest {
 
     @Autowired
     private RoomApplicationService roomApplicationService;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @DisplayName("방을 생성할 수 있다.")
     @Test
@@ -122,6 +134,66 @@ class RoomApplicationServiceTest {
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("deadline cannot be in the past");
+    }
+
+    @DisplayName("중복된 이름의 참여자를 확인할 수 있다.")
+    @Test
+    void canCheckDuplicatedParticipantName() {
+        // given
+        final Room room = roomRepository.save(
+                Room.withoutId(
+                        "test",
+                        List.of(DateSlot.from(LocalDate.now().plusDays(1)),
+                                DateSlot.from(LocalDate.now().plusDays(2)),
+                                DateSlot.from(LocalDate.now().plusDays(3))),
+                        List.of(TimeSlot.from(LocalTime.of(10, 0)),
+                                TimeSlot.from(LocalTime.of(10, 30)),
+                                TimeSlot.from(LocalTime.of(11, 0)),
+                                TimeSlot.from(LocalTime.of(11, 30))),
+                        DateTimeSlot.from(
+                                LocalDateTime.of(
+                                        LocalDate.now().plusDays(3), LocalTime.of(10, 0)))
+                ));
+
+        final Participant participant = participantRepository.save(Participant.withoutId(room.getId(), "강산"));
+        System.out.println(participant);
+
+        // when
+        final ParticipantCheckOutput output = roomApplicationService.checkParticipantExists(
+                room.getSession(), "강산");
+
+        // then
+        assertThat(output.exists()).isTrue();
+    }
+
+    @DisplayName("하나의 방에 중복된 이름의 참여자를 만들 수 없다.")
+    @Test
+    void cannotCreateDuplicateParticipantName() {
+        // given
+        final Room room = roomRepository.save(
+                Room.withoutId(
+                        "test",
+                        List.of(DateSlot.from(LocalDate.now().plusDays(1)),
+                                DateSlot.from(LocalDate.now().plusDays(2)),
+                                DateSlot.from(LocalDate.now().plusDays(3))),
+                        List.of(TimeSlot.from(LocalTime.of(10, 0)),
+                                TimeSlot.from(LocalTime.of(10, 30)),
+                                TimeSlot.from(LocalTime.of(11, 0)),
+                                TimeSlot.from(LocalTime.of(11, 30))),
+                        DateTimeSlot.from(
+                                LocalDateTime.of(
+                                        LocalDate.now().plusDays(3), LocalTime.of(10, 0)))
+                ));
+
+        final Participant participant = participantRepository.save(Participant.withoutId(room.getId(), "강산"));
+        System.out.println(participant);
+
+        // when
+        // then
+        assertThatThrownBy(() -> roomApplicationService.saveParticipant(
+                new ParticipantCreateInput(room.getSession(), "강산")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Participant name already exists: 강산");
     }
 
     private boolean isValidTsid(final String tsid) {

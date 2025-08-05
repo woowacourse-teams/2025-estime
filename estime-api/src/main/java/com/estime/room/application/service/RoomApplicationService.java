@@ -6,6 +6,7 @@ import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipantsOutput;
+import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.ParticipantCreateOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
@@ -102,10 +103,25 @@ public class RoomApplicationService {
     }
 
     @Transactional
-    public ParticipantCreateOutput saveParticipant(final String session, final ParticipantCreateInput input) {
+    public ParticipantCreateOutput saveParticipant(final ParticipantCreateInput input) {
+        final Long roomId = roomRepository.findIdBySession(input.roomSession())
+                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+
+        final boolean exists = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
+
+        if (exists) {
+            throw new IllegalArgumentException(
+                    "Participant name already exists: %s".formatted(input.participantName()));
+        }
+
+        return ParticipantCreateOutput.from(participantRepository.save(input.toEntity(roomId)));
+    }
+
+    public ParticipantCheckOutput checkParticipantExists(final String session, final String participantName) {
         final Long roomId = roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
 
-        return ParticipantCreateOutput.from(participantRepository.save(input.toEntity(roomId)));
+        return ParticipantCheckOutput.from(
+                participantRepository.existsByRoomIdAndName(roomId, participantName));
     }
 }
