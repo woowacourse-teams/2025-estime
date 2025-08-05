@@ -1,5 +1,5 @@
-import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import { getHeatMapCellBackgroundColor } from '@/utils/getBackgroundColor';
+import { DateManager } from '@/utils/common/DateManager';
 import { useTheme } from '@emotion/react';
 import Flex from '@/components/Layout/Flex';
 import Text from '@/components/Text';
@@ -31,7 +31,7 @@ const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
         <Text variant="body" color="text">
           <Flex direction="column" justify="center" align="center">
             <Text>{date.split('-').slice(1).join('.')}</Text>
-            <Text>({getDayOfWeek(date)})</Text>
+            <Text>({DateManager.getDayOfWeek(date)})</Text>
           </Flex>
         </Text>
       )}

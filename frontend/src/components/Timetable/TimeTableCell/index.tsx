@@ -2,8 +2,8 @@ import * as S from './TimeTableCell.styled';
 import type { Field } from '@/types/field';
 import Text from '@/components/Text';
 import Flex from '@/components/Layout/Flex';
-import { getDayOfWeek } from '@/utils/getDayOfWeek';
 import { getHeaderCellBackgroundColor } from '@/utils/getBackgroundColor';
+import { DateManager } from '@/utils/common/DateManager';
 import { useTheme } from '@emotion/react';
 
 interface TimeTableCellProps {
@@ -40,7 +40,7 @@ const TimeTableCell = ({ date, timeText, handlers, selectedTimes }: TimeTableCel
         <Text variant="body" color="text">
           <Flex direction="column" justify="center" align="center">
             <Text>{date.split('-').slice(1).join('.')}</Text>
-            <Text>({getDayOfWeek(date)})</Text>
+            <Text>({DateManager.getDayOfWeek(date)})</Text>
           </Flex>
         </Text>
       )}

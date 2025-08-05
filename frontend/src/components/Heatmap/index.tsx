@@ -1,4 +1,4 @@
-import generateTimeList from '@/utils/Calendar/generateTimeList';
+import { TimeManager } from '@/utils/common/TimeManager';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
@@ -22,7 +22,7 @@ const Heatmap = ({ time, availableDates, roomStatistics }: HeatmapProps) => {
 
   const timeList = [
     { timeText: 'Dates', isHour: false },
-    ...generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
+    ...TimeManager.generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
   ];
 
   return (
