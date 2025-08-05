@@ -29,10 +29,11 @@ export interface CreateUserResponseType {
 }
 
 export type StatisticItem = {
-  dateTime: string;
-  userNames: string[];
+  dateTimeSlot: string;
+  participantNames: string[];
 };
 
 export type GetRoomStatisticsResponseType = {
+  participantCount: number;
   statistic: StatisticItem[] | [];
 };
