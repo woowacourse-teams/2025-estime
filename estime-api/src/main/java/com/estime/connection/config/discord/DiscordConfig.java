@@ -1,8 +1,8 @@
 package com.estime.connection.config.discord;
 
+import com.estime.connection.domain.PlatformMessage;
 import com.estime.connection.infrastructure.discord.DiscordSlashCommandListener;
 import com.estime.connection.infrastructure.discord.DiscordSlashCommandRegistrar;
-import com.estime.connection.domain.PlatformMessage;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;

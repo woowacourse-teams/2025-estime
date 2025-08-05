@@ -99,7 +99,7 @@ class RoomApplicationServiceTest {
                 null,
                 List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
                 DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0))
-                );
+        );
 
         // when // then
         assertThatThrownBy(() -> roomApplicationService.saveRoom(input))

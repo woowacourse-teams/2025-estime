@@ -1,7 +1,7 @@
 package com.estime.connection.application.dto.input;
 
-import com.estime.room.domain.vo.DateTimeSlot;
 import com.estime.room.domain.Room;
+import com.estime.room.domain.vo.DateTimeSlot;
 
 public record ConnectedRoomCreatedMessageInput(
         String shortcut,

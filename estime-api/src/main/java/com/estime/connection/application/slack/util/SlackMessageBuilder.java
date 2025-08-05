@@ -38,7 +38,8 @@ public class SlackMessageBuilder {
 
     public List<LayoutBlock> buildConnectedRoomCreatedBlocks(final ConnectedRoomCreatedMessageInput input) {
         final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
-        final String formattedDeadline = input.deadline().getStartAt().format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
+        final String formattedDeadline = input.deadline().getStartAt()
+                .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
 
         return List.of(
                 HeaderBlock.builder()

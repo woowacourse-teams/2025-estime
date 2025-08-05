@@ -1,7 +1,6 @@
 package com.estime.room.domain.vo;
 
-import
-        java.time.Duration;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Objects;
 import lombok.AccessLevel;

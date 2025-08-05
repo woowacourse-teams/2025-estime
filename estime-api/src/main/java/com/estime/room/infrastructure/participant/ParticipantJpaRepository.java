@@ -4,7 +4,6 @@ import com.estime.room.domain.participant.Participant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ParticipantJpaRepository extends JpaRepository<Participant, Long> {
@@ -15,4 +14,5 @@ public interface ParticipantJpaRepository extends JpaRepository<Participant, Lon
 
     List<Participant> findAllByRoomId(Long roomId);
 
-    List<Participant> findByIdIn(Collection<Long> ids);}
+    List<Participant> findByIdIn(Collection<Long> ids);
+}

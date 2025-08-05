@@ -22,9 +22,4 @@ public enum PlatformCommand {
     public String getCommandWithSlash() {
         return "/" + command;
     }
-
-    public static boolean exists(final String command) {
-        return Arrays.stream(values())
-                .anyMatch(cmd -> cmd.getCommandWithSlash().equals(command));
-    }
 }

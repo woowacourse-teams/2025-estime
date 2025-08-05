@@ -27,7 +27,8 @@ public class Votes {
         final Map<DateTimeSlot, Set<Long>> statistic = new HashMap<>();
         for (final Vote element : elements) {
             statistic
-                    .computeIfAbsent(DateTimeSlot.from(element.getId().getDateTimeSlot().getStartAt()), slot -> new HashSet<>())
+                    .computeIfAbsent(DateTimeSlot.from(element.getId().getDateTimeSlot().getStartAt()),
+                            slot -> new HashSet<>())
                     .add(element.getId().getParticipantId());
         }
 

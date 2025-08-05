@@ -17,6 +17,7 @@ public record ParticipantVotesUpdateRequest(
 ) {
 
     public VotesUpdateInput toInput(final String roomSession) {
-        return new VotesUpdateInput(roomSession, participantName, dateTimeSlots.stream().map(DateTimeSlot::from).toList());
+        return new VotesUpdateInput(roomSession, participantName,
+                dateTimeSlots.stream().map(DateTimeSlot::from).toList());
     }
 }
