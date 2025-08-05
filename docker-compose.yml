@@ -21,5 +21,6 @@ services:
       - ./estime-api/.env.docker
     volumes:
       - ./logs:/app/logs
+
 volumes:
   db_data:
