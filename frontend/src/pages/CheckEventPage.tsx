@@ -21,7 +21,7 @@ const CheckEventPage = () => {
 
   const { isLoginModalOpen, handleOpenLoginModal, handleCloseLoginModal } = useModalControl();
 
-  const { handleLogin, userData, handleUserData, name } = useUserLogin({
+  const { handleLogin, userData, handleUserData, name, resetUserData } = useUserLogin({
     session,
   });
 
@@ -59,14 +59,19 @@ const CheckEventPage = () => {
 
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
+  const resetAllData = () => {
+    //혹시 더 리셋할 것이 있나?
+    resetUserData();
+    selectedTimes.value.clear();
+  };
+
   const handleToggleEditMode = async () => {
     if (mode === 'view') {
       handleOpenLoginModal();
     } else {
       await userAvailabilitySubmit();
       await Promise.all([fetchRecommendTimes(), fetchRoomStatistics(session)]);
-      // 해당 코드가 없으면 기존 value가 남아 있음. 초기화 해줘야 함.
-      selectedTimes.value.clear();
+      resetAllData();
       setMode('view');
     }
   };

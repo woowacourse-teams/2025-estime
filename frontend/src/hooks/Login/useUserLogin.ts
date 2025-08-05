@@ -25,11 +25,12 @@ export function useUserLogin({ session }: { session: string | null }) {
       password: userData.password,
     });
   };
-
+  const resetUserData = () => setUserData({ name: '', password: '' });
   return {
     name: userData.name,
     userData,
     handleUserData,
     handleLogin,
+    resetUserData,
   };
 }
