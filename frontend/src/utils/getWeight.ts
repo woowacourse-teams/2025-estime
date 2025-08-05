@@ -12,4 +12,4 @@ export const createSimpleWeightStrategy = (): WeightCalculateStrategy => {
   return (value: number, min: number, max: number) => getSimpleWeight(value, max);
 };
 
-export const simpleWeightStrategy = createSimpleWeightStrategy();
+export const weightCalculateStrategy = createSimpleWeightStrategy();

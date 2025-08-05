@@ -10,27 +10,25 @@ export interface DateCellInfo {
 
 export default function useRoomStatistics({
   session,
-  weightCalculateStrat,
+  weightCalculateStrategy,
 }: {
   session: string;
-  weightCalculateStrat: WeightCalculateStrategy;
+  weightCalculateStrategy: WeightCalculateStrategy;
 }) {
   const [roomStatistics, setRoomStatistics] = useState<Map<string, DateCellInfo>>(new Map());
-
+  const dummyMinValue = 0;
   const formatRoomStatistics = (statistics: StatisticItem[]): Map<string, DateCellInfo> => {
     const roomStatistics = new Map<string, DateCellInfo>();
     if (statistics.length === 0) {
       return roomStatistics;
     }
-
-    const userCounts = statistics.map((stat) => stat.userNames.length);
-    const min = Math.min(...userCounts);
-    // MAX 값은 나중에 API에서 제공으로 대체.
-    const max = Math.max(...userCounts);
+    // 이건 API 넘어오기 전까지만 유지.
+    const userCounts = Math.max(...statistics.map((stat) => stat.userNames.length));
 
     statistics.map((stat) =>
       roomStatistics.set(stat.dateTime, {
-        weight: weightCalculateStrat(stat.userNames.length, min, max),
+        // 인터페이스 유지를 위해 중간 min 값은 0으로 두면 될듯.
+        weight: weightCalculateStrategy(stat.userNames.length, dummyMinValue, userCounts),
         // userNames는 후에 툴팁 제작에 사용될 예정이라 미리 파두었음.
         userNames: stat.userNames,
       })
