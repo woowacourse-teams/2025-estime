@@ -45,7 +45,7 @@ const CreateEventPage = () => {
           <CalendarSettings
             availableDateSlots={availableDateSlots}
             CalendarRef={CalendarRef}
-            isValid={showValidation || isCalendarReady}
+            isValid={!showValidation.current || isCalendarReady}
             shouldShake={shouldShake}
           />
         </Flex.Item>
@@ -56,7 +56,7 @@ const CreateEventPage = () => {
               time={time}
               deadline={deadline}
               BasicSettingsRef={BasicSettingsRef}
-              isValid={showValidation || isBasicReady}
+              isValid={!showValidation.current || isBasicReady}
               shouldShake={shouldShake}
             />
             <Information color="orange30">

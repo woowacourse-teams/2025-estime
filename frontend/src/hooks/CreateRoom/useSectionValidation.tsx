@@ -4,11 +4,11 @@ const useSectionValidation = (isCalendarReady: boolean, isBasicReady: boolean) =
   const CalendarRef = useRef<HTMLDivElement | null>(null);
   const BasicSettingsRef = useRef<HTMLDivElement | null>(null);
 
-  const [showValidation, setShowValidation] = useState(true);
+  const showValidation = useRef(false);
   const [shouldShake, setShouldShake] = useState(false);
 
   const validateSection = useCallback(() => {
-    setShowValidation(false);
+    showValidation.current = true;
 
     if (!isCalendarReady) {
       setShouldShake(true);
