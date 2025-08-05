@@ -35,4 +35,5 @@ export const getRoomStatistics = async (
   sessionId: string
 ): Promise<GetRoomStatisticsResponseType> => {
   return await api.get(`${ROOM_API_PATH}/${sessionId}/statistics/date-time-slots`);
+
 };
