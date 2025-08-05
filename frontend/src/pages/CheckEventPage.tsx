@@ -8,8 +8,6 @@ import { useModalControl } from '@/hooks/TimeTableRoom/useModalControl';
 import { useUserLogin } from '@/hooks/Login/useUserLogin';
 import useUserAvailability from '@/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/components/CheckEventPageHeader';
-import RecommendTime from '@/components/RecommendTime';
-import useRecommendTime from '@/hooks/RecommendTime/useRecommendTime';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -33,14 +31,11 @@ const CheckEventPage = () => {
       session,
     });
 
-  const { recommendTimeData, fetchRecommendTimes } = useRecommendTime(session);
-
   const handleInitAfterLogin = async () => {
     try {
       await handleLogin();
       handleCloseAllModal();
       await fetchUserAvailableTime();
-      await fetchRecommendTimes();
     } catch (err) {
       const e = err as Error;
       console.log(e);
@@ -53,7 +48,7 @@ const CheckEventPage = () => {
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
       <Flex direction="column" gap="var(--gap-6)">
         <CheckEventPageHeader
-          deadLine={roomInfo.deadLine}
+          deadline={roomInfo.deadline}
           isPublic={roomInfo.isPublic}
           title={roomInfo.title}
           roomSession={roomInfo.roomSession}
@@ -63,20 +58,13 @@ const CheckEventPage = () => {
             <Flex.Item flex={2}>
               <Timetable
                 name={userName.value}
-                time={roomInfo.time}
-                availableDates={roomInfo.availableDates}
+                availableTimeSlots={roomInfo.availableTimeSlots}
+                availableDateSlots={roomInfo.availableDateSlots}
                 selectedTimes={selectedTimes}
                 userAvailabilitySubmit={async () => {
                   await userAvailabilitySubmit();
-                  await fetchRecommendTimes();
                 }}
                 ref={modalTargetRef}
-              />
-            </Flex.Item>
-            <Flex.Item flex={1}>
-              <RecommendTime
-                dateTimes={recommendTimeData.map((item) => item.dateTime)}
-                isPublic={roomInfo.isPublic === 'public'}
               />
             </Flex.Item>
           </Flex>
