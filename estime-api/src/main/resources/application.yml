@@ -1,8 +1,6 @@
 logging:
   file:
-    # 로그 파일을 저장할 컨테이너 내부 경로
     path: /app/logs
-  # 파일에 출력할 로그 형식 지정 (선택 사항)
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   level:
