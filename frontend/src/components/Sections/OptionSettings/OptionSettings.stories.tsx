@@ -10,14 +10,14 @@ export default {
 } as Meta<typeof OptionSettings>;
 
 const Template: StoryFn = () => {
-  const [deadLine, setDeadLine] = useState<{ date: string; time: string }>({
+  const [deadline, setdeadline] = useState<{ date: string; time: string }>({
     date: '2025-07-23',
     time: '16:00',
   });
 
-  const deadLineField: Field<{ date: string; time: string }> = {
-    value: deadLine,
-    set: setDeadLine,
+  const deadlineField: Field<{ date: string; time: string }> = {
+    value: deadline,
+    set: setdeadline,
   };
 
   const [isPublic, setIsPublic] = useState<'public' | 'private'>('public');
@@ -27,7 +27,7 @@ const Template: StoryFn = () => {
     set: setIsPublic,
   };
 
-  return <OptionSettings deadLine={deadLineField} isPublic={isPublicField} />;
+  return <OptionSettings deadline={deadlineField} isPublic={isPublicField} />;
 };
 
 export const Default = Template.bind({});

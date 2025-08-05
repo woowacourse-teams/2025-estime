@@ -21,8 +21,7 @@ export function useUserLogin({ session }: { session: string | null }) {
       throw new Error('아이디를 입력해주세요.');
     }
     await joinUser(session, {
-      name: userData.name,
-      password: userData.password,
+      participantName: userData.name,
     });
   };
 

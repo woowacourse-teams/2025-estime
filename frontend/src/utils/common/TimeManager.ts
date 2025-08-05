@@ -48,26 +48,32 @@ export const TimeManager = {
   /**
    * 주어진 시작~종료 시간 범위 내에서 일정 간격마다 시간 리스트를 생성합니다.
    * @param params - 시간 생성 조건
-   * @param params.startTimeInMinutes - 시작 시간 (분 단위)
-   * @param params.endTimeInMinutes - 종료 시간 (분 단위)
+   * @param params.startTime - 시작 시간 'HH:mm' 형식의 시간 문자열
+   * @param params.endTime - 종료 시간 'HH:mm' 형식의 시간 문자열
    * @param params.interval - 간격 (분 단위)
    * @returns 시간 텍스트와 정시 여부를 포함한 리스트
    */
   generateTimeList({
-    startTimeInMinutes,
-    endTimeInMinutes,
+    startTime,
+    endTime,
     interval,
   }: {
-    startTimeInMinutes: number;
-    endTimeInMinutes: number;
+    startTime: string;
+    endTime: string;
     interval: number;
-  }): { timeText: string; isHour: boolean }[] {
+  }): string[] {
+    const [startHour, startMinute] = FormatManager.parseHourMinute(startTime);
+    const [endHour, endMinute] = FormatManager.parseHourMinute(endTime);
+
+    const startTimeInMinutes = startHour * 60 + startMinute;
+    const endTimeInMinutes = endHour * 60 + endMinute;
+
     const timeList = [];
 
     for (let i = startTimeInMinutes; i < endTimeInMinutes; i += interval) {
       const [hour, minute] = TimeManager.toHourMinute(i);
       const timeText = FormatManager.formatHourMinute(hour, minute);
-      timeList.push({ timeText, isHour: minute === 0 });
+      timeList.push(timeText);
     }
 
     return timeList;
