@@ -7,10 +7,6 @@ const meta: Meta<typeof Heatmap> = {
   component: Heatmap,
   tags: ['autodocs'],
   argTypes: {
-    roomName: {
-      control: { type: 'text' },
-      description: '방 이름',
-    },
     time: {
       control: { type: 'object' },
       description: '시작 시간과 종료 시간',
@@ -300,7 +296,6 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
 
 export const Default: Story = {
   args: {
-    roomName: '아인슈타임 정기 산악회',
     time: {
       startTime: '09:00',
       endTime: '18:00',
@@ -312,7 +307,6 @@ export const Default: Story = {
 
 export const MorningMeeting: Story = {
   args: {
-    roomName: '살구 파괴자 자조 모임',
     time: {
       startTime: '09:00',
       endTime: '12:00',
@@ -324,7 +318,6 @@ export const MorningMeeting: Story = {
 
 export const WeeklySchedule: Story = {
   args: {
-    roomName: '지하철 10호선 연장근로 산악 비대회',
     time: {
       startTime: '10:00',
       endTime: '16:00',
@@ -470,7 +463,6 @@ export const WeeklySchedule: Story = {
 
 export const EmptySchedule: Story = {
   args: {
-    roomName: '빈 일정',
     time: {
       startTime: '14:00',
       endTime: '17:00',
@@ -482,7 +474,6 @@ export const EmptySchedule: Story = {
 
 export const SingleDay: Story = {
   args: {
-    roomName: '당일 회의',
     time: {
       startTime: '13:00',
       endTime: '15:00',

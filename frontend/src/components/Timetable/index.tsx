@@ -1,11 +1,11 @@
 import * as S from './Timetable.styled';
 import { Field } from '@/types/field';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
-import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
+import TimeTableCell from './TimeTableCell';
 
 interface TimetableProps {
   time: {
@@ -53,24 +53,13 @@ const Timetable = ({ time, availableDates, selectedTimes }: TimetableProps) => {
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false}>
             {timeList.map(({ timeText }) => (
-              <S.HeaderCell
+              <TimeTableCell
                 key={`${date} ${timeText}`}
-                onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
-                onMouseUp={() => onMouseUp()}
-                onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
-                selectedTimes={selectedTimes.value}
                 date={date}
                 timeText={timeText}
-              >
-                {timeText === 'Dates' && (
-                  <Text variant="body" color="text">
-                    <Flex direction="column" justify="center" align="center">
-                      <Text>{date.split('-').slice(1).join('.')}</Text>
-                      <Text>({getDayOfWeek(date)})</Text>
-                    </Flex>
-                  </Text>
-                )}
-              </S.HeaderCell>
+                handlers={{ onMouseDown, onMouseUp, onMouseEnter }}
+                selectedTimes={selectedTimes}
+              />
             ))}
           </Wrapper>
         ))}

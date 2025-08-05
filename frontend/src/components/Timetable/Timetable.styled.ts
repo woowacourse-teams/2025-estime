@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { getHeaderCellBackgroundColor } from '@/utils/getBackgroundColor';
 
 export const TimetableContent = styled.div`
   display: flex;
@@ -23,23 +22,6 @@ export const GridContainer = styled.div`
   flex-direction: column;
   padding: 0 var(--padding-4);
   background-color: ${({ theme }) => theme.colors.background};
-  user-select: none;
-`;
-
-export const HeaderCell = styled.div<{
-  selectedTimes: Set<string>;
-  date: string;
-  timeText: string;
-}>`
-  border-top: 1px solid ${({ theme }) => theme.colors.gray20};
-  border-right: 1px solid ${({ theme }) => theme.colors.gray20};
-  background-color: ${({ selectedTimes, date, timeText, theme }) => {
-    return getHeaderCellBackgroundColor({ selectedTimes, date, timeText, theme });
-  }};
-  cursor: pointer;
-  padding: var(--padding-4);
-  height: ${({ timeText }) => (timeText === 'Dates' ? '3rem' : '1.5rem')};
-  width: 5rem;
   user-select: none;
 `;
 
