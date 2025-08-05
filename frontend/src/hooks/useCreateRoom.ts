@@ -54,7 +54,6 @@ export const useCreateRoom = () => {
   const roomInfoSubmit = async () => {
     try {
       const payload = toCreateRoomInfo(roomInfo);
-      console.log(payload);
       if (platform && channelId) {
         const response = await createChannelRoom({
           ...payload,
