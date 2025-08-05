@@ -5,6 +5,7 @@ import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
+import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
 import com.estime.room.presentation.dto.response.ParticipantCreateResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
@@ -61,5 +62,12 @@ public interface RoomControllerSpecification {
     CustomApiResponse<ParticipantCreateResponse> createParticipant(
             @PathVariable("session") String session,
             @RequestBody ParticipantCreateRequest request
+    );
+
+    @Operation(summary = "참여자 닉네임 검증")
+    @GetMapping("/{session}/participants")
+    CustomApiResponse<ParticipantCheckResponse> checkParticipantExists(
+            @PathVariable("session") String session,
+            @RequestParam("participantName") String participantName
     );
 }
