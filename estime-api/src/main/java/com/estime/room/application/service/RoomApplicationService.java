@@ -14,8 +14,8 @@ import com.estime.room.domain.RoomRepository;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.participant.vote.VoteRepository;
-import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
-import com.estime.room.domain.participant.vote.vo.Votes;
+import com.estime.room.domain.vo.DateTimeSlot;
+import com.estime.room.domain.participant.vote.Votes;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +33,18 @@ public class RoomApplicationService {
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
 
+    @Transactional(readOnly = true)
+    public RoomOutput getRoomBySession(final String session) {
+        final Room room = roomRepository.findBySession(session)
+                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+        return RoomOutput.from(room);
+    }
+
     @Transactional
     public RoomCreateOutput saveRoom(final RoomCreateInput input) {
         final Room room = input.toEntity();
         final Room saved = roomRepository.save(room);
         return RoomCreateOutput.from(saved);
-    }
-
-    @Transactional(readOnly = true)
-    public RoomOutput getBySession(final String session) {
-        final Room room = roomRepository.findBySession(session)
-                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
-        return RoomOutput.from(room);
     }
 
     @Transactional(readOnly = true)
@@ -77,18 +77,22 @@ public class RoomApplicationService {
 
     }
 
-    public Votes getDateTimeSlotsBySessionAndParticipantName(final String session, final String participantName) {
-        final Long participantId = participantRepository.findIdBySessionAndName(session, participantName)
+    public Votes getParticipantVotesBySessionAndParticipantName(final String session, final String participantName) {
+        final Long roomId = roomRepository.findIdBySession(session)
+                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+
+        final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, participantName)
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
 
         return voteRepository.findAllByParticipantId(participantId);
     }
 
     @Transactional
-    public Votes updateDateTimeSlots(final VotesUpdateInput input) {
-        final Long participantId = participantRepository.findIdBySessionAndName(
-                input.roomSession(),
-                        input.participantName())
+    public Votes updateParticipantVotes(final VotesUpdateInput input) {
+        final Long roomId = roomRepository.findIdBySession(input.roomSession())
+                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+
+        final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, input.participantName())
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);

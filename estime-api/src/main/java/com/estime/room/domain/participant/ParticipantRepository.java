@@ -15,6 +15,4 @@ public interface ParticipantRepository {
     List<Long> findIdsByRoomId(Long roomId);
 
     List<Participant> findAllByIdIn(Set<Long> ids);
-
-    Optional<Long> findIdBySessionAndName(String session, String name);
 }

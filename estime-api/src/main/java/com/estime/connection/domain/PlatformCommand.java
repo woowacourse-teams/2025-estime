@@ -1,5 +1,6 @@
 package com.estime.connection.domain;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +13,11 @@ public enum PlatformCommand {
 
     private final String command;
     private final String description;
+
+    public static boolean exists(final String command) {
+        return Arrays.stream(values())
+                .anyMatch(cmd -> cmd.getCommandWithSlash().equals(command));
+    }
 
     public String getCommandWithSlash() {
         return "/" + command;

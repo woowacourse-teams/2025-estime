@@ -6,16 +6,16 @@ import com.estime.room.application.dto.output.ParticipantCreateOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
-import com.estime.room.domain.participant.vote.vo.Votes;
+import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
-import com.estime.room.presentation.dto.request.VotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
-import com.estime.room.presentation.dto.response.VoteStatisticResponse;
+import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
+import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCreateResponse;
+import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
 import com.estime.room.presentation.dto.response.RoomResponse;
-import com.estime.room.presentation.dto.response.TotalDateTimeSlotResponse;
-import com.estime.room.presentation.dto.response.TotalDateTimeSlotUpdateResponse;
+import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,49 +30,48 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") final String session) {
-        final RoomOutput output = roomApplicationService.getBySession(session);
+        final RoomOutput output = roomApplicationService.getRoomBySession(session);
         return CustomApiResponse.ok(RoomResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
         final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
-        return CustomApiResponse.created(RoomCreateResponse.from(saved));
+        return CustomApiResponse.ok(RoomCreateResponse.from(saved));
     }
 
-    @Override
-    public CustomApiResponse<VoteStatisticResponse> getVoteStatistic(
+    public CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
             @PathVariable("session") final String session
     ) {
         final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(session);
-        return CustomApiResponse.ok(VoteStatisticResponse.from(output));
+        return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
     }
 
     @Override
-    public CustomApiResponse<TotalDateTimeSlotResponse> getDateTimeSlotsBySessionAndParticipantName(
+    public CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") final String session,
             @RequestParam("name") final String participantName
     ) {
-        final Votes votes = roomApplicationService
-                .getDateTimeSlotsBySessionAndParticipantName(session, participantName);
-        return CustomApiResponse.ok(TotalDateTimeSlotResponse.from(votes));
+        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(session, participantName);
+        return CustomApiResponse.ok(ParticipantVotesResponse.from(votes, participantName));
     }
 
     @Override
-    public CustomApiResponse<TotalDateTimeSlotUpdateResponse> updateDateTimeSlots(
+    public CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
             @PathVariable("session") final String session,
-            @RequestBody final VotesUpdateRequest request
+            @RequestBody final ParticipantVotesUpdateRequest request
     ) {
-        final Votes slots = roomApplicationService.updateDateTimeSlots(request.toInput(session));
-        return CustomApiResponse.ok(TotalDateTimeSlotUpdateResponse.from(slots));
+        final Votes slots = roomApplicationService.updateParticipantVotes(request.toInput(session));
+        return CustomApiResponse.ok("Update success", ParticipantVotesUpdateResponse.of(slots, request.participantName()));
     }
 
     @Override
-    public CustomApiResponse<ParticipantCreateResponse> createUser(
+    public CustomApiResponse<ParticipantCreateResponse> createParticipant(
             @PathVariable("session") final String session,
             @RequestBody final ParticipantCreateRequest request
     ) {
-        final ParticipantCreateOutput output = roomApplicationService.saveParticipant(session, request.toInput(session));
+        final ParticipantCreateOutput output = roomApplicationService.saveParticipant(session,
+                request.toInput(session));
         return CustomApiResponse.ok(ParticipantCreateResponse.from(output));
     }
 }

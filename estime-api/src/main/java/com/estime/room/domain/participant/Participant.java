@@ -3,7 +3,6 @@ package com.estime.room.domain.participant;
 import com.estime.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

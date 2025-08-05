@@ -1,13 +1,14 @@
 package com.estime.connection.application;
 
-import com.estime.common.config.WebConfigProperties;
 import com.estime.connection.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
 import com.estime.connection.application.dto.output.ConnectedRoomCreateOutput;
 import com.estime.connection.domain.ConnectedRoom;
+import com.estime.connection.domain.ConnectedRoomRepository;
 import com.estime.connection.domain.Platform;
-import com.estime.room.domain.RoomDomainService;
+import com.estime.connection.support.ConnectionUrlHelper;
 import com.estime.room.domain.Room;
+import com.estime.room.domain.RoomRepository;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,16 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ConnectedRoomApplicationService {
 
-    private final RoomDomainService roomDomainService;
-    private final ConnectedRoomDomainService connectedRoomDomainService;
+    private final RoomRepository roomRepository;
+    private final ConnectedRoomRepository connectedRoomRepository;
     private final Map<Platform, MessageSender> messageSenders;
-    private final WebConfigProperties webConfigProperties; // TODO rename
+    private final ConnectionUrlHelper connectionUrlHelper;
 
     @Transactional
     public ConnectedRoomCreateOutput save(final ConnectedRoomCreateInput input) {
-        final Room room = roomDomainService.save(input.toRoomEntity());
+        final Room room = roomRepository.save(input.toRoomEntity());
         final ConnectedRoom connectedRoom = ConnectedRoom.withoutId(room, input.platform());
-        connectedRoomDomainService.save(connectedRoom);
+        connectedRoomRepository.save(connectedRoom);
 
         sendConnectedRoomCreatedMessage(connectedRoom, input.channelId()); // 딜레이가 없는 경우 문제 발생
 
@@ -43,7 +44,7 @@ public class ConnectedRoomApplicationService {
      */
     private void sendConnectedRoomCreatedMessage(final ConnectedRoom connectRoom, final String channelId) {
         final Room room = connectRoom.getRoom();
-        final String shortcut = webConfigProperties.dev() + "check?id=" + room.getSession();
+        final String shortcut = connectionUrlHelper.buildConnectedRoomCreatedUrl(room.getSession());
         final ConnectedRoomCreatedMessageInput input = ConnectedRoomCreatedMessageInput.of(shortcut, room);
         messageSenders.get(connectRoom.getPlatform()).sendConnectedRoomCreatedMessage(channelId, input);
     }

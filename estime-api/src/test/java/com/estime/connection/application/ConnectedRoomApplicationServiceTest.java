@@ -6,18 +6,18 @@ import static org.mockito.Mockito.doNothing;
 
 import com.estime.connection.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.connection.application.dto.output.ConnectedRoomCreateOutput;
-import com.estime.connection.discord.infrastructure.DiscordMessageSender;
+import com.estime.connection.infrastructure.discord.DiscordMessageSender;
 import com.estime.connection.domain.ConnectedRoom;
 import com.estime.connection.domain.ConnectedRoomRepository;
 import com.estime.connection.domain.Platform;
-import com.estime.room.domain.participant.vote.vo.DateSlot;
-import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
-import com.estime.room.domain.participant.vote.vo.TimeSlot;
+import com.estime.room.domain.vo.DateSlot;
+import com.estime.room.domain.vo.DateTimeSlot;
+import com.estime.room.domain.vo.TimeSlot;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Set;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +44,9 @@ class ConnectedRoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                Set.of(DateSlot.from(LocalDate.now())),
-                Set.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                List.of(DateSlot.from(LocalDate.now())),
+                List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
                 DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
-                true,
                 Platform.DISCORD,
                 "testChannelId"
         );

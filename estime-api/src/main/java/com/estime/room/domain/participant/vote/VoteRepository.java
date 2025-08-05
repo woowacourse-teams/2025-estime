@@ -1,6 +1,5 @@
 package com.estime.room.domain.participant.vote;
 
-import com.estime.room.domain.participant.vote.vo.Votes;
 import java.util.List;
 
 public interface VoteRepository {

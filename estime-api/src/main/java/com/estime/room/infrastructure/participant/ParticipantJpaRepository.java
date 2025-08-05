@@ -13,6 +13,6 @@ public interface ParticipantJpaRepository extends JpaRepository<Participant, Lon
 
     boolean existsByRoomIdAndName(Long roomId, String name);
 
-    List<Long> findIdsByRoomId(Long roomId);
+    List<Participant> findAllByRoomId(Long roomId);
 
     List<Participant> findByIdIn(Collection<Long> ids);}

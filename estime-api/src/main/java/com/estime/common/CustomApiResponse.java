@@ -1,5 +1,6 @@
 package com.estime.common;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,14 +8,21 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor  // 기본 생성자
-@AllArgsConstructor // 모든 필드를 인자로 받는 생성자
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomApiResponse<T> {
 
+    @Schema(example = "200", description = "custom 응답 코드")
     private int code;
-    private boolean success; // 처리 성공 여부
-    private String message;  // 추가 메시지(에러 설명 등)
-    private T data;          // 실제 응답 데이터
+
+    @Schema(example = "true", description = "custom 요청 처리 성공 여부")
+    private boolean success;
+
+    @Schema(example = "true", description = "부가 메시지", nullable = true)
+    private String message;
+
+    @Schema(description = "응답 데이터", nullable = true)
+    private T data;
 
     public static <T> CustomApiResponse<T> ok() {
         return ok(null, null);
@@ -28,19 +36,7 @@ public class CustomApiResponse<T> {
         return new CustomApiResponse<>(200, true, message, data);
     }
 
-    public static <T> CustomApiResponse<T> created() {
-        return created(null, null);
-    }
-
-    public static <T> CustomApiResponse<T> created(final T data) {
-        return created(null, data);
-    }
-
-    public static <T> CustomApiResponse<T> created(final String message, final T data) {
-        return new CustomApiResponse<>(201, true, message, data);
-    }
-
-    public static <T> CustomApiResponse<T> fail(final String message) {
+    public static <T> CustomApiResponse<T> badRequest(final String message) {
         return new CustomApiResponse<>(400, false, message, null);
     }
 }

@@ -1,6 +1,6 @@
 package com.estime.connection.application.dto.input;
 
-import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.vo.DateTimeSlot;
 import com.estime.room.domain.Room;
 
 public record ConnectedRoomCreatedMessageInput(

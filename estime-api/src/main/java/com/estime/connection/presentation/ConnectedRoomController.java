@@ -19,6 +19,6 @@ public class ConnectedRoomController implements ConnectedRoomControllerSpecifica
             @RequestBody final ConnectedRoomCreateRequest request
     ) {
         final ConnectedRoomCreateOutput output = applicationService.save(request.toInput());
-        return CustomApiResponse.created(ConnectedRoomCreateResponse.from(output));
+        return CustomApiResponse.ok(ConnectedRoomCreateResponse.from(output));
     }
 }

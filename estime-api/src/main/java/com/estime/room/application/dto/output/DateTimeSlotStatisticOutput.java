@@ -1,6 +1,6 @@
 package com.estime.room.application.dto.output;
 
-import com.estime.room.domain.participant.vote.vo.DateTimeSlot;
+import com.estime.room.domain.vo.DateTimeSlot;
 import java.util.List;
 
 public record DateTimeSlotStatisticOutput(
