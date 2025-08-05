@@ -1,9 +1,9 @@
-import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
 import Wrapper from '../Layout/Wrapper';
 import Text from '../Text';
 import Flex from '@/components/Layout/Flex';
 import { useTheme } from '@emotion/react';
 import * as S from './RecommendTime.styled';
+import { DateManager } from '@/utils/common/DateManager';
 
 const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic: boolean }) => {
   const { colors } = useTheme();
@@ -14,7 +14,7 @@ const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic:
     return {
       month: Number(month),
       day: Number(day),
-      dayOfWeek: getDayOfWeek(datePart),
+      dayOfWeek: DateManager.getDayOfWeek(datePart),
       time: timePart,
     };
   });
