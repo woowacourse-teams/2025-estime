@@ -9,7 +9,6 @@ import ISun from '@/icons/ISun';
 import IMoon from '@/icons/IMoon';
 import type { Field } from '@/types/field';
 import useChangeIconColor from '@/hooks/common/useChangeIconColor';
-import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
 
 type BasicSettingsProps = {
   title: Field<string>;
@@ -24,6 +23,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
   const {
     timeRange,
     selectedButtons,
+    startHourOptions,
     endHourOptions,
     handleDayNightButtonClick,
     handleCustomButtonClick,
@@ -113,7 +113,7 @@ const BasicSettings = ({ title, time }: BasicSettingsProps) => {
                   selectHour={handleCustomStartClick}
                   toggleOpen={toggleStartOpen}
                   isOpen={isStartOpen}
-                  hourOptions={DEFAULT_HOUR_OPTIONS}
+                  hourOptions={startHourOptions}
                 />
               </S.Label>
               <S.Label>

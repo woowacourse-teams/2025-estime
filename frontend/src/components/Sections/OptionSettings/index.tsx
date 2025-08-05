@@ -9,8 +9,7 @@ import { ACCESS_OPTIONS } from '@/constants/optionsettings';
 import useTimePicker from '@/hooks/useTimePicker';
 import { useMemo, useState } from 'react';
 import type { Field } from '@/types/field';
-import { filterHourOptions } from '@/utils/Time/filterHourOptions';
-import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 interface OptionSettingsProps {
   deadLine: Field<{ date: string; time: string }>;
@@ -34,10 +33,8 @@ const OptionSettings = ({ deadLine, isPublic }: OptionSettingsProps) => {
   const [isOpenAccordion, setIsOpenAccordion] = useState(false);
 
   const deadLineHourOptions = useMemo(() => {
-    return deadLine.value.date === new Date().toISOString().slice(0, 10)
-      ? filterHourOptions(deadLine.value.time)
-      : DEFAULT_HOUR_OPTIONS;
-  }, [deadLine.value.date]);
+    return TimeManager.filterHourOptions(deadLine.value);
+  }, [deadLine.value.date, deadLine.value.time]);
 
   return (
     <S.Container>

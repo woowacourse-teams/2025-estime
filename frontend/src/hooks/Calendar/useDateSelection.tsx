@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { isItPast, isValidDate } from '@/utils/Calendar/dateUtils';
-import { formatDateToString } from '@/utils/Calendar/format';
+import { FormatManager } from '@/utils/common/FormatManager';
+import { DateManager } from '@/utils/common/DateManager';
 
 interface SimpleDragSelectionOptions {
   selectedDates: Set<string>;
@@ -19,7 +19,7 @@ export const useDateSelection = ({
 
   const determineDragState = useCallback(
     (date: Date): DragState => {
-      const dateString = formatDateToString(date);
+      const dateString = FormatManager.formatDate(date);
       return !selectedDates.has(dateString) ? 'add' : 'remove';
     },
     [selectedDates]
@@ -27,7 +27,7 @@ export const useDateSelection = ({
 
   const addRemoveDate = useCallback(
     (date: Date, state: DragState) => {
-      const dateString = formatDateToString(date);
+      const dateString = FormatManager.formatDate(date);
       const newSelectedDates = new Set(selectedDates);
 
       if (state === 'add') {
@@ -43,7 +43,7 @@ export const useDateSelection = ({
 
   const onMouseDown = useCallback(
     (date: Date | null) => {
-      if (!date || !isValidDate(date) || isItPast(date, today)) return;
+      if (!date || DateManager.isPast(date, today)) return;
 
       const state = determineDragState(date);
 
@@ -57,7 +57,7 @@ export const useDateSelection = ({
 
   const onMouseEnter = useCallback(
     (date: Date | null) => {
-      if (!draggingRef.current || !date || !isValidDate(date) || isItPast(date, today)) return;
+      if (!draggingRef.current || !date || DateManager.isPast(date, today)) return;
 
       addRemoveDate(date, dragState);
     },

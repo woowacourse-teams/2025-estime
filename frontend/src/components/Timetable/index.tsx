@@ -1,12 +1,12 @@
 import * as S from './Timetable.styled';
 import type { Field } from '@/types/field';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
-import { getDayOfWeek } from '@/utils/Calendar/getDayofWeek';
-import generateTimeList from '@/utils/Calendar/generateTimeList';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import Button from '@/components/Button';
+import { DateManager } from '@/utils/common/DateManager';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 interface TimetableProps {
   name: string;
@@ -36,7 +36,7 @@ const Timetable = ({
 
   const timeList = [
     { timeText: 'Dates', isHour: false },
-    ...generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
+    ...TimeManager.generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
   ];
 
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
@@ -96,7 +96,7 @@ const Timetable = ({
                       <Text variant="body" color="text">
                         <Flex direction="column" justify="center" align="center">
                           <Text>{date.split('-').slice(1).join('.')}</Text>
-                          <Text>({getDayOfWeek(date)})</Text>
+                          <Text>({DateManager.getDayOfWeek(date)})</Text>
                         </Flex>
                       </Text>
                     )}
