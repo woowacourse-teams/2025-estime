@@ -116,7 +116,8 @@ export const TimeManager = {
    */
   filterHourOptions(deadline: { date: string; time: string }): string[] {
     const { date, time } = deadline;
-    const today = new Date().toISOString().slice(0, 10);
+
+    const today = FormatManager.formatDate(new Date());
 
     if (date !== today) return DEFAULT_HOUR_OPTIONS;
 
