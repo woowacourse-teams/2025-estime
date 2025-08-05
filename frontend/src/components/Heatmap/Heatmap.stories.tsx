@@ -7,9 +7,9 @@ const meta: Meta<typeof Heatmap> = {
   component: Heatmap,
   tags: ['autodocs'],
   argTypes: {
-    time: {
+    dateTimeSlots: {
       control: { type: 'object' },
-      description: '시작 시간과 종료 시간',
+      description: '시간 슬롯들',
     },
     availableDates: {
       control: { type: 'object' },
@@ -296,10 +296,27 @@ const morningMeetingStatistics = new Map<string, DateCellInfo>([
 
 export const Default: Story = {
   args: {
-    time: {
-      startTime: '09:00',
-      endTime: '18:00',
-    },
+    dateTimeSlots: [
+      '09:00',
+      '09:30',
+      '10:00',
+      '10:30',
+      '11:00',
+      '11:30',
+      '12:00',
+      '12:30',
+      '13:00',
+      '13:30',
+      '14:00',
+      '14:30',
+      '15:00',
+      '15:30',
+      '16:00',
+      '16:30',
+      '17:00',
+      '17:30',
+      '18:00',
+    ],
     availableDates: new Set(['2024-01-15', '2024-01-16', '2024-01-17', '2024-01-18', '2024-01-19']),
     roomStatistics: defaultRoomStatistics,
   },
@@ -307,10 +324,7 @@ export const Default: Story = {
 
 export const MorningMeeting: Story = {
   args: {
-    time: {
-      startTime: '09:00',
-      endTime: '12:00',
-    },
+    dateTimeSlots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30'],
     availableDates: new Set(['2024-01-15', '2024-01-16', '2024-01-17']),
     roomStatistics: morningMeetingStatistics,
   },
@@ -318,10 +332,25 @@ export const MorningMeeting: Story = {
 
 export const WeeklySchedule: Story = {
   args: {
-    time: {
-      startTime: '10:00',
-      endTime: '16:00',
-    },
+    dateTimeSlots: [
+      '10:00',
+      '10:30',
+      '11:00',
+      '11:30',
+      '12:00',
+      '12:30',
+      '13:00',
+      '13:30',
+      '14:00',
+      '14:30',
+      '15:00',
+      '15:30',
+      '16:00',
+      '16:30',
+      '17:00',
+      '17:30',
+      '18:00',
+    ],
     availableDates: new Set(['2024-01-15', '2024-01-16', '2024-01-17', '2024-01-18', '2024-01-19']),
     roomStatistics: new Map([
       ['2024-01-15T10:00', { weight: 0.5, userNames: ['마빈', '메이토', '강산', '해삐'] }],
@@ -463,10 +492,7 @@ export const WeeklySchedule: Story = {
 
 export const EmptySchedule: Story = {
   args: {
-    time: {
-      startTime: '14:00',
-      endTime: '17:00',
-    },
+    dateTimeSlots: ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'],
     availableDates: new Set(['2024-01-15', '2024-01-16']),
     roomStatistics: new Map(),
   },
@@ -474,10 +500,7 @@ export const EmptySchedule: Story = {
 
 export const SingleDay: Story = {
   args: {
-    time: {
-      startTime: '13:00',
-      endTime: '15:00',
-    },
+    dateTimeSlots: ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'],
     availableDates: new Set(['2024-01-15']),
     roomStatistics: new Map([
       [
