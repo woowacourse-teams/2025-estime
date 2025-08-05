@@ -1,6 +1,6 @@
 import { RoomInfo } from '@/types/roomInfo';
 import { CreateRoomRequestType } from '../room/type';
-import { subtract30Minutes } from '@/utils/Time/subtract30Minutes';
+import { TimeManager } from '@/utils/common/TimeManager';
 
 /**
  * 클라이언트 상태(RoomInfo)를 서버 요청 형식(CreateRoomRequestType)으로 변환합니다.
@@ -17,8 +17,8 @@ export const toCreateRoomInfo = (roomInfo: RoomInfo): CreateRoomRequestType => {
     title,
     availableDates: sortedAvailableDates,
     startTime: time.startTime,
-    endTime: subtract30Minutes(time.endTime),
-    deadLine: `${deadLine.date}T${subtract30Minutes(deadLine.time)}`,
+    endTime: TimeManager.subtractMinutes(time.endTime, 30),
+    deadLine: `${deadLine.date}T${TimeManager.subtractMinutes(deadLine.time, 30)}`,
     isPublic: isPublic === 'public',
   };
 };

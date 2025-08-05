@@ -1,6 +1,7 @@
 import { TIME } from '@/constants/time';
-import { filterHourOptions } from '@/utils/Time/filterHourOptions';
 import { useCallback, useMemo, useState } from 'react';
+import { TimeManager } from '@/utils/common/TimeManager';
+
 interface TimeRangeField {
   timeRange: { startTime: string; endTime: string };
   setTimeRange: ({ startTime, endTime }: { startTime: string; endTime: string }) => void;
@@ -10,8 +11,12 @@ const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
   const [selectedButtons, setSelectedButtons] = useState<('day' | 'night' | 'custom')[]>([]);
 
   const endHourOptions = useMemo(() => {
-    return filterHourOptions(timeRange.startTime);
+    return TimeManager.filterLaterHoursFrom(timeRange.startTime);
   }, [timeRange.startTime]);
+
+  const startHourOptions = useMemo(() => {
+    return TimeManager.filterEarlierHoursUntil(timeRange.endTime);
+  }, [timeRange.endTime]);
 
   const handleDayNightButtonClick = useCallback(
     (type: 'day' | 'night') => {
@@ -52,6 +57,7 @@ const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
   return {
     timeRange,
     selectedButtons,
+    startHourOptions,
     endHourOptions,
     handleDayNightButtonClick,
     handleCustomButtonClick,

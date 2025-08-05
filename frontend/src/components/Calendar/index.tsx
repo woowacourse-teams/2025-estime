@@ -1,6 +1,5 @@
 import * as S from './Calendar.styled';
 import { weekdays } from '@/constants/calender';
-import { isItCurrentMonth } from '@/utils/Calendar/dateUtils';
 import { useCalender } from '@/hooks/Calendar/useCalender';
 
 import CalendarButton from './CalendarButton/CalendarButton';
@@ -9,6 +8,7 @@ import Text from '@/components/Text';
 import IChevronLeft from '@/icons/IChevronLeft';
 import IChevronRight from '@/icons/IChevronRight';
 import Flex from '../Layout/Flex';
+import { DateManager } from '@/utils/common/DateManager';
 
 interface CalenderProps {
   today: Date;
@@ -33,7 +33,10 @@ const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
               {current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}
             </Text>
             <S.ButtonContainer>
-              <CalendarButton onClick={prevMonth} disabled={isItCurrentMonth(current, today)}>
+              <CalendarButton
+                onClick={prevMonth}
+                disabled={DateManager.isCurrentMonth(current, today)}
+              >
                 <IChevronLeft width={20} height={20} />
               </CalendarButton>
               <CalendarButton onClick={nextMonth}>
