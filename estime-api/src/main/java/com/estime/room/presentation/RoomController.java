@@ -50,7 +50,7 @@ public class RoomController implements RoomControllerSpecification {
     @Override
     public CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") final String session,
-            @RequestParam("name") final String participantName
+            @RequestParam("participantName") final String participantName
     ) {
         final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(session,
                 participantName);
