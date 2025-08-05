@@ -1,10 +1,8 @@
 export interface CreateRoomRequestType {
   title: string;
-  availableDates: string[];
-  startTime: string;
-  endTime: string;
-  deadLine: string;
-  isPublic: boolean;
+  availableDateSlots: string[];
+  availableTimeSlots: string[];
+  deadline: string;
 }
 
 export interface CreateChannelRoomRequestType extends CreateRoomRequestType {
@@ -18,17 +16,14 @@ export interface CreateRoomResponseType {
 
 export interface GetRoomInfoResponseType {
   title: string;
-  availableDates: string[];
-  startTime: string;
-  endTime: string;
-  deadLine: string;
-  isPublic: boolean;
+  availableDateSlots: string[];
+  availableTimeSlots: string[];
+  deadline: string;
   roomSession: string;
 }
 export interface CreateUserType {
-  name: string;
-  password: string;
+  participantName: string;
 }
 export interface CreateUserResponseType {
-  name: string;
+  participantName: string;
 }
