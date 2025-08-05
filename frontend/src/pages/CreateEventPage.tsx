@@ -9,7 +9,8 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 import Information from '@/components/Information';
 import { useTheme } from '@emotion/react';
 import IInfo from '@/icons/IInfo';
-import useSectionValidation from '@/hooks/CreateRoom/useSectionValidation';
+import useSectionValidation from '@/hooks/CreateRoom/useShakeAnimation';
+import { useRef } from 'react';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -25,19 +26,18 @@ const CreateEventPage = () => {
     roomInfoSubmit,
   } = useCreateRoom();
 
-  const { showValidation, shouldShake, validateSection } = useSectionValidation(
-    isCalendarReady,
-    isBasicReady
-  );
+  const { shouldShake, handleShouldShake } = useSectionValidation();
+  const showValidation = useRef(false);
 
   const handleCreateRoom = async () => {
-    if (!validateSection()) {
-      return;
-    }
-
-    const session = await roomInfoSubmit();
-    if (session) {
-      navigate(`/check?id=${session}`, { replace: true });
+    if (isCalendarReady && isBasicReady) {
+      const session = await roomInfoSubmit();
+      if (session) {
+        navigate(`/check?id=${session}`);
+      }
+    } else {
+      showValidation.current = true;
+      handleShouldShake();
     }
   };
 
