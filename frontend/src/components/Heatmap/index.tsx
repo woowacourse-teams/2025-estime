@@ -6,7 +6,6 @@ import * as S from './Heatmap.styled';
 import HeatMapCell from './HeatMapCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 interface HeatmapProps {
-  roomName: string;
   time: {
     startTime: string;
     endTime: string;

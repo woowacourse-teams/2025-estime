@@ -105,7 +105,6 @@ const CheckEventPage = () => {
                   />
                   {mode === 'view' ? (
                     <Heatmap
-                      roomName={roomInfo.title}
                       time={roomInfo.time}
                       availableDates={roomInfo.availableDates}
                       roomStatistics={roomStatistics}
