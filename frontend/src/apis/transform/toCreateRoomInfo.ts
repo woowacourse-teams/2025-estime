@@ -8,17 +8,19 @@ import { TimeManager } from '@/utils/common/TimeManager';
  * @param roomInfo - 클라이언트에서 관리하는 방 생성 정보
  * @returns 서버에 전송할 API 요청 페이로드 형식
  */
-export const toCreateRoomInfo = (roomInfo: RoomInfo): CreateRoomRequestType => {
-  const { title, availableDates, time, deadLine, isPublic } = roomInfo;
-
-  const sortedAvailableDates = Array.from(availableDates).sort();
+export const toCreateRoomInfo = (
+  roomInfo: RoomInfo & { time: { startTime: string; endTime: string } }
+): CreateRoomRequestType => {
+  const { title, availableDateSlots, time, deadline } = roomInfo;
 
   return {
     title,
-    availableDates: sortedAvailableDates,
-    startTime: time.startTime,
-    endTime: TimeManager.subtractMinutes(time.endTime, 30),
-    deadLine: `${deadLine.date}T${TimeManager.subtractMinutes(deadLine.time, 30)}`,
-    isPublic: isPublic === 'public',
+    availableDateSlots: [...availableDateSlots],
+    availableTimeSlots: TimeManager.generateTimeList({
+      startTime: time.startTime,
+      endTime: time.endTime,
+      interval: 30,
+    }),
+    deadline: `${deadline.date}T${TimeManager.subtractMinutes(deadline.time, 30)}`,
   };
 };

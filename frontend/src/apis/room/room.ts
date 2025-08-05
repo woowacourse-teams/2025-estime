@@ -24,7 +24,7 @@ export const joinUser = async (
   sessionId: string,
   body: CreateUserType
 ): Promise<CreateUserResponseType> => {
-  return await api.post(`${ROOM_API_PATH}/${sessionId}/users`, body);
+  return await api.post(`${ROOM_API_PATH}/${sessionId}/participants`, body);
 };
 
 export const getRoomInfo = async (sessionId: string): Promise<GetRoomInfoResponseType> => {

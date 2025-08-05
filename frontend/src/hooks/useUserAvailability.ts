@@ -32,8 +32,8 @@ export const useUserAvailability = ({
   const userAvailabilitySubmit = async () => {
     try {
       const payload = toCreateUserAvailability(userAvailability);
-      const response = await updateUserAvailableTime(session, payload);
-      alert(response.message);
+      await updateUserAvailableTime(session, payload);
+      alert('저장되었습니다.');
     } catch (err) {
       const e = err as Error;
       alert(e.message);
@@ -48,7 +48,7 @@ export const useUserAvailability = ({
     }
     const userAvailableTimeInfo = await getUserAvailableTime(session, name);
     const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-    const dateTimeSlots = dateTimeSlotsResponse.map((item) => item.dateTime);
+    const dateTimeSlots = dateTimeSlotsResponse.map((item) => item.dateTimeSlots);
     userName.set(name);
     if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
       const selectedTimesResponse = new Set(dateTimeSlots);

@@ -88,7 +88,7 @@ const CheckEventPage = () => {
     <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
       <Flex direction="column" gap="var(--gap-6)">
         <CheckEventPageHeader
-          deadLine={roomInfo.deadLine}
+          deadline={roomInfo.deadline}
           isPublic={roomInfo.isPublic}
           title={roomInfo.title}
           roomSession={roomInfo.roomSession}
@@ -118,12 +118,6 @@ const CheckEventPage = () => {
                   )}
                 </Flex>
               </S.TimeTableContainer>
-            </Flex.Item>
-            <Flex.Item flex={1}>
-              <RecommendTime
-                dateTimes={recommendTimeData.map((item) => item.dateTime)}
-                isPublic={roomInfo.isPublic === 'public'}
-              />
             </Flex.Item>
           </Flex>
           <LoginModal

@@ -1,6 +1,5 @@
 import { RoomInfo } from '@/types/roomInfo';
 import { GetRoomInfoResponseType } from '../room/type';
-import { TimeManager } from '@/utils/common/TimeManager';
 
 /**
  * 서버에서 받은 방 정보를 클라이언트 상태(RoomInfo) 형식으로 변환합니다.
@@ -10,24 +9,20 @@ import { TimeManager } from '@/utils/common/TimeManager';
  */
 export const fromParseRoomInfo = (
   data: GetRoomInfoResponseType
-): RoomInfo & { roomSession: string } => {
-  const { title, availableDates, startTime, endTime, deadLine, isPublic, roomSession } = data;
+): RoomInfo & { roomSession: string; availableTimeSlots: string[] } => {
+  const { title, availableDateSlots, availableTimeSlots, deadline, roomSession } = data;
 
-  const [date, time] = deadLine.split('T');
-  const calculatedEndTime = TimeManager.addMinutes(endTime, 30);
+  const [date, time] = deadline.split('T');
 
   return {
     title,
-    availableDates: new Set(availableDates),
-    time: {
-      startTime,
-      endTime: calculatedEndTime,
-    },
-    deadLine: {
+    availableDateSlots: new Set(availableDateSlots),
+    availableTimeSlots,
+    deadline: {
       date,
       time,
     },
-    isPublic: isPublic ? 'public' : 'private',
     roomSession,
+    isPublic: 'public',
   };
 };

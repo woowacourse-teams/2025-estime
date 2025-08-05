@@ -1,11 +1,11 @@
 export interface UserAvailableTimeRequestType {
-  userName: string;
-  dateTimes: string[];
+  participantName: string;
+  dateTimeSlots: string[];
 }
 
 type UserAvailableTimeInnerType = {
-  userName: string;
-  dateTime: string;
+  participantName: string;
+  dateTimeSlots: string;
 };
 
 export type UserAvailableTimeResponseType = {
