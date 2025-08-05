@@ -32,7 +32,7 @@ export const getUserAvailableTime = async (
 export const getTimeSlotStatistics = async (
   session: string
 ): Promise<CombinedAvailableTimesResponseType> => {
-  return await api.get(`${ROOM_API_PATH}/${session}/statistic/date-slots`);
+  return await api.get(`${ROOM_API_PATH}/${session}/statistics/date-time-slots`);
 };
 
 export const getRecommendedTime = async (

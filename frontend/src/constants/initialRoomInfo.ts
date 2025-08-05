@@ -1,7 +1,7 @@
 import { RoomInfo } from '@/types/roomInfo';
 import { DateManager } from '@/utils/common/DateManager';
 
-const { defaultTime, defaultDate } = DateManager.getDefaultdeadline();
+const { defaultTime, defaultDate } = DateManager.getDefaultDeadline();
 
 export const initialCreateRoomInfo: RoomInfo & { time: { startTime: string; endTime: string } } = {
   title: '',

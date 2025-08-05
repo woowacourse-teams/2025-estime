@@ -13,11 +13,11 @@ export const toCreateRoomInfo = (
 ): CreateRoomRequestType => {
   const { title, availableDateSlots, time, deadline } = roomInfo;
 
-  const sortedavailableDateSlots = Array.from(availableDateSlots).sort();
+  const sortedAvailableDateSlots = Array.from(availableDateSlots).sort();
 
   return {
     title,
-    availableDateSlots: sortedavailableDateSlots,
+    availableDateSlots: sortedAvailableDateSlots,
     availableTimeSlots: TimeManager.generateTimeList({
       startTime: time.startTime,
       endTime: time.endTime,
