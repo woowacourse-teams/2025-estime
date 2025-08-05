@@ -4,28 +4,18 @@ import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
 import Flex from '@/components/Layout/Flex';
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
-import { TimeManager } from '@/utils/common/TimeManager';
 import TimeTableCell from './TimeTableCell';
 
 interface TimetableProps {
-  time: {
-    startTime: string;
-    endTime: string;
-  };
+  dateTimeSlots: string[];
   availableDates: Set<string>;
   selectedTimes: Field<Set<string>>;
 }
 
-const Timetable = ({ time, availableDates, selectedTimes }: TimetableProps) => {
-  const { startTime, endTime } = time;
-
-  const startTimeInMinutes = startTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-  const endTimeInMinutes = endTime.split(':').reduce((acc, time) => acc * 60 + +time, 0);
-  const interval = 30;
-
+const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetableProps) => {
   const timeList = [
     { timeText: 'Dates', isHour: false },
-    ...TimeManager.generateTimeList({ startTimeInMinutes, endTimeInMinutes, interval }),
+    ...dateTimeSlots.map((timeText) => ({ timeText, isHour: timeText.endsWith(':00') })),
   ];
 
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
