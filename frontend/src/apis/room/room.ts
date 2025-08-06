@@ -4,7 +4,7 @@ import type {
   CreateRoomResponseType,
   CreateRoomRequestType,
   GetRoomInfoResponseType,
-  CreateUserType,
+  CreateUserRequestType,
   CreateUserResponseType,
   CreateChannelRoomRequestType,
   GetRoomStatisticsResponseType,
@@ -22,7 +22,7 @@ export const createChannelRoom = async (
 
 export const joinUser = async (
   sessionId: string,
-  body: CreateUserType
+  body: CreateUserRequestType
 ): Promise<CreateUserResponseType> => {
   return await api.post(`${ROOM_API_PATH}/${sessionId}/participants`, body);
 };
@@ -35,5 +35,4 @@ export const getRoomStatistics = async (
   sessionId: string
 ): Promise<GetRoomStatisticsResponseType> => {
   return await api.get(`${ROOM_API_PATH}/${sessionId}/statistics/date-time-slots`);
-
 };
