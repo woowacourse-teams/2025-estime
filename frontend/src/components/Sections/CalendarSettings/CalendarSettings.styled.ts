@@ -5,7 +5,6 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--gap-9);
-  border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-10);
   border-radius: var(--radius-6);
   box-shadow: var(--shadow-card);

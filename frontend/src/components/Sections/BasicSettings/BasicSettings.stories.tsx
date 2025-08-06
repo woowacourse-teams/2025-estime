@@ -18,13 +18,24 @@ const Template: StoryFn = () => {
   };
 
   const [time, setTime] = useState({ startTime: '', endTime: '' });
+
   const timeField: Field<{ startTime: string; endTime: string }> & { valid: boolean } = {
     value: time,
     set: setTime,
     valid: TimeManager.isValidRange(time.startTime, time.endTime),
   };
 
-  return <BasicSettings title={titleField} time={timeField} />;
+  const [deadline, setdeadline] = useState<{ date: string; time: string }>({
+    date: '2025-07-23',
+    time: '16:00',
+  });
+
+  const deadlineField: Field<{ date: string; time: string }> = {
+    value: deadline,
+    set: setdeadline,
+  };
+
+  return <BasicSettings title={titleField} time={timeField} deadline={deadlineField} />;
 };
 
 export const Default = Template.bind({});

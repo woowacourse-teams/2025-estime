@@ -5,7 +5,7 @@ import { useTheme } from '@emotion/react';
 import * as S from './RecommendTime.styled';
 import { DateManager } from '@/utils/common/DateManager';
 
-const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic: boolean }) => {
+const RecommendTime = ({ dateTimes }: { dateTimes: string[] }) => {
   const { colors } = useTheme();
 
   const parsedDateTimes = dateTimes.map((dateTime) => {
@@ -19,7 +19,7 @@ const RecommendTime = ({ dateTimes, isPublic }: { dateTimes: string[]; isPublic:
     };
   });
 
-  if (dateTimes.length === 0 || !isPublic) {
+  if (dateTimes.length === 0) {
     return (
       <Wrapper
         padding="var(--padding-7)"
