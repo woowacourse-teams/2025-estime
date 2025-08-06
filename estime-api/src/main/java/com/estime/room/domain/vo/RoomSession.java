@@ -1,7 +1,7 @@
 package com.estime.room.domain.vo;
 
-import com.estime.room.infrastructure.RoomSessionGenerator;
 import com.github.f4b6a3.tsid.Tsid;
+import com.github.f4b6a3.tsid.TsidCreator;
 import java.io.Serializable;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ public class RoomSession implements Serializable {
     }
 
     public static RoomSession generate() {
-        final Tsid tsid = RoomSessionGenerator.generateTsid();
+        final Tsid tsid = TsidCreator.getTsid();
         return new RoomSession(tsid);
     }
 
