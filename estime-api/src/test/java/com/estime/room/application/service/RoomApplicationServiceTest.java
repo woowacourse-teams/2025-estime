@@ -105,7 +105,7 @@ class RoomApplicationServiceTest {
                     .containsExactlyInAnyOrderElementsOf(room.getAvailableTimeSlots());
             softAssertions.assertThat(output.deadline())
                     .isEqualTo(room.getDeadline());
-            softAssertions.assertThat(output.roomSession())
+            softAssertions.assertThat(output.session())
                     .isEqualTo(room.getSession());
         });
     }

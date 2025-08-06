@@ -12,7 +12,7 @@ public record RoomOutput(
         List<DateSlot> availableDateSlots,
         List<TimeSlot> availableTimeSlots,
         DateTimeSlot deadline,
-        RoomSession roomSession
+        RoomSession session
 ) {
 
     public static RoomOutput from(final Room room) {
