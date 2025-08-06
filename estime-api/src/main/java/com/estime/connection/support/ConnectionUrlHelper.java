@@ -2,6 +2,7 @@ package com.estime.connection.support;
 
 import com.estime.common.config.WebConfigProperties;
 import com.estime.connection.domain.Platform;
+import com.estime.room.domain.vo.RoomSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -20,9 +21,9 @@ public class ConnectionUrlHelper {
                 .toUriString();
     }
 
-    public String buildConnectedRoomCreatedUrl(final String session) {
+    public String buildConnectedRoomCreatedUrl(final RoomSession session) {
         return UriComponentsBuilder.fromUriString(webConfigProperties.prod() + "check")
-                .queryParam("id", session)
+                .queryParam("id", session.getTsid().toString())
                 .build()
                 .toUriString();
     }
