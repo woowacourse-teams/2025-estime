@@ -9,6 +9,10 @@ public class TsidConverter implements Converter<String, Tsid> {
 
     @Override
     public Tsid convert(final String source) {
-        return Tsid.from(source);
+        try {
+            return Tsid.from(source);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid TSID format: " + source, e);
+        }
     }
 }
