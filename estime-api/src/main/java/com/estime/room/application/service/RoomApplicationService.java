@@ -16,7 +16,7 @@ import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
-import com.estime.room.domain.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

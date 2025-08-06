@@ -1,6 +1,6 @@
 package com.estime.room.domain.participant.vote;
 
-import com.estime.room.domain.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
