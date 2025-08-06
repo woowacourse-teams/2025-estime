@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { useToastTheme } from '.';
+import { ToastPhase, useToastTheme } from '.';
 import { css, keyframes } from '@emotion/react';
 
-export const Container = styled.div<{ visible: boolean }>`
+export const Container = styled.div<{ phase: ToastPhase }>`
   display: flex;
   width: 350px;
   flex-direction: column;
@@ -14,14 +14,18 @@ export const Container = styled.div<{ visible: boolean }>`
   }};
   box-shadow: var(--shadow-card);
 
-  animation: ${({ visible }) =>
-    visible
+  opacity: 0;
+
+  animation: ${({ phase }) =>
+    phase === 'visible'
       ? css`
           ${fadeInUp} 0.3s ease forwards
         `
-      : css`
-          ${fadeOutUp} 0.3s ease forwards
-        `};
+      : phase === 'hidden'
+        ? css`
+            ${fadeOutUp} 0.3s ease forwards
+          `
+        : 'none'};
 `;
 
 export const Header = styled.div`

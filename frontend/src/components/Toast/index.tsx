@@ -5,6 +5,8 @@ import Text from '../Text';
 
 export type StatusType = 'success' | 'error' | 'warning';
 
+export type ToastPhase = 'idle' | 'visible' | 'hidden';
+
 interface ToastProps {
   id: string;
   type: StatusType;
@@ -16,11 +18,11 @@ export const ToastThemeContext = createContext<StatusType>('warning');
 export const useToastTheme = () => useContext(ToastThemeContext);
 
 const Toast = ({ id, type, message, onClose }: ToastProps) => {
-  const [visible, setVisible] = useState(false);
+  const [phase, setPhase] = useState<ToastPhase>('idle');
 
   useEffect(() => {
-    const showTimer = setTimeout(() => setVisible(true), 30);
-    const fadeOutTimer = setTimeout(() => setVisible(false), 2500);
+    const showTimer = setTimeout(() => setPhase('visible'), 30);
+    const fadeOutTimer = setTimeout(() => setPhase('hidden'), 2500);
     const removeTimer = setTimeout(() => onClose(id), 3000);
 
     return () => {
@@ -32,7 +34,7 @@ const Toast = ({ id, type, message, onClose }: ToastProps) => {
 
   return (
     <ToastThemeContext.Provider value={type}>
-      <S.Container visible={visible}>
+      <S.Container phase={phase}>
         <S.Header>
           <StatusButton type={type} />
           <Text color={`${type}Text`}>{type}</Text>
