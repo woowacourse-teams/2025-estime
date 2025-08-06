@@ -1,9 +1,10 @@
 import * as S from './Timetable.styled';
 import { Field } from '@/types/field';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
-import Flex from '@/components/Layout/Flex';
+
 import Text from '@/components/Text';
 import TimeTableCell from './TimeTableCell';
+import Wrapper from '@/components/Layout/Wrapper';
 
 interface TimetableProps {
   dateTimeSlots: string[];
@@ -36,7 +37,7 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
         ))}
       </S.TimeSlotColumn>
       {[...availableDates].map((date) => (
-        <S.DateColumn key={date}>
+        <Wrapper key={date} center={false} maxWidth="100%">
           {timeList.map((dateTimeSlot) => (
             <TimeTableCell
               key={`${date} ${dateTimeSlot}`}
@@ -46,7 +47,7 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
               selectedTimes={selectedTimes}
             />
           ))}
-        </S.DateColumn>
+        </Wrapper>
       ))}
     </S.TimetableContent>
   );

@@ -4,7 +4,6 @@ export const TimetableContent = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  overflow-x: auto;
   user-select: none;
 `;
 
@@ -37,7 +36,6 @@ export const TimeLabel = styled.div`
 export const DateColumn = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%;
   min-width: 0;
   width: 0;
 `;
