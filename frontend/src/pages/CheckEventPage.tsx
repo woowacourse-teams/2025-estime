@@ -86,7 +86,6 @@ const CheckEventPage = () => {
         <Flex direction="column" gap="var(--gap-6)">
           <CheckEventPageHeader
             deadline={roomInfo.deadline}
-            isPublic={roomInfo.isPublic}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
           />
