@@ -13,14 +13,16 @@ import Heatmap from '@/components/Heatmap';
 import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
+import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { isLoginModalOpen, handleOpenLoginModal, handleCloseLoginModal } = useModalControl();
+  const { modals, handleCloseModal, handleOpenModal } = useModalControl();
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
     session,
+    onDuplicateNickname: () => handleOpenModal('entryConfirm'),
   });
 
   const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
@@ -33,8 +35,6 @@ const CheckEventPage = () => {
     session,
     weightCalculateStrategy,
   });
-
-  // 훅분리... 애매하긴 해..
 
   // view와 edit, 모드별로 훅을 분리하는 것....
   // 나쁘지 않을지도.
@@ -52,13 +52,12 @@ const CheckEventPage = () => {
   // };
 
   // 이런식으로 선언적인 핸들러를 만들면 좋을것 같다!
-
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
   const handleToggleEditMode = async () => {
     if (mode === 'view') {
       if (isLoggedIn) setMode('edit');
-      else handleOpenLoginModal();
+      else handleOpenModal('login');
     } else {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
@@ -68,9 +67,13 @@ const CheckEventPage = () => {
 
   const loginAndLoadSchedulingData = async () => {
     try {
-      await handleLogin();
+      const isDuplicated = await handleLogin();
+      if (isDuplicated) {
+        return;
+      }
+
       await fetchUserAvailableTime();
-      handleCloseLoginModal();
+      handleCloseModal('login');
       setMode('edit');
     } catch (err) {
       const e = err as Error;
@@ -80,6 +83,22 @@ const CheckEventPage = () => {
     }
   };
 
+  const handleContinueWithDuplicated = async () => {
+    try {
+      handleCloseModal('entryConfirm');
+      handleCloseModal('login');
+      await fetchUserAvailableTime();
+      setMode('edit');
+    } catch (err) {
+      const e = err as Error;
+      console.error(e);
+      alert(e.message);
+    }
+  };
+
+  const handleCancelContinueWithDuplicated = () => {
+    handleCloseModal('entryConfirm');
+  };
   return (
     <>
       <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -115,11 +134,16 @@ const CheckEventPage = () => {
         </Flex>
       </Wrapper>
       <LoginModal
-        isLoginModalOpen={isLoginModalOpen}
-        handleCloseLoginModal={handleCloseLoginModal}
+        isLoginModalOpen={modals['login']}
+        handleCloseLoginModal={() => handleCloseModal('login')}
         handleModalLogin={loginAndLoadSchedulingData}
         userData={userData}
         handleUserData={handleUserData}
+      />
+      <EntryConfirmModal
+        isEntryConfirmModalOpen={modals['entryConfirm']}
+        onConfirm={handleContinueWithDuplicated}
+        onCancel={handleCancelContinueWithDuplicated}
       />
     </>
   );
