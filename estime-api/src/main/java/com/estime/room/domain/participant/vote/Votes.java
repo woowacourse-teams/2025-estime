@@ -10,17 +10,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
 public class Votes {
 
-    private final List<Vote> elements;
+    private final Set<Vote> elements;
 
     public static Votes from(final List<Vote> votes) {
         Objects.requireNonNull(votes, "votes cannot be null");
-        return new Votes(List.copyOf(votes));
+        return new Votes(Set.copyOf(votes));
+    }
+
+    public Votes remove(final Votes votes) {
+        final Set<Vote> removed = new HashSet<>(this.elements);
+        removed.removeAll(votes.getElements());
+        return new Votes(removed);
     }
 
     public Map<DateTimeSlot, Set<Long>> calculateStatistic() {
@@ -47,5 +51,9 @@ public class Votes {
 
     public boolean isNotEmpty() {
         return !isEmpty();
+    }
+
+    public Set<Vote> getElements() {
+        return Set.copyOf(elements);
     }
 }
