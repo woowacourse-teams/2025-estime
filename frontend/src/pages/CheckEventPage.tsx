@@ -81,51 +81,49 @@ const CheckEventPage = () => {
   };
 
   return (
-    <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
-      <Flex direction="column" gap="var(--gap-6)">
-        <CheckEventPageHeader
-          deadline={roomInfo.deadline}
-          isPublic={roomInfo.isPublic}
-          title={roomInfo.title}
-          roomSession={roomInfo.roomSession}
-        />
+    <>
+      <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
         <Flex direction="column" gap="var(--gap-6)">
-          <Flex justify="center" align="flex-start" gap="var(--gap-9)">
-            <Flex.Item flex={2}>
-              <S.TimeTableContainer>
-                <Flex gap="var(--gap-6)" direction="column">
-                  <TimeTableHeader
-                    name={mode === 'view' ? roomInfo.title : userName.value}
-                    mode={mode}
-                    onToggleEditMode={handleToggleEditMode}
-                  />
-                  {mode === 'view' ? (
-                    <Heatmap
-                      dateTimeSlots={roomInfo.availableTimeSlots}
-                      availableDates={roomInfo.availableDateSlots}
-                      roomStatistics={roomStatistics}
-                    />
-                  ) : (
-                    <Timetable
-                      dateTimeSlots={roomInfo.availableTimeSlots}
-                      availableDates={roomInfo.availableDateSlots}
-                      selectedTimes={selectedTimes}
-                    />
-                  )}
-                </Flex>
-              </S.TimeTableContainer>
-            </Flex.Item>
-          </Flex>
-          <LoginModal
-            isLoginModalOpen={isLoginModalOpen}
-            handleCloseLoginModal={handleCloseLoginModal}
-            handleModalLogin={loginAndLoadSchedulingData}
-            userData={userData}
-            handleUserData={handleUserData}
+          <CheckEventPageHeader
+            deadline={roomInfo.deadline}
+            isPublic={roomInfo.isPublic}
+            title={roomInfo.title}
+            roomSession={roomInfo.roomSession}
           />
+          <Wrapper>
+            <S.TimeTableContainer>
+              <Flex gap="var(--gap-8)" direction="column" align="center">
+                <TimeTableHeader
+                  name={mode === 'view' ? roomInfo.title : userName.value}
+                  mode={mode}
+                  onToggleEditMode={handleToggleEditMode}
+                />
+                {mode === 'view' ? (
+                  <Heatmap
+                    dateTimeSlots={roomInfo.availableTimeSlots}
+                    availableDates={roomInfo.availableDateSlots}
+                    roomStatistics={roomStatistics}
+                  />
+                ) : (
+                  <Timetable
+                    dateTimeSlots={roomInfo.availableTimeSlots}
+                    availableDates={roomInfo.availableDateSlots}
+                    selectedTimes={selectedTimes}
+                  />
+                )}
+              </Flex>
+            </S.TimeTableContainer>
+          </Wrapper>
         </Flex>
-      </Flex>
-    </Wrapper>
+      </Wrapper>
+      <LoginModal
+        isLoginModalOpen={isLoginModalOpen}
+        handleCloseLoginModal={handleCloseLoginModal}
+        handleModalLogin={loginAndLoadSchedulingData}
+        userData={userData}
+        handleUserData={handleUserData}
+      />
+    </>
   );
 };
 

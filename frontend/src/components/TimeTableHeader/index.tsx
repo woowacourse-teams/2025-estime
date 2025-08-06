@@ -47,21 +47,22 @@ const TimeTableHeader = ({
 
   return (
     <S.Container {...props}>
-      <Flex direction="column" gap="var(--gap-4)">
-        <Text variant="h2" color="text">
-          {presets.title(name)}
-        </Text>
-        <Text variant="body" color="text">
-          {presets.hint}
-        </Text>
-      </Flex>
-      <Wrapper maxWidth={100} center={false}>
-        <Button color="primary" onClick={onToggleEditMode} disabled={isLoading}>
+      <Flex justify="space-between" align="center" gap="var(--gap-10)">
+        <Flex direction="column" gap="var(--gap-4)">
+          <Text variant="h2" color="text">
+            {presets.title(name)}
+          </Text>
+          <Text variant="body" color="text">
+            {presets.hint}
+          </Text>
+        </Flex>
+
+        <Button color="primary" onClick={onToggleEditMode} disabled={isLoading} size="small">
           <Text variant="button" color="text">
             {presets.cta}
           </Text>
         </Button>
-      </Wrapper>
+      </Flex>
     </S.Container>
   );
 };
