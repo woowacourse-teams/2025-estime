@@ -6,27 +6,29 @@ import Text from '../Text';
 export type StatusType = 'success' | 'error' | 'warning';
 
 interface ToastProps {
+  id: string;
   type: StatusType;
   message: string;
+  onClose: (id: string) => void;
 }
 
 export const ToastThemeContext = createContext<StatusType>('warning');
 export const useToastTheme = () => useContext(ToastThemeContext);
 
-const Toast = ({ type, message }: ToastProps) => {
+const Toast = ({ id, type, message, onClose }: ToastProps) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(true);
-
-    const fadeOutTimer = setTimeout(() => {
-      setVisible(false);
-    }, 2500);
+    const showTimer = setTimeout(() => setVisible(true), 30);
+    const fadeOutTimer = setTimeout(() => setVisible(false), 2500);
+    const removeTimer = setTimeout(() => onClose(id), 3000);
 
     return () => {
+      clearTimeout(showTimer);
       clearTimeout(fadeOutTimer);
+      clearTimeout(removeTimer);
     };
-  }, []);
+  }, [id, onClose]);
 
   return (
     <ToastThemeContext.Provider value={type}>
