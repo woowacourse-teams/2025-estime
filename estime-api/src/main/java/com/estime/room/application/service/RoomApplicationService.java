@@ -100,9 +100,12 @@ public class RoomApplicationService {
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
-        voteRepository.deleteAllInBatch(originVotes);
+        final Votes updatedVotes = Votes.from(input.toEntities(participantId));
 
-        return voteRepository.saveAll(Votes.from(input.toEntities(participantId)));
+        voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
+        voteRepository.saveAll(updatedVotes.subtract(originVotes));
+
+        return updatedVotes;
     }
 
     @Transactional
