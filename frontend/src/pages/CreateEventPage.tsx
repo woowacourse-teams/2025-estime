@@ -9,7 +9,7 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 import Information from '@/components/Information';
 import { useTheme } from '@emotion/react';
 import IInfo from '@/icons/IInfo';
-import useSectionValidation from '@/hooks/CreateRoom/useShakeAnimation';
+import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
 import { useRef } from 'react';
 
 const CreateEventPage = () => {
@@ -26,7 +26,7 @@ const CreateEventPage = () => {
     roomInfoSubmit,
   } = useCreateRoom();
 
-  const { shouldShake, handleShouldShake } = useSectionValidation();
+  const { shouldShake, handleShouldShake } = useShakeAnimation();
   const showValidation = useRef(false);
 
   const handleCreateRoom = async () => {
