@@ -10,6 +10,6 @@ export const Container = styled.div`
 export const Wrapper = styled.div<{ index: number }>`
   width: fit-content;
   position: absolute;
-  top: ${({ index }) => `${index * 20}px`};
+  top: ${({ index }) => `${index * 30}px`};
   transform: translateX(-50%);
 `;
