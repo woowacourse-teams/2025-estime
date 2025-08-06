@@ -99,8 +99,8 @@ public class RoomApplicationService {
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
 
-        voteRepository.deleteAllInBatch(originVotes.remove(updatedVotes));
-        voteRepository.saveAll(updatedVotes.remove(originVotes));
+        voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
+        voteRepository.saveAll(updatedVotes.subtract(originVotes));
 
         return updatedVotes;
     }

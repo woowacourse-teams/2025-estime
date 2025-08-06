@@ -2,6 +2,7 @@ package com.estime.room.domain.participant.vote;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.domain.vo.DateTimeSlot;
 import java.time.LocalDateTime;
@@ -45,7 +46,7 @@ class VotesTest {
 
     @Test
     @DisplayName("remove 메소드로 다른 Votes를 제거(차집합)한다.")
-    void remove() {
+    void subtract() {
         // given
         final LocalDateTime now = getValidDateTime();
         final Vote vote1 = Vote.of(1L, DateTimeSlot.from(now));
@@ -55,7 +56,7 @@ class VotesTest {
         final Votes votes2 = Votes.from(List.of(vote2));
 
         // when
-        final Votes result = votes1.remove(votes2);
+        final Votes result = votes1.subtract(votes2);
 
         // then
         assertThat(result.getElements()).hasSize(2);
@@ -112,10 +113,12 @@ class VotesTest {
         final Votes nonEmptyVotes = Votes.from(List.of(Vote.of(1L, DateTimeSlot.from(getValidDateTime()))));
 
         // when & then
-        assertThat(emptyVotes.isEmpty()).isTrue();
-        assertThat(emptyVotes.isNotEmpty()).isFalse();
-        assertThat(nonEmptyVotes.isEmpty()).isFalse();
-        assertThat(nonEmptyVotes.isNotEmpty()).isTrue();
+        assertSoftly(softly -> {
+            softly.assertThat(emptyVotes.isEmpty()).isTrue();
+            softly.assertThat(emptyVotes.isNotEmpty()).isFalse();
+            softly.assertThat(nonEmptyVotes.isEmpty()).isFalse();
+            softly.assertThat(nonEmptyVotes.isNotEmpty()).isTrue();
+        });
     }
 
     private LocalDateTime getValidDateTime() {

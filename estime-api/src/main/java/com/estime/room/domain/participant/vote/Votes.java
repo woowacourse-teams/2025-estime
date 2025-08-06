@@ -24,7 +24,7 @@ public class Votes {
         return new Votes(Set.copyOf(votes));
     }
 
-    public Votes remove(final Votes votes) {
+    public Votes subtract(final Votes votes) {
         final Set<Vote> removed = new HashSet<>(this.elements);
         removed.removeAll(votes.getElements());
         return new Votes(removed);

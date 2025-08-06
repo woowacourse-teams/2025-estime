@@ -2,6 +2,7 @@ package com.estime.room.domain.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
@@ -69,8 +70,10 @@ class TimeSlotTest {
         final TimeSlot tenThirty = TimeSlot.from(LocalTime.of(10, 30));
 
         // when & then
-        assertThat(ten.compareTo(tenThirty)).isNegative();
-        assertThat(tenThirty.compareTo(ten)).isPositive();
-        assertThat(ten.compareTo(ten)).isZero();
+        assertSoftly(softly -> {
+            softly.assertThat(ten.compareTo(tenThirty)).isNegative();
+            softly.assertThat(tenThirty.compareTo(ten)).isPositive();
+            softly.assertThat(ten.compareTo(ten)).isZero();
+        });
     }
 }

@@ -2,6 +2,7 @@ package com.estime.room.domain.vo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
@@ -54,8 +55,10 @@ class DateSlotTest {
         final DateSlot tomorrow = DateSlot.from(LocalDate.now().plusDays(1));
 
         // when & then
-        assertThat(today.compareTo(tomorrow)).isNegative();
-        assertThat(tomorrow.compareTo(today)).isPositive();
-        assertThat(today.compareTo(today)).isZero();
+        assertSoftly(softly -> {
+            softly.assertThat(today.compareTo(tomorrow)).isNegative();
+            softly.assertThat(tomorrow.compareTo(today)).isPositive();
+            softly.assertThat(today.compareTo(today)).isZero();
+        });
     }
 }
