@@ -46,7 +46,7 @@ const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
         </>
       )}
       {!isHeader && open && participantList && participantList.length > 0 && (
-        <TableTooltip content={participantList.join(', ')} position={position} />
+        <TableTooltip content={participantList.join(' , ')} position={position} />
       )}
     </S.Container>
   );
