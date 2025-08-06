@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ParticipantCheckResponse(
         @Schema(example = "true")
-        boolean exists
+        boolean isDuplicateName
 ) {
     public static ParticipantCheckResponse from(final ParticipantCheckOutput output) {
-        return new ParticipantCheckResponse(output.exists());
+        return new ParticipantCheckResponse(output.isDuplicateName());
     }
 }
