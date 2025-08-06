@@ -2,19 +2,18 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import StatusButton from '../StatusButton';
 import * as S from './Toast.styled';
 import Text from '../Text';
-
-export type StatusType = 'success' | 'error' | 'warning';
+import { type ToastType } from '@/types/toastType';
 
 export type ToastPhase = 'idle' | 'visible' | 'hidden';
 
 interface ToastProps {
   id: string;
-  type: StatusType;
+  type: ToastType;
   message: string;
   onClose: (id: string) => void;
 }
 
-export const ToastThemeContext = createContext<StatusType>('warning');
+export const ToastThemeContext = createContext<ToastType>('warning');
 export const useToastTheme = () => useContext(ToastThemeContext);
 
 const Toast = ({ id, type, message, onClose }: ToastProps) => {
