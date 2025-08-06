@@ -3,30 +3,41 @@ import { useRef, useState } from 'react';
 
 export type LoginData = {
   name: string;
-  password: string;
 };
-export function useUserLogin({ session }: { session: string | null }) {
+export function useUserLogin({
+  session,
+  onDuplicateNickname,
+}: {
+  session: string | null;
+  onDuplicateNickname?: () => void;
+}) {
   if (!session) {
     throw new Error('Session ID is required for user login');
   }
-  const [userData, setUserData] = useState<LoginData>({ name: '', password: '' });
+  const [userData, setUserData] = useState<LoginData>({ name: '' });
 
   const handleUserData = (data: LoginData) => setUserData(data);
   const isLoggedIn = useRef(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (): Promise<boolean> => {
     if (!session) {
       throw new Error('세션이 없습니다. 로그인에 실패했습니다.');
     }
     if (userData.name.trim().length === 0) {
       throw new Error('아이디를 입력해주세요.');
     }
-    await joinUser(session, {
+    const response = await joinUser(session, {
       participantName: userData.name,
     });
+
+    if (response.isDuplicateName) {
+      onDuplicateNickname?.();
+      return true;
+    }
     isLoggedIn.current = true;
+    return false;
   };
-  const resetUserData = () => setUserData({ name: '', password: '' });
+  const resetUserData = () => setUserData({ name: '' });
   return {
     name: userData.name,
     userData,
