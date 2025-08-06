@@ -9,8 +9,7 @@ export const Container = styled.div<{ x: number; y: number }>`
   top: ${({ y }) => y}px;
   left: ${({ x }) => x}px;
   transform: translate(-50%, 70%);
-  width: 240px;
-  height: 40px;
+  padding: var(--padding-4) var(--padding-6);
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   background-color: ${({ theme }) => theme.colors.gray10};

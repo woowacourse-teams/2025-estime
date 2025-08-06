@@ -7,6 +7,7 @@ import * as S from './HeatMapCell.styled';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TableTooltip from '@/components/TableTooltip';
 import { useHoverTooltip } from '@/hooks/useHoverTooltip';
+import IPerson from '@/icons/IPerson';
 
 interface HeatMapCellProps {
   date: string;
@@ -22,6 +23,8 @@ const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
 
   const weight = isHeader ? 0 : (cellInfo?.weight ?? 0);
   const participantList = cellInfo?.participantNames;
+  // TODO: 추후 추가
+  // const allAvailable
   const backgroundColor = getHeatMapCellBackgroundColor({
     theme,
     isHeader,
@@ -46,7 +49,14 @@ const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
         </>
       )}
       {!isHeader && open && participantList && participantList.length > 0 && (
-        <TableTooltip content={participantList.join(' , ')} position={position} />
+        <TableTooltip position={position}>
+          <Flex direction="row" gap="var(--gap-4)" align="center">
+            <IPerson />
+            <Text variant="body" color="text">
+              {participantList.join(', ')} 참여 가능!
+            </Text>
+          </Flex>
+        </TableTooltip>
       )}
     </S.Container>
   );
