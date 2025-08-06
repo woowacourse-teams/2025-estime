@@ -3,13 +3,9 @@ export interface UserAvailableTimeRequestType {
   dateTimeSlots: string[];
 }
 
-type UserAvailableTimeInnerType = {
-  participantName: string;
-  dateTimeSlots: string;
-};
-
 export type UserAvailableTimeResponseType = {
-  dateTimeSlots: UserAvailableTimeInnerType[];
+  participantName: string;
+  dateTimeSlots: string[];
 };
 
 export interface CombinedAvailableTimesResponseType {
