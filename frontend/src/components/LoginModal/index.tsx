@@ -76,7 +76,7 @@ export const LoginModal = ({
                 data-ga-id="submit-button"
               >
                 <Text variant="button" color="background">
-                  저장하고 계속하기
+                  입장하기
                 </Text>
               </Button>
             </Flex.Item>
