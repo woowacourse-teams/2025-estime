@@ -13,6 +13,6 @@ export const HeaderCell = styled.div<{
   cursor: pointer;
   padding: var(--padding-4);
   height: ${({ isDate }) => (isDate ? '3rem' : '1.5rem')};
-  width: 5rem;
+  width: 100%;
   user-select: none;
 `;

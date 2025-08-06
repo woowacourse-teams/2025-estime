@@ -2,7 +2,6 @@ import * as S from './Timetable.styled';
 import { Field } from '@/types/field';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
 import Flex from '@/components/Layout/Flex';
-import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import TimeTableCell from './TimeTableCell';
 
@@ -22,36 +21,34 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
   });
 
   return (
-    <Flex direction="column" gap="var(--gap-6)">
-      <S.TimetableContent onMouseLeave={onMouseLeave}>
-        <S.TimeSlotColumn>
-          {timeList.map((dateTimeSlot) => (
-            <S.GridContainer key={dateTimeSlot}>
-              {dateTimeSlot.endsWith(':00') && (
-                <S.TimeLabel>
-                  <Text variant="body" color="text">
-                    {dateTimeSlot}
-                  </Text>
-                </S.TimeLabel>
-              )}
-            </S.GridContainer>
-          ))}
-        </S.TimeSlotColumn>
-        {[...availableDates].map((date) => (
-          <Wrapper key={date} center={false}>
-            {timeList.map((dateTimeSlot) => (
-              <TimeTableCell
-                key={`${date} ${dateTimeSlot}`}
-                date={date}
-                timeText={dateTimeSlot}
-                handlers={{ onMouseDown, onMouseUp, onMouseEnter }}
-                selectedTimes={selectedTimes}
-              />
-            ))}
-          </Wrapper>
+    <S.TimetableContent onMouseLeave={onMouseLeave}>
+      <S.TimeSlotColumn>
+        {timeList.map((dateTimeSlot) => (
+          <S.GridContainer key={dateTimeSlot}>
+            {dateTimeSlot.endsWith(':00') && (
+              <S.TimeLabel>
+                <Text variant="body" color="text">
+                  {dateTimeSlot}
+                </Text>
+              </S.TimeLabel>
+            )}
+          </S.GridContainer>
         ))}
-      </S.TimetableContent>
-    </Flex>
+      </S.TimeSlotColumn>
+      {[...availableDates].map((date) => (
+        <S.DateColumn key={date}>
+          {timeList.map((dateTimeSlot) => (
+            <TimeTableCell
+              key={`${date} ${dateTimeSlot}`}
+              date={date}
+              timeText={dateTimeSlot}
+              handlers={{ onMouseDown, onMouseUp, onMouseEnter }}
+              selectedTimes={selectedTimes}
+            />
+          ))}
+        </S.DateColumn>
+      ))}
+    </S.TimetableContent>
   );
 };
 export default Timetable;

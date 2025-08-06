@@ -9,7 +9,7 @@ export const Container = styled.div<{
   cursor: ${({ isHeader }) => (isHeader ? 'default' : 'pointer')};
   padding: var(--padding-4);
   height: ${({ isHeader }) => (isHeader ? '3rem' : '1.5rem')};
-  width: 5rem;
+  width: 100%;
   user-select: none;
   background-color: ${({ backgroundColor, isHeader, theme }) =>
     backgroundColor || (isHeader ? theme.colors.background : theme.colors.gray10)};

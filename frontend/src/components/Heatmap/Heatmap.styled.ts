@@ -11,7 +11,6 @@ export const HeatMapContent = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  overflow-x: auto;
   user-select: none;
 `;
 

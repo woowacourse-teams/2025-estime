@@ -89,30 +89,27 @@ const CheckEventPage = () => {
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
           />
-          <Wrapper>
-            <S.TimeTableContainer>
-              <Flex gap="var(--gap-8)" direction="column" align="center">
-                <TimeTableHeader
-                  name={mode === 'view' ? roomInfo.title : userName.value}
-                  mode={mode}
-                  onToggleEditMode={handleToggleEditMode}
-                />
-                {mode === 'view' ? (
-                  <Heatmap
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    roomStatistics={roomStatistics}
-                  />
-                ) : (
-                  <Timetable
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    selectedTimes={selectedTimes}
-                  />
-                )}
-              </Flex>
-            </S.TimeTableContainer>
-          </Wrapper>
+
+          <S.TimeTableContainer>
+            <TimeTableHeader
+              name={mode === 'view' ? roomInfo.title : userName.value}
+              mode={mode}
+              onToggleEditMode={handleToggleEditMode}
+            />
+            {mode === 'view' ? (
+              <Heatmap
+                dateTimeSlots={roomInfo.availableTimeSlots}
+                availableDates={roomInfo.availableDateSlots}
+                roomStatistics={roomStatistics}
+              />
+            ) : (
+              <Timetable
+                dateTimeSlots={roomInfo.availableTimeSlots}
+                availableDates={roomInfo.availableDateSlots}
+                selectedTimes={selectedTimes}
+              />
+            )}
+          </S.TimeTableContainer>
         </Flex>
       </Wrapper>
       <LoginModal
