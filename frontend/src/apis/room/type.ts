@@ -27,3 +27,13 @@ export interface CreateUserType {
 export interface CreateUserResponseType {
   participantName: string;
 }
+
+export type StatisticItem = {
+  dateTimeSlot: string;
+  participantNames: string[];
+};
+
+export type GetRoomStatisticsResponseType = {
+  participantCount: number;
+  statistic: StatisticItem[] | [];
+};

@@ -1,36 +1,19 @@
 import * as S from './Timetable.styled';
 import { Field } from '@/types/field';
 import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
-import Flex from '@/components/Layout/Flex';
-import Wrapper from '@/components/Layout/Wrapper';
+
 import Text from '@/components/Text';
-import Button from '@/components/Button';
-import { DateManager } from '@/utils/common/DateManager';
-import { FormatManager } from '@/utils/common/FormatManager';
+import TimeTableCell from './TimeTableCell';
+import Wrapper from '@/components/Layout/Wrapper';
 
 interface TimetableProps {
-  name: string;
-  availableTimeSlots: string[];
-  availableDateSlots: Set<string>;
+  dateTimeSlots: string[];
+  availableDates: Set<string>;
   selectedTimes: Field<Set<string>>;
-  userAvailabilitySubmit: () => void;
-  ref: React.RefObject<HTMLDivElement | null>;
 }
 
-const Timetable = ({
-  name,
-  availableTimeSlots,
-  availableDateSlots,
-  selectedTimes,
-  userAvailabilitySubmit,
-  ref,
-}: TimetableProps) => {
-  const parsedTimeSlots = availableTimeSlots.map((timeSlot) => {
-    const [, minute] = FormatManager.parseHourMinute(timeSlot);
-    return { timeText: timeSlot, isHour: minute === 0 };
-  });
-
-  const timeList = [{ timeText: 'Dates', isHour: false }, ...parsedTimeSlots];
+const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetableProps) => {
+  const timeList = ['Dates', ...dateTimeSlots];
 
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
     selectedTimes: selectedTimes.value,
@@ -39,68 +22,34 @@ const Timetable = ({
   });
 
   return (
-    <Wrapper maxWidth={780} ref={ref}>
-      <S.Container>
-        <Flex direction="column" gap="var(--gap-6)">
-          <S.TimetableHeader>
-            <Flex direction="column" gap="var(--gap-4)">
-              <Text variant="h2" color="text">
-                {name}의 시간 등록하기
-              </Text>
-              <Text variant="body" color="text">
-                가능한 시간을 아래 시간표에서 드래그 해주세요 !
-              </Text>
-            </Flex>
-            <Wrapper maxWidth={100} center={false}>
-              <Button color="primary" onClick={userAvailabilitySubmit}>
-                <Text variant="button" color="text">
-                  저장하기
+    <S.TimetableContent onMouseLeave={onMouseLeave}>
+      <S.TimeSlotColumn>
+        {timeList.map((dateTimeSlot) => (
+          <S.GridContainer key={dateTimeSlot}>
+            {dateTimeSlot.endsWith(':00') && (
+              <S.TimeLabel>
+                <Text variant="body" color="text">
+                  {dateTimeSlot}
                 </Text>
-              </Button>
-            </Wrapper>
-          </S.TimetableHeader>
-          <S.TimetableContent onMouseLeave={onMouseLeave}>
-            <S.TimeSlotColumn>
-              {timeList.map(({ timeText, isHour }) => (
-                <S.GridContainer key={timeText}>
-                  {isHour && (
-                    <S.TimeLabel>
-                      <Text variant="body" color="text">
-                        {isHour ? timeText : ''}
-                      </Text>
-                    </S.TimeLabel>
-                  )}
-                </S.GridContainer>
-              ))}
-            </S.TimeSlotColumn>
-            {[...availableDateSlots].map((date) => (
-              <Wrapper key={date} center={false}>
-                {timeList.map(({ timeText }) => (
-                  <S.HeaderCell
-                    key={`${date} ${timeText}`}
-                    onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
-                    onMouseUp={() => onMouseUp()}
-                    onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
-                    selectedTimes={selectedTimes.value}
-                    date={date}
-                    timeText={timeText}
-                  >
-                    {timeText === 'Dates' && (
-                      <Text variant="body" color="text">
-                        <Flex direction="column" justify="center" align="center">
-                          <Text>{date.split('-').slice(1).join('.')}</Text>
-                          <Text>({DateManager.getDayOfWeek(date)})</Text>
-                        </Flex>
-                      </Text>
-                    )}
-                  </S.HeaderCell>
-                ))}
-              </Wrapper>
-            ))}
-          </S.TimetableContent>
-        </Flex>
-      </S.Container>
-    </Wrapper>
+              </S.TimeLabel>
+            )}
+          </S.GridContainer>
+        ))}
+      </S.TimeSlotColumn>
+      {[...availableDates].map((date) => (
+        <Wrapper key={date} center={false} maxWidth="100%">
+          {timeList.map((dateTimeSlot) => (
+            <TimeTableCell
+              key={`${date} ${dateTimeSlot}`}
+              date={date}
+              timeText={dateTimeSlot}
+              handlers={{ onMouseDown, onMouseUp, onMouseEnter }}
+              selectedTimes={selectedTimes}
+            />
+          ))}
+        </Wrapper>
+      ))}
+    </S.TimetableContent>
   );
 };
 export default Timetable;

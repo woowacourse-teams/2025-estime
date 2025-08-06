@@ -1,5 +1,5 @@
 import { joinUser } from '../../apis/room/room';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export type LoginData = {
   name: string;
@@ -12,6 +12,7 @@ export function useUserLogin({ session }: { session: string | null }) {
   const [userData, setUserData] = useState<LoginData>({ name: '', password: '' });
 
   const handleUserData = (data: LoginData) => setUserData(data);
+  const isLoggedIn = useRef(false);
 
   const handleLogin = async () => {
     if (!session) {
@@ -23,12 +24,15 @@ export function useUserLogin({ session }: { session: string | null }) {
     await joinUser(session, {
       participantName: userData.name,
     });
+    isLoggedIn.current = true;
   };
-
+  const resetUserData = () => setUserData({ name: '', password: '' });
   return {
     name: userData.name,
     userData,
     handleUserData,
     handleLogin,
+    resetUserData,
+    isLoggedIn: isLoggedIn.current,
   };
 }

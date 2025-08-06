@@ -40,17 +40,17 @@ export const LoginModal = ({
           </S.LoginModalHeader>
 
           <Flex gap="var(--gap-6)" direction="column">
-            <Flex justify="space-between" align="center" gap="var(--gap-6)">
+            <Flex align="center" justify="center" gap="var(--gap-6)">
               <Flex.Item flex={1}>
                 <S.LoginLabel htmlFor="userid" required>
                   닉네임
                 </S.LoginLabel>
               </Flex.Item>
               <Flex.Item flex={4}>
-                <Flex direction="column" gap="var(--gap-3)">
+                <Flex direction="column" gap="var(--gap-4)">
                   <Input
                     id="userid"
-                    placeholder="아이디를 입력해주세요."
+                    placeholder="닉네임을 입력해주세요."
                     maxLength={12}
                     autoFocus={true}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
@@ -61,25 +61,12 @@ export const LoginModal = ({
                     aria-hidden="true"
                     opacity={userData.name.trim().length === 0}
                   >
-                    아이디를 입력해주세요.
+                    닉네임을 입력해주세요.
                   </Text>
                 </Flex>
               </Flex.Item>
             </Flex>
-            <Flex justify="space-between" align="center" gap="var(--gap-6)">
-              <Flex.Item flex={1}>
-                <S.LoginLabel htmlFor="user-password">비밀번호(선택)</S.LoginLabel>
-              </Flex.Item>
-              <Flex.Item flex={4}>
-                <Input
-                  type="password"
-                  id="user-password"
-                  maxLength={8}
-                  placeholder="비밀번호를 입력해주세요."
-                  onChange={(e) => handleUserData({ ...userData, password: e.target.value })}
-                />
-              </Flex.Item>
-            </Flex>
+
             <Flex.Item flex={1}>
               <Button
                 color={userData.name.trim().length > 0 ? 'primary' : 'plum40'}

@@ -1,6 +1,13 @@
 import styled from '@emotion/styled';
 
-export const TimetableContent = styled.div`
+export const HeatMapHeader = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const HeatMapContent = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -31,11 +38,4 @@ export const TimeLabel = styled.div`
   justify-content: center;
   height: 3rem;
   background-color: ${({ theme }) => theme.colors.background};
-`;
-
-export const DateColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  width: 0;
 `;
