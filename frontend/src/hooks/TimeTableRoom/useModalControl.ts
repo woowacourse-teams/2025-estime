@@ -1,18 +1,23 @@
 import { useState } from 'react';
 
-export function useModalControl() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+type modalTypeKey = 'login' | 'entryConfirm';
 
-  const handleOpenLoginModal = () => {
-    setIsLoginModalOpen(true);
+export function useModalControl() {
+  const [modals, setModals] = useState<Record<modalTypeKey, boolean>>({
+    login: false,
+    entryConfirm: false,
+  });
+
+  const handleOpenModal = (key: modalTypeKey) => {
+    setModals((prev) => ({ ...prev, [key]: true }));
   };
-  const handleCloseLoginModal = () => {
-    setIsLoginModalOpen(false);
+  const handleCloseModal = (key: modalTypeKey) => {
+    setModals((prev) => ({ ...prev, [key]: false }));
   };
 
   return {
-    isLoginModalOpen,
-    handleOpenLoginModal,
-    handleCloseLoginModal,
+    modals,
+    handleOpenModal,
+    handleCloseModal,
   };
 }
