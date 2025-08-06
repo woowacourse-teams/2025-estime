@@ -17,7 +17,9 @@ import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
+import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -56,7 +58,7 @@ class RoomApplicationServiceTest {
         final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
 
         // then
-        assertThat(isValidTsid(saved.session()))
+        assertThat(isValidSession(saved.session()))
                 .isTrue();
     }
 
@@ -73,7 +75,7 @@ class RoomApplicationServiceTest {
         final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
 
         // when
-        final RoomOutput output = roomApplicationService.getRoomBySession(saved.session());
+        final RoomOutput output = roomApplicationService.getRoomBySession(saved.session().getTsid());
 
         // then
         assertSoftly(softAssertions -> {
@@ -94,7 +96,7 @@ class RoomApplicationServiceTest {
     @Test
     void getRoomByNonexistentSession() {
         // given
-        final String nonexistentSession = "nonexistent-session";
+        final Tsid nonexistentSession = TsidCreator.getTsid();
 
         // when // then
         assertThatThrownBy(() -> roomApplicationService.getRoomBySession(nonexistentSession))
@@ -160,7 +162,7 @@ class RoomApplicationServiceTest {
 
         // when
         final ParticipantCheckOutput output = roomApplicationService.checkParticipantExists(
-                room.getSession(), "강산");
+                room.getSession().getTsid(), "강산");
 
         // then
         assertThat(output.exists()).isTrue();
@@ -196,8 +198,9 @@ class RoomApplicationServiceTest {
                 .hasMessage("Participant name already exists: 강산");
     }
 
-    private boolean isValidTsid(final String tsid) {
-        if (tsid == null || tsid.isEmpty()) {
+    private boolean isValidSession(final RoomSession session) {
+        final String tsid = session.getTsid().toString();
+        if (tsid.isEmpty()) {
             return false;
         }
         return Tsid.isValid(tsid);

@@ -13,6 +13,7 @@ import com.estime.connection.infrastructure.discord.DiscordMessageSender;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,17 +56,17 @@ class ConnectedRoomApplicationServiceTest {
 
         // when
         final ConnectedRoomCreateOutput saved = connectedRoomApplicationService.save(input);
+        final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session())
+                .orElseThrow();
 
         // then
-        assertThat(isValidTsid(saved.session()))
-                .isTrue();
-
-        final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
+        assertThat(isValidSession(saved.session())).isTrue();
         assertThat(connectedRoom.getRoom().getSession()).isEqualTo(saved.session());
     }
 
-    private boolean isValidTsid(final String tsid) {
-        if (tsid == null || tsid.isEmpty()) {
+    private boolean isValidSession(final RoomSession session) {
+        final String tsid = session.getTsid().toString();
+        if (tsid.isEmpty()) {
             return false;
         }
         return Tsid.isValid(tsid);
