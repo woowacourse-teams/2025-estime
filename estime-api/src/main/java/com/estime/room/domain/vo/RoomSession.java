@@ -29,4 +29,9 @@ public class RoomSession implements Serializable {
     private static void validate(final Tsid tsid) {
         Objects.requireNonNull(tsid, "tsid cannot be null");
     }
+
+    @Override
+    public String toString() {
+        return tsid.toString();
+    }
 }

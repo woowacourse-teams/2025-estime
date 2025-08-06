@@ -23,7 +23,7 @@ public class ConnectionUrlHelper {
 
     public String buildConnectedRoomCreatedUrl(final RoomSession session) {
         return UriComponentsBuilder.fromUriString(webConfigProperties.prod() + "check")
-                .queryParam("id", session.getTsid().toString())
+                .queryParam("id", session.toString())
                 .build()
                 .toUriString();
     }

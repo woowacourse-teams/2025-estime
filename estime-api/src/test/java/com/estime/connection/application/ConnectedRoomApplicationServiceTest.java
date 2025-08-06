@@ -68,6 +68,6 @@ class ConnectedRoomApplicationServiceTest {
     }
 
     private boolean isValidSession(final RoomSession session) {
-        return Tsid.isValid(session.getTsid().toString());
+        return Tsid.isValid(session.toString());
     }
 }
