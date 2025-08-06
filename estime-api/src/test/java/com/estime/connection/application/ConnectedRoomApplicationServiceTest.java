@@ -1,8 +1,6 @@
 package com.estime.connection.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
@@ -58,12 +56,10 @@ class ConnectedRoomApplicationServiceTest {
 
         // when
         final ConnectedRoomCreateOutput saved = connectedRoomApplicationService.save(input);
-        final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session())
-                .orElseThrow();
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(isValidTsid(saved.session()))
+            softly.assertThat(isValidSession(saved.session()))
                     .isTrue();
 
             final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
