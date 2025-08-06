@@ -197,10 +197,6 @@ class RoomApplicationServiceTest {
     }
 
     private boolean isValidSession(final RoomSession session) {
-        final String tsid = session.getTsid().toString();
-        if (tsid.isEmpty()) {
-            return false;
-        }
-        return Tsid.isValid(tsid);
+        return Tsid.isValid(session.getTsid().toString());
     }
 }
