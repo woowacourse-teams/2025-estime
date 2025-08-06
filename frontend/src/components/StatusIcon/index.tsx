@@ -1,20 +1,20 @@
-import * as S from './StatusButton.styled';
+import * as S from './StatusIcon.styled';
 import ISuccess from '@/icons/ISuccess';
 import IError from '@/icons/IError';
 import IWarning from '@/icons/IWarning';
 
-const STATUS_BUTTON = {
+const STATUS_ICON = {
   success: ISuccess,
   error: IError,
   warning: IWarning,
 };
 
-interface StatusButtonProps {
-  type: keyof typeof STATUS_BUTTON;
+interface StatusIconProps {
+  type: keyof typeof STATUS_ICON;
 }
 
-const StatusButton = ({ type }: StatusButtonProps) => {
-  const IconComponent = STATUS_BUTTON[type];
+const StatusIcon = ({ type }: StatusIconProps) => {
+  const IconComponent = STATUS_ICON[type];
 
   return (
     <S.Container>
@@ -23,4 +23,4 @@ const StatusButton = ({ type }: StatusButtonProps) => {
   );
 };
 
-export default StatusButton;
+export default StatusIcon;

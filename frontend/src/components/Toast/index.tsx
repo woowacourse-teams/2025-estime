@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import StatusButton from '../StatusButton';
+import StatusIcon from '../StatusIcon';
 import * as S from './Toast.styled';
 import Text from '../Text';
 import { type ToastType } from '@/types/toastType';
@@ -39,7 +39,7 @@ const Toast = ({ id, type, message, onClose }: ToastProps) => {
     <ToastThemeContext.Provider value={type}>
       <S.Container phase={phase}>
         <S.Header>
-          <StatusButton type={type} />
+          <StatusIcon type={type} />
           <Text color={`${type}Text`}>{TOAST_TITLE[type]}</Text>
         </S.Header>
         <S.Body>
