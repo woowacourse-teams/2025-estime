@@ -48,10 +48,9 @@ export const useUserAvailability = ({
     }
     const userAvailableTimeInfo = await getUserAvailableTime(session, name);
     const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-    const dateTimeSlots = dateTimeSlotsResponse.map((item) => item.dateTimeSlots);
     userName.set(name);
     if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
-      const selectedTimesResponse = new Set(dateTimeSlots);
+      const selectedTimesResponse = new Set(dateTimeSlotsResponse);
       selectedTimes.set(selectedTimesResponse);
     }
   };
