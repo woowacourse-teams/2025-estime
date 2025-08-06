@@ -62,8 +62,10 @@ class DateTimeSlotTest {
         final DateTimeSlot thirtyMinutesLater = DateTimeSlot.from(getValidDateTime().withMinute(30));
 
         // when & then
-        assertThat(now.isBefore(thirtyMinutesLater.getStartAt())).isTrue();
-        assertThat(thirtyMinutesLater.isBefore(now.getStartAt())).isFalse();
+        assertSoftly(softly -> {
+            softly.assertThat(now.isBefore(thirtyMinutesLater.getStartAt())).isTrue();
+            softly.assertThat(thirtyMinutesLater.isBefore(now.getStartAt())).isFalse();
+        });
     }
 
     @Test

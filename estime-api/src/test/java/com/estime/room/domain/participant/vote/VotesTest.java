@@ -28,8 +28,10 @@ class VotesTest {
         final Votes votes = Votes.from(voteList);
 
         // then
-        assertThat(votes.getElements()).hasSize(2);
-        assertThat(votes.getElements()).contains(vote1, vote2);
+        assertSoftly(softly -> {
+            softly.assertThat(votes.getElements()).hasSize(2);
+            softly.assertThat(votes.getElements()).contains(vote1, vote2);
+        });
     }
 
     @Test
@@ -59,8 +61,10 @@ class VotesTest {
         final Votes result = votes1.subtract(votes2);
 
         // then
-        assertThat(result.getElements()).hasSize(2);
-        assertThat(result.getElements()).contains(vote1, vote3);
+        assertSoftly(softly -> {
+            assertThat(result.getElements()).hasSize(2);
+            assertThat(result.getElements()).contains(vote1, vote3);
+        });
     }
 
     @Test
@@ -79,9 +83,11 @@ class VotesTest {
         final Map<DateTimeSlot, Set<Long>> statistic = votes.calculateStatistic();
 
         // then
-        assertThat(statistic).hasSize(2);
-        assertThat(statistic.get(slot1)).containsExactlyInAnyOrder(1L, 2L);
-        assertThat(statistic.get(slot2)).containsExactlyInAnyOrder(1L);
+        assertSoftly(softly -> {
+            assertThat(statistic).hasSize(2);
+            assertThat(statistic.get(slot1)).containsExactlyInAnyOrder(1L, 2L);
+            assertThat(statistic.get(slot2)).containsExactlyInAnyOrder(1L);
+        });
     }
 
     @Test
@@ -101,8 +107,10 @@ class VotesTest {
         final Set<DateTimeSlot> uniqueStartAts = votes.calculateUniqueStartAts();
 
         // then
-        assertThat(uniqueStartAts).hasSize(2);
-        assertThat(uniqueStartAts).contains(slot1, slot3);
+        assertSoftly(softly -> {
+            assertThat(uniqueStartAts).hasSize(2);
+            assertThat(uniqueStartAts).contains(slot1, slot3);
+        });
     }
 
     @Test
