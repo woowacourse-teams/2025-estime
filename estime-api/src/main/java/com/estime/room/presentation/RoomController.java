@@ -3,7 +3,6 @@ package com.estime.room.presentation;
 import com.estime.common.CustomApiResponse;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
-import com.estime.room.application.dto.output.ParticipantCreateOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
@@ -13,7 +12,6 @@ import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
-import com.estime.room.presentation.dto.response.ParticipantCreateResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
@@ -70,22 +68,12 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<ParticipantCreateResponse> createParticipant(
+    public CustomApiResponse<ParticipantCheckResponse> createParticipant(
             @PathVariable("session") final String session,
             @RequestBody final ParticipantCreateRequest request
     ) {
-        final ParticipantCreateOutput output = roomApplicationService.saveParticipant(
+        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(
                 request.toInput(session));
-        return CustomApiResponse.ok(ParticipantCreateResponse.from(output));
-    }
-
-    @Override
-    public CustomApiResponse<ParticipantCheckResponse> checkParticipantExists(
-            @PathVariable("session") final String session,
-            @RequestParam("participantName") final String participantName
-    ) {
-        final ParticipantCheckOutput output = roomApplicationService.checkParticipantExists(
-                session, participantName);
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }
