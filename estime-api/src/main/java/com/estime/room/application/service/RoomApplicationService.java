@@ -54,7 +54,7 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public DateTimeSlotStatisticOutput calculateVoteStatistic(final Tsid session) {
         final RoomSession roomSession = RoomSession.from(session);
-        final Long roomId = getALong(roomSession);
+        final Long roomId = getRoomIdBySession(roomSession);
 
         final List<Long> participantIds = participantRepository.findIdsByRoomId(roomId);
 
@@ -85,7 +85,7 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public Votes getParticipantVotesBySessionAndParticipantName(final Tsid session, final String participantName) {
         final RoomSession roomSession = RoomSession.from(session);
-        final Long roomId = getALong(roomSession);
+        final Long roomId = getRoomIdBySession(roomSession);
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, participantName)
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
@@ -95,7 +95,7 @@ public class RoomApplicationService {
 
     @Transactional
     public Votes updateParticipantVotes(final VotesUpdateInput input) {
-        final Long roomId = getALong(input.roomSession());
+        final Long roomId = getRoomIdBySession(input.roomSession());
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, input.participantName())
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
@@ -108,7 +108,7 @@ public class RoomApplicationService {
 
     @Transactional
     public ParticipantCreateOutput saveParticipant(final ParticipantCreateInput input) {
-        final Long roomId = getALong(input.roomSession());
+        final Long roomId = getRoomIdBySession(input.roomSession());
 
         final boolean exists = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
 
@@ -122,13 +122,13 @@ public class RoomApplicationService {
 
     public ParticipantCheckOutput checkParticipantExists(final Tsid session, final String participantName) {
         final RoomSession roomSession = RoomSession.from(session);
-        final Long roomId = getALong(roomSession);
+        final Long roomId = getRoomIdBySession(roomSession);
 
         return ParticipantCheckOutput.from(
                 participantRepository.existsByRoomIdAndName(roomId, participantName));
     }
 
-    private Long getALong(final RoomSession roomSession) {
+    private Long getRoomIdBySession(final RoomSession roomSession) {
         return roomRepository.findIdBySession(roomSession)
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
     }
