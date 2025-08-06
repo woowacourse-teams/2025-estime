@@ -13,10 +13,7 @@ interface TimetableProps {
 }
 
 const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetableProps) => {
-  const timeList = [
-    { timeText: 'Dates', isHour: false },
-    ...dateTimeSlots.map((timeText) => ({ timeText, isHour: timeText.endsWith(':00') })),
-  ];
+  const timeList = ['Dates', ...dateTimeSlots];
 
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
     selectedTimes: selectedTimes.value,
@@ -28,12 +25,12 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
     <Flex direction="column" gap="var(--gap-6)">
       <S.TimetableContent onMouseLeave={onMouseLeave}>
         <S.TimeSlotColumn>
-          {timeList.map(({ timeText, isHour }) => (
-            <S.GridContainer key={timeText}>
-              {isHour && (
+          {timeList.map((dateTimeSlot) => (
+            <S.GridContainer key={dateTimeSlot}>
+              {dateTimeSlot.endsWith(':00') && (
                 <S.TimeLabel>
                   <Text variant="body" color="text">
-                    {isHour ? timeText : ''}
+                    {dateTimeSlot}
                   </Text>
                 </S.TimeLabel>
               )}
@@ -42,11 +39,11 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
         </S.TimeSlotColumn>
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false}>
-            {timeList.map(({ timeText }) => (
+            {timeList.map((dateTimeSlot) => (
               <TimeTableCell
-                key={`${date} ${timeText}`}
+                key={`${date} ${dateTimeSlot}`}
                 date={date}
-                timeText={timeText}
+                timeText={dateTimeSlot}
                 handlers={{ onMouseDown, onMouseUp, onMouseEnter }}
                 selectedTimes={selectedTimes}
               />

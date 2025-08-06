@@ -10,21 +10,18 @@ interface HeatmapProps {
   roomStatistics: Map<string, DateCellInfo>;
 }
 const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
-  const timeList = [
-    { timeText: 'Dates', isHour: false },
-    ...dateTimeSlots.map((timeText) => ({ timeText, isHour: timeText.endsWith(':00') })),
-  ];
+  const timeList = ['Dates', ...dateTimeSlots];
 
   return (
     <Flex direction="column" gap="var(--gap-6)">
       <S.HeatMapContent>
         <S.TimeSlotColumn>
-          {timeList.map(({ timeText, isHour }) => (
+          {timeList.map((timeText) => (
             <S.GridContainer key={timeText}>
-              {isHour && (
+              {timeText.endsWith(':00') && (
                 <S.TimeLabel>
                   <Text variant="body" color="text">
-                    {isHour ? timeText : ''}
+                    {timeText}
                   </Text>
                 </S.TimeLabel>
               )}
@@ -33,7 +30,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
         </S.TimeSlotColumn>
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false}>
-            {timeList.map(({ timeText }) => (
+            {timeList.map((timeText) => (
               <HeatMapCell
                 key={`${date}T${timeText}`}
                 date={date}
