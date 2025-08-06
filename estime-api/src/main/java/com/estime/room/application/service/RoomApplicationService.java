@@ -109,11 +109,10 @@ public class RoomApplicationService {
 
         final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
 
-        if (isDuplicateName) {
-            return ParticipantCheckOutput.from(true);
+        if (!isDuplicateName) {
+            participantRepository.save(input.toEntity(roomId));
         }
 
-        participantRepository.save(input.toEntity(roomId));
-        return ParticipantCheckOutput.from(false);
+        return ParticipantCheckOutput.from(isDuplicateName);
     }
 }
