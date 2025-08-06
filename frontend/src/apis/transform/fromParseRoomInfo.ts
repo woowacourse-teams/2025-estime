@@ -23,6 +23,5 @@ export const fromParseRoomInfo = (
       time,
     },
     roomSession,
-    isPublic: 'public',
   };
 };
