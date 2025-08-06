@@ -13,4 +13,12 @@ export const Container = styled.div<{
   user-select: none;
   background-color: ${({ backgroundColor, isHeader, theme }) =>
     backgroundColor || (isHeader ? theme.colors.background : theme.colors.gray10)};
+
+  &:hover {
+    border: ${({ theme, isHeader }) => {
+      if (!isHeader) {
+        return `1.5px dashed ${theme.colors.gray30}`;
+      }
+    }};
+  }
 `;

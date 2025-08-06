@@ -10,7 +10,6 @@ interface HeatmapProps {
 }
 const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
   const timeList = ['Dates', ...dateTimeSlots];
-
   return (
     <S.HeatMapContent>
       <S.TimeSlotColumn>
