@@ -2,7 +2,9 @@ package com.estime.room.presentation.dto.request;
 
 import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.f4b6a3.tsid.Tsid;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,8 +18,8 @@ public record ParticipantVotesUpdateRequest(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public VotesUpdateInput toInput(final String roomSession) {
-        return new VotesUpdateInput(roomSession, participantName,
+    public VotesUpdateInput toInput(final Tsid tsid) {
+        return new VotesUpdateInput(RoomSession.from(tsid), participantName,
                 dateTimeSlots.stream().map(DateTimeSlot::from).toList());
     }
 }
