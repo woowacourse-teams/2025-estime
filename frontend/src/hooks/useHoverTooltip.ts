@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 
 // 연속 입력(pointermove)이 초당 수백 번 들어와도, 매 이벤트마다 setState로 렌더를 유발하지 않도록,
 // 최신 좌표는 ref에만 저장하고(requestAnimationFrame 직전까지 누적),
@@ -50,17 +51,24 @@ export function useHoverTooltip() {
     };
   }, [open]);
 
-  const onEnter = useCallback((e?: React.MouseEvent) => {
+  // 이렇게 해주지 않으면...
+  // 초기 위치가 0,0으로 잡혀서
+  // 0,0 위치로 툴팁이 열립니다.
+  // 이를 현재위치로 잡아주는 초기화가 필요해요.
+  const initializePosition = useCallback((e?: ReactPointerEvent) => {
     if (!e) return;
     const p = { x: e.clientX, y: e.clientY };
     latestPosRef.current = p;
-    // 이렇게 해주지 않으면...
-    // 초기 위치가 0,0으로 잡혀서
-    // 0,0 위치로 툴팁이 열립니다.
-    // 이를 현재위치로 잡아주는 초기화가 필요해요.
     setPosition(p);
-    setOpen(true);
   }, []);
+
+  const onEnter = useCallback(
+    (e: ReactPointerEvent) => {
+      initializePosition(e);
+      setOpen(true);
+    },
+    [initializePosition]
+  );
 
   const onLeave = useCallback(() => {
     setOpen(false);
