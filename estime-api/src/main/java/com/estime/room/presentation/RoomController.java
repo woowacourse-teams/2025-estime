@@ -12,7 +12,6 @@ import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
-import com.estime.room.presentation.dto.response.ParticipantCreateResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
