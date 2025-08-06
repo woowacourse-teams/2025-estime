@@ -1,5 +1,6 @@
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
+import { useToastContext } from '@/contexts/ToastContext';
 import { UserAvailability } from '@/types/userAvailability';
 import { useState } from 'react';
 
@@ -15,6 +16,8 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
+  const { addToast } = useToastContext();
+
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
@@ -33,7 +36,10 @@ export const useUserAvailability = ({
     try {
       const payload = toCreateUserAvailability(userAvailability);
       await updateUserAvailableTime(session, payload);
-      alert('저장되었습니다.');
+      addToast({
+        type: 'success',
+        message: '시간표 저장이 완료되었습니다!',
+      });
     } catch (err) {
       const e = err as Error;
       alert(e.message);
