@@ -6,7 +6,6 @@ import useTimePicker from '@/hooks/useTimePicker';
 import useSelectTime from '@/hooks/useSelectTime';
 import { Field } from '@/types/field';
 import { TimeManager } from '@/utils/common/TimeManager';
-import { DEFAULT_HOUR_OPTIONS } from '@/constants/defaultHourOptions';
 import { useMemo } from 'react';
 import DatePicker from '@/components/DatePicker';
 import Flex from '@/components/Layout/Flex';
@@ -27,9 +26,13 @@ const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
     return TimeManager.filterHourOptions(deadline.value);
   }, [deadline.value.date, deadline.value.time]);
 
-  const { timeRange, endHourOptions, handleCustomStartClick, handleCustomEndClick } = useSelectTime(
-    { timeRange: time.value, setTimeRange: time.set }
-  );
+  const {
+    timeRange,
+    startHourOptions,
+    endHourOptions,
+    handleCustomStartClick,
+    handleCustomEndClick,
+  } = useSelectTime({ timeRange: time.value, setTimeRange: time.set });
   return (
     <S.Container>
       <S.InfoWrapper>
@@ -60,7 +63,7 @@ const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
                 selectHour={handleCustomStartClick}
                 toggleOpen={toggleStartOpen}
                 isOpen={isStartOpen}
-                hourOptions={DEFAULT_HOUR_OPTIONS}
+                hourOptions={startHourOptions}
               />
             </S.Label>
             <S.Label>

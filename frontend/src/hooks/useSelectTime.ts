@@ -10,6 +10,10 @@ const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
     return TimeManager.filterLaterHoursFrom(timeRange.startTime);
   }, [timeRange.startTime]);
 
+  const startHourOptions = useMemo(() => {
+    return TimeManager.filterEarlierHoursUntil(timeRange.endTime);
+  }, [timeRange.endTime]);
+
   const handleCustomStartClick = (time: string) => {
     setTimeRange({ startTime: time, endTime: timeRange.endTime });
   };
@@ -20,6 +24,7 @@ const useSelectTime = ({ timeRange, setTimeRange }: TimeRangeField) => {
 
   return {
     timeRange,
+    startHourOptions,
     endHourOptions,
     handleCustomStartClick,
     handleCustomEndClick,
