@@ -36,6 +36,6 @@ public class Participant extends BaseEntity {
             final String name
     ) {
         Objects.requireNonNull(roomId, "roomId cannot be null");
-        Objects.requireNonNull(name, "participantName cannot be null");
+        Objects.requireNonNull(name, "name cannot be null");
     }
 }

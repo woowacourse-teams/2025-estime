@@ -48,9 +48,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, metrics
+        include: "health, info, metrics"
   metrics:
+    enable:
+      all: false
+      http.server.requests: true
     export:
       cloudwatch:
-        namespace: "aws/ec2/estime-api-dev"
+        namespace: "EC2/estime-api/dev"
         region: ap-northeast-2

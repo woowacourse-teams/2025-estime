@@ -6,7 +6,6 @@ import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
-import com.estime.room.presentation.dto.response.ParticipantCreateResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
@@ -58,17 +57,10 @@ public interface RoomControllerSpecification {
             @RequestBody ParticipantVotesUpdateRequest request
     );
 
-    @Operation(summary = "새로운 참여자 생성")
+    @Operation(summary = "새로운 참여자 이름 중복 검증 후 생성")
     @PostMapping("/{session}/participants")
-    CustomApiResponse<ParticipantCreateResponse> createParticipant(
+    CustomApiResponse<ParticipantCheckResponse> createParticipant(
             @PathVariable("session") Tsid session,
             @RequestBody ParticipantCreateRequest request
-    );
-
-    @Operation(summary = "참여자 닉네임 검증")
-    @GetMapping("/{session}/participants")
-    CustomApiResponse<ParticipantCheckResponse> checkParticipantExists(
-            @PathVariable("session") Tsid session,
-            @RequestParam("participantName") String participantName
     );
 }

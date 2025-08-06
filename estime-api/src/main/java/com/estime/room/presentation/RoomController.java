@@ -3,7 +3,6 @@ package com.estime.room.presentation;
 import com.estime.common.CustomApiResponse;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
-import com.estime.room.application.dto.output.ParticipantCreateOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
@@ -32,17 +31,17 @@ public class RoomController implements RoomControllerSpecification {
     private final RoomApplicationService roomApplicationService;
 
     @Override
-    public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
-        final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
-        return CustomApiResponse.ok(RoomCreateResponse.from(saved));
-    }
-
-    @Override
     public CustomApiResponse<RoomResponse> getBySession(
             @PathVariable("session") final Tsid session
     ) {
         final RoomOutput output = roomApplicationService.getRoomBySession(session);
         return CustomApiResponse.ok(RoomResponse.from(output));
+    }
+
+    @Override
+    public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
+        final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
+        return CustomApiResponse.ok(RoomCreateResponse.from(saved));
     }
 
     @Override
@@ -74,22 +73,12 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<ParticipantCreateResponse> createParticipant(
+    public CustomApiResponse<ParticipantCheckResponse> createParticipant(
             @PathVariable("session") final Tsid session,
             @RequestBody final ParticipantCreateRequest request
     ) {
-        final ParticipantCreateOutput output = roomApplicationService.saveParticipant(
+        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(
                 request.toInput(session));
-        return CustomApiResponse.ok(ParticipantCreateResponse.from(output));
-    }
-
-    @Override
-    public CustomApiResponse<ParticipantCheckResponse> checkParticipantExists(
-            @PathVariable("session") final Tsid session,
-            @RequestParam("participantName") final String participantName
-    ) {
-        final ParticipantCheckOutput output = roomApplicationService.checkParticipantExists(
-                session, participantName);
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }

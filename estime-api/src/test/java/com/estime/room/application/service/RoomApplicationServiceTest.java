@@ -161,11 +161,11 @@ class RoomApplicationServiceTest {
         System.out.println(participant);
 
         // when
-        final ParticipantCheckOutput output = roomApplicationService.checkParticipantExists(
-                room.getSession().getTsid(), "강산");
+        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(
+                new ParticipantCreateInput(room.getSession(), "강산"));
 
         // then
-        assertThat(output.exists()).isTrue();
+        assertThat(output.isDuplicateName()).isTrue();
     }
 
     @DisplayName("하나의 방에 중복된 이름의 참여자를 만들 수 없다.")
@@ -192,10 +192,8 @@ class RoomApplicationServiceTest {
 
         // when
         // then
-        assertThatThrownBy(() -> roomApplicationService.saveParticipant(
-                new ParticipantCreateInput(room.getSession(), "강산")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Participant name already exists: 강산");
+        assertThat(roomApplicationService.saveParticipant(
+                new ParticipantCreateInput(room.getSession(), "강산")).isDuplicateName()).isTrue();
     }
 
     private boolean isValidSession(final RoomSession session) {

@@ -7,7 +7,6 @@ import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipantsOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
-import com.estime.room.application.dto.output.ParticipantCreateOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.domain.Room;
@@ -107,25 +106,16 @@ public class RoomApplicationService {
     }
 
     @Transactional
-    public ParticipantCreateOutput saveParticipant(final ParticipantCreateInput input) {
+    public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
         final Long roomId = getRoomIdBySession(input.roomSession());
 
-        final boolean exists = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
+        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
 
-        if (exists) {
-            throw new IllegalArgumentException(
-                    "Participant name already exists: %s".formatted(input.participantName()));
+        if (!isDuplicateName) {
+            participantRepository.save(input.toEntity(roomId));
         }
 
-        return ParticipantCreateOutput.from(participantRepository.save(input.toEntity(roomId)));
-    }
-
-    public ParticipantCheckOutput checkParticipantExists(final Tsid session, final String participantName) {
-        final RoomSession roomSession = RoomSession.from(session);
-        final Long roomId = getRoomIdBySession(roomSession);
-
-        return ParticipantCheckOutput.from(
-                participantRepository.existsByRoomIdAndName(roomId, participantName));
+        return ParticipantCheckOutput.from(isDuplicateName);
     }
 
     private Long getRoomIdBySession(final RoomSession roomSession) {
