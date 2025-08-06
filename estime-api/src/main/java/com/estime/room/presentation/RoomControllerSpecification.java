@@ -11,6 +11,7 @@ import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
 import com.estime.room.presentation.dto.response.RoomResponse;
+import com.github.f4b6a3.tsid.Tsid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,49 +26,49 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/v1/rooms")
 public interface RoomControllerSpecification {
 
-    @Operation(summary = "룸 상세 정보 조회")
-    @GetMapping("/{session}")
-    CustomApiResponse<RoomResponse> getBySession(
-            @PathVariable("session") String session
-    );
-
     @Operation(summary = "룸 생성")
     @PostMapping
     CustomApiResponse<RoomCreateResponse> create(
             @RequestBody RoomCreateRequest request
     );
 
+    @Operation(summary = "룸 상세 정보 조회")
+    @GetMapping("/{session}")
+    CustomApiResponse<RoomResponse> getBySession(
+            @PathVariable("session") Tsid session
+    );
+
     @Operation(summary = "일시 기준, 참여자 투표 통계 조회")
     @GetMapping("/{session}/statistics/date-time-slots")
     CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
-            @PathVariable("session") String session
+            @PathVariable("session") Tsid session
     );
 
     @Operation(summary = "참여자 기준, 투표 일시 조회")
     @GetMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
-            @PathVariable("session") String session,
+            @PathVariable("session") Tsid session,
             @RequestParam("participantName") String participantName
     );
 
     @Operation(summary = "참여자 제출 시간 수정")
     @PutMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
-            @PathVariable("session") String session,
+            @PathVariable("session") Tsid session,
             @RequestBody ParticipantVotesUpdateRequest request
     );
 
     @Operation(summary = "새로운 참여자 생성")
     @PostMapping("/{session}/participants")
     CustomApiResponse<ParticipantCreateResponse> createParticipant(
-            @PathVariable("session") String session,
+            @PathVariable("session") Tsid session,
             @RequestBody ParticipantCreateRequest request
     );
 
     @Operation(summary = "참여자 닉네임 검증")
     @GetMapping("/{session}/participants")
     CustomApiResponse<ParticipantCheckResponse> checkParticipantExists(
-            @PathVariable("session") String session,
+            @PathVariable("session") Tsid session,
             @RequestParam("participantName") String participantName
     );
 }
