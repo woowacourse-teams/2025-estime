@@ -48,10 +48,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, prometheus
+        include: health, metrics
   metrics:
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true
-      sla:
-        http.server.requests: 50ms, 100ms, 500ms
+    export:
+      cloudwatch:
+        namespace: "aws/ec2/estime-api-dev"
+        region: ap-northeast-2
