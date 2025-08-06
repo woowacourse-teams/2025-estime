@@ -18,6 +18,9 @@ public class Votes {
 
     public static Votes from(final List<Vote> votes) {
         Objects.requireNonNull(votes, "votes cannot be null");
+        if (votes.size() != new HashSet<>(votes).size()) {
+            throw new IllegalArgumentException("Duplicate votes detected in input list");
+        }
         return new Votes(Set.copyOf(votes));
     }
 
