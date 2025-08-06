@@ -27,7 +27,7 @@ export const EntryConfirmModal = ({
             <Flex justify="space-between" align="center" gap="var(--gap-2)">
               <Tooltip content="서비스를 이용하기 위해 로그인이 필요합니다.">
                 <Flex align="center" gap="var(--gap-4)">
-                  <Text variant="h3">로그인</Text>
+                  <Text variant="h3">정보 입력</Text>
                   <IInfo aria-hidden="true" color={theme.colors.text} />
                 </Flex>
               </Tooltip>
