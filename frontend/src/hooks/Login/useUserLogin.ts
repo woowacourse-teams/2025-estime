@@ -20,9 +20,6 @@ export function useUserLogin({
   const isLoggedIn = useRef(false);
 
   const handleLogin = async (): Promise<boolean> => {
-    if (!session) {
-      throw new Error('세션이 없습니다. 로그인에 실패했습니다.');
-    }
     if (userData.name.trim().length === 0) {
       throw new Error('아이디를 입력해주세요.');
     }
