@@ -43,9 +43,13 @@ export const useUserAvailability = ({
       });
     } catch (err) {
       const e = err as Error;
-      alert(e.message);
-      console.error(err);
-      Sentry.captureException(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 

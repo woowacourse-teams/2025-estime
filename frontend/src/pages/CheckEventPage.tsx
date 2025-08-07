@@ -15,8 +15,11 @@ import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import * as Sentry from '@sentry/react';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const CheckEventPage = () => {
+  const { addToast } = useToastContext();
+
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modals, handleCloseModal, handleOpenModal } = useModalControl();
@@ -79,9 +82,13 @@ const CheckEventPage = () => {
     } catch (err) {
       const e = err as Error;
       console.log(e);
-      alert(e.message);
-      console.error(err);
-      Sentry.captureException(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 
@@ -94,8 +101,13 @@ const CheckEventPage = () => {
     } catch (err) {
       const e = err as Error;
       console.error(e);
-      alert(e.message);
-      Sentry.captureException(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 

@@ -5,8 +5,11 @@ import type { RoomInfo } from '@/types/roomInfo';
 import { initialCheckRoomInfo } from '@/constants/initialRoomInfo';
 import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 import * as Sentry from '@sentry/react';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const useCheckRoomSession = () => {
+  const { addToast } = useToastContext();
+
   const session = useExtractQueryParams('id');
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { roomSession: string; availableTimeSlots: string[] }
@@ -21,9 +24,13 @@ const useCheckRoomSession = () => {
       setRoomInfo(parseData);
     } catch (err) {
       const e = err as Error;
-      alert(e.message);
-      console.error(err);
-      Sentry.captureException(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 

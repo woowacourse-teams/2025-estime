@@ -3,6 +3,7 @@ import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/utils/getWeight';
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
+import { useToastContext } from '@/contexts/ToastContext';
 
 export interface DateCellInfo {
   weight: number;
@@ -16,6 +17,8 @@ export default function useRoomStatistics({
   session: string;
   weightCalculateStrategy: WeightCalculateStrategy;
 }) {
+  const { addToast } = useToastContext();
+
   const [roomStatistics, setRoomStatistics] = useState<Map<string, DateCellInfo>>(new Map());
   const dummyMinValue = 0;
   const formatRoomStatistics = (
@@ -51,8 +54,13 @@ export default function useRoomStatistics({
     } catch (err) {
       const e = err as Error;
       console.error(e);
-      alert(e.message);
-      Sentry.captureException(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 
