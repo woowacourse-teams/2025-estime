@@ -14,12 +14,9 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
-import { useToastContext } from '@/contexts/ToastContext';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
-
-  const { addToast } = useToastContext();
 
   const { modals, handleCloseModal, handleOpenModal } = useModalControl();
 
