@@ -27,7 +27,7 @@ jobs:
 
     env:
       SPRING_PROFILES_ACTIVE: local
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/testdb
+      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: testpw
 
@@ -52,26 +52,17 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: Wait for MySQL to be ready (max 5 min)
+      - name: 지정한 3개 환경 변수만 적용하여 YML 내용 확인
         run: |
-          echo "Waiting for MySQL to be ready (timeout: 5 minutes)..."
-          max_attempts=100
-          i=1
-          while [ $i -le $max_attempts ]; do
-            if mysqladmin ping -h mysql -u root -ptestpw --silent; then
-              echo "MySQL is ready after $i attempts."
-              break
-            else
-              echo "MySQL not ready yet... retrying ($i/$max_attempts)"
-              sleep 3
-              i=$((i + 1))
-            fi
-          done
+          # envsubst 유틸리티 설치 (기본 이미지에 없을 경우)
+          sudo apt-get update && sudo apt-get install -y gettext-base
           
-          if [ $i -gt $max_attempts ]; then
-            echo "MySQL did not become ready within 5 minutes"
-            exit 1
-          fi
+          echo "==========================================================="
+          echo "### [적용 후] application-common.yml (DB 정보만 치환) ###"
+          echo "==========================================================="
+          # 지정된 3개의 환경 변수만 실제 값으로 치환하여 출력
+          cat src/main/resources/application-common.yml | envsubst '$SPRING_DATASOURCE_URL $SPRING_DATASOURCE_USERNAME $SPRING_DATASOURCE_PASSWORD'
+          echo ""
 
       - name: 전체 빌드 및 테스트
         run: |
