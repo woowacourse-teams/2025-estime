@@ -20,10 +20,8 @@ export const useExtractQueryParams = <T extends string | string[]>(
       acc[key as T[number]] = params.get(key);
       return acc;
     },
-    // as는 좀...
     {} as { [K in T[number]]: string | null }
   );
 
-  // as는 좀...
   return result as QueryParamResult<T>;
 };
