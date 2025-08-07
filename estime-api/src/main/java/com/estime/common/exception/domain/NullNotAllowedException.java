@@ -1,18 +1,16 @@
 package com.estime.common.exception.domain;
 
-import com.estime.common.exception.util.ExceptionMessageFormatter;
-
 public class NullNotAllowedException extends DomainException {
 
-    public NullNotAllowedException(final Object... params) {
+    public NullNotAllowedException(final String name) {
         super(
-                buildLogMessage(params),
+                buildLogMessage(name),
                 buildUserMessage()
         );
     }
 
-    private static String buildLogMessage(final Object... params) {
-        return ExceptionMessageFormatter.format(" cannot be null", params);
+    private static String buildLogMessage(final String name) {
+        return String.format("%s cannot be null", name);
     }
 
     private static String buildUserMessage() {
