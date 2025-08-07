@@ -4,7 +4,6 @@ import com.estime.common.CustomApiResponse;
 import com.estime.common.exception.application.InternalLogOnlyException;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
-import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
 import com.estime.room.domain.participant.vote.Votes;

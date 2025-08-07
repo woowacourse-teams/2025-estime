@@ -28,8 +28,8 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
     private static void validateNull(final LocalDateTime startAt) {
         Validator.builder()
-                    .add("startAt", startAt)
-                    .validateNull();
+                .add("startAt", startAt)
+                .validateNull();
     }
 
     private static void validateStartAt(final LocalDateTime startAt) {

@@ -30,8 +30,8 @@ public class TimeSlot implements Comparable<TimeSlot> {
 
     private static void validateNull(final LocalTime startAt) {
         Validator.builder()
-                    .add("startAt", startAt)
-                    .validateNull();
+                .add("startAt", startAt)
+                .validateNull();
     }
 
     private static void validateStartAt(final LocalTime startAt) {

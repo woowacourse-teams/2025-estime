@@ -15,9 +15,6 @@ public final class Validator {
 
     public static class ValidatorBuilder {
 
-        private record ValidationElement(String name, Object target) {
-        }
-
         private final List<ValidationElement> elements = new ArrayList<>();
 
         public ValidatorBuilder add(final String name, final Object target) {
@@ -31,6 +28,9 @@ public final class Validator {
                     throw new NullNotAllowedException(element.name());
                 }
             }
+        }
+
+        private record ValidationElement(String name, Object target) {
         }
     }
 }
