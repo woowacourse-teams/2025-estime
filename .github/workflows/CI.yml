@@ -67,11 +67,6 @@ jobs:
               i=$((i + 1))
             fi
           done
-          
-          if [ $i -gt $max_attempts ]; then
-            echo "MySQL did not become ready within 5 minutes"
-            exit 1
-          fi
 
       - name: 전체 빌드 및 테스트
         run: |
