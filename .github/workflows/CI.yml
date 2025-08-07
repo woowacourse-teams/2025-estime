@@ -77,7 +77,8 @@ jobs:
         run: |
           echo "SPRING_PROFILES_ACTIVE = $SPRING_PROFILES_ACTIVE"
           echo "SPRING_DATASOURCE_URL = $SPRING_DATASOURCE_URL"
-          ./gradlew clean build --stacktrace
+          echo "SPRING_DATASOURCE_USERNAME = $SPRING_DATASOURCE_USERNAME"
+          ./gradlew clean build --stacktrace -Dspring.profiles.active=local
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
