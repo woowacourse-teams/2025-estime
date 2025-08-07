@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const useShakeAnimation = () => {
   const [shouldShake, setShouldShake] = useState(false);
 
   const handleShouldShake = () => {
-    setShouldShake(true);
-  };
+    const newShouldShake = true;
+    setShouldShake(newShouldShake);
 
-  useEffect(() => {
-    if (shouldShake) {
+    if (newShouldShake) {
       const timer = setTimeout(() => {
         setShouldShake(false);
       }, 460);
 
       return () => clearTimeout(timer);
     }
-  }, [shouldShake]);
+  };
 
   return {
     shouldShake,
