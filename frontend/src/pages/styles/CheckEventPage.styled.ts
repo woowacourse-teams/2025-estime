@@ -8,11 +8,6 @@ export const TimeTableContainer = styled.div`
   box-shadow: var(--shadow-card);
 `;
 
-export const FlipCardWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`;
-
 export const FlipCard = styled.div<{ isFlipped: boolean }>`
   position: relative;
   width: 100%;
