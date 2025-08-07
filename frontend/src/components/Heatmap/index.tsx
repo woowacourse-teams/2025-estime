@@ -69,7 +69,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
           <Flex direction="row" gap="var(--gap-4)" align="center">
             <IPerson />
             <Text variant="body" color="text">
-              {tooltipInfo.participantList.join(', ')} 참여 가능!
+              {tooltipInfo.participantList.join(', ')} 가능!
             </Text>
           </Flex>
         </TableTooltip>
