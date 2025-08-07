@@ -19,10 +19,12 @@ import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.participant.vote.Vote;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
-import com.estime.room.domain.vo.DateSlot;
-import com.estime.room.domain.vo.DateTimeSlot;
-import com.estime.room.domain.vo.TimeSlot;
+import com.estime.room.domain.slot.vo.DateSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
+import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -83,7 +85,7 @@ class RoomApplicationServiceTest {
         final RoomCreateOutput saved = roomApplicationService.saveRoom(input);
 
         // then
-        assertThat(isValidTsid(saved.session()))
+        assertThat(isValidSession(saved.session()))
                 .isTrue();
     }
 
@@ -91,7 +93,7 @@ class RoomApplicationServiceTest {
     @Test
     void getRoomBySession() {
         // when
-        final RoomOutput output = roomApplicationService.getRoomBySession(room.getSession());
+        final RoomOutput output = roomApplicationService.getRoomBySession(room.getSession().getRoomSession());
 
         // then
         assertSoftly(softAssertions -> {
@@ -103,7 +105,7 @@ class RoomApplicationServiceTest {
                     .containsExactlyInAnyOrderElementsOf(room.getAvailableTimeSlots());
             softAssertions.assertThat(output.deadline())
                     .isEqualTo(room.getDeadline());
-            softAssertions.assertThat(output.roomSession())
+            softAssertions.assertThat(output.session())
                     .isEqualTo(room.getSession());
         });
     }
@@ -112,7 +114,7 @@ class RoomApplicationServiceTest {
     @Test
     void getRoomByNonexistentSession() {
         // given
-        final String nonexistentSession = "nonexistent-session";
+        final Tsid nonexistentSession = TsidCreator.getTsid();
 
         // when // then
         assertThatThrownBy(() -> roomApplicationService.getRoomBySession(nonexistentSession))
@@ -125,12 +127,13 @@ class RoomApplicationServiceTest {
     void calculateVoteStatistic() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
         voteRepository.save(Vote.of(participant2.getId(), slot1));
 
         // when
-        final DateTimeSlotStatisticOutput result = roomApplicationService.calculateVoteStatistic(room.getSession());
+        final DateTimeSlotStatisticOutput result = roomApplicationService.calculateVoteStatistic(
+                room.getSession().getRoomSession());
 
         // then
         assertSoftly(softly -> {
@@ -146,12 +149,13 @@ class RoomApplicationServiceTest {
     void getParticipantVotesBySessionAndParticipantName() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         // when
-        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(room.getSession(),
-            participant1.getName());
+        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
+                room.getSession().getRoomSession(),
+                participant1.getName());
 
         // then
         assertSoftly(softly -> {
@@ -165,17 +169,17 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_complex() {
         // given
         final DateTimeSlot slotToRemove = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         final DateTimeSlot slotToKeep = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
         final DateTimeSlot slotToAdd = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
 
         voteRepository.save(Vote.of(participant1.getId(), slotToRemove));
         voteRepository.save(Vote.of(participant1.getId(), slotToKeep));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
-            List.of(slotToKeep, slotToAdd));
+                List.of(slotToKeep, slotToAdd));
 
         // when
         final Votes updatedVotes = roomApplicationService.updateParticipantVotes(input);
@@ -184,12 +188,12 @@ class RoomApplicationServiceTest {
         assertSoftly(softly -> {
             softly.assertThat(updatedVotes.getElements()).hasSize(2);
             softly.assertThat(updatedVotes.getElements()).extracting(vote -> vote.getId().getDateTimeSlot())
-                .containsExactlyInAnyOrder(slotToKeep, slotToAdd);
+                    .containsExactlyInAnyOrder(slotToKeep, slotToAdd);
 
             final Votes persistedVotes = voteRepository.findAllByParticipantId(participant1.getId());
             softly.assertThat(persistedVotes.getElements()).hasSize(2);
             softly.assertThat(persistedVotes.getElements()).extracting(vote -> vote.getId().getDateTimeSlot())
-                .containsExactlyInAnyOrder(slotToKeep, slotToAdd);
+                    .containsExactlyInAnyOrder(slotToKeep, slotToAdd);
         });
     }
 
@@ -198,18 +202,18 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_replaceAll() {
         // given
         final DateTimeSlot initialSlot1 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         final DateTimeSlot initialSlot2 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
         voteRepository.save(Vote.of(participant1.getId(), initialSlot1));
         voteRepository.save(Vote.of(participant1.getId(), initialSlot2));
 
         final DateTimeSlot newSlot1 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
         final DateTimeSlot newSlot2 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 30)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 30)));
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
-            List.of(newSlot1, newSlot2));
+                List.of(newSlot1, newSlot2));
 
         // when
         final Votes updatedVotes = roomApplicationService.updateParticipantVotes(input);
@@ -218,7 +222,7 @@ class RoomApplicationServiceTest {
         assertSoftly(softly -> {
             softly.assertThat(updatedVotes.getElements()).hasSize(2);
             softly.assertThat(updatedVotes.getElements()).extracting(vote -> vote.getId().getDateTimeSlot())
-                .containsExactlyInAnyOrder(newSlot1, newSlot2);
+                    .containsExactlyInAnyOrder(newSlot1, newSlot2);
         });
     }
 
@@ -227,7 +231,7 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_removeAll() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of());
@@ -247,7 +251,7 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_noChange() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-            LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of(slot1));
@@ -291,10 +295,7 @@ class RoomApplicationServiceTest {
         assertThat(output.isDuplicateName()).isTrue();
     }
 
-    private boolean isValidTsid(final String tsid) {
-        if (tsid == null || tsid.isEmpty()) {
-            return false;
-        }
-        return Tsid.isValid(tsid);
+    private boolean isValidSession(final RoomSession session) {
+        return Tsid.isValid(session.getRoomSession().toString());
     }
 }

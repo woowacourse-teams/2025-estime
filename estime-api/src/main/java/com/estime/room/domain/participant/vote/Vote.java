@@ -1,6 +1,6 @@
 package com.estime.room.domain.participant.vote;
 
-import com.estime.room.domain.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import java.util.Objects;

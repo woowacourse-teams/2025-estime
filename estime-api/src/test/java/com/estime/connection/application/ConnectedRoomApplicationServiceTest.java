@@ -1,8 +1,6 @@
 package com.estime.connection.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
@@ -12,9 +10,10 @@ import com.estime.connection.domain.ConnectedRoom;
 import com.estime.connection.domain.ConnectedRoomRepository;
 import com.estime.connection.domain.Platform;
 import com.estime.connection.infrastructure.discord.DiscordMessageSender;
-import com.estime.room.domain.vo.DateSlot;
-import com.estime.room.domain.vo.DateTimeSlot;
-import com.estime.room.domain.vo.TimeSlot;
+import com.estime.room.domain.slot.vo.DateSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -60,7 +59,7 @@ class ConnectedRoomApplicationServiceTest {
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(isValidTsid(saved.session()))
+            softly.assertThat(isValidSession(saved.session()))
                     .isTrue();
 
             final ConnectedRoom connectedRoom = connectedRoomRepository.findBySession(saved.session()).orElseThrow();
@@ -68,10 +67,7 @@ class ConnectedRoomApplicationServiceTest {
         });
     }
 
-    private boolean isValidTsid(final String tsid) {
-        if (tsid == null || tsid.isEmpty()) {
-            return false;
-        }
-        return Tsid.isValid(tsid);
+    private boolean isValidSession(final RoomSession session) {
+        return Tsid.isValid(session.toString());
     }
 }
