@@ -70,7 +70,7 @@ public class Room extends BaseEntity {
             final List<TimeSlot> availableTimeSlots,
             final DateTimeSlot deadline
     ) {
-        Validator.validateNotNull(title, availableDateSlots, availableTimeSlots, deadline);
+        validateNull(title, availableDateSlots, availableTimeSlots, deadline);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
@@ -79,6 +79,20 @@ public class Room extends BaseEntity {
                 Set.copyOf(availableTimeSlots),
                 deadline
         );
+    }
+
+    private static void validateNull(
+            final String title,
+            final List<DateSlot> availableDateSlots,
+            final List<TimeSlot> availableTimeSlots,
+            final DateTimeSlot deadline
+    ) {
+        Validator.builder()
+                .add("title", title)
+                .add("availableDateSlots", availableDateSlots)
+                .add("availableTimeSlots", availableTimeSlots)
+                .add("deadline", deadline)
+                .validateNull();
     }
 
     private static void validateDeadline(final DateTimeSlot deadline) {

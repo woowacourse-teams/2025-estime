@@ -27,7 +27,14 @@ public class Participant extends BaseEntity {
             final Long roomId,
             final String name
     ) {
-        Validator.validateNotNull(roomId, name);
+        validateNull(roomId, name);
         return new Participant(roomId, name);
+    }
+
+    private static void validateNull(final Long roomId, final String name) {
+        Validator.builder()
+                .add("roomId", roomId)
+                .add("name", name)
+                .validateNull();
     }
 }

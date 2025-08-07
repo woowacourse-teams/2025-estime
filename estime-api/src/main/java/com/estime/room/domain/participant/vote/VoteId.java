@@ -25,7 +25,14 @@ public class VoteId implements Serializable {
     private DateTimeSlot dateTimeSlot;
 
     public static VoteId of(final Long participantId, final DateTimeSlot dateTimeSlot) {
-        Validator.validateNotNull(participantId, dateTimeSlot);
+        validateNull(participantId, dateTimeSlot);
         return new VoteId(participantId, dateTimeSlot);
+    }
+
+    private static void validateNull(final Long participantId, final DateTimeSlot dateTimeSlot) {
+        Validator.builder()
+                .add("participantId", participantId)
+                .add("dateTimeSlot", dateTimeSlot)
+                .validateNull();
     }
 }

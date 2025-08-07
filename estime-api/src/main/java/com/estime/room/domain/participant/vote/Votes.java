@@ -19,11 +19,17 @@ public class Votes {
     private final Set<Vote> elements;
 
     public static Votes from(final List<Vote> votes) {
-        Validator.validateNotNull(votes);
+        validateNull(votes);
         if (votes.size() != new HashSet<>(votes).size()) {
             throw new DuplicateNotAllowedException(DomainTerm.VOTES, votes);
         }
         return new Votes(Set.copyOf(votes));
+    }
+
+    private static void validateNull(final List<Vote> votes) {
+        Validator.builder()
+                .add("votes", votes)
+                .validateNull();
     }
 
     public Votes subtract(final Votes votes) {

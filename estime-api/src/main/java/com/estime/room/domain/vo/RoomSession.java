@@ -17,12 +17,18 @@ public class RoomSession implements Serializable {
     private final Tsid roomSession;
 
     public static RoomSession from(final Tsid roomSession) {
-        Validator.validateNotNull(roomSession);
+        validateNull(roomSession);
         return new RoomSession(roomSession);
     }
 
     public static RoomSession generate() {
         return new RoomSession(TsidCreator.getTsid());
+    }
+
+    private static void validateNull(final Tsid roomSession) {
+        Validator.builder()
+                .add("roomSession", roomSession)
+                .validateNull();
     }
 
     @Override

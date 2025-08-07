@@ -23,7 +23,10 @@ public class Vote {
     private VoteId id;
 
     public static Vote of(final Long participantId, final DateTimeSlot dateTimeSlot) {
-        Validator.validateNotNull(participantId, dateTimeSlot);
+        Validator.builder()
+                .add("participantId", participantId)
+                .add("dateTimeSlot", dateTimeSlot)
+                .validateNull();
         return new Vote(VoteId.of(participantId, dateTimeSlot));
     }
 }

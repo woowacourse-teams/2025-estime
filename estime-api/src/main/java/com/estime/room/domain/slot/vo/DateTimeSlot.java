@@ -21,9 +21,15 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
     private final LocalDateTime startAt;
 
     public static DateTimeSlot from(final LocalDateTime startAt) {
-        Validator.validateNotNull(startAt);
+        validateNull(startAt);
         validateStartAt(startAt);
         return new DateTimeSlot(startAt);
+    }
+
+    private static void validateNull(final LocalDateTime startAt) {
+        Validator.builder()
+                    .add("startAt", startAt)
+                    .validateNull();
     }
 
     private static void validateStartAt(final LocalDateTime startAt) {
