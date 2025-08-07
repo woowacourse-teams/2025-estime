@@ -70,12 +70,10 @@ const CheckEventPage = () => {
   const loginAndLoadSchedulingData = async () => {
     try {
       const isDuplicated = await handleLogin();
-
       if (isDuplicated) {
         handleOpenModal('EntryConfirm');
         return;
       }
-
       await fetchUserAvailableTime();
       handleCloseModal('Login');
       setMode('edit');
@@ -121,29 +119,44 @@ const CheckEventPage = () => {
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
           />
+          <S.FlipCard isFlipped={mode !== 'view'}>
+            {/* view 모드 */}
+            <S.FrontFace isFlipped={mode !== 'view'}>
+              <S.TimeTableContainer>
+                <Flex direction="column" gap="var(--gap-8)">
+                  <TimeTableHeader
+                    name={roomInfo.title}
+                    mode={mode}
+                    onToggleEditMode={handleToggleEditMode}
+                  />
+                  <Heatmap
+                    dateTimeSlots={roomInfo.availableTimeSlots}
+                    availableDates={roomInfo.availableDateSlots}
+                    roomStatistics={roomStatistics}
+                  />
+                </Flex>
+              </S.TimeTableContainer>
+            </S.FrontFace>
 
-          <S.TimeTableContainer>
-            <Flex direction="column" gap="var(--gap-8)">
-              <TimeTableHeader
-                name={mode === 'view' ? roomInfo.title : userName.value}
-                mode={mode}
-                onToggleEditMode={handleToggleEditMode}
-              />
-              {mode === 'view' ? (
-                <Heatmap
-                  dateTimeSlots={roomInfo.availableTimeSlots}
-                  availableDates={roomInfo.availableDateSlots}
-                  roomStatistics={roomStatistics}
-                />
-              ) : (
-                <Timetable
-                  dateTimeSlots={roomInfo.availableTimeSlots}
-                  availableDates={roomInfo.availableDateSlots}
-                  selectedTimes={selectedTimes}
-                />
-              )}
-            </Flex>
-          </S.TimeTableContainer>
+            {/* edit 모드 */}
+            <S.BackFace isFlipped={mode !== 'view'}>
+              <S.TimeTableContainer>
+                <Flex direction="column" gap="var(--gap-8)">
+                  <TimeTableHeader
+                    name={userName.value}
+                    mode={mode}
+                    onToggleEditMode={handleToggleEditMode}
+                  />
+
+                  <Timetable
+                    dateTimeSlots={roomInfo.availableTimeSlots}
+                    availableDates={roomInfo.availableDateSlots}
+                    selectedTimes={selectedTimes}
+                  />
+                </Flex>
+              </S.TimeTableContainer>
+            </S.BackFace>
+          </S.FlipCard>
         </Flex>
       </Wrapper>
       <LoginModal

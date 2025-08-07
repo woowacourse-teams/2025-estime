@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { FormatManager } from '@/utils/common/FormatManager';
 import { DateManager } from '@/utils/common/DateManager';
+import { useToastContext } from '@/contexts/ToastContext';
 
 interface SimpleDragSelectionOptions {
   selectedDates: Set<string>;
@@ -16,6 +17,7 @@ export const useDateSelection = ({
 }: SimpleDragSelectionOptions) => {
   const [dragState, setDragState] = useState<DragState>('add');
   const draggingRef = useRef(false);
+  const { addToast } = useToastContext();
 
   const determineDragState = useCallback(
     (date: Date): DragState => {
@@ -30,21 +32,38 @@ export const useDateSelection = ({
       const dateString = FormatManager.formatDate(date);
       const newSelectedDates = new Set(selectedDates);
 
-      if (state === 'add') {
-        newSelectedDates.add(dateString);
-      } else {
+      if (state === 'remove') {
         newSelectedDates.delete(dateString);
+        setSelectedDates(newSelectedDates);
+        return;
+      }
+      if (DateManager.isPast(date, today)) {
+        addToast({
+          type: 'warning',
+          message: '과거 날짜는 선택할 수 없습니다.',
+        });
+        return;
+      }
+      if (
+        DateManager.hasReachedMaxSelection(newSelectedDates) &&
+        !newSelectedDates.has(dateString)
+      ) {
+        addToast({
+          type: 'warning',
+          message: '최대 7개의 날짜를 선택할 수 있습니다.',
+        });
+        return;
       }
 
+      newSelectedDates.add(dateString);
       setSelectedDates(newSelectedDates);
     },
-    [selectedDates, setSelectedDates]
+    [selectedDates, setSelectedDates, addToast, today]
   );
 
   const onMouseDown = useCallback(
     (date: Date | null) => {
-      if (!date || DateManager.isPast(date, today)) return;
-
+      if (!date) return;
       const state = determineDragState(date);
 
       setDragState(state);
@@ -52,7 +71,7 @@ export const useDateSelection = ({
 
       addRemoveDate(date, state);
     },
-    [today, determineDragState, addRemoveDate]
+    [determineDragState, addRemoveDate]
   );
 
   const onMouseEnter = useCallback(

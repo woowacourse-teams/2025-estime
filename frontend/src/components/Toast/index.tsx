@@ -26,7 +26,7 @@ const Toast = ({ id, type, message, onClose }: ToastProps) => {
   const [phase, setPhase] = useState<ToastPhase>('idle');
   useEffect(() => {
     const showTimer = setTimeout(() => setPhase('visible'), 30);
-    const fadeOutTimer = setTimeout(() => setPhase('hidden'), 2500);
+    const fadeOutTimer = setTimeout(() => setPhase('hidden'), 1500);
 
     return () => {
       clearTimeout(showTimer);

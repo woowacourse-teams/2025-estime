@@ -24,6 +24,7 @@ interface CalenderProps {
 const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
   const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = mouseHandlers;
+
   return (
     <S.Container>
       <Flex direction="column" gap="var(--gap-5)">

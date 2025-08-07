@@ -43,7 +43,8 @@ export const Container = styled.div<DayCellProps>`
       return theme.colors.primary;
     }};
     color: ${({ theme, isPast, isEmpty }) => {
-      if (isPast || isEmpty) return 'inherit';
+      if (isEmpty) return 'inherit';
+      if (isPast) return theme.colors.gray20;
       return theme.colors.background;
     }};
     cursor: ${({ isPast, isEmpty }) => (isPast || isEmpty ? 'not-allowed' : 'grab')};
@@ -53,8 +54,7 @@ export const Container = styled.div<DayCellProps>`
   ${({ isDateBlockedByLimit }) =>
     isDateBlockedByLimit &&
     `
-    pointer-events: none;
+    cursor: not-allowed;
     opacity: 0.3;
-
   `}
 `;
