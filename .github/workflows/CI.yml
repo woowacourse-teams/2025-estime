@@ -36,6 +36,7 @@ jobs:
       URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
       URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
+
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -60,19 +61,18 @@ jobs:
           max_attempts=20
           i=1
           while [ $i -le $max_attempts ]; do
-            if mysqladmin ping -h 127.0.0.1 -u user -ppassword --silent; then
-              echo "MySQL is ready after $i attempts."
-              break
-            else
-              echo "MySQL not ready yet... retrying ($i/$max_attempts)"
-              sleep 3
-              i=$((i + 1))
-            fi
+          if mysqladmin ping -h 127.0.0.1 -u user -ppassword --silent; then
+           echo "MySQL is ready after $i attempts."
+           break
+          else
+           echo "MySQL not ready yet... retrying ($i/$max_attempts)"
+           sleep 3
+           i=$((i + 1))
+          fi
           done
 
       - name: 전체 빌드 및 테스트
-        run: |
-          ./gradlew clean build --stacktrace
+        run: ./gradlew clean build --stacktrace -Dspring.profiles.active=local
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
