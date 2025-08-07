@@ -1,8 +1,10 @@
 package com.estime.room.domain.slot.vo;
 
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.SlotNotDivideException;
+import com.estime.common.util.Validator;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -19,16 +21,20 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
     private final LocalDateTime startAt;
 
     public static DateTimeSlot from(final LocalDateTime startAt) {
-        validate(startAt);
+        validateNull(startAt);
+        validateStartAt(startAt);
         return new DateTimeSlot(startAt);
     }
 
-    private static void validate(final LocalDateTime startAt) {
-        Objects.requireNonNull(startAt, "startAt cannot be null");
+    private static void validateNull(final LocalDateTime startAt) {
+        Validator.builder()
+                .add("startAt", startAt)
+                .validateNull();
+    }
 
+    private static void validateStartAt(final LocalDateTime startAt) {
         if (startAt.getMinute() != 0 && startAt.getMinute() != UNIT.toMinutes()) {
-            throw new IllegalArgumentException(
-                    "DateTimeSlot must be set in %d-minute intervals".formatted(UNIT.toMinutes()));
+            throw new SlotNotDivideException(DomainTerm.DATE_TIME_SLOT, startAt);
         }
     }
 

@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.common.exception.domain.InvalidTimeDetailException;
+import com.estime.common.exception.domain.NullNotAllowedException;
+import com.estime.common.exception.domain.SlotNotDivideException;
 import com.estime.room.domain.slot.vo.TimeSlot;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
@@ -35,8 +38,8 @@ class TimeSlotTest {
 
         // when & then
         assertThatThrownBy(() -> TimeSlot.from(nullTime))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("startAt cannot be null");
+                .isInstanceOf(NullNotAllowedException.class)
+                .hasMessageContaining("cannot be null");
     }
 
     @Test
@@ -47,8 +50,8 @@ class TimeSlotTest {
 
         // when & then
         assertThatThrownBy(() -> TimeSlot.from(invalidTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("timeslot seconds and nanoseconds must be 0 : " + invalidTime);
+                .isInstanceOf(InvalidTimeDetailException.class)
+                .hasMessageContaining("seconds and nanoseconds must be 0 for");
     }
 
     @Test
@@ -59,8 +62,8 @@ class TimeSlotTest {
 
         // when & then
         assertThatThrownBy(() -> TimeSlot.from(invalidTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("timeSlot must be an interval of 30 minutes: " + invalidTime);
+                .isInstanceOf(SlotNotDivideException.class)
+                .hasMessageContaining("must be an interval of 30 minutes");
     }
 
     @Test
