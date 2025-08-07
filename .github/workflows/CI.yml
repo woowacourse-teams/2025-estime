@@ -17,6 +17,9 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: testpw
           MYSQL_DATABASE: testdb
+
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
         ports:
           - 3306:3306
         options: >-
@@ -26,10 +29,9 @@ jobs:
           --health-retries 5
 
     env:
-      SPRING_PROFILES_ACTIVE: local
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: testpw
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
       URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
@@ -42,9 +44,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
 
       - name: JDK 21 버전 설치
         uses: actions/setup-java@v4
@@ -72,7 +71,8 @@ jobs:
           done
 
       - name: 전체 빌드 및 테스트
-        run: ./gradlew clean build --stacktrace -Dspring.profiles.active=local
+        run: |
+          ./gradlew clean build --stacktrace
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
