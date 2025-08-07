@@ -22,7 +22,7 @@ const CheckEventPage = () => {
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
     session,
-    onDuplicateNickname: () => handleOpenModal('entryConfirm'),
+    onDuplicateNickname: () => handleOpenModal('EntryConfirm'),
   });
 
   const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
@@ -57,7 +57,7 @@ const CheckEventPage = () => {
   const handleToggleEditMode = async () => {
     if (mode === 'view') {
       if (isLoggedIn) setMode('edit');
-      else handleOpenModal('login');
+      else handleOpenModal('Login');
     } else {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
@@ -73,7 +73,7 @@ const CheckEventPage = () => {
       }
 
       await fetchUserAvailableTime();
-      handleCloseModal('login');
+      handleCloseModal('Login');
       setMode('edit');
     } catch (err) {
       const e = err as Error;
@@ -85,8 +85,8 @@ const CheckEventPage = () => {
 
   const handleContinueWithDuplicated = async () => {
     try {
-      handleCloseModal('entryConfirm');
-      handleCloseModal('login');
+      handleCloseModal('EntryConfirm');
+      handleCloseModal('Login');
       await fetchUserAvailableTime();
       setMode('edit');
     } catch (err) {
@@ -97,7 +97,7 @@ const CheckEventPage = () => {
   };
 
   const handleCancelContinueWithDuplicated = () => {
-    handleCloseModal('entryConfirm');
+    handleCloseModal('EntryConfirm');
   };
   return (
     <>
@@ -134,14 +134,14 @@ const CheckEventPage = () => {
         </Flex>
       </Wrapper>
       <LoginModal
-        isLoginModalOpen={modals['login']}
-        handleCloseLoginModal={() => handleCloseModal('login')}
+        isLoginModalOpen={modals['Login']}
+        handleCloseLoginModal={() => handleCloseModal('Login')}
         handleModalLogin={loginAndLoadSchedulingData}
         userData={userData}
         handleUserData={handleUserData}
       />
       <EntryConfirmModal
-        isEntryConfirmModalOpen={modals['entryConfirm']}
+        isEntryConfirmModalOpen={modals['EntryConfirm']}
         onConfirm={handleContinueWithDuplicated}
         onCancel={handleCancelContinueWithDuplicated}
       />
