@@ -1,9 +1,9 @@
 package com.estime.room.presentation;
 
 import com.estime.common.CustomApiResponse;
-import com.estime.common.exception.application.InternalLogOnlyException;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
+import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
 import com.estime.room.domain.participant.vote.Votes;
@@ -39,10 +39,8 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
-        throw new InternalLogOnlyException("test", "test message");
-
-//        final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
-//        return CustomApiResponse.ok(RoomCreateResponse.from(saved));
+        final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
+        return CustomApiResponse.ok(RoomCreateResponse.from(saved));
     }
 
     @Override
