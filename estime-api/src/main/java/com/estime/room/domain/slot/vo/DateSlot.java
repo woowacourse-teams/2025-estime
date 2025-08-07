@@ -1,4 +1,4 @@
-package com.estime.room.domain.vo;
+package com.estime.room.domain.slot.vo;
 
 import java.time.Duration;
 import java.time.LocalDate;

@@ -1,9 +1,10 @@
 package com.estime.room.application.dto.output;
 
 import com.estime.room.domain.Room;
-import com.estime.room.domain.vo.DateSlot;
-import com.estime.room.domain.vo.DateTimeSlot;
-import com.estime.room.domain.vo.TimeSlot;
+import com.estime.room.domain.slot.vo.DateSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import java.util.List;
 
 public record RoomOutput(
@@ -11,7 +12,7 @@ public record RoomOutput(
         List<DateSlot> availableDateSlots,
         List<TimeSlot> availableTimeSlots,
         DateTimeSlot deadline,
-        String roomSession
+        RoomSession session
 ) {
 
     public static RoomOutput from(final Room room) {

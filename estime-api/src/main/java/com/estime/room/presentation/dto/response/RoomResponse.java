@@ -1,8 +1,8 @@
 package com.estime.room.presentation.dto.response;
 
 import com.estime.room.application.dto.output.RoomOutput;
-import com.estime.room.domain.vo.DateSlot;
-import com.estime.room.domain.vo.TimeSlot;
+import com.estime.room.domain.slot.vo.DateSlot;
+import com.estime.room.domain.slot.vo.TimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public record RoomResponse(
                 output.availableDateSlots().stream().map(DateSlot::getStartAt).sorted().toList(),
                 output.availableTimeSlots().stream().map(TimeSlot::getStartAt).sorted().toList(),
                 output.deadline().getStartAt(),
-                output.roomSession()
+                output.session().getRoomSession().toString()
         );
     }
 }

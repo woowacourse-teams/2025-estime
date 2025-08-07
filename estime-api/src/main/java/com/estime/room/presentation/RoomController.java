@@ -16,6 +16,7 @@ import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.presentation.dto.response.RoomCreateResponse;
 import com.estime.room.presentation.dto.response.RoomResponse;
+import com.github.f4b6a3.tsid.Tsid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,8 +30,10 @@ public class RoomController implements RoomControllerSpecification {
     private final RoomApplicationService roomApplicationService;
 
     @Override
-    public CustomApiResponse<RoomResponse> getBySession(@PathVariable("session") final String session) {
-        final RoomOutput output = roomApplicationService.getRoomBySession(session);
+    public CustomApiResponse<RoomResponse> getBySession(
+            @PathVariable("session") final Tsid roomSession
+    ) {
+        final RoomOutput output = roomApplicationService.getRoomBySession(roomSession);
         return CustomApiResponse.ok(RoomResponse.from(output));
     }
 
@@ -40,40 +43,41 @@ public class RoomController implements RoomControllerSpecification {
         return CustomApiResponse.ok(RoomCreateResponse.from(saved));
     }
 
+    @Override
     public CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
-            @PathVariable("session") final String session
+            @PathVariable("session") final Tsid roomSession
     ) {
-        final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(session);
+        final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(roomSession);
         return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
-            @PathVariable("session") final String session,
+            @PathVariable("session") final Tsid roomSession,
             @RequestParam("participantName") final String participantName
     ) {
-        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(session,
+        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(roomSession,
                 participantName);
         return CustomApiResponse.ok(ParticipantVotesResponse.from(votes, participantName));
     }
 
     @Override
     public CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
-            @PathVariable("session") final String session,
+            @PathVariable("session") final Tsid roomSession,
             @RequestBody final ParticipantVotesUpdateRequest request
     ) {
-        final Votes slots = roomApplicationService.updateParticipantVotes(request.toInput(session));
+        final Votes slots = roomApplicationService.updateParticipantVotes(request.toInput(roomSession));
         return CustomApiResponse.ok("Update success",
                 ParticipantVotesUpdateResponse.of(slots, request.participantName()));
     }
 
     @Override
     public CustomApiResponse<ParticipantCheckResponse> createParticipant(
-            @PathVariable("session") final String session,
+            @PathVariable("session") final Tsid roomSession,
             @RequestBody final ParticipantCreateRequest request
     ) {
         final ParticipantCheckOutput output = roomApplicationService.saveParticipant(
-                request.toInput(session));
+                request.toInput(roomSession));
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }

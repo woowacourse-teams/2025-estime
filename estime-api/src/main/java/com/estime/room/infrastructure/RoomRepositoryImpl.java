@@ -2,6 +2,7 @@ package com.estime.room.infrastructure;
 
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
+import com.estime.room.domain.vo.RoomSession;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,12 +19,12 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Optional<Room> findBySession(final String session) {
+    public Optional<Room> findBySession(final RoomSession session) {
         return roomJpaRepository.findBySession(session);
     }
 
     @Override
-    public Optional<Long> findIdBySession(final String session) {
+    public Optional<Long> findIdBySession(final RoomSession session) {
         return findBySession(session).map(Room::getId);
     }
 }

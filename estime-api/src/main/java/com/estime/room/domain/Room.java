@@ -1,12 +1,13 @@
 package com.estime.room.domain;
 
 import com.estime.common.BaseEntity;
-import com.estime.room.domain.vo.DateSlot;
-import com.estime.room.domain.vo.DateTimeSlot;
-import com.estime.room.domain.vo.TimeSlot;
-import com.estime.room.infrastructure.RoomSessionGenerator;
+import com.estime.room.domain.slot.vo.DateSlot;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
+import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.domain.vo.RoomSession;
 import com.estime.room.infrastructure.converter.DateSlotConverter;
 import com.estime.room.infrastructure.converter.DateTimeSlotConverter;
+import com.estime.room.infrastructure.converter.RoomSessionConverter;
 import com.estime.room.infrastructure.converter.TimeSlotConverter;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -33,8 +34,9 @@ import lombok.ToString;
 @ToString
 public class Room extends BaseEntity {
 
-    @Column(name = "session", nullable = false, length = 13, columnDefinition = "CHAR(13) CHARACTER SET ascii")
-    private String session;
+    @Column(name = "session", nullable = false)
+    @Convert(converter = RoomSessionConverter.class)
+    private RoomSession session;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -70,7 +72,7 @@ public class Room extends BaseEntity {
         validateNonNull(title, availableDateSlots, availableTimeSlots, deadline);
         validateDeadline(deadline);
         return new Room(
-                RoomSessionGenerator.generateTsid(),
+                RoomSession.generate(),
                 title,
                 Set.copyOf(availableDateSlots),
                 Set.copyOf(availableTimeSlots),

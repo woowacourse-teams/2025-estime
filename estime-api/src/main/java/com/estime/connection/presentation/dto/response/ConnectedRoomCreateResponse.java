@@ -13,6 +13,6 @@ public record ConnectedRoomCreateResponse(
 ) {
 
     public static ConnectedRoomCreateResponse from(final ConnectedRoomCreateOutput output) {
-        return new ConnectedRoomCreateResponse(output.session(), output.platform());
+        return new ConnectedRoomCreateResponse(output.session().getRoomSession().toString(), output.platform());
     }
 }

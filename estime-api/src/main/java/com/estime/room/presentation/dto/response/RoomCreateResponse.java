@@ -9,6 +9,6 @@ public record RoomCreateResponse(
 ) {
 
     public static RoomCreateResponse from(final RoomCreateOutput output) {
-        return new RoomCreateResponse(output.session());
+        return new RoomCreateResponse(output.session().getRoomSession().toString());
     }
 }
