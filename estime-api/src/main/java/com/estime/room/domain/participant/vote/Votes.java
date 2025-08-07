@@ -2,7 +2,7 @@ package com.estime.room.domain.participant.vote;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.DuplicateNotAllowedException;
-import com.estime.common.exception.util.Validator;
+import com.estime.common.util.Validator;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import java.util.HashMap;
 import java.util.HashSet;

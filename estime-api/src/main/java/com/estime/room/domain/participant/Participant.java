@@ -1,7 +1,7 @@
 package com.estime.room.domain.participant;
 
 import com.estime.common.BaseEntity;
-import com.estime.common.exception.util.Validator;
+import com.estime.common.util.Validator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;

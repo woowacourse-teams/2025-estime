@@ -2,7 +2,7 @@ package com.estime.room.domain.slot.vo;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.PastNotAllowedException;
-import com.estime.common.exception.util.Validator;
+import com.estime.common.util.Validator;
 import java.time.Duration;
 import java.time.LocalDate;
 import lombok.AccessLevel;

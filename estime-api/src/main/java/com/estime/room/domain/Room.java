@@ -3,7 +3,7 @@ package com.estime.room.domain;
 import com.estime.common.BaseEntity;
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.PastNotAllowedException;
-import com.estime.common.exception.util.Validator;
+import com.estime.common.util.Validator;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;

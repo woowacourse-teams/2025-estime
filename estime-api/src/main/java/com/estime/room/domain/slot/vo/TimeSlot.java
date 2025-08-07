@@ -3,7 +3,7 @@ package com.estime.room.domain.slot.vo;
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.InvalidTimeDetailException;
 import com.estime.common.exception.domain.SlotNotDivideException;
-import com.estime.common.exception.util.Validator;
+import com.estime.common.util.Validator;
 import java.time.Duration;
 import java.time.LocalTime;
 import lombok.AccessLevel;

@@ -1,4 +1,4 @@
-package com.estime.common.exception.util;
+package com.estime.common.util;
 
 import com.estime.common.exception.domain.NullNotAllowedException;
 import java.util.ArrayList;

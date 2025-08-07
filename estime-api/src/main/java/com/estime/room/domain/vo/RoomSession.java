@@ -1,6 +1,6 @@
 package com.estime.room.domain.vo;
 
-import com.estime.common.exception.util.Validator;
+import com.estime.common.util.Validator;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.io.Serializable;
