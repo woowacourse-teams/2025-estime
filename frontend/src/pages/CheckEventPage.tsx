@@ -114,7 +114,7 @@ const CheckEventPage = () => {
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
-                    mode={mode}
+                    mode="view"
                     onToggleEditMode={handleToggleEditMode}
                   />
                   <Heatmap
@@ -132,7 +132,7 @@ const CheckEventPage = () => {
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={userName.value}
-                    mode={mode}
+                    mode="edit"
                     onToggleEditMode={handleToggleEditMode}
                   />
 
