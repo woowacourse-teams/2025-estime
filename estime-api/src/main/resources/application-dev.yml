@@ -2,7 +2,9 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: optional:file:estime-api/.env.docker[.properties]
+    import:
+      - application-common.yml
+      - optional:file:estime-api/.env.dev[.properties]
 
 logging:
   file:

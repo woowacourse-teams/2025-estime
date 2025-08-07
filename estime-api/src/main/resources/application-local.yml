@@ -2,7 +2,9 @@ spring:
   config:
     activate:
       on-profile: local
-    import: optional:file:estime-api/.env.local[.properties]
+    import:
+      - application-common.yml
+      - optional:file:estime-api/.env.local[.properties]
 
 logging:
   level:
