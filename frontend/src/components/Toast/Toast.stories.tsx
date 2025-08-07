@@ -37,6 +37,6 @@ export const WarningToast: Story = {
   args: {
     id: 'warning',
     type: 'warning',
-    message: '위험합니다!! 앞으로는 조심하세요',
+    message: '경고입니다!! 앞으로는 조심하세요',
   },
 };

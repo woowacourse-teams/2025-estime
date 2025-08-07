@@ -7,7 +7,7 @@ import { type ToastType } from '@/types/toastType';
 const TOAST_TITLE = {
   success: '성공',
   error: '오류',
-  warning: '위험',
+  warning: '경고',
 };
 
 export type ToastPhase = 'idle' | 'visible' | 'hidden';
