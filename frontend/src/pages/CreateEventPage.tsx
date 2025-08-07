@@ -34,13 +34,20 @@ const CreateEventPage = () => {
   const { addToast } = useToastContext();
 
   const handleCreateRoom = async () => {
+    if (!isCalendarReady && !isBasicReady) {
+      addToast({
+        type: 'warning',
+        message: '날짜와 약속 정보를 입력해주세요.',
+      });
+      showValidation.current = true;
+      handleShouldShake();
+      return;
+    }
     if (!isCalendarReady) {
       addToast({
         type: 'warning',
         message: '날짜를 선택해주세요.',
       });
-      showValidation.current = true;
-      handleShouldShake();
       return;
     }
     if (!isBasicReady) {
@@ -48,8 +55,6 @@ const CreateEventPage = () => {
         type: 'warning',
         message: '약속 정보를 입력해주세요.',
       });
-      showValidation.current = true;
-      handleShouldShake();
       return;
     }
 
