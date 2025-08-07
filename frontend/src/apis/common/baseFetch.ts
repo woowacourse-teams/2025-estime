@@ -61,7 +61,9 @@ const baseFetch = async <Res, Req = undefined>({
 
   if (!response.ok) {
     const error: ApiErrorResponse = await response.json();
-    Sentry.captureException(error.error);
+    Sentry.captureException(error.error, {
+      level: 'error',
+    });
     throw new Error(error.error || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 
