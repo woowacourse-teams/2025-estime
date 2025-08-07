@@ -24,7 +24,9 @@ export default merge(common, {
       org: 'estime',
       project: 'javascript-react',
       authToken: process.env.SENTRY_AUTH_TOKEN,
-
+      sourcemaps: {
+        filesToDeleteAfterUpload: '**/*.js.map',
+      },
       // deleteAfterCompile: true,
     }),
   ],
