@@ -1,8 +1,10 @@
 package com.estime.room.domain.slot.vo;
 
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.PastNotAllowedException;
+import com.estime.common.exception.util.Validator;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -20,14 +22,14 @@ public class DateSlot implements Comparable<DateSlot> {
     private final LocalDate startAt;
 
     public static DateSlot from(final LocalDate startAt) {
-        validate(startAt);
+        Validator.validateNotNull(startAt);
+        validateStartAt(startAt);
         return new DateSlot(startAt);
     }
 
-    private static void validate(final LocalDate startAt) {
-        Objects.requireNonNull(startAt, "startAt cannot be null");
+    private static void validateStartAt(final LocalDate startAt) {
         if (startAt.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("dateSlot cannot be past date: " + startAt);
+            throw new PastNotAllowedException(DomainTerm.DATE_SLOT, startAt);
         }
     }
 

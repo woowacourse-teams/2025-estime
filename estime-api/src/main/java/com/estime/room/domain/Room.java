@@ -1,6 +1,9 @@
 package com.estime.room.domain;
 
 import com.estime.common.BaseEntity;
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.PastNotAllowedException;
+import com.estime.common.exception.util.Validator;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
@@ -17,9 +20,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -69,7 +70,7 @@ public class Room extends BaseEntity {
             final List<TimeSlot> availableTimeSlots,
             final DateTimeSlot deadline
     ) {
-        validateNonNull(title, availableDateSlots, availableTimeSlots, deadline);
+        Validator.validateNotNull(title, availableDateSlots, availableTimeSlots, deadline);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
@@ -80,21 +81,9 @@ public class Room extends BaseEntity {
         );
     }
 
-    private static void validateNonNull(
-            final String title,
-            final Collection<DateSlot> availableDateSlots,
-            final Collection<TimeSlot> availableTimeSlots,
-            final DateTimeSlot deadline
-    ) {
-        Objects.requireNonNull(title, "title cannot be null");
-        Objects.requireNonNull(availableDateSlots, "availableDateSlots cannot be null");
-        Objects.requireNonNull(availableTimeSlots, "availableTimeSlots cannot be null");
-        Objects.requireNonNull(deadline, "deadline cannot be null");
-    }
-
     private static void validateDeadline(final DateTimeSlot deadline) {
         if (deadline.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("deadline cannot be in the past");
+            throw new PastNotAllowedException(DomainTerm.DEADLINE, deadline);
         }
     }
 }

@@ -1,11 +1,13 @@
 package com.estime.room.domain.participant.vote;
 
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.DuplicateNotAllowedException;
+import com.estime.common.exception.util.Validator;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -17,9 +19,9 @@ public class Votes {
     private final Set<Vote> elements;
 
     public static Votes from(final List<Vote> votes) {
-        Objects.requireNonNull(votes, "votes cannot be null");
+        Validator.validateNotNull(votes);
         if (votes.size() != new HashSet<>(votes).size()) {
-            throw new IllegalArgumentException("Duplicate votes detected in input list");
+            throw new DuplicateNotAllowedException(DomainTerm.VOTES, votes);
         }
         return new Votes(Set.copyOf(votes));
     }

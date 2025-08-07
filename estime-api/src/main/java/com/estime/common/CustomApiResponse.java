@@ -39,4 +39,8 @@ public class CustomApiResponse<T> {
     public static <T> CustomApiResponse<T> badRequest(final String message) {
         return new CustomApiResponse<>(400, false, message, null);
     }
+
+    public static <T> CustomApiResponse<T> internalServerError(final String message) {
+        return new CustomApiResponse<>(500, false, message, null);
+    }
 }

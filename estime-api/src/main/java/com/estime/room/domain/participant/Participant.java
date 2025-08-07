@@ -1,9 +1,9 @@
 package com.estime.room.domain.participant;
 
 import com.estime.common.BaseEntity;
+import com.estime.common.exception.util.Validator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,15 +27,7 @@ public class Participant extends BaseEntity {
             final Long roomId,
             final String name
     ) {
-        validate(roomId, name);
+        Validator.validateNotNull(roomId, name);
         return new Participant(roomId, name);
-    }
-
-    private static void validate(
-            final Long roomId,
-            final String name
-    ) {
-        Objects.requireNonNull(roomId, "roomId cannot be null");
-        Objects.requireNonNull(name, "name cannot be null");
     }
 }

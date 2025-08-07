@@ -1,6 +1,7 @@
 package com.estime.room.application.service;
 
-import com.estime.common.NotFoundException;
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.application.NotFoundException;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -38,7 +39,7 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final Tsid roomSession) {
         final Room room = roomRepository.findBySession(RoomSession.from(roomSession))
-                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomSession));
         return RoomOutput.from(room);
     }
 
@@ -84,7 +85,7 @@ public class RoomApplicationService {
         final Long roomId = getRoomIdBySession(RoomSession.from(roomSession));
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, participantName)
-                .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId, participantName));
 
         return voteRepository.findAllByParticipantId(participantId);
     }
@@ -94,7 +95,7 @@ public class RoomApplicationService {
         final Long roomId = getRoomIdBySession(input.session());
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, input.participantName())
-                .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, input.participantName()));
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
@@ -120,6 +121,6 @@ public class RoomApplicationService {
 
     private Long getRoomIdBySession(final RoomSession session) {
         return roomRepository.findIdBySession(session)
-                .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 }
