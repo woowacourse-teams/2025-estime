@@ -1,4 +1,18 @@
 services:
+  api:
+    container_name: estime-api
+    build:
+      context: estime-api
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    env_file:
+      - ./estime-api/.env.docker
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    volumes:
+      - ./app/logs/dev:/app/logs/dev
+
   mysql:
     image: mysql:8.0
     container_name: estime-mysql
@@ -12,15 +26,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  api:
-    container_name: estime-api
-    depends_on:
-      - mysql
-    env_file:
-      - ./estime-api/.env.docker
-    volumes:
-      - /app/logs:/app/logs
 
 volumes:
   db_data:

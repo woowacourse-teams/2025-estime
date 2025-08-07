@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - application-common.yml
+      - optional:file:estime-api/.env.dev[.properties]
+
+logging:
+  file:
+    name: /app/logs/dev/spring.log
+  level:
+    root: INFO
+    com.estime: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+
+management:
+  metrics:
+    export:
+      cloudwatch:
+        enabled: true
+        namespace: "EC2/estime-api/dev"
+        region: ap-northeast-2

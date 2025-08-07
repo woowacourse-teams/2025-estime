@@ -1,59 +1,6 @@
-logging:
-  file:
-    path: /app/logs
-  pattern:
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-  level:
-    org.springframework.boot.context.config: INFO
-
 spring:
-  config:
-    import: optional:file:estime-api/.env.local[.properties]
-
-  datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-
-url:
-  origin:
-    local: ${URL_ORIGIN_LOCAL}
-    dev: ${URL_ORIGIN_DEV}
-    prod: ${URL_ORIGIN_PROD}
-
-discord:
-  bot:
-    token: ${DISCORD_BOT_TOKEN}
-
-slack:
-  bot:
-    token: ${SLACK_BOT_TOKEN}
-
-springdoc:
-  swagger-ui:
-    path: /docs
-
-server:
-  forward-headers-strategy: framework
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "health, info, metrics"
-  metrics:
-    enable:
-      all: false
-      http.server.requests: true
-    export:
-      cloudwatch:
-        namespace: "EC2/estime-api/dev"
-        region: ap-northeast-2
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+    group:
+      local: [common, local]
+      dev: [common, dev]
