@@ -3,16 +3,19 @@ import Header from './Header';
 import { Outlet } from 'react-router';
 import ErrorBoundary from '@/ErrorBoundary';
 import ErrorPage from '@/pages/ErrorPage';
+import ToastProvider from '@/providers/ToastProvider';
 
 const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   return (
     <>
       <Header isDark={isDark} toggleTheme={toggleTheme} />
-      <ErrorBoundary fallback={<ErrorPage />}>
-        <S.Container>
-          <Outlet />
-        </S.Container>
-      </ErrorBoundary>
+      <ToastProvider>
+        <ErrorBoundary fallback={<ErrorPage />}>
+          <S.Container>
+            <Outlet />
+          </S.Container>
+        </ErrorBoundary>
+      </ToastProvider>
     </>
   );
 };
