@@ -58,7 +58,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 전체 빌드 및 테스트 (SPRING_PROFILES_ACTIVE 명시)
-        run: SPRING_PROFILES_ACTIVE=${{ env.SPRING_PROFILES_ACTIVE }} ./gradlew clean build --stacktrace
+        run: ./gradlew clean build --stacktrace -Dspring.profiles.active=dev
 
       - name: Docker Hub Login
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \

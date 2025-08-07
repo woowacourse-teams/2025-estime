@@ -43,6 +43,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
       - name: JDK 21 버전 설치
         uses: actions/setup-java@v4
         with:
@@ -51,6 +54,22 @@ jobs:
 
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
+
+      - name: Wait for MySQL to be ready (max 2 min)
+        run: |
+          echo "Waiting for MySQL to be ready (timeout: 2 minutes)..."
+          max_attempts=40
+          i=1
+          while [ $i -le $max_attempts ]; do
+            if mysqladmin ping -h mysql -u root -ptestpw --silent; then
+              echo "MySQL is ready after $i attempts."
+              break
+            else
+              echo "MySQL not ready yet... retrying ($i/$max_attempts)"
+              sleep 3
+              i=$((i + 1))
+            fi
+          done
 
       - name: 전체 빌드 및 테스트
         run: ./gradlew clean build --stacktrace -Dspring.profiles.active=local
