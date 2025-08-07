@@ -1,5 +1,8 @@
 package com.estime.common;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum DomainTerm {
 
     ROOM("방"),
@@ -14,10 +17,6 @@ public enum DomainTerm {
     ;
 
     private final String label;
-
-    DomainTerm(final String label) {
-        this.label = label;
-    }
 
     public String label() {
         return label;
