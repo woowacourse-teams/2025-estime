@@ -46,12 +46,7 @@ export const EntryConfirmModal = ({
 
             <Flex.Item flex={1}>
               <Flex direction="row" gap="var(--gap-4)">
-                <Button
-                  color={'primary'}
-                  selected={true}
-                  onClick={onConfirm}
-                  data-ga-id="submit-button"
-                >
+                <Button color={'primary'} selected={true} onClick={onConfirm}>
                   <Text variant="button" color="gray10">
                     예
                   </Text>
