@@ -2,7 +2,7 @@ import { getHeatMapCellBackgroundColor } from '@/utils/getBackgroundColor';
 import { useTheme } from '@emotion/react';
 import * as S from './HeatMapDataCell.styled';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
-import { TooltipInfo } from '..';
+import type { TooltipInfo } from '..';
 
 interface HeatMapDataCellProps {
   date: string;
