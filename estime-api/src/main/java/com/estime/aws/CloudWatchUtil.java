@@ -10,6 +10,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 
 @Component
+@Profile("dev")
 public class CloudWatchUtil {
 
     @Bean
