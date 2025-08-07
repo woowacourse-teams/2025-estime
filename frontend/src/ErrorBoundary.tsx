@@ -18,7 +18,6 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, info: ErrorInfo) {
-    //여기에 센트리를 추가하시오.
     console.error('[ErrorBoundary]', error, info);
     Sentry.captureException(error);
   }
