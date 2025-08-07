@@ -33,7 +33,7 @@ const CreateEventPage = () => {
     if (isCalendarReady && isBasicReady) {
       const session = await roomInfoSubmit();
       if (session) {
-        navigate(`/check?id=${session}`);
+        navigate(`/check?id=${session}`, { replace: true });
       }
     } else {
       showValidation.current = true;
