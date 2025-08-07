@@ -55,13 +55,13 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: Wait for MySQL to be ready (max 2 min)
+      - name: Wait for MySQL to be ready (max 1 min)
         run: |
-          echo "Waiting for MySQL to be ready (timeout: 2 minutes)..."
-          max_attempts=40
+          echo "Waiting for MySQL to be ready (timeout: 1 minutes)..."
+          max_attempts=20
           i=1
           while [ $i -le $max_attempts ]; do
-            if mysqladmin ping -h mysql -u root -ptestpw --silent; then
+            if mysqladmin ping -h 127.0.0.1 -u user -ppassword --silent; then
               echo "MySQL is ready after $i attempts."
               break
             else
