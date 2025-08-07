@@ -8,9 +8,16 @@ export default {
   title: 'Components/BasicSettings',
   component: BasicSettings,
   tags: ['autodocs'],
+  argTypes: {
+    title: { control: false },
+    time: { control: false },
+    isValid: {
+      control: 'boolean',
+    },
+  },
 } as Meta<typeof BasicSettings>;
 
-const Template: StoryFn = () => {
+const Template: StoryFn<{ isValid: boolean }> = (args) => {
   const [title, setTitle] = useState('');
   const titleField: Field<string> = {
     value: title,
@@ -35,7 +42,15 @@ const Template: StoryFn = () => {
     set: setdeadline,
   };
 
-  return <BasicSettings title={titleField} time={timeField} deadline={deadlineField} />;
+  return (
+    <BasicSettings
+      title={titleField}
+      time={timeField}
+      deadline={deadlineField}
+      isValid={args.isValid}
+      shouldShake={true}
+    />
+  );
 };
 
 export const Default = Template.bind({});

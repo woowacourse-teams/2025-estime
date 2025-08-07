@@ -14,9 +14,11 @@ type BasicSettingsProps = {
   title: Field<string>;
   time: Field<{ startTime: string; endTime: string }> & { valid: boolean };
   deadline: Field<{ date: string; time: string }>;
+  isValid: boolean;
+  shouldShake: boolean;
 };
 
-const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
+const BasicSettings = ({ title, time, deadline, isValid, shouldShake }: BasicSettingsProps) => {
   const { isOpen: isStartOpen, toggleOpen: toggleStartOpen } = useTimePicker();
   const { isOpen: isEndOpen, toggleOpen: toggleEndOpen } = useTimePicker();
 
@@ -34,7 +36,7 @@ const BasicSettings = ({ title, time, deadline }: BasicSettingsProps) => {
     handleCustomEndClick,
   } = useSelectTime({ timeRange: time.value, setTimeRange: time.set });
   return (
-    <S.Container>
+    <S.Container isValid={isValid} shouldShake={shouldShake}>
       <S.InfoWrapper>
         <S.TextWrapper>
           <Text variant="h3">약속 제목</Text>

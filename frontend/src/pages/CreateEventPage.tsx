@@ -9,17 +9,35 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 import Information from '@/components/Information';
 import { useTheme } from '@emotion/react';
 import IInfo from '@/icons/IInfo';
+import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
+import { useRef } from 'react';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
   const { colors } = useTheme();
-  const { title, availableDateSlots, time, deadline, isReadyToCreateRoom, roomInfoSubmit } =
-    useCreateRoom();
+
+  const {
+    title,
+    availableDateSlots,
+    time,
+    deadline,
+    isCalendarReady,
+    isBasicReady,
+    roomInfoSubmit,
+  } = useCreateRoom();
+
+  const { shouldShake, handleShouldShake } = useShakeAnimation();
+  const showValidation = useRef(false);
 
   const handleCreateRoom = async () => {
-    const session = await roomInfoSubmit();
-    if (session) {
-      navigate(`/check?id=${session}`, { replace: true });
+    if (isCalendarReady && isBasicReady) {
+      const session = await roomInfoSubmit();
+      if (session) {
+        navigate(`/check?id=${session}`, { replace: true });
+      }
+    } else {
+      showValidation.current = true;
+      handleShouldShake();
     }
   };
 
@@ -27,11 +45,21 @@ const CreateEventPage = () => {
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
-          <CalendarSettings availableDateSlots={availableDateSlots} />
+          <CalendarSettings
+            availableDateSlots={availableDateSlots}
+            isValid={!showValidation.current || isCalendarReady}
+            shouldShake={shouldShake}
+          />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <BasicSettings title={title} time={time} deadline={deadline} />
+            <BasicSettings
+              title={title}
+              time={time}
+              deadline={deadline}
+              isValid={!showValidation.current || isBasicReady}
+              shouldShake={shouldShake}
+            />
             <Information color="orange30">
               <IInfo color={colors.orange40} />
               <Text variant="h4" color="orange40">
@@ -40,10 +68,9 @@ const CreateEventPage = () => {
             </Information>
             <Flex justify="flex-end">
               <Button
-                color={isReadyToCreateRoom ? 'primary' : 'plum40'}
+                color="primary"
                 selected={true}
                 size="small"
-                disabled={!isReadyToCreateRoom}
                 onClick={handleCreateRoom}
                 data-ga-id="create-event-button"
               >

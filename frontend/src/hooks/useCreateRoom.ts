@@ -38,9 +38,10 @@ export const useCreateRoom = () => {
       setRoomInfo((prev) => ({ ...prev, deadline: { date, time } })),
   };
 
-  const isReadyToCreateRoom =
+  const isCalendarReady = roomInfo.availableDateSlots.size > 0;
+
+  const isBasicReady =
     roomInfo.title.trim() !== '' &&
-    roomInfo.availableDateSlots.size > 0 &&
     roomInfo.time.startTime.trim() !== '' &&
     isTimeRangeValid &&
     roomInfo.time.endTime.trim() !== '' &&
@@ -74,7 +75,8 @@ export const useCreateRoom = () => {
     availableDateSlots,
     time,
     deadline,
-    isReadyToCreateRoom,
+    isCalendarReady,
+    isBasicReady,
     roomInfoSubmit,
   };
 };
