@@ -61,8 +61,8 @@ jobs:
           max_attempts=40
           i=1
           while [ $i -le $max_attempts ]; do
-            # --- [디버깅] --silent 옵션을 제거하여 정확한 에러 메시지 확인 ---
-            if mysqladmin ping -h mysql -u user -ppassword; then
+            # --- [수정] 호스트 이름을 mysql에서 127.0.0.1로 변경 ---
+            if mysqladmin ping -h 127.0.0.1 -u user -ppassword --silent; then
               echo "MySQL is ready after $i attempts."
               break
             else
