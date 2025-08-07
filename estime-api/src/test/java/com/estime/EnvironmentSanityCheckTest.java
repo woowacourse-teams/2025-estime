@@ -2,6 +2,7 @@ package com.estime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ class EnvironmentSanityCheckTest {
     @Test
     void checkIfProfileAndDatasourceUrlIsSet() {
         assertThat(env.getActiveProfiles()).contains("local");
+        System.out.println("Active Profiles = " + Arrays.toString(env.getActiveProfiles()));
         System.out.println("DB URL = " + env.getProperty("spring.datasource.url"));
         System.out.println("DB USER = " + env.getProperty("spring.datasource.username"));
         System.out.println("DB PASSWORD = " + env.getProperty("spring.datasource.password"));

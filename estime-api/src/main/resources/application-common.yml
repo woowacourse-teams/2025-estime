@@ -14,6 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
 springdoc:
   swagger-ui:
@@ -29,9 +30,3 @@ discord:
 slack:
   bot:
     token: ${SLACK_BOT_TOKEN}
-
-management:
-  metrics:
-    export:
-      cloudwatch:
-        enabled: false
