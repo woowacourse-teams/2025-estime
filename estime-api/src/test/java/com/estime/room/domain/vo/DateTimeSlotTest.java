@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.common.exception.domain.NullNotAllowedException;
+import com.estime.common.exception.domain.SlotNotDivideException;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +41,8 @@ class DateTimeSlotTest {
 
         // when & then
         assertThatThrownBy(() -> DateTimeSlot.from(nullDateTime))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("startAt cannot be null");
+                .isInstanceOf(NullNotAllowedException.class)
+                .hasMessageContaining("cannot be null");
     }
 
     @Test
@@ -51,8 +53,8 @@ class DateTimeSlotTest {
 
         // when & then
         assertThatThrownBy(() -> DateTimeSlot.from(invalidDateTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("DateTimeSlot must be set in 30-minute intervals");
+                .isInstanceOf(SlotNotDivideException.class)
+                .hasMessageContaining("must be an interval of 30 minutes");
     }
 
     @Test

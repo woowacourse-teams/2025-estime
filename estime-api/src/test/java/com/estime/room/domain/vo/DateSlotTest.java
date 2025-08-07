@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.NullNotAllowedException;
+import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.room.domain.slot.vo.DateSlot;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +35,8 @@ class DateSlotTest {
 
         // when & then
         assertThatThrownBy(() -> DateSlot.from(nullDate))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("startAt cannot be null");
+                .isInstanceOf(NullNotAllowedException.class)
+                .hasMessageContaining("cannot be null");
     }
 
     @Test
@@ -44,8 +47,8 @@ class DateSlotTest {
 
         // when & then
         assertThatThrownBy(() -> DateSlot.from(pastDate))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("dateSlot cannot be past date: " + pastDate);
+                .isInstanceOf(PastNotAllowedException.class)
+                .hasMessageContaining(DomainTerm.DATE_SLOT + " cannot be past");
     }
 
     @Test
