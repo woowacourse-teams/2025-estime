@@ -56,8 +56,28 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
+      - name: 환경 변수 디버깅
+        run: |
+          echo "==== [CI DEBUG: 환경변수 확인] ===="
+          echo "SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE"
+          echo "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL"
+          echo "SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME"
+          echo "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD"
+          echo "MYSQL_DATABASE=$MYSQL_DATABASE"
+          echo "MYSQL_USER=$MYSQL_USER"
+          echo "MYSQL_PASSWORD=$MYSQL_PASSWORD"
+          echo "==== [CI DEBUG: 현재 디렉토리 구조] ===="
+          ls -R
+          echo "==== [CI DEBUG: application-test.yml 존재 여부 확인] ===="
+          find . -name "application-test.yml"
+
+      - name: .env.test import 여부 확인 (로그 확인용)
+        run: |
+          echo "==== [CI DEBUG: application-test.yml 내용 확인] ===="
+          cat estime-api/src/main/resources/application-test.yml || true
+
       - name: 전체 빌드 및 테스트
-        run: ./gradlew clean build
+        run: ./gradlew clean build --stacktrace
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
