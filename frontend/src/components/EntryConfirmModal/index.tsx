@@ -34,12 +34,12 @@ export const EntryConfirmModal = ({
             </Flex>
           </S.EntryConfirmModalHeader>
 
-          <Flex gap="var(--gap-6)" direction="column">
+          <Flex gap="var(--gap-7)" direction="column">
             <Flex align="center" justify="center" gap="var(--gap-6)">
-              <Flex.Item flex={4}>
-                <Flex direction="column" gap="var(--gap-4)">
-                  <Text variant="body">이미 시간표가 등록되어 있는 닉네임입니다.</Text>
-                  <Text variant="body">이어서 수정하시겠습니까?</Text>
+              <Flex.Item flex={5}>
+                <Flex direction="column" gap="var(--gap-6)">
+                  <Text variant="h4">이미 시간표가 등록되어 있는 닉네임입니다.</Text>
+                  <Text variant="h4">이어서 수정하시겠습니까?</Text>
                 </Flex>
               </Flex.Item>
             </Flex>
