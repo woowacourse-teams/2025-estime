@@ -93,7 +93,7 @@ class RoomApplicationServiceTest {
     @Test
     void getRoomBySession() {
         // when
-        final RoomOutput output = roomApplicationService.getRoomBySession(room.getSession().getTsid());
+        final RoomOutput output = roomApplicationService.getRoomBySession(room.getSession().getSession());
 
         // then
         assertSoftly(softAssertions -> {
@@ -133,7 +133,7 @@ class RoomApplicationServiceTest {
 
         // when
         final DateTimeSlotStatisticOutput result = roomApplicationService.calculateVoteStatistic(
-                room.getSession().getTsid());
+                room.getSession().getSession());
 
         // then
         assertSoftly(softly -> {
@@ -154,7 +154,7 @@ class RoomApplicationServiceTest {
 
         // when
         final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
-                room.getSession().getTsid(),
+                room.getSession().getSession(),
                 participant1.getName());
 
         // then
@@ -296,6 +296,6 @@ class RoomApplicationServiceTest {
     }
 
     private boolean isValidSession(final RoomSession session) {
-        return Tsid.isValid(session.getTsid().toString());
+        return Tsid.isValid(session.getSession().toString());
     }
 }

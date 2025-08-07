@@ -37,8 +37,7 @@ public class RoomApplicationService {
 
     @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final Tsid session) {
-        final RoomSession roomSession = RoomSession.from(session);
-        final Room room = roomRepository.findBySession(roomSession)
+        final Room room = roomRepository.findBySession(RoomSession.from(session))
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
         return RoomOutput.from(room);
     }
@@ -52,8 +51,7 @@ public class RoomApplicationService {
 
     @Transactional(readOnly = true)
     public DateTimeSlotStatisticOutput calculateVoteStatistic(final Tsid session) {
-        final RoomSession roomSession = RoomSession.from(session);
-        final Long roomId = getRoomIdBySession(roomSession);
+        final Long roomId = getRoomIdBySession(RoomSession.from(session));
 
         final List<Long> participantIds = participantRepository.findIdsByRoomId(roomId);
 
@@ -83,8 +81,7 @@ public class RoomApplicationService {
 
     @Transactional(readOnly = true)
     public Votes getParticipantVotesBySessionAndParticipantName(final Tsid session, final String participantName) {
-        final RoomSession roomSession = RoomSession.from(session);
-        final Long roomId = getRoomIdBySession(roomSession);
+        final Long roomId = getRoomIdBySession(RoomSession.from(session));
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, participantName)
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
@@ -94,7 +91,7 @@ public class RoomApplicationService {
 
     @Transactional
     public Votes updateParticipantVotes(final VotesUpdateInput input) {
-        final Long roomId = getRoomIdBySession(input.roomSession());
+        final Long roomId = getRoomIdBySession(input.session());
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, input.participantName())
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));
@@ -110,7 +107,7 @@ public class RoomApplicationService {
 
     @Transactional
     public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
-        final Long roomId = getRoomIdBySession(input.roomSession());
+        final Long roomId = getRoomIdBySession(input.session());
 
         final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
 
@@ -121,8 +118,8 @@ public class RoomApplicationService {
         return ParticipantCheckOutput.from(isDuplicateName);
     }
 
-    private Long getRoomIdBySession(final RoomSession roomSession) {
-        return roomRepository.findIdBySession(roomSession)
+    private Long getRoomIdBySession(final RoomSession session) {
+        return roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
     }
 }

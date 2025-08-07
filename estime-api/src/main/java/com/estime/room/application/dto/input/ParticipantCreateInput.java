@@ -4,7 +4,7 @@ import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.vo.RoomSession;
 
 public record ParticipantCreateInput(
-        RoomSession roomSession,
+        RoomSession session,
         String participantName
 ) {
     public Participant toEntity(final Long roomId) {

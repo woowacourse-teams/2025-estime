@@ -35,7 +35,7 @@ public record RoomResponse(
                 output.availableDateSlots().stream().map(DateSlot::getStartAt).sorted().toList(),
                 output.availableTimeSlots().stream().map(TimeSlot::getStartAt).sorted().toList(),
                 output.deadline().getStartAt(),
-                output.session().getTsid().toString()
+                output.session().getSession().toString()
         );
     }
 }

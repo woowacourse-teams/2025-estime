@@ -18,8 +18,8 @@ public record ParticipantVotesUpdateRequest(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public VotesUpdateInput toInput(final Tsid tsid) {
-        return new VotesUpdateInput(RoomSession.from(tsid), participantName,
+    public VotesUpdateInput toInput(final Tsid session) {
+        return new VotesUpdateInput(RoomSession.from(session), participantName,
                 dateTimeSlots.stream().map(DateTimeSlot::from).toList());
     }
 }

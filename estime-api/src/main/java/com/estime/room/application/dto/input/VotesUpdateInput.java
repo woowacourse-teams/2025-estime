@@ -6,7 +6,7 @@ import com.estime.room.domain.vo.RoomSession;
 import java.util.List;
 
 public record VotesUpdateInput(
-        RoomSession roomSession,
+        RoomSession session,
         String participantName,
         List<DateTimeSlot> dateTimeSlots
 ) {
