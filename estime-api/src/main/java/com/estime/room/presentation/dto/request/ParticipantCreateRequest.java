@@ -10,7 +10,7 @@ public record ParticipantCreateRequest(
         String participantName
 ) {
 
-    public ParticipantCreateInput toInput(final Tsid session) {
-        return new ParticipantCreateInput(RoomSession.from(session), participantName);
+    public ParticipantCreateInput toInput(final Tsid roomSession) {
+        return new ParticipantCreateInput(RoomSession.from(roomSession), participantName);
     }
 }

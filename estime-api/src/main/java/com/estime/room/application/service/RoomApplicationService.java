@@ -36,8 +36,8 @@ public class RoomApplicationService {
     private final VoteRepository voteRepository;
 
     @Transactional(readOnly = true)
-    public RoomOutput getRoomBySession(final Tsid session) {
-        final Room room = roomRepository.findBySession(RoomSession.from(session))
+    public RoomOutput getRoomBySession(final Tsid roomSession) {
+        final Room room = roomRepository.findBySession(RoomSession.from(roomSession))
                 .orElseThrow(() -> new NotFoundException(Room.class.getSimpleName()));
         return RoomOutput.from(room);
     }
@@ -50,8 +50,8 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public DateTimeSlotStatisticOutput calculateVoteStatistic(final Tsid session) {
-        final Long roomId = getRoomIdBySession(RoomSession.from(session));
+    public DateTimeSlotStatisticOutput calculateVoteStatistic(final Tsid roomSession) {
+        final Long roomId = getRoomIdBySession(RoomSession.from(roomSession));
 
         final List<Long> participantIds = participantRepository.findIdsByRoomId(roomId);
 
@@ -80,8 +80,8 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public Votes getParticipantVotesBySessionAndParticipantName(final Tsid session, final String participantName) {
-        final Long roomId = getRoomIdBySession(RoomSession.from(session));
+    public Votes getParticipantVotesBySessionAndParticipantName(final Tsid roomSession, final String participantName) {
+        final Long roomId = getRoomIdBySession(RoomSession.from(roomSession));
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, participantName)
                 .orElseThrow(() -> new NotFoundException(Participant.class.getSimpleName()));

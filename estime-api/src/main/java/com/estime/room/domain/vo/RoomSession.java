@@ -14,23 +14,23 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class RoomSession implements Serializable {
 
-    private final Tsid session;
+    private final Tsid roomSession;
 
-    public static RoomSession from(final Tsid session) {
-        validate(session);
-        return new RoomSession(session);
+    public static RoomSession from(final Tsid roomSession) {
+        validate(roomSession);
+        return new RoomSession(roomSession);
     }
 
     public static RoomSession generate() {
         return new RoomSession(TsidCreator.getTsid());
     }
 
-    private static void validate(final Tsid session) {
-        Objects.requireNonNull(session, "session cannot be null");
+    private static void validate(final Tsid roomSession) {
+        Objects.requireNonNull(roomSession, "session cannot be null");
     }
 
     @Override
     public String toString() {
-        return session.toString();
+        return roomSession.toString();
     }
 }
