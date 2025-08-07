@@ -1,4 +1,5 @@
 import { HTTPMethod, QueryParams } from './type';
+import * as Sentry from '@sentry/react';
 
 const BASE_URL = process.env.API_BASE_URL;
 // const BASE_URL = 'http://localhost:8080';
@@ -60,6 +61,7 @@ const baseFetch = async <Res, Req = undefined>({
 
   if (!response.ok) {
     const error: ApiErrorResponse = await response.json();
+    Sentry.captureException(error.error);
     throw new Error(error.error || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 

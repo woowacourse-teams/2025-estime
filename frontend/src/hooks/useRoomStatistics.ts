@@ -2,6 +2,7 @@ import { getRoomStatistics } from '@/apis/room/room';
 import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/utils/getWeight';
 import { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/react';
 
 export interface DateCellInfo {
   weight: number;
@@ -51,6 +52,7 @@ export default function useRoomStatistics({
       const e = err as Error;
       console.error(e);
       alert(e.message);
+      Sentry.captureException(err);
     }
   };
 

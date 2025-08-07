@@ -14,6 +14,7 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
+import * as Sentry from '@sentry/react';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -80,6 +81,7 @@ const CheckEventPage = () => {
       console.log(e);
       alert(e.message);
       console.error(err);
+      Sentry.captureException(err);
     }
   };
 
@@ -93,6 +95,7 @@ const CheckEventPage = () => {
       const e = err as Error;
       console.error(e);
       alert(e.message);
+      Sentry.captureException(err);
     }
   };
 

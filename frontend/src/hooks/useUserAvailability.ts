@@ -3,6 +3,7 @@ import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailabli
 import { useToastContext } from '@/contexts/ToastContext';
 import { UserAvailability } from '@/types/userAvailability';
 import { useState } from 'react';
+import * as Sentry from '@sentry/react';
 
 const initialUserAvailability = {
   userName: '앙부일구',
@@ -44,6 +45,7 @@ export const useUserAvailability = ({
       const e = err as Error;
       alert(e.message);
       console.error(err);
+      Sentry.captureException(err);
     }
   };
 

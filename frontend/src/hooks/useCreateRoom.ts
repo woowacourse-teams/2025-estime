@@ -5,6 +5,7 @@ import { RoomInfo } from '@/types/roomInfo';
 import { useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
 import { TimeManager } from '@/utils/common/TimeManager';
+import * as Sentry from '@sentry/react';
 
 export const useCreateRoom = () => {
   const { platform, channelId } = useExtractQueryParams(['platform', 'channelId'] as const);
@@ -67,6 +68,7 @@ export const useCreateRoom = () => {
       const e = err as Error;
       alert(e.message);
       console.error(err);
+      Sentry.captureException(err);
     }
   };
 
