@@ -55,8 +55,7 @@ export function useHoverTooltip() {
   // 초기 위치가 0,0으로 잡혀서
   // 0,0 위치로 툴팁이 열립니다.
   // 이를 현재위치로 잡아주는 초기화가 필요해요.
-  const initializePosition = useCallback((e?: ReactPointerEvent) => {
-    if (!e) return;
+  const initializePosition = useCallback((e: ReactPointerEvent) => {
     const p = { x: e.clientX, y: e.clientY };
     latestPosRef.current = p;
     setPosition(p);
