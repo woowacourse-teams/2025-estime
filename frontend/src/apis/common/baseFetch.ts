@@ -64,6 +64,11 @@ const baseFetch = async <Res, Req = undefined>({
   }
 
   const responseJson: ApiResponse<Res> = await response.json();
+
+  if (!responseJson.success) {
+    throw new Error(responseJson.message || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+  }
+
   return responseJson.data;
 };
 
