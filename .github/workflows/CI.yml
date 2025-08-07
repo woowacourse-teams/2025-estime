@@ -15,10 +15,10 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: testpw
-          MYSQL_DATABASE: testdb
-        ports:
-          - 3306:3306
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
           --health-interval 10s
@@ -26,15 +26,17 @@ jobs:
           --health-retries 5
 
     env:
-      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: testpw
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      SPRING_PROFILES_ACTIVE: test
 
       URL_ORIGIN_LOCAL : ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
       URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
 
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
     steps:
       - name: Github Repository 파일 불러오기

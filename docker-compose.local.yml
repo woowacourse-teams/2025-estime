@@ -1,11 +1,16 @@
 services:
   api:
-    build:
-      context: estime-api
-      dockerfile: Dockerfile
     ports:
       - "8081:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+    volumes:
+      - ./app/logs/local:/app/logs/local
+    env_file:
+      - ./estime-api/.env.local
 
   mysql:
     ports:
       - "13306:3306"
+    env_file:
+      - ./estime-api/.env.local

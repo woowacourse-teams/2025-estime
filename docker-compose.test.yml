@@ -1,31 +1,31 @@
 services:
   api:
-    container_name: estime-api
     build:
       context: estime-api
       dockerfile: Dockerfile
+    container_name: estime-api-test
     depends_on:
-      - mysql
-    env_file:
-      - ./estime-api/.env.docker
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8082:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: test
     volumes:
-      - ./app/logs/dev:/app/logs/dev
+      - ./app/logs/test:/app/logs/test
 
   mysql:
     image: mysql:8.0
-    container_name: estime-mysql
+    container_name: estime-mysql-test
     restart: unless-stopped
     env_file:
-      - ./estime-api/.env.docker
-    volumes:
-      - db_data:/var/lib/mysql
+      - ./estime-api/.env.test
+    tmpfs:
+      - /var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-volumes:
-  db_data:
+    ports:
+      - "13307:3306"

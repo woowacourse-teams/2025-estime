@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: optional:file:estime-api/.env.local[.properties]
+
+logging:
+  file:
+    name: ./app/logs/local/spring.log
+  level:
+    root: INFO
+    com.estime: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"

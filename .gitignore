@@ -43,3 +43,6 @@ out/
 
 # macOS
 .DS_Store
+
+# logging
+/app/logs/
