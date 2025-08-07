@@ -4,13 +4,7 @@ import { useRef, useState } from 'react';
 export type LoginData = {
   name: string;
 };
-export function useUserLogin({
-  session,
-  onDuplicateNickname,
-}: {
-  session: string | null;
-  onDuplicateNickname: () => void;
-}) {
+export function useUserLogin({ session }: { session: string | null }) {
   if (!session) {
     throw new Error('Session ID is required for user login');
   }
@@ -26,13 +20,8 @@ export function useUserLogin({
     const response = await joinUser(session, {
       participantName: userData.name,
     });
-
-    if (response.isDuplicateName) {
-      onDuplicateNickname();
-      return true;
-    }
     isLoggedIn.current = true;
-    return false;
+    return response.isDuplicateName;
   };
   const resetUserData = () => setUserData({ name: '' });
   return {

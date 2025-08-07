@@ -22,7 +22,6 @@ const CheckEventPage = () => {
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
     session,
-    onDuplicateNickname: () => handleOpenModal('EntryConfirm'),
   });
 
   const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
@@ -68,7 +67,9 @@ const CheckEventPage = () => {
   const loginAndLoadSchedulingData = async () => {
     try {
       const isDuplicated = await handleLogin();
+
       if (isDuplicated) {
+        handleOpenModal('EntryConfirm');
         return;
       }
 
