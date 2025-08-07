@@ -52,18 +52,6 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: 지정한 3개 환경 변수만 적용하여 YML 내용 확인
-        run: |
-          # envsubst 유틸리티 설치 (기본 이미지에 없을 경우)
-          sudo apt-get update && sudo apt-get install -y gettext-base
-          
-          echo "==========================================================="
-          echo "### [적용 후] application-common.yml (DB 정보만 치환) ###"
-          echo "==========================================================="
-          # 지정된 3개의 환경 변수만 실제 값으로 치환하여 출력
-          cat /estime-api/src/main/resources/application-common.yml | envsubst '$SPRING_DATASOURCE_URL $SPRING_DATASOURCE_USERNAME $SPRING_DATASOURCE_PASSWORD'
-          echo ""
-
       - name: 전체 빌드 및 테스트
         run: |
           echo "SPRING_PROFILES_ACTIVE = $SPRING_PROFILES_ACTIVE"
