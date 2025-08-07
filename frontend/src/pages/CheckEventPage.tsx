@@ -81,7 +81,6 @@ const CheckEventPage = () => {
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.log(e);
       addToast({
         type: 'error',
         message: e.message,
@@ -100,7 +99,6 @@ const CheckEventPage = () => {
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.error(e);
       addToast({
         type: 'error',
         message: e.message,
