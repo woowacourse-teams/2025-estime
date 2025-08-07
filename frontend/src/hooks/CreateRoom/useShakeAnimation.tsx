@@ -4,16 +4,11 @@ const useShakeAnimation = () => {
   const [shouldShake, setShouldShake] = useState(false);
 
   const handleShouldShake = () => {
-    const newShouldShake = true;
-    setShouldShake(newShouldShake);
+    setShouldShake(true);
 
-    if (newShouldShake) {
-      const timer = setTimeout(() => {
-        setShouldShake(false);
-      }, 460);
-
-      return () => clearTimeout(timer);
-    }
+    setTimeout(() => {
+      setShouldShake(false);
+    }, 460);
   };
 
   return {
