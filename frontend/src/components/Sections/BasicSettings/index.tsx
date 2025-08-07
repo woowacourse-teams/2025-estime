@@ -90,7 +90,7 @@ const BasicSettings = ({ title, time, deadline, isValid, shouldShake }: BasicSet
       <S.InfoWrapper>
         <S.TextWrapper>
           <Text variant="h3">투표 마감 기한</Text>
-          <Text variant="body">참여자들이 응답할 수 있는 마감 기한을 설정합니다.</Text>
+          <Text variant="h4">참여자들이 응답할 수 있는 마감 기한을 설정합니다.</Text>
         </S.TextWrapper>
         <Flex gap="var(--gap-4)">
           <DatePicker

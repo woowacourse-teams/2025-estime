@@ -14,8 +14,12 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
+import * as Sentry from '@sentry/react';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const CheckEventPage = () => {
+  const { addToast } = useToastContext();
+
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modals, handleCloseModal, handleOpenModal } = useModalControl();
@@ -75,9 +79,13 @@ const CheckEventPage = () => {
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.log(e);
-      alert(e.message);
-      console.error(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 
@@ -89,9 +97,13 @@ const CheckEventPage = () => {
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.log(e);
-      alert(e.message);
-      console.error(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 

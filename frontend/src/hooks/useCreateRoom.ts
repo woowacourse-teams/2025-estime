@@ -5,8 +5,12 @@ import { RoomInfo } from '@/types/roomInfo';
 import { useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
 import { TimeManager } from '@/utils/common/TimeManager';
+import * as Sentry from '@sentry/react';
+import { useToastContext } from '@/contexts/ToastContext';
 
 export const useCreateRoom = () => {
+  const { addToast } = useToastContext();
+
   const { platform, channelId } = useExtractQueryParams(['platform', 'channelId'] as const);
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { time: { startTime: string; endTime: string } }
@@ -65,8 +69,13 @@ export const useCreateRoom = () => {
       return response.session;
     } catch (err) {
       const e = err as Error;
-      alert(e.message);
-      console.error(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
+      Sentry.captureException(err, {
+        level: 'error',
+      });
     }
   };
 

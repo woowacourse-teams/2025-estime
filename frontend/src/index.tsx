@@ -4,14 +4,15 @@ import App from './App';
 import '@/styles/index.css';
 import * as Sentry from '@sentry/react';
 
-if (process.env.NODE_ENV === 'production') {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-
-    sendDefaultPii: true,
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  sendDefaultPii: true,
+  ...(process.env.NODE_ENV === 'development' && {
+    debug: true,
     enableLogs: true,
-  });
-}
+  }),
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 

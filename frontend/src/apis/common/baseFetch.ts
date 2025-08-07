@@ -1,20 +1,21 @@
 import { HTTPMethod, QueryParams } from './type';
+import * as Sentry from '@sentry/react';
 
 const BASE_URL = process.env.API_BASE_URL;
 // const BASE_URL = 'http://localhost:8080';
 
-interface baseFetchProps {
+interface baseFetchProps<Req> {
   path: string;
   method: HTTPMethod;
   query?: QueryParams;
-  body?: Record<string, any>;
+  body?: Req;
 }
 
-interface ApiResponse<T> {
+interface ApiResponse<Res> {
   code: number;
   message: string | null;
   success: boolean;
-  data: T;
+  data: Res;
 }
 
 interface ApiErrorResponse {
@@ -24,7 +25,12 @@ interface ApiErrorResponse {
   path: string;
 }
 
-const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Promise<T> => {
+const baseFetch = async <Res, Req = undefined>({
+  path,
+  method,
+  query,
+  body,
+}: baseFetchProps<Req>): Promise<Res> => {
   const url = new URL(path, BASE_URL);
 
   if (query) {
@@ -55,10 +61,18 @@ const baseFetch = async <T>({ path, method, query, body }: baseFetchProps): Prom
 
   if (!response.ok) {
     const error: ApiErrorResponse = await response.json();
+    Sentry.captureException(error.error, {
+      level: 'error',
+    });
     throw new Error(error.error || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 
-  const responseJson: ApiResponse<T> = await response.json();
+  const responseJson: ApiResponse<Res> = await response.json();
+
+  if (!responseJson.success) {
+    throw new Error(responseJson.message || '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+  }
+
   return responseJson.data;
 };
 
