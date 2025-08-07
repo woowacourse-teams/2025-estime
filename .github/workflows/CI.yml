@@ -17,6 +17,9 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: testpw
           MYSQL_DATABASE: testdb
+          # --- [수정 1] 원격 접속을 위한 새 사용자 생성 ---
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
         ports:
           - 3306:3306
         options: >-
@@ -26,9 +29,10 @@ jobs:
           --health-retries 5
 
     env:
+      # --- [수정 2] 애플리케이션도 일관성을 위해 새 사용자로 접속 ---
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: testpw
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
       URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
@@ -57,7 +61,8 @@ jobs:
           max_attempts=40
           i=1
           while [ $i -le $max_attempts ]; do
-            if mysqladmin ping -h mysql -u root -ptestpw --silent; then
+            # --- [수정 3] root 대신 새로 만든 user로 접속 시도 ---
+            if mysqladmin ping -h mysql -u user -ppassword --silent; then
               echo "MySQL is ready after $i attempts."
               break
             else
