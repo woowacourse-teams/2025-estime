@@ -7,7 +7,7 @@ export const Container = styled.div<{ phase: ToastPhase }>`
   width: 350px;
   flex-direction: column;
   align-items: flex-start;
-  border-radius: 8px;
+  border-radius: var(--radius-4);
   background-color: ${({ theme }) => {
     const type = useToastTheme();
     return `${theme.colors[`${type}Background`]}`;
@@ -31,8 +31,8 @@ export const Container = styled.div<{ phase: ToastPhase }>`
 export const Header = styled.div`
   width: 100%;
   display: flex;
-  gap: 8px;
-  padding: 10.4px 16px;
+  gap: var(--gap-3);
+  padding: var(--padding-4) var(--padding-6);
   align-items: center;
 
   border-bottom: 2px solid
@@ -45,7 +45,7 @@ export const Header = styled.div`
 export const Body = styled.div`
   width: 100%;
   display: flex;
-  padding: 16px;
+  padding: var(--padding-6);
   align-items: flex-start;
 `;
 
