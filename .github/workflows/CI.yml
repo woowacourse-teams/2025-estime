@@ -74,7 +74,7 @@ jobs:
       - name: .env.test import 여부 확인 (로그 확인용)
         run: |
           echo "==== [CI DEBUG: application-test.yml 내용 확인] ===="
-          cat estime-api/src/main/resources/application-test.yml || true
+          cat estime-api/src/test/resources/application-test.yml || true
 
       - name: 전체 빌드 및 테스트
         run: ./gradlew clean build --stacktrace
