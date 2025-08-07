@@ -9,7 +9,7 @@ export function useUserLogin({
   onDuplicateNickname,
 }: {
   session: string | null;
-  onDuplicateNickname?: () => void;
+  onDuplicateNickname: () => void;
 }) {
   if (!session) {
     throw new Error('Session ID is required for user login');
@@ -28,7 +28,7 @@ export function useUserLogin({
     });
 
     if (response.isDuplicateName) {
-      onDuplicateNickname?.();
+      onDuplicateNickname();
       return true;
     }
     isLoggedIn.current = true;

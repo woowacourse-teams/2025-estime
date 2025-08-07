@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 type modalTypeKey = 'Login' | 'EntryConfirm';
-
+type Modals = Record<modalTypeKey, boolean>;
 export function useModalControl() {
-  const [modals, setModals] = useState<Record<modalTypeKey, boolean>>({
+  const [modals, setModals] = useState<Modals>({
     Login: false,
     EntryConfirm: false,
   });
