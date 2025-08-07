@@ -17,6 +17,8 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: testpw
           MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
           --health-interval 10s
@@ -24,6 +26,7 @@ jobs:
           --health-retries 5
 
     env:
+      SPRING_PROFILES_ACTIVE: local
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/testdb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: testpw
@@ -31,7 +34,6 @@ jobs:
       URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
       URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
-
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -40,9 +42,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
 
       - name: JDK 21 버전 설치
         uses: actions/setup-java@v4
@@ -53,25 +52,28 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL to be ready (max 5 min)
         run: |
-          for i in {1..20}; do
+          echo "Waiting for MySQL to be ready (timeout: 5 minutes)..."
+          max_attempts=100
+          i=1
+          while [ $i -le $max_attempts ]; do
             if mysqladmin ping -h mysql -u root -ptestpw --silent; then
-              echo "MySQL is ready"
+              echo "MySQL is ready after $i attempts."
               break
             else
-              echo "Waiting for MySQL..."
+              echo "MySQL not ready yet... retrying ($i/$max_attempts)"
               sleep 3
-            fi
-            if [ "$i" -eq 20 ]; then
-              echo "MySQL did not become ready in time"
-              exit 1
+              i=$((i + 1))
             fi
           done
+          
+          if [ $i -gt $max_attempts ]; then
+            echo "MySQL did not become ready within 5 minutes"
+            exit 1
+          fi
 
       - name: 전체 빌드 및 테스트
-        env:
-          SPRING_PROFILES_ACTIVE: local
         run: |
           echo "SPRING_PROFILES_ACTIVE = $SPRING_PROFILES_ACTIVE"
           echo "SPRING_DATASOURCE_URL = $SPRING_DATASOURCE_URL"
