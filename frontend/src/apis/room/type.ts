@@ -21,11 +21,11 @@ export interface GetRoomInfoResponseType {
   deadline: string;
   roomSession: string;
 }
-export interface CreateUserType {
+export interface CreateUserRequestType {
   participantName: string;
 }
 export interface CreateUserResponseType {
-  participantName: string;
+  isDuplicateName: boolean;
 }
 
 export type StatisticItem = {

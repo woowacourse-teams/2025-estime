@@ -10,7 +10,8 @@ export const HeaderCell = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: ${({ isDate }) => (isDate ? 'not-allowed' : 'pointer')};
+  pointer-events: ${({ isDate }) => (isDate ? 'none' : 'inherit')};
   padding: var(--padding-4);
   height: ${({ isDate }) => (isDate ? '3rem' : '1.5rem')};
   width: 100%;
