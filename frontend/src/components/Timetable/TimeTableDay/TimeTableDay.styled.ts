@@ -1,16 +1,12 @@
 import styled from '@emotion/styled';
 
-export const HeaderCell = styled.div<{
-  backgroundColor: string;
-}>`
+export const Container = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   border-right: 1px solid ${({ theme }) => theme.colors.gray20};
-  background-color: ${({ backgroundColor }) => backgroundColor};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  cursor: default;
   padding: var(--padding-4);
-  height: 1.5rem;
+  height: 3rem;
   width: 100%;
   user-select: none;
+  background-color: ${({ theme }) => theme.colors.background};
 `;

@@ -5,6 +5,7 @@ import useTimeSelection from '@/hooks/TimeTable/useTimeSelection';
 import Text from '@/components/Text';
 import TimeTableCell from './TimeTableCell';
 import Wrapper from '@/components/Layout/Wrapper';
+import TimeTableDay from './TimeTableDay';
 
 interface TimetableProps {
   dateTimeSlots: string[];
@@ -13,8 +14,6 @@ interface TimetableProps {
 }
 
 const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetableProps) => {
-  const timeList = ['Dates', ...dateTimeSlots];
-
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
     selectedTimes: selectedTimes.value,
     setSelectedTimes: selectedTimes.set,
@@ -24,7 +23,7 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
   return (
     <S.TimetableContent onMouseLeave={onMouseLeave}>
       <S.TimeSlotColumn>
-        {timeList.map((dateTimeSlot) => (
+        {dateTimeSlots.map((dateTimeSlot) => (
           <S.GridContainer key={dateTimeSlot}>
             {dateTimeSlot.endsWith(':00') && (
               <S.TimeLabel>
@@ -38,7 +37,8 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
       </S.TimeSlotColumn>
       {[...availableDates].map((date) => (
         <Wrapper key={date} center={false} maxWidth="100%">
-          {timeList.map((dateTimeSlot) => (
+          <TimeTableDay date={date} key={`${date}-day`} />
+          {dateTimeSlots.map((dateTimeSlot) => (
             <TimeTableCell
               key={`${date} ${dateTimeSlot}`}
               date={date}

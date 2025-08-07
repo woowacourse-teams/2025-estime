@@ -8,7 +8,6 @@ interface GetHeaderCellBackgroundColorParams {
 }
 interface GetHeatMapCellBackgroundColorParams {
   theme: Theme;
-  isHeader: boolean;
   weight: number;
 }
 
@@ -18,10 +17,6 @@ export const getHeaderCellBackgroundColor = ({
   timeText,
   theme,
 }: GetHeaderCellBackgroundColorParams) => {
-  if (timeText === 'Dates') {
-    return theme.colors.background;
-  }
-
   if (selectedTimes.has(`${date}T${timeText}`)) {
     return theme.colors.primary;
   }
@@ -31,13 +26,9 @@ export const getHeaderCellBackgroundColor = ({
 
 export const getHeatMapCellBackgroundColor = ({
   theme,
-  isHeader,
   weight,
 }: GetHeatMapCellBackgroundColorParams) => {
-  if (isHeader) return theme.colors.background;
-
   if (weight > 0) return hexToRgba(theme.colors.primary, weight);
-
   return theme.colors.gray10;
 };
 
