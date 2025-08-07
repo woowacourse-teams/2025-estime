@@ -66,12 +66,10 @@ const CheckEventPage = () => {
   const loginAndLoadSchedulingData = async () => {
     try {
       const isDuplicated = await handleLogin();
-
       if (isDuplicated) {
         handleOpenModal('EntryConfirm');
         return;
       }
-
       await fetchUserAvailableTime();
       handleCloseModal('Login');
       setMode('edit');
@@ -91,8 +89,9 @@ const CheckEventPage = () => {
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.error(e);
+      console.log(e);
       alert(e.message);
+      console.error(err);
     }
   };
 
