@@ -39,7 +39,7 @@ export const useDateSelection = ({
       }
       if (DateManager.isPast(date, today)) {
         addToast({
-          type: 'error',
+          type: 'warning',
           message: '과거 날짜는 선택할 수 없습니다.',
         });
         return;
@@ -49,7 +49,7 @@ export const useDateSelection = ({
         !newSelectedDates.has(dateString)
       ) {
         addToast({
-          type: 'error',
+          type: 'warning',
           message: '최대 7개의 날짜를 선택할 수 있습니다.',
         });
         return;

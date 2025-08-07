@@ -14,9 +14,12 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
+
+  const { addToast } = useToastContext();
 
   const { modals, handleCloseModal, handleOpenModal } = useModalControl();
 
@@ -66,20 +69,19 @@ const CheckEventPage = () => {
   const loginAndLoadSchedulingData = async () => {
     try {
       const isDuplicated = await handleLogin();
-
       if (isDuplicated) {
         handleOpenModal('EntryConfirm');
         return;
       }
-
       await fetchUserAvailableTime();
       handleCloseModal('Login');
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.log(e);
-      alert(e.message);
-      console.error(err);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
     }
   };
 
@@ -91,8 +93,10 @@ const CheckEventPage = () => {
       setMode('edit');
     } catch (err) {
       const e = err as Error;
-      console.error(e);
-      alert(e.message);
+      addToast({
+        type: 'error',
+        message: e.message,
+      });
     }
   };
 

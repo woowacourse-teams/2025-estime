@@ -11,6 +11,7 @@ import { useTheme } from '@emotion/react';
 import IInfo from '@/icons/IInfo';
 import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
 import { useRef } from 'react';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -27,17 +28,39 @@ const CreateEventPage = () => {
   } = useCreateRoom();
 
   const { shouldShake, handleShouldShake } = useShakeAnimation();
+
   const showValidation = useRef(false);
 
+  const { addToast } = useToastContext();
+
   const handleCreateRoom = async () => {
-    if (isCalendarReady && isBasicReady) {
-      const session = await roomInfoSubmit();
-      if (session) {
-        navigate(`/check?id=${session}`, { replace: true });
-      }
-    } else {
+    if (!isCalendarReady) {
+      addToast({
+        type: 'warning',
+        message: '날짜를 선택해주세요.',
+      });
       showValidation.current = true;
       handleShouldShake();
+      return;
+    }
+    if (!isBasicReady) {
+      addToast({
+        type: 'warning',
+        message: '약속 정보를 입력해주세요.',
+      });
+      showValidation.current = true;
+      handleShouldShake();
+      return;
+    }
+
+    const session = await roomInfoSubmit();
+    addToast({
+      type: 'success',
+      message: '방 생성이 완료되었습니다.',
+    });
+
+    if (session) {
+      navigate(`/check?id=${session}`, { replace: true });
     }
   };
 
