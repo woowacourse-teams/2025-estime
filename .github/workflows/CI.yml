@@ -54,7 +54,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 전체 빌드 및 테스트
-        run: ./gradlew clean build --stacktrace
+        run: SPRING_PROFILES_ACTIVE=local ./gradlew clean build --stacktrace
 
       - name: Close PR, if build fail
         if: ${{ failure() }}

@@ -1,4 +1,7 @@
 spring:
+  config:
+    activate:
+      on-profile: common
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
