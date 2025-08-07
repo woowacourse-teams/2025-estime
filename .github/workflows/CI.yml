@@ -61,7 +61,7 @@ jobs:
           echo "### [적용 후] application-common.yml (DB 정보만 치환) ###"
           echo "==========================================================="
           # 지정된 3개의 환경 변수만 실제 값으로 치환하여 출력
-          cat src/main/resources/application-common.yml | envsubst '$SPRING_DATASOURCE_URL $SPRING_DATASOURCE_USERNAME $SPRING_DATASOURCE_PASSWORD'
+          cat /estime-api/src/main/resources/application-common.yml | envsubst '$SPRING_DATASOURCE_URL $SPRING_DATASOURCE_USERNAME $SPRING_DATASOURCE_PASSWORD'
           echo ""
 
       - name: 전체 빌드 및 테스트
