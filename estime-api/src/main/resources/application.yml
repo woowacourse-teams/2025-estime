@@ -3,7 +3,6 @@ spring:
     group:
       local: [common, local]
       dev: [common, dev]
-      test: [common, test]
   config:
     activate:
       on-profile: common

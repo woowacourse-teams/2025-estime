@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 class ConnectedRoomApplicationServiceTest {
 
     @Autowired
