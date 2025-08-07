@@ -1,54 +1,41 @@
 import { getHeatMapCellBackgroundColor } from '@/utils/getBackgroundColor';
-import { DateManager } from '@/utils/common/DateManager';
 import { useTheme } from '@emotion/react';
 import Flex from '@/components/Layout/Flex';
 import Text from '@/components/Text';
-import * as S from './HeatMapCell.styled';
+import * as S from './HeatMapDataCell.styled';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TableTooltip from '@/components/TableTooltip';
 import { useHoverTooltip } from '@/hooks/useHoverTooltip';
 import IPerson from '@/icons/IPerson';
 
-interface HeatMapCellProps {
+interface HeatMapDataCellProps {
   date: string;
   timeText: string;
   roomStatistics: Map<string, DateCellInfo>;
 }
 
-const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
+const HeatMapDataCell = ({ date, timeText, roomStatistics }: HeatMapDataCellProps) => {
   const theme = useTheme();
   const { open, position, onEnter, onLeave } = useHoverTooltip();
-  const isHeader = timeText === 'Dates';
   const cellInfo = roomStatistics.get(`${date}T${timeText}`);
 
-  const weight = isHeader ? 0 : (cellInfo?.weight ?? 0);
+  const weight = cellInfo?.weight ?? 0;
   const participantList = cellInfo?.participantNames;
-  // TODO: 추후 추가
-  // const allAvailable
+
   const backgroundColor = getHeatMapCellBackgroundColor({
     theme,
-    isHeader,
     weight,
   });
 
+  const showTooltip = open && !!participantList?.length;
+
   return (
     <S.Container
-      isHeader={isHeader}
       backgroundColor={backgroundColor}
       onPointerEnter={onEnter}
       onPointerLeave={onLeave}
     >
-      {isHeader && (
-        <>
-          <Text variant="body" color="text">
-            <Flex direction="column" justify="center" align="center">
-              <Text>{date.split('-').slice(1).join('.')}</Text>
-              <Text>({DateManager.getDayOfWeek(date)})</Text>
-            </Flex>
-          </Text>
-        </>
-      )}
-      {!isHeader && open && participantList && participantList.length > 0 && (
+      {showTooltip && (
         <TableTooltip position={position}>
           <Flex direction="row" gap="var(--gap-4)" align="center">
             <IPerson />
@@ -62,4 +49,4 @@ const HeatMapCell = ({ date, timeText, roomStatistics }: HeatMapCellProps) => {
   );
 };
 
-export default HeatMapCell;
+export default HeatMapDataCell;

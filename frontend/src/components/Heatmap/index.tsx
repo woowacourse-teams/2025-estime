@@ -1,19 +1,20 @@
 import Wrapper from '@/components/Layout/Wrapper';
 import Text from '@/components/Text';
 import * as S from './Heatmap.styled';
-import HeatMapCell from './HeatMapCell';
+
+import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
+import TimeTableDay from '@/components/Timetable/TimeTableDay';
 interface HeatmapProps {
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
 }
 const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
-  const timeList = ['Dates', ...dateTimeSlots];
   return (
     <S.HeatMapContent>
       <S.TimeSlotColumn>
-        {timeList.map((timeText) => (
+        {dateTimeSlots.map((timeText) => (
           <S.GridContainer key={timeText}>
             {timeText.endsWith(':00') && (
               <S.TimeLabel>
@@ -27,8 +28,9 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
       </S.TimeSlotColumn>
       {[...availableDates].map((date) => (
         <Wrapper key={date} center={false} maxWidth="100%">
-          {timeList.map((timeText) => (
-            <HeatMapCell
+          <TimeTableDay date={date} key={`${date}-day`} />
+          {dateTimeSlots.map((timeText) => (
+            <HeatMapDataCell
               key={`${date}T${timeText}`}
               date={date}
               timeText={timeText}
