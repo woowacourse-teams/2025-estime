@@ -24,6 +24,7 @@ export const useToastTheme = () => useContext(ToastThemeContext);
 
 const Toast = ({ id, type, message, onClose }: ToastProps) => {
   const [phase, setPhase] = useState<ToastPhase>('idle');
+  console.log(id, onClose);
   useEffect(() => {
     const showTimer = setTimeout(() => setPhase('visible'), 30);
     const fadeOutTimer = setTimeout(() => setPhase('hidden'), 1500);
