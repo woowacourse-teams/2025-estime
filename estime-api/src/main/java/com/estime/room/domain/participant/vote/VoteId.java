@@ -1,5 +1,6 @@
 package com.estime.room.domain.participant.vote;
 
+import com.estime.common.util.Validator;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.infrastructure.converter.DateTimeSlotConverter;
 import jakarta.persistence.Convert;
@@ -24,6 +25,14 @@ public class VoteId implements Serializable {
     private DateTimeSlot dateTimeSlot;
 
     public static VoteId of(final Long participantId, final DateTimeSlot dateTimeSlot) {
+        validateNull(participantId, dateTimeSlot);
         return new VoteId(participantId, dateTimeSlot);
+    }
+
+    private static void validateNull(final Long participantId, final DateTimeSlot dateTimeSlot) {
+        Validator.builder()
+                .add("participantId", participantId)
+                .add("dateTimeSlot", dateTimeSlot)
+                .validateNull();
     }
 }

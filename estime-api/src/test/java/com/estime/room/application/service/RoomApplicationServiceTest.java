@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.common.NotFoundException;
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.application.NotFoundException;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -119,7 +120,7 @@ class RoomApplicationServiceTest {
         // when // then
         assertThatThrownBy(() -> roomApplicationService.getRoomBySession(nonexistentSession))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("Room not found");
+                .hasMessageContaining(DomainTerm.ROOM + " is not exists");
     }
 
     @DisplayName("투표 통계를 계산한다.")

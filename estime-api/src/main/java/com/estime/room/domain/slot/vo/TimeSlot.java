@@ -1,8 +1,11 @@
 package com.estime.room.domain.slot.vo;
 
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.InvalidTimeDetailException;
+import com.estime.common.exception.domain.SlotNotDivideException;
+import com.estime.common.util.Validator;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -20,21 +23,25 @@ public class TimeSlot implements Comparable<TimeSlot> {
     private final LocalTime startAt;
 
     public static TimeSlot from(final LocalTime startAt) {
-        validate(startAt);
+        validateNull(startAt);
+        validateStartAt(startAt);
         return new TimeSlot(startAt);
     }
 
-    private static void validate(final LocalTime startAt) {
-        Objects.requireNonNull(startAt, "startAt cannot be null");
+    private static void validateNull(final LocalTime startAt) {
+        Validator.builder()
+                .add("startAt", startAt)
+                .validateNull();
+    }
 
+    private static void validateStartAt(final LocalTime startAt) {
         if (startAt.getSecond() != 0 || startAt.getNano() != 0) {
-            throw new IllegalArgumentException("timeslot seconds and nanoseconds must be 0 : " + startAt);
+            throw new InvalidTimeDetailException(DomainTerm.TIME_SLOT, startAt);
         }
 
         final long seconds = startAt.toSecondOfDay();
         if (seconds % UNIT.getSeconds() != 0) {
-            throw new IllegalArgumentException(
-                    String.format("timeSlot must be an interval of %d minutes: %s", UNIT.toMinutes(), startAt));
+            throw new SlotNotDivideException(DomainTerm.TIME_SLOT, UNIT.toMinutes());
         }
     }
 

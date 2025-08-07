@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.common.exception.domain.NullNotAllowedException;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -42,8 +43,8 @@ class VotesTest {
 
         // when & then
         assertThatThrownBy(() -> Votes.from(nullList))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("votes cannot be null");
+                .isInstanceOf(NullNotAllowedException.class)
+                .hasMessageContaining("cannot be null");
     }
 
     @Test
