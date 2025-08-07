@@ -26,7 +26,7 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
     timerRef.current = setTimeout(() => {
       setToasts([]);
-    }, 2000);
+    }, 1600);
   };
 
   const removeToast = useCallback((id: string) => {
