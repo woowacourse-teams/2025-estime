@@ -53,8 +53,25 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..10}; do
+            if mysqladmin ping -h 127.0.0.1 -u root -ptestpw --silent; then
+              echo "MySQL is ready"
+              break
+            else
+              echo "Waiting for MySQL..."
+              sleep 3
+            fi
+          done
+
       - name: 전체 빌드 및 테스트
-        run: SPRING_PROFILES_ACTIVE=local ./gradlew clean build --stacktrace
+        env:
+          SPRING_PROFILES_ACTIVE: local
+        run: |
+          echo "SPRING_PROFILES_ACTIVE = $SPRING_PROFILES_ACTIVE"
+          echo "SPRING_DATASOURCE_URL = $SPRING_DATASOURCE_URL"
+          ./gradlew clean build --stacktrace
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
