@@ -35,8 +35,7 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  // view와 edit, 모드별로 훅을 분리하는 것....
-  // 나쁘지 않을지도.
+  //TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
 
   // const checkEventPage = useCheckEventPage(session);
   // const switchToEditMode = async () => {
