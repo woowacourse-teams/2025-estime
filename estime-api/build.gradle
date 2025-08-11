@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // for monitoring
     implementation 'io.micrometer:micrometer-registry-cloudwatch2'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
+
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 }
 
 tasks.named('test') {
