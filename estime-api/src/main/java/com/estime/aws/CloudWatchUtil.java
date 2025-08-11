@@ -11,11 +11,11 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 
 @Component
-@Profile("dev")
 public class CloudWatchUtil {
 
     @Bean
-    public MeterRegistry meterRegistry() {
+    @Profile("dev")
+    public MeterRegistry devMeterRegistry() {
 
         final CloudWatchAsyncClient cloudWatchClient = CloudWatchAsyncClient.builder()
                 .region(Region.AP_NORTHEAST_2)
@@ -30,6 +30,29 @@ public class CloudWatchUtil {
             @Override
             public String namespace() {
                 return "EC2/estime-api/dev";
+            }
+        };
+
+        return new CloudWatchMeterRegistry(cloudWatchConfig, Clock.SYSTEM, cloudWatchClient);
+    }
+
+    @Bean
+    @Profile("prod")
+    public MeterRegistry prodMeterRegistry() {
+
+        final CloudWatchAsyncClient cloudWatchClient = CloudWatchAsyncClient.builder()
+                .region(Region.AP_NORTHEAST_2)
+                .build();
+        final CloudWatchConfig cloudWatchConfig = new CloudWatchConfig() {
+
+            @Override
+            public String get(final String key) {
+                return null;
+            }
+
+            @Override
+            public String namespace() {
+                return "EC2/estime-api/prod";
             }
         };
 
