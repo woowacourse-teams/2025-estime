@@ -1,0 +1,110 @@
+name: CD Prod Pipeline
+
+on:
+  push:
+    branches: [ be/prod ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    outputs:
+      short_sha: ${{ steps.set_short_sha.outputs.short_sha }}
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpw
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SPRING_PROFILES_ACTIVE: prod
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: testpw
+
+      URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
+      URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
+      URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
+
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calc short sha
+        id: set_short_sha
+        run: echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 21
+
+      - name: Gradle Wrapper 실행 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: 전체 빌드
+        run: ./gradlew clean build -x test --stacktrace -Dspring.profiles.active=prod
+
+      - name: Docker Hub Login
+        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \
+          | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push (multi-arch)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./estime-api
+          file: ./estime-api/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ secrets.PROD_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
+            ${{ secrets.PROD_IMAGE_NAME }}:latest
+
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+
+    env:
+      SPRING_PROFILES_ACTIVE: prod
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create env file for Docker Compose
+        run: |
+          printf '%s\n' "IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}" > .env
+
+      - name: Create env file for env.prod file
+        working-directory: ./estime-api
+        run: |
+          printf '%s\n' "${{ secrets.ENV_PROD }}" > .env.prod
+
+      - name: Deploy with Docker Compose
+        run: |
+          docker compose docker-compose.prod.yml pull api
+          docker compose docker-compose.prod.yml up -d
+
+      - name: Debug running containers
+        run: docker ps -a
