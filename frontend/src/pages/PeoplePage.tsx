@@ -5,6 +5,7 @@ import Wrapper from '@/components/Layout/Wrapper';
 import Flex from '@/components/Layout/Flex';
 import { useNavigate } from 'react-router';
 import Button from '@/components/Button';
+import GithubLogo from '@/icons/GithubLogo';
 
 const PeoplePage = () => {
   const navigate = useNavigate();
@@ -23,12 +24,25 @@ const PeoplePage = () => {
         </Button>
       </Flex>
       <S.Container>
-        {credits.map((person, index) => (
-          <S.Person key={`${person.name}-${index}`}>
-            <S.Image src={person.imageUrl} alt={person.name} />
-            <Text color="gray80" variant="h2">
-              <S.Link>{person.name}</S.Link>
+        {credits.map(({ name, imageUrl, role, github }) => (
+          <S.Person key={name}>
+            <S.Avatar>
+              <S.Image src={imageUrl} alt={name} />
+            </S.Avatar>
+            <Text color="gray90" variant="h3">
+              {name}
             </Text>
+            <Flex align="center" gap="var(--gap-3)" justify="center">
+              <Text color="gray60" variant="body">
+                {role}
+              </Text>
+
+              <S.Link href={github} target="_blank" rel="noopener noreferrer">
+                <S.Icon>
+                  <GithubLogo />
+                </S.Icon>
+              </S.Link>
+            </Flex>
           </S.Person>
         ))}
       </S.Container>
