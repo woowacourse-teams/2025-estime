@@ -6,6 +6,7 @@ import CreateEventPage from './pages/CreateEventPage';
 import CheckEventPage from './pages/CheckEventPage';
 import Layout from './components/Layout';
 import PeoplePage from './pages/PeoplePage';
+import Error404Page from './pages/404Page';
 
 const App = () => {
   const [isDark, setIsDark] = useState(false);
@@ -20,6 +21,7 @@ const App = () => {
             <Route index element={<CreateEventPage />} />
             <Route path="check" element={<CheckEventPage />} />
             <Route path="credits" element={<PeoplePage />} />
+            <Route path="*" element={<Error404Page />} />
           </Route>
         </Routes>
       </BrowserRouter>
