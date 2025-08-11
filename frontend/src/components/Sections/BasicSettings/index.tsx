@@ -44,9 +44,10 @@ const BasicSettings = ({ title, time, deadline, isValid, shouldShake }: BasicSet
         </S.TextWrapper>
         <S.InputWrapper>
           <Input
-            placeholder="예: 1팀 7월 정기 회의"
+            placeholder="예: 아인슈타임 정기 산악회"
             value={title.value}
             onChange={(e) => title.set(e.target.value)}
+            maxLength={80}
           />
         </S.InputWrapper>
       </S.InfoWrapper>
