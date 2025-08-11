@@ -1,29 +1,22 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
     import:
       - application-common.yml
-      - optional:file:estime-api/.env.dev[.properties]
+      - optional:file:estime-api/.env.prod[.properties]
 
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        format_sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
-
-  flyway:
-    baseline-on-migrate: true
 
 logging:
   file:
     name: /app/logs/estime-api.log
   level:
     root: INFO
-    com.estime: DEBUG
+    com.estime: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
@@ -33,5 +26,5 @@ management:
     export:
       cloudwatch:
         enabled: true
-        namespace: "EC2/estime-api/dev"
+        namespace: "EC2/estime-api/prod"
         region: ap-northeast-2
