@@ -4,6 +4,7 @@ import kangSanProfile from '@/assets/images/kang_san_profile.png';
 import hoyyProfile from '@/assets/images/hoyy_profile.png';
 import flintProfile from '@/assets/images/flint_profile.png';
 import dbProfile from '@/assets/images/db_profile.png';
+import jeffProfile from '@/assets/images/jeff_profile.png';
 export const credits = [
   {
     name: '해삐',
@@ -39,7 +40,7 @@ export const credits = [
     name: '제프리',
     role: 'Backend Developer',
     github: 'https://github.com/AppleMint98',
-    imageUrl: dummyImage,
+    imageUrl: jeffProfile,
   },
   {
     name: '강산',
