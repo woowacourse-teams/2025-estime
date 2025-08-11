@@ -1,8 +1,8 @@
-name: CD Pipeline
+name: CD Prod Pipeline
 
 on:
   push:
-    branches: [ be/dev ]
+    branches: [ be/prod ]
 
 jobs:
   build-and-push:
@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
 
     env:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
 
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
       SPRING_DATASOURCE_USERNAME: root
@@ -57,8 +57,8 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: 전체 빌드 및 테스트
-        run: ./gradlew clean build -x test --stacktrace -Dspring.profiles.active=dev
+      - name: 전체 빌드
+        run: ./gradlew clean build -x test --stacktrace -Dspring.profiles.active=prod
 
       - name: Docker Hub Login
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \
@@ -78,15 +78,15 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ secrets.DEV_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
-            ${{ secrets.DEV_IMAGE_NAME }}:latest
+            ${{ secrets.PROD_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
+            ${{ secrets.PROD_IMAGE_NAME }}:latest
 
   deploy:
     runs-on: self-hosted
     needs: build-and-push
 
     env:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
 
     steps:
       - name: Checkout repository
@@ -94,17 +94,17 @@ jobs:
 
       - name: Create env file for Docker Compose
         run: |
-          printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
+          printf '%s\n' "IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}" > .env
 
-      - name: Create env file for env.docker file
+      - name: Create env file for env.prod file
         working-directory: ./estime-api
         run: |
-          printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
+          printf '%s\n' "${{ secrets.ENV_PROD }}" > .env.prod
 
       - name: Deploy with Docker Compose
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml pull api
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d          
+          docker compose -f docker-compose.prod.yml pull api
+          docker compose -f docker-compose.prod.yml up -d
 
       - name: Debug running containers
         run: docker ps -a

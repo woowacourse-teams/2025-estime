@@ -1,13 +1,33 @@
 services:
   api:
+    container_name: estime-api
+    depends_on:
+      - mysql
     image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
+    env_file:
+      - ./estime-api/.env.dev
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
     volumes:
-      - ./app/logs/dev:/app/logs/dev
+      - ./app/logs:/app/logs
 
   mysql:
+    image: mysql:8.0
+    container_name: estime-mysql
+    restart: unless-stopped
+    env_file:
+      - ./estime-api/.env.dev
     ports:
       - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
