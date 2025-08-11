@@ -15,6 +15,13 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+  flyway:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /docs
+
 logging:
   level:
     root: INFO
