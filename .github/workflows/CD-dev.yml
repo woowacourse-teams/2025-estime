@@ -103,8 +103,8 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
-          docker compose docker-compose.dev.yml pull api
-          docker compose docker-compose.dev.yml up -d
+          docker compose -f docker-compose.dev.yml pull api
+          docker compose -f docker-compose.dev.yml up -d
 
       - name: Debug running containers
         run: docker ps -a
