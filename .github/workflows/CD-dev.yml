@@ -82,7 +82,7 @@ jobs:
             ${{ secrets.DEV_IMAGE_NAME }}:latest
 
   deploy:
-    runs-on: self-hosted
+    runs-on: [ self-hosted, estime-dev ]
     needs: build-and-push
 
     env:
