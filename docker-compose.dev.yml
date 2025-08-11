@@ -11,7 +11,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
     volumes:
-      - ./app/logs:/app/logs
+      - /app/logs:/app/logs
 
   mysql:
     image: mysql:8.0

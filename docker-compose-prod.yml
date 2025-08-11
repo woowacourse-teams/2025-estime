@@ -11,4 +11,4 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
     volumes:
-      - ./app/logs:/app/logs
+      - /app/logs:/app/logs
