@@ -82,7 +82,7 @@ jobs:
             ${{ secrets.PROD_IMAGE_NAME }}:latest
 
   deploy:
-    runs-on: self-hosted
+    runs-on: [ self-hosted, estime-prod ]
     needs: build-and-push
 
     env:
