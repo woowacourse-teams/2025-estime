@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: CD Dev Pipeline
 
 on:
   push:
@@ -57,7 +57,7 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: 전체 빌드 및 테스트
+      - name: 전체 빌드
         run: ./gradlew clean build -x test --stacktrace -Dspring.profiles.active=dev
 
       - name: Docker Hub Login
@@ -96,15 +96,15 @@ jobs:
         run: |
           printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
 
-      - name: Create env file for env.docker file
+      - name: Create env file for env.dev file
         working-directory: ./estime-api
         run: |
-          printf '%s\n' "${{ secrets.ENV_DOCKER }}" > .env.docker
+          printf '%s\n' "${{ secrets.ENV_DEV }}" > .env.dev
 
       - name: Deploy with Docker Compose
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml pull api
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d          
+          docker compose docker-compose.dev.yml pull api
+          docker compose docker-compose.dev.yml up -d
 
       - name: Debug running containers
         run: docker ps -a
