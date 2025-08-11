@@ -3,6 +3,7 @@ import marvinProfile from '@/assets/images/marvin_profile.png';
 import kangSanProfile from '@/assets/images/kang_san_profile.png';
 import hoyyProfile from '@/assets/images/hoyy_profile.png';
 import flintProfile from '@/assets/images/flint_profile.png';
+import dbProfile from '@/assets/images/db_profile.png';
 export const credits = [
   {
     name: '해삐',
@@ -14,7 +15,7 @@ export const credits = [
     name: '메이토',
     role: 'Frontend Developer',
     github: 'https://github.com/db0111',
-    imageUrl: dummyImage,
+    imageUrl: dbProfile,
   },
   {
     name: '호이초이',
