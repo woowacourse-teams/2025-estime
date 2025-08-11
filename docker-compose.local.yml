@@ -1,14 +1,19 @@
 services:
-  api:
-    ports:
-      - "8081:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: local
-    env_file:
-      - ./estime-api/.env.local
-
   mysql:
     ports:
       - "13306:3306"
     env_file:
       - ./estime-api/.env.local
+    image: mysql:8.0
+    container_name: estime-mysql
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:
