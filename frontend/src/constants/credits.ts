@@ -1,10 +1,11 @@
 import dummyImage from '@/assets/images/dummy.jpg';
-import marvinProfile from '@/assets/images/marvin_profile.png';
-import kangSanProfile from '@/assets/images/kang_san_profile.png';
-import hoyyProfile from '@/assets/images/hoyy_profile.png';
-import flintProfile from '@/assets/images/flint_profile.png';
-import dbProfile from '@/assets/images/db_profile.png';
-import jeffProfile from '@/assets/images/jeff_profile.png';
+import marvinProfile from '@/assets/images/profile/marvin_profile.png';
+import kangSanProfile from '@/assets/images/profile/kang_san_profile.png';
+import hoyyProfile from '@/assets/images/profile/hoyy_profile.png';
+import flintProfile from '@/assets/images/profile/flint_profile.png';
+import dbProfile from '@/assets/images/profile/db_profile.png';
+import jeffProfile from '@/assets/images/profile/jeff_profile.png';
+import riverProfile from '@/assets/images/profile/river_profile.png';
 export const credits = [
   {
     name: '해삐',
@@ -34,7 +35,7 @@ export const credits = [
     name: '리버',
     role: 'Backend Developer',
     github: 'https://github.com/yeonnhuu',
-    imageUrl: dummyImage,
+    imageUrl: riverProfile,
   },
   {
     name: '제프리',
