@@ -1,0 +1,41 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - application-common.yml
+      - optional:file:estime-api/.env.dev[.properties]
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  flyway:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /docs
+
+logging:
+  file:
+    name: /app/logs/estime-api.log
+  level:
+    root: INFO
+    com.estime: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+
+management:
+  metrics:
+    export:
+      cloudwatch:
+        enabled: true
+        namespace: "EC2/estime-api/dev"
+        region: ap-northeast-2

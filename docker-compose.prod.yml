@@ -1,0 +1,14 @@
+services:
+  api:
+    container_name: estime-api
+    depends_on:
+      - mysql
+    image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
+    env_file:
+      - ./estime-api/.env.prod
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    volumes:
+      - /app/logs:/app/logs

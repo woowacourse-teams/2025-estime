@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: common
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+server:
+  forward-headers-strategy: framework
+
+discord:
+  bot:
+    token: ${DISCORD_BOT_TOKEN}
+
+slack:
+  bot:
+    token: ${SLACK_BOT_TOKEN}

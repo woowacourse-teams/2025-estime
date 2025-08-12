@@ -1,0 +1,30 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+    import:
+      - application-common.yml
+      - optional:file:estime-api/.env.local[.properties]
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  flyway:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /docs
+
+logging:
+  level:
+    root: INFO
+    com.estime: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"

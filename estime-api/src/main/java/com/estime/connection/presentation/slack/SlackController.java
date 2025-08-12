@@ -1,0 +1,24 @@
+package com.estime.connection.presentation.slack;
+
+import com.estime.connection.application.slack.service.SlackService;
+import com.estime.connection.presentation.slack.dto.SlackSlashCommandRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/slack")
+@RequiredArgsConstructor
+public class SlackController {
+
+    private final SlackService slackService;
+
+    @PostMapping("/command")
+    public ResponseEntity<Void> handleSlashCommand(@ModelAttribute final SlackSlashCommandRequest request) {
+        slackService.handleSlashCommand(request.toInput());
+        return ResponseEntity.ok().build();
+    }
+}
