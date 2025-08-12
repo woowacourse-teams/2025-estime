@@ -5,60 +5,31 @@ import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
-import { useCallback, useState } from 'react';
 import TableTooltip from '../TableTooltip';
-import { useHoverTooltip } from '@/hooks/useHoverTooltip';
+import useHeatMapInteraction from '@/hooks/useHeatMapInteraction';
 
 interface HeatmapProps {
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
-  isMobile?: boolean;
+  interactionMode: 'desktop' | 'mobile';
 }
-export interface TooltipInfo {
-  date: string;
-  timeText: string;
-  participantList: string[];
-}
+
 const Heatmap = ({
   dateTimeSlots,
   availableDates,
   roomStatistics,
-  isMobile = true,
+  interactionMode = 'desktop',
 }: HeatmapProps) => {
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const {
+    tooltipInfo,
+    position,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleMobileClick,
+    isClicked,
+  } = useHeatMapInteraction(interactionMode);
 
-  const { position, onEnter, onLeave } = useHoverTooltip(isMobile);
-
-  const handleMouseEnter = (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
-    if (isMobile) return;
-    setTooltipInfo(tooltipInfo);
-    onEnter(event);
-  };
-
-  const handleMouseLeave = () => {
-    if (isMobile) return;
-    setTooltipInfo(null);
-    onLeave();
-  };
-
-  // 모바일 클릭 핸들러
-  const handleMobileClick = useCallback(
-    (tooltipInfo: TooltipInfo) => {
-      if (!isMobile) return;
-      setTooltipInfo(tooltipInfo);
-    },
-    [isMobile]
-  );
-
-  const isClicked = (date: string, timeText: string) => {
-    return (
-      isMobile &&
-      tooltipInfo?.date === date &&
-      tooltipInfo?.timeText === timeText &&
-      !!tooltipInfo.participantList.length
-    );
-  };
   return (
     <S.HeatMapContent>
       <S.TimeSlotColumn>
@@ -91,7 +62,7 @@ const Heatmap = ({
           ))}
         </Wrapper>
       ))}
-      {!isMobile && !!tooltipInfo?.participantList?.length && (
+      {interactionMode === 'desktop' && !!tooltipInfo?.participantList?.length && (
         <TableTooltip
           position={position}
           positioning="mouse-follow"

@@ -133,6 +133,7 @@ const CheckEventPage = () => {
                     dateTimeSlots={roomInfo.availableTimeSlots}
                     availableDates={roomInfo.availableDateSlots}
                     roomStatistics={roomStatistics}
+                    interactionMode="desktop"
                   />
                 </Flex>
               </S.TimeTableContainer>

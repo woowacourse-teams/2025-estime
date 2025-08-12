@@ -2,7 +2,7 @@ import { getHeatMapCellBackgroundColor } from '@/utils/getBackgroundColor';
 import { useTheme } from '@emotion/react';
 import * as S from './HeatMapDataCell.styled';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
-import type { TooltipInfo } from '..';
+import type { TooltipInfo } from '@/hooks/useHeatMapInteraction';
 import TableTooltip from '@/components/TableTooltip';
 
 interface HeatMapDataCellProps {
@@ -11,7 +11,7 @@ interface HeatMapDataCellProps {
   roomStatistics: Map<string, DateCellInfo>;
   onEnter: (tooltipInfo: TooltipInfo, event: React.PointerEvent) => void;
   onLeave: () => void;
-  onMobileClick: (tooltipInfo: TooltipInfo, event: React.PointerEvent) => void;
+  onMobileClick: (tooltipInfo: TooltipInfo) => void;
   isClicked: boolean;
 }
 
@@ -42,7 +42,7 @@ const HeatMapDataCell = ({
       backgroundColor={backgroundColor}
       onPointerEnter={(e: React.PointerEvent<Element>) => onEnter(tooltipInfo, e)}
       onPointerLeave={onLeave}
-      onPointerDown={(e: React.PointerEvent) => onMobileClick(tooltipInfo, e)}
+      onPointerDown={() => onMobileClick(tooltipInfo)}
     >
       {isClicked && (
         <TableTooltip

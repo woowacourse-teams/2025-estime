@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
+import { InteractionMode } from './useHeatMapInteraction';
 
 // 연속 입력(pointermove)이 초당 수백 번 들어와도, 매 이벤트마다 setState로 렌더를 유발하지 않도록,
 // 최신 좌표는 ref에만 저장하고(requestAnimationFrame 직전까지 누적),
@@ -11,7 +12,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 // 3. 이 이벤트를 전역 이벤트 리스너에 걸어줍니다.
 // 4. 리턴으로 사용 끝난 훅은 정리해줍니다.
 
-export function useHoverTooltip(isMobile: boolean = false) {
+export function useHoverTooltip() {
   // open이 없으면
   // 이 이벤트의 발생을 마우수 onLeave할때, 막을수 없어요.
   // 이 훅을 사용하는 컴포넌트에서 open을 관리해줘야 합니다.
@@ -53,7 +54,7 @@ export function useHoverTooltip(isMobile: boolean = false) {
       }
       rafId = null;
     };
-  }, [open, isMobile]);
+  }, [open]);
 
   // 이렇게 해주지 않으면...
   // 초기 위치가 0,0으로 잡혀서
