@@ -2,7 +2,8 @@ services:
   api:
     container_name: estime-api
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
     env_file:
       - ./estime-api/.env.dev
