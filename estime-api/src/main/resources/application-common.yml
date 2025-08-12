@@ -7,10 +7,6 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
 
-springdoc:
-  swagger-ui:
-    path: /docs
-
 server:
   forward-headers-strategy: framework
 

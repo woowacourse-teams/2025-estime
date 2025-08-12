@@ -11,6 +11,9 @@ spring:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+  flyway:
+    enabled: true
+
 logging:
   file:
     name: /app/logs/estime-api.log
