@@ -5,8 +5,11 @@ import Text from '@/components/Text';
 import Wrapper from '@/components/Layout/Wrapper';
 import { ButtonWrapper, LogoWrapper } from '../styles/MobileCreateEventPage.styled';
 import Flex from '@/components/Layout/Flex';
+import { useTheme } from '@emotion/react';
 
 const MobileCreatePage = () => {
+  const theme = useTheme();
+
   return (
     <Wrapper
       paddingTop="var(--padding-11)"
@@ -14,9 +17,9 @@ const MobileCreatePage = () => {
       paddingRight="var(--padding-7)"
     >
       <Flex direction="column" align="center" justify="space-between" gap="var(--gap-11)">
-        <IEstime />
+        <IEstime color={theme.colors.primary} />
         <LogoWrapper>
-          <Logo />
+          <Logo color={theme.colors.primary} />
         </LogoWrapper>
         <ButtonWrapper>
           <Button color="primary" selected={true}>
