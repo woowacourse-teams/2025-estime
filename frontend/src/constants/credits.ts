@@ -6,12 +6,13 @@ import flintProfile from '@/assets/images/profile/flint_profile.png';
 import dbProfile from '@/assets/images/profile/db_profile.png';
 import jeffProfile from '@/assets/images/profile/jeff_profile.png';
 import riverProfile from '@/assets/images/profile/river_profile.png';
+import happiProfile from '@/assets/images/profile/happi_profile.png';
 export const credits = [
   {
     name: '해삐',
     role: 'Frontend Developer',
     github: 'https://github.com/thgml05',
-    imageUrl: dummyImage,
+    imageUrl: happiProfile,
   },
   {
     name: '메이토',
