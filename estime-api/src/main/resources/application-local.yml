@@ -28,6 +28,3 @@ logging:
     com.estime: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
-  # TODO: 디버깅용, 삭제예정
-  cloudwatch:
-    url: ${CLOUDWATCH_URL}
