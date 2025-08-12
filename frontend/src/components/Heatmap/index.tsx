@@ -13,7 +13,7 @@ interface HeatmapProps {
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
-  isMobile: boolean;
+  isMobile?: boolean;
 }
 export interface TooltipInfo {
   date: string;
