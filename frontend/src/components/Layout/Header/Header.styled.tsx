@@ -4,6 +4,7 @@ export const Container = styled.div`
   width: 100%;
   height: 5rem;
   background-color: ${({ theme }) => theme.colors.background};
+  padding: 0 var(--padding-7);
 `;
 
 export const Content = styled.div`
