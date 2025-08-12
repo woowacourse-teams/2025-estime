@@ -10,7 +10,7 @@ export const useMobile = () => useContext(MobileContext);
 export const useMobileContext = () => {
   const context = useContext(MobileContext)!;
 
-  if (!context) throw new Error('useMobileContext must be used within a ToastProvider');
+  if (!context) throw new Error('useMobileContext must be used within a MobileProvider');
 
   return context;
 };
