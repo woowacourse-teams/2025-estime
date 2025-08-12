@@ -36,17 +36,12 @@ public class ControllerLoggingAspect {
         final String uri = request != null ? request.getRequestURI() : "N/A";
 
         final long startTime = System.currentTimeMillis();
-
         logRequest(className, methodName, httpMethod, uri, args);
 
-        try {
-            final Object result = joinPoint.proceed();
-            logResponse(className, methodName, httpMethod, uri, result, startTime);
-            return result;
-        } catch (final Throwable ex) {
-            logError(className, methodName, httpMethod, uri, ex, startTime);
-            throw ex;
-        }
+        final Object result = joinPoint.proceed();
+        logResponse(className, methodName, httpMethod, uri, result, startTime);
+
+        return result;
     }
 
     private void logRequest(
@@ -66,16 +61,6 @@ public class ControllerLoggingAspect {
 
         log.info("[RES] layer=controller | method={}.{} | httpMethod={} | uri={} | duration={}ms | result={}",
                 className, methodName, httpMethod, uri, duration, resultStr);
-    }
-
-    private void logError(
-            final String className, final String methodName,
-            final String httpMethod, final String uri, final Throwable ex, final long startTime
-    ) {
-        final long duration = System.currentTimeMillis() - startTime;
-
-        log.error("[ERR] layer=controller | method={}.{} | httpMethod={} | uri={} | duration={}ms | error={}",
-                className, methodName, httpMethod, uri, duration, ex.toString(), ex);
     }
 
     private HttpServletRequest getCurrentHttpRequest() {

@@ -28,17 +28,12 @@ public class ServiceLoggingAspect {
         final Object[] args = joinPoint.getArgs();
 
         final long startTime = System.currentTimeMillis();
-
         logRequest(className, methodName, args);
 
-        try {
-            final Object result = joinPoint.proceed();
-            logResponse(className, methodName, result, startTime);
-            return result;
-        } catch (final Throwable ex) {
-            logError(className, methodName, ex, startTime);
-            throw ex;
-        }
+        final Object result = joinPoint.proceed();
+        logResponse(className, methodName, result, startTime);
+
+        return result;
     }
 
     private void logRequest(final String className, final String methodName, final Object[] args) {
@@ -53,13 +48,6 @@ public class ServiceLoggingAspect {
 
         log.info("[RES] layer=service | method={}.{} | duration={}ms | result={}", className, methodName, duration,
                 resultStr);
-    }
-
-    private void logError(final String className, final String methodName, final Throwable ex, final long startTime) {
-        final long duration = System.currentTimeMillis() - startTime;
-
-        log.error("[ERR] layer=service | method={}.{} | duration={}ms | error={}", className, methodName, duration,
-                ex.toString(), ex);
     }
 
     private String formatResult(final Object result) {
