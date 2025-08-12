@@ -11,7 +11,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 // 3. 이 이벤트를 전역 이벤트 리스너에 걸어줍니다.
 // 4. 리턴으로 사용 끝난 훅은 정리해줍니다.
 
-export function useHoverTooltip() {
+export function useHoverTooltip(isMobile: boolean = false) {
   // open이 없으면
   // 이 이벤트의 발생을 마우수 onLeave할때, 막을수 없어요.
   // 이 훅을 사용하는 컴포넌트에서 open을 관리해줘야 합니다.
@@ -53,7 +53,7 @@ export function useHoverTooltip() {
       }
       rafId = null;
     };
-  }, [open]);
+  }, [open, isMobile]);
 
   // 이렇게 해주지 않으면...
   // 초기 위치가 0,0으로 잡혀서
@@ -77,5 +77,10 @@ export function useHoverTooltip() {
     setOpen(false);
   }, []);
 
-  return { open, position, onEnter, onLeave };
+  return {
+    open,
+    position,
+    onEnter,
+    onLeave,
+  };
 }
