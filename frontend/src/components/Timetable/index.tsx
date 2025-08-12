@@ -14,14 +14,17 @@ interface TimetableProps {
 }
 
 const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetableProps) => {
-  const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
-    selectedTimes: selectedTimes.value,
-    setSelectedTimes: selectedTimes.set,
-    time: '',
-  });
+  const { containerRef, onPointerDown, onPointerMove, onPointerUp, onPointerCancel } =
+    useTimeSelection(selectedTimes);
 
   return (
-    <S.TimetableContent onMouseLeave={onMouseLeave}>
+    <S.TimetableContent
+      ref={containerRef}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+    >
       <S.TimeSlotColumn>
         {dateTimeSlots.map((dateTimeSlot) => (
           <S.GridContainer key={dateTimeSlot}>
@@ -42,8 +45,8 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
             <TimeTableCell
               key={`${date} ${dateTimeSlot}`}
               date={date}
+              data-item={`${date}T${dateTimeSlot}`}
               timeText={dateTimeSlot}
-              handlers={{ onMouseDown, onMouseUp, onMouseEnter }}
               selectedTimes={selectedTimes}
             />
           ))}

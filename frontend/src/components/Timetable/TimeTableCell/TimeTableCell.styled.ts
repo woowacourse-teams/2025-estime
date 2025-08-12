@@ -13,6 +13,9 @@ export const HeaderCell = styled.div<{
   height: 1.5rem;
   width: 100%;
   user-select: none;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   &:hover {
     cursor: pointer;
   }

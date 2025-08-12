@@ -5,6 +5,9 @@ export const TimetableContent = styled.div`
   flex-direction: row;
   width: 100%;
   user-select: none;
+  touch-action: none; /* 터치 스크롤/줌 방지로 드래그 이벤트 우선시 */
+  -webkit-touch-callout: none; /* iOS 길게 눌렀을 때 메뉴 방지 */
+  -webkit-user-select: none; /* iOS 텍스트 선택 방지 */
 `;
 
 export const TimeSlotColumn = styled.div`

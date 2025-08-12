@@ -6,15 +6,16 @@ import { useTheme } from '@emotion/react';
 interface TimeTableCellProps {
   date: string;
   timeText: string;
-  handlers: {
-    onMouseDown: (time: string) => void;
-    onMouseUp: () => void;
-    onMouseEnter: (time: string) => void;
-  };
+  'data-item': string;
   selectedTimes: Field<Set<string>>;
 }
-const TimeTableCell = ({ date, timeText, handlers, selectedTimes }: TimeTableCellProps) => {
-  const { onMouseDown, onMouseUp, onMouseEnter } = handlers;
+
+const TimeTableCell = ({
+  date,
+  timeText,
+  'data-item': dataItem,
+  selectedTimes,
+}: TimeTableCellProps) => {
   const theme = useTheme();
 
   const backgroundColor = getHeaderCellBackgroundColor({
@@ -23,15 +24,8 @@ const TimeTableCell = ({ date, timeText, handlers, selectedTimes }: TimeTableCel
     timeText,
     theme,
   });
-  return (
-    <S.HeaderCell
-      key={`${date} ${timeText}`}
-      onMouseDown={() => onMouseDown(`${date}T${timeText}`)}
-      onMouseUp={onMouseUp}
-      onMouseMove={() => onMouseEnter(`${date}T${timeText}`)}
-      backgroundColor={backgroundColor}
-    ></S.HeaderCell>
-  );
+
+  return <S.HeaderCell data-item={dataItem} backgroundColor={backgroundColor} />;
 };
 
 export default TimeTableCell;
