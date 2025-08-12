@@ -1,6 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { InteractionMode } from './useHeatMapInteraction';
 
 // 연속 입력(pointermove)이 초당 수백 번 들어와도, 매 이벤트마다 setState로 렌더를 유발하지 않도록,
 // 최신 좌표는 ref에만 저장하고(requestAnimationFrame 직전까지 누적),
