@@ -19,7 +19,9 @@ const Footer = () => {
             </Text>
             <S.Dot>·</S.Dot>
             <Text variant="h4">
-              <S.Anchor href="mailto:estime.team@gmail.com">문제가 생겼나요?</S.Anchor>
+              <S.Anchor href={process.env.ISSUE_URL} target="_blank" rel="noopener noreferrer">
+                문제가 생겼나요?
+              </S.Anchor>
             </Text>
           </S.Links>
 

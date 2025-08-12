@@ -1,4 +1,3 @@
-import dummyImage from '@/assets/images/dummy.jpg';
 import marvinProfile from '@/assets/images/profile/marvin_profile.png';
 import kangSanProfile from '@/assets/images/profile/kang_san_profile.png';
 import hoyyProfile from '@/assets/images/profile/hoyy_profile.png';
