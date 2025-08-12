@@ -1,25 +1,22 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+    <!-- local 환경-->
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+        </root>
+    </springProfile>
+
     <!-- dev 환경 -->
     <springProfile name="dev">
         <springProperty name="DISCORD_LOG_WEBHOOK_URL" source="logging.discord.webhook-url"/>
-        <springProperty name="CLOUDWATCH_URL" source="logging.cloudwatch.url" />
+        <springProperty name="CLOUDWATCH_URL" source="management.metrics.export.cloudwatch.url" />
 
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>
-                    ### [Summary]%n%mdc{message}%n
-                    ### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n
-                    ### [Level]%n%-5level%n
-                    ### [Trace Id]%n%mdc{traceId}%n
-                    ### [User Agent]%n%mdc{userAgent}%n
-                    ### [Client IP]%n%mdc{clientIp}%n
-                    ### [CloudWatch]%n ${CLOUDWATCH_URL}%n
-                    ### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod}  %mdc{requestUri}%mdc{query}%n
-                    ### [Details]%n```%mdc{details}```
-                </pattern>
+                <pattern>### [Summary]%n%mdc{message}%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod}  %mdc{requestUri}%mdc{query}%n### [Details]%n```%mdc{details}```</pattern>
             </layout>
             <username>🚨DEV ERROR LOGS 🚨</username>
             <tts>false</tts>
@@ -39,23 +36,14 @@
     </springProfile>
 
     <!-- prod 환경 -->
-    <springProfile name="local">
+    <springProfile name="prod">
         <springProperty name="DISCORD_LOG_WEBHOOK_URL" source="logging.discord.webhook-url"/>
-        <springProperty name="CLOUDWATCH_URL" source="logging.cloudwatch.url" />
+        <springProperty name="CLOUDWATCH_URL" source="management.metrics.export.cloudwatch.url" />
 
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>
-                    ### [Summary]%n%mdc{message}%n
-                    ### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n
-                    ### [Level]%n%-5level%n
-                    ### [Trace Id]%n%mdc{traceId}%n
-                    ### [Client IP]%n%mdc{clientIp}%n
-                    ### [CloudWatch]%n ${CLOUDWATCH_URL}%n
-                    ### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod}  %mdc{requestUri}%mdc{query}%n
-                    ### [Details]%n```%mdc{details}```
-                </pattern>
+                <pattern>### [Summary]%n%mdc{message}%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod}  %mdc{requestUri}%mdc{query}%n### [Details]%n```%mdc{details}```</pattern>
             </layout>
             <username>🚨PROD ERROR LOGS 🚨</username>
             <tts>false</tts>
