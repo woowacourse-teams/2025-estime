@@ -1,22 +1,61 @@
 import { createPortal } from 'react-dom';
 import * as S from './TableTooltip.styled';
 import Text from '@/components/Text';
+import Flex from '../Layout/Flex';
+import IPerson from '@/icons/IPerson';
 
 interface TableTooltipProps {
   position: { x: number; y: number };
-  children: React.ReactNode;
+  positioning?: 'mouse-follow' | 'relative-to-element';
+  participantList: string[];
+  date: string;
+  timeText: string;
 }
 
-function TableTooltip({ position, children }: TableTooltipProps) {
-  return createPortal(
-    <S.Container x={position.x} y={position.y}>
-      <Text variant="body" color="text">
-        {children}
-      </Text>
-    </S.Container>,
-    // 모달과 동일하게, position 안꼬일려면 이게 좋아용.
-    document.body
+function TableTooltip({
+  position,
+  positioning = 'mouse-follow',
+  participantList,
+  date,
+  timeText,
+}: TableTooltipProps) {
+  const currentTime = new Date(`${date}T${timeText}`);
+  const nextTime = new Date(`${date}T${timeText}`);
+  nextTime.setMinutes(nextTime.getMinutes() + 30);
+
+  const tooltipContent = (
+    <S.Container x={position.x} y={position.y} positioning={positioning}>
+      <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
+        <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
+          <Text variant="caption" color="text">
+            {currentTime.toLocaleString()}
+          </Text>
+          <Text variant="caption" color="text">
+            ~
+          </Text>
+          <Text variant="caption" color="text">
+            {nextTime.toLocaleString()}
+          </Text>
+        </Flex>
+        <S.ParticipantGrid participants={participantList.length}>
+          {participantList.map((participant) => (
+            <S.Person key={participant}>
+              <IPerson />
+              <Text variant="caption" color="text">
+                {participant}
+              </Text>
+            </S.Person>
+          ))}
+        </S.ParticipantGrid>
+      </Flex>
+    </S.Container>
   );
+
+  if (positioning === 'relative-to-element') {
+    return tooltipContent;
+  }
+
+  return createPortal(tooltipContent, document.body);
 }
 
 export default TableTooltip;
