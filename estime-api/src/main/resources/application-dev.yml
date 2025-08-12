@@ -35,3 +35,4 @@ management:
         enabled: true
         namespace: "EC2/estime-api/dev"
         region: ap-northeast-2
+        url: ${CLOUDWATCH_URL}
