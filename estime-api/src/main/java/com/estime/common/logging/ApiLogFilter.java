@@ -32,6 +32,13 @@ public class ApiLogFilter implements Filter {
                 .orElseGet(this::generateTraceId);
 
         MDC.put(TRACE_ID_KEY, traceId);
+        MDC.put("host", request.getHeader("host"));
+        MDC.put("httpMethod", request.getMethod());
+        MDC.put("requestUri", request.getRequestURI());
+        MDC.put("queryString", request.getQueryString());
+        MDC.put("clientIp", request.getRemoteAddr());
+        MDC.put("userAgent", request.getHeader("User-Agent"));
+
         response.setHeader(REQUEST_ID_HEADER, traceId);
 
         final long startTime = System.currentTimeMillis();
