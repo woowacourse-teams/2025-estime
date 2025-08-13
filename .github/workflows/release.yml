@@ -3,9 +3,15 @@ name: Release (prod push)
 on:
   push:
     branches: [fe/prod]
+    paths:
+      - "frontend/**"
 
 permissions:
   contents: write
+
+defaults:
+  run:
+    working-directory: ./frontend
 
 jobs:
   tag_and_release:

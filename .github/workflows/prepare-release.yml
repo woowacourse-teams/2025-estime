@@ -4,9 +4,15 @@ on:
   pull_request:
     branches: [fe/prod]
     types: [opened, synchronize, reopened]
+    paths:
+      - "frontend/**"
 
 permissions:
   contents: write # PR 브랜치에 커밋/푸시하려면 필요
+
+defaults:
+  run:
+    working-directory: ./frontend
 
 jobs:
   prepare:
