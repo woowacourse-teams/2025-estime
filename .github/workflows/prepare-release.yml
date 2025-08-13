@@ -3,7 +3,6 @@ name: prepare-release
 on:
   pull_request:
     branches: [fe/prod]
-    types: [opened, synchronize, reopened]
     paths:
       - "frontend/**"
 
