@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public CustomApiResponse<Void> handleException(Exception e) {
         MDC.put("message", e.getMessage());
-        log.error(e.getMessage(), e);
+        log.error(e.getMessage());
         return CustomApiResponse.internalServerError("서버에서 예기치 못한 에러가 발생했습니다.");
     }
 }
