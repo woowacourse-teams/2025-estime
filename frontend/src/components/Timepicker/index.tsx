@@ -40,7 +40,7 @@ const TimePicker = ({
                 role="option"
                 onClick={(e) => selectHour(time.replace(/\s/g, ''), e)}
               >
-                <Text variant="body"> {time}</Text>
+                <Text variant="h4"> {time}</Text>
               </S.ListItem>
             ))}
           </S.ListItemWrapper>

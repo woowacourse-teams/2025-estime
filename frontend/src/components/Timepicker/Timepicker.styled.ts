@@ -64,8 +64,8 @@ export const ListItemWrapper = styled.div`
 export const ListItem = styled.li`
   cursor: pointer;
   display: flex;
-  justify-content: center;
-  padding: var(--padding-4);
+  justify-content: ${({ theme }) => (theme.isMobile ? 'flex-start' : 'center')};
+  padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-6)' : 'var(--padding-4)')};
   &:hover {
     background-color: ${({ theme }) => theme.colors.plum30};
   }

@@ -39,7 +39,7 @@ export const InfoWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--gap-5);
+  gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-7)' : 'var(--gap-5)')};
 `;
 
 export const InputWrapper = styled.div`
