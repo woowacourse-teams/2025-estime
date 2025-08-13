@@ -48,6 +48,8 @@ export const FormatManager = {
     nextTime.setMinutes(nextTime.getMinutes() + 30);
 
     const timeFormat = {
+      month: 'short',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
