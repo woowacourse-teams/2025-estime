@@ -1,12 +1,12 @@
 import { LIGHT_THEME } from '@/styles/theme';
 import { IconType } from '@/types/iconType';
 
-const IEstime = ({ color = LIGHT_THEME.colors.primary, ...props }: IconType) => {
+const IEstimeLogo = ({ color = LIGHT_THEME.colors.primary, ...props }: IconType) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="305"
-      height="58"
+      width="100%"
+      height="100%"
       viewBox="0 0 305 58"
       fill={color}
       {...props}
@@ -16,4 +16,4 @@ const IEstime = ({ color = LIGHT_THEME.colors.primary, ...props }: IconType) => 
   );
 };
 
-export default IEstime;
+export default IEstimeLogo;
