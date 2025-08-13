@@ -74,5 +74,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: 버전 변경 (v${{ steps.bump.outputs.version }}")
+          git commit -m "chore: 버전 변경 (v${{ steps.bump.outputs.version }})"
           git push origin HEAD:${{ github.head_ref }}
