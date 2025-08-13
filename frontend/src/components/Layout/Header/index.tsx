@@ -3,6 +3,7 @@ import * as S from './Header.styled';
 import ThemeButton from '@/components/ThemeButton';
 import PlatformLogo from '@/components/PlatformLogo';
 import { useExtractQueryParams } from '@/hooks/common/useExtractQueryParams';
+import IEstimeLogo from '@/icons/IEstimeLogo';
 
 const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   const platform = useExtractQueryParams('platform') as 'DISCORD' | 'SLACK';
@@ -11,7 +12,9 @@ const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
       <S.Content>
         <S.Wrapper>
           <Text variant="h2" color="primary">
-            아인슈타임
+            <S.LogoWrapper>
+              <IEstimeLogo />
+            </S.LogoWrapper>
           </Text>
         </S.Wrapper>
         <S.Wrapper>

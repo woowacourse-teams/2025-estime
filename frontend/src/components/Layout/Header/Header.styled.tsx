@@ -21,3 +21,8 @@ export const Wrapper = styled.div`
   align-items: center;
   gap: var(--gap-4);
 `;
+
+export const LogoWrapper = styled.div`
+  width: 6.25rem;
+  height: 2rem;
+`;
