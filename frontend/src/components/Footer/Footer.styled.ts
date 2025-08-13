@@ -29,7 +29,7 @@ export const Content = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-4);
+    gap: var(--gap-8);
   }
 `;
 

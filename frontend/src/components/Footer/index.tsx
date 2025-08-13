@@ -25,7 +25,7 @@ const Footer = () => {
             </Text>
           </S.Links>
 
-          <S.Meta onClick={() => window.open(`${window.location.origin}/credits`, '_blank')}>
+          <S.Meta onClick={() => window.open(`${window.location.origin}/credits`, '_self')}>
             <Text color="primary" variant="h4">
               아인슈타임을 만든 사람들
             </Text>
