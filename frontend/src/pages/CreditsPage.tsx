@@ -20,7 +20,7 @@ const CreditsPage = () => {
           아인슈타임을 만든 사람들
         </Text>
         <Button size="small" color="primary" onClick={handleClick}>
-          돌아가기
+          <Text variant="button">돌아가기</Text>
         </Button>
       </Flex>
       <S.Container>

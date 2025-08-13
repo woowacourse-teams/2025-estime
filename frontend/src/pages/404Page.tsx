@@ -10,7 +10,7 @@ const Error404Page = () => {
         <Text>존재하지 않는 방이에요🥲</Text>
         <Text>방 URL을 다시 확인하시고, 다시 시도해주세요!</Text>
         <Button onClick={() => (window.location.href = '/')} color="plum50" size="small">
-          홈으로 돌아가기
+          <Text variant="button">홈으로 돌아가기</Text>
         </Button>
       </Flex>
     </S.Container>
