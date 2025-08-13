@@ -2,6 +2,7 @@ package com.estime.room.domain;
 
 import com.estime.common.BaseEntity;
 import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.DeadlineOverdueException;
 import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.common.util.Validator;
 import com.estime.room.domain.slot.vo.DateSlot;
@@ -98,6 +99,12 @@ public class Room extends BaseEntity {
     private static void validateDeadline(final DateTimeSlot deadline) {
         if (deadline.isBefore(LocalDateTime.now())) {
             throw new PastNotAllowedException(DomainTerm.DEADLINE, deadline);
+        }
+    }
+
+    public void checkDeadlineOverdue(final LocalDateTime currentDateTime) {
+        if (deadline.isBefore(currentDateTime)) {
+            throw new DeadlineOverdueException(DomainTerm.DEADLINE, session, deadline, currentDateTime);
         }
     }
 }

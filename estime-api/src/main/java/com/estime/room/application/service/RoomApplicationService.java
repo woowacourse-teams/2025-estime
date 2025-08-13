@@ -19,6 +19,7 @@ import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -88,8 +89,11 @@ public class RoomApplicationService {
 
     @Transactional
     public Votes updateParticipantVotes(final VotesUpdateInput input) {
-        final Long roomId = getRoomIdBySession(input.session());
+        final Room room = roomRepository.findBySession(input.session())
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
+        final Long roomId = room.getId();
         final Long participantId = getParticipantIdByRoomIdAndName(roomId, input.participantName());
+        room.checkDeadlineOverdue(LocalDateTime.now());
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
@@ -102,9 +106,12 @@ public class RoomApplicationService {
 
     @Transactional
     public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
-        final Long roomId = getRoomIdBySession(input.session());
-        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
+        final Room room = roomRepository.findBySession(input.session())
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
+        final Long roomId = room.getId();
+        room.checkDeadlineOverdue(LocalDateTime.now());
 
+        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
         if (!isDuplicateName) {
             participantRepository.save(input.toEntity(roomId));
         }
