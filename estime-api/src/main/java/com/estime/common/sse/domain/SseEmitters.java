@@ -1,6 +1,7 @@
 package com.estime.common.sse.domain;
 
 import com.github.f4b6a3.tsid.Tsid;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -10,26 +11,27 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Component
 public class SseEmitters {
 
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> idToEmitter = new ConcurrentHashMap<>();
 
     public SseEmitter save(final String emitterId, final SseEmitter sseEmitter) {
-        emitters.put(emitterId, sseEmitter);
+        idToEmitter.put(emitterId, sseEmitter);
         return sseEmitter;
     }
 
-    public Map<String, SseEmitter> findAllByRoomSession(final Tsid roomSession) {
-        return emitters.entrySet().stream()
+    public List<SseEmitter> findAllByRoomSession(final Tsid roomSession) {
+        return idToEmitter.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(roomSession.toString()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     public void deleteById(final String emitterId) {
-        emitters.remove(emitterId);
+        idToEmitter.remove(emitterId);
     }
 
     public void deleteAllByRoomSession(final Tsid roomSession) {
-        emitters.keySet().stream()
+        idToEmitter.keySet().stream()
                 .filter(key -> key.startsWith(roomSession.toString()))
-                .forEach(emitters::remove);
+                .forEach(idToEmitter::remove);
     }
 }
