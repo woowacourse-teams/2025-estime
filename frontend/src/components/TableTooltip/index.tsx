@@ -3,6 +3,7 @@ import * as S from './TableTooltip.styled';
 import Text from '@/components/Text';
 import Flex from '../Layout/Flex';
 import IPerson from '@/icons/IPerson';
+import { FormatManager } from '@/utils/common/FormatManager';
 
 interface TableTooltipProps {
   position: { x: number; y: number };
@@ -13,33 +14,20 @@ interface TableTooltipProps {
 }
 
 function TableTooltip({ position, participantList, date, timeText }: TableTooltipProps) {
-  const currentTime = new Date(`${date}T${timeText}`);
-  const nextTime = new Date(`${date}T${timeText}`);
-  nextTime.setMinutes(nextTime.getMinutes() + 30);
-
-  const timeFormat = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  } as const;
-  const currentTimeString = currentTime.toLocaleString('ko-KR', timeFormat);
-  const nextTimeString = nextTime.toLocaleString('ko-KR', timeFormat);
+  const { currentTime, nextTime } = FormatManager.formatAvailableTimeRange(date, timeText);
 
   const tooltipContent = (
     <S.Container x={position.x} y={position.y}>
       <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
         <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
           <Text variant="caption" color="text">
-            {currentTimeString}
+            {currentTime}
           </Text>
           <Text variant="caption" color="text">
             ~
           </Text>
           <Text variant="caption" color="text">
-            {nextTimeString}
+            {nextTime}
           </Text>
         </Flex>
         <S.ParticipantGrid participants={participantList.length}>
