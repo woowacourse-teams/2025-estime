@@ -82,7 +82,9 @@ export function useHoverTooltip() {
     },
     [initializePosition]
   );
-
+  const onLeave = useCallback(() => {
+    setOpen(false);
+  }, []);
   const onMobileClick = useCallback((element: HTMLElement) => {
     const rect = element.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -97,6 +99,7 @@ export function useHoverTooltip() {
   return {
     open,
     position,
+    onLeave,
     onEnter,
     onMobileClick,
   };

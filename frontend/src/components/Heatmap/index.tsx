@@ -15,11 +15,17 @@ interface HeatmapProps {
 }
 
 const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
-  const { tooltipInfo, position, handleMouseEnter, handleMobileClick, isTooltipVisible } =
-    useHeatMapInteraction();
+  const {
+    tooltipInfo,
+    position,
+    handleMouseEnter,
+    handleMobileClick,
+    isTooltipVisible,
+    handlePointerLeave,
+  } = useHeatMapInteraction();
 
   return (
-    <S.HeatMapContent>
+    <S.HeatMapContent onPointerLeave={handlePointerLeave}>
       <S.TimeSlotColumn>
         {dateTimeSlots.map((timeText) => (
           <S.GridContainer key={timeText}>
