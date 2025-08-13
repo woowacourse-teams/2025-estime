@@ -47,7 +47,7 @@ const BasicSettings = ({ title, time, deadline, isValid, shouldShake }: BasicSet
             placeholder="예: 아인슈타임 정기 산악회"
             value={title.value}
             onChange={(e) => title.set(e.target.value)}
-            maxLength={80}
+            maxLength={40}
           />
         </S.InputWrapper>
       </S.InfoWrapper>
