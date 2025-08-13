@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public record SseInitMessage(
         String message,
 
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         LocalDateTime createdAt
 ) {
 
