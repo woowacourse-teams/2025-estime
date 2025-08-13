@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.footer`
-  min-height: 160px;
   width: 100%;
   height: 6rem;
   background-color: ${({ theme }) => theme.colors.background};
