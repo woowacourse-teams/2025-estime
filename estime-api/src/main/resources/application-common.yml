@@ -19,6 +19,4 @@ slack:
     token: ${SLACK_BOT_TOKEN}
 
 logging:
-  discord:
-    webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
   config: classpath:logback.xml
