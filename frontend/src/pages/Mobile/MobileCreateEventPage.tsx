@@ -85,20 +85,15 @@ const MobileCreateEventPage = () => {
           paddingLeft="var(--padding-7)"
           paddingRight="var(--padding-7)"
         >
-          <Flex direction="column" align="center" justify="space-between" gap="var(--gap-11)">
+          <Flex direction="column" align="center" justify="space-between" gap="var(--gap-12)">
             <IEstimeLogo color={theme.colors.primary} />
             <S.LogoWrapper>
               <IEstimeIcon color={theme.colors.primary} />
             </S.LogoWrapper>
             <S.ButtonWrapper>
               <Button color="primary" selected={true} onClick={() => setStep((prev) => prev + 1)}>
-                <Text variant="button" color="background">
+                <Text variant="h4" color="background">
                   방 만들기
-                </Text>
-              </Button>
-              <Button color="primary" selected={true}>
-                <Text variant="button" color="background">
-                  방 참가하기
                 </Text>
               </Button>
             </S.ButtonWrapper>
