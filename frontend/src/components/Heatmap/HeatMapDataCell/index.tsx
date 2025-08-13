@@ -35,7 +35,7 @@ const HeatMapDataCell = ({
     weight,
   });
 
-  const tooltipInfo = { date, timeText, participantList: participantList ?? [] };
+  const tooltipInfo = { date, timeText, participantList: participantList };
 
   return (
     <S.Container
