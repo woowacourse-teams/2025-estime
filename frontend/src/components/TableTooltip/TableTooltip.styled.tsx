@@ -7,42 +7,14 @@ function getGridTemplateColumns(participants: number) {
   return 'repeat(3, minmax(0, 1fr))';
 }
 
-function getPositionStyle(positioning: 'mouse-follow' | 'relative-to-element') {
-  if (positioning === 'mouse-follow') {
-    return {
-      position: 'fixed',
-      transform: 'translate(-50%, -120%)',
-    };
-  } else {
-    return {
-      position: 'absolute',
-      transform: 'translate(-50%, -120%)',
-    };
-  }
-}
-
-function getTop(y: number, positioning: 'mouse-follow' | 'relative-to-element') {
-  return positioning === 'mouse-follow' ? `${y}px` : '-50%';
-}
-
-function getLeft(x: number, positioning: 'mouse-follow' | 'relative-to-element') {
-  return positioning === 'mouse-follow' ? `${x}px` : '50%';
-}
-
 export const Container = styled.div<{
   x: number;
   y: number;
-  positioning: 'mouse-follow' | 'relative-to-element';
 }>`
-  ${({ positioning }) => {
-    const style = getPositionStyle(positioning);
-    return `
-      position: ${style.position};
-      transform: ${style.transform};
-    `;
-  }}
-  top: ${({ y, positioning }) => getTop(y, positioning)};
-  left: ${({ x, positioning }) => getLeft(x, positioning)};
+  position: fixed;
+  transform: translate(-50%, -120%);
+  top: ${({ y }) => y}px;
+  left: ${({ x }) => x}px;
   padding: var(--padding-6) var(--padding-8);
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.gray20};

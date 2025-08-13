@@ -3,16 +3,13 @@ import { useTheme } from '@emotion/react';
 import * as S from './HeatMapDataCell.styled';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import type { TooltipInfo } from '@/hooks/useHeatMapInteraction';
-import TableTooltip from '@/components/TableTooltip';
 
 interface HeatMapDataCellProps {
   date: string;
   timeText: string;
   roomStatistics: Map<string, DateCellInfo>;
   onEnter: (tooltipInfo: TooltipInfo, event: React.PointerEvent) => void;
-  onLeave: () => void;
-  onMobileClick: (tooltipInfo: TooltipInfo) => void;
-  isClicked: boolean;
+  onMobileClick: (element: HTMLElement) => void;
 }
 
 const HeatMapDataCell = ({
@@ -20,9 +17,7 @@ const HeatMapDataCell = ({
   timeText,
   roomStatistics,
   onEnter,
-  onLeave,
   onMobileClick,
-  isClicked,
 }: HeatMapDataCellProps) => {
   const theme = useTheme();
   const cellInfo = roomStatistics.get(`${date}T${timeText}`);
@@ -40,20 +35,12 @@ const HeatMapDataCell = ({
   return (
     <S.Container
       backgroundColor={backgroundColor}
+      data-time-text={`${date}T${timeText}`}
       onPointerEnter={(e: React.PointerEvent<Element>) => onEnter(tooltipInfo, e)}
-      onPointerLeave={onLeave}
-      onPointerDown={() => onMobileClick(tooltipInfo)}
-    >
-      {isClicked && (
-        <TableTooltip
-          position={{ x: 0, y: 0 }}
-          positioning="relative-to-element"
-          participantList={participantList}
-          date={date}
-          timeText={timeText}
-        />
-      )}
-    </S.Container>
+      onPointerDown={(e: React.PointerEvent<Element>) =>
+        onMobileClick(e.target as unknown as HTMLElement)
+      }
+    ></S.Container>
   );
 };
 

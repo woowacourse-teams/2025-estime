@@ -12,13 +12,7 @@ interface TableTooltipProps {
   timeText: string;
 }
 
-function TableTooltip({
-  position,
-  positioning = 'mouse-follow',
-  participantList,
-  date,
-  timeText,
-}: TableTooltipProps) {
+function TableTooltip({ position, participantList, date, timeText }: TableTooltipProps) {
   const currentTime = new Date(`${date}T${timeText}`);
   const nextTime = new Date(`${date}T${timeText}`);
   nextTime.setMinutes(nextTime.getMinutes() + 30);
@@ -35,7 +29,7 @@ function TableTooltip({
   const nextTimeString = nextTime.toLocaleString('ko-KR', timeFormat);
 
   const tooltipContent = (
-    <S.Container x={position.x} y={position.y} positioning={positioning}>
+    <S.Container x={position.x} y={position.y}>
       <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
         <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
           <Text variant="caption" color="text">
@@ -61,10 +55,6 @@ function TableTooltip({
       </Flex>
     </S.Container>
   );
-
-  if (positioning === 'relative-to-element') {
-    return tooltipContent;
-  }
 
   return createPortal(tooltipContent, document.body);
 }

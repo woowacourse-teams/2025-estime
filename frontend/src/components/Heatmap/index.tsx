@@ -12,23 +12,11 @@ interface HeatmapProps {
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
-  interactionMode: 'desktop' | 'mobile';
 }
 
-const Heatmap = ({
-  dateTimeSlots,
-  availableDates,
-  roomStatistics,
-  interactionMode = 'desktop',
-}: HeatmapProps) => {
-  const {
-    tooltipInfo,
-    position,
-    handleMouseEnter,
-    handleMouseLeave,
-    handleMobileClick,
-    isClicked,
-  } = useHeatMapInteraction(interactionMode);
+const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
+  const { tooltipInfo, position, handleMouseEnter, handleMobileClick, isTooltipVisible } =
+    useHeatMapInteraction();
 
   return (
     <S.HeatMapContent>
@@ -55,17 +43,15 @@ const Heatmap = ({
               timeText={timeText}
               roomStatistics={roomStatistics}
               onEnter={handleMouseEnter}
-              onLeave={handleMouseLeave}
               onMobileClick={handleMobileClick}
-              isClicked={isClicked(date, timeText)}
             />
           ))}
         </Wrapper>
       ))}
-      {interactionMode === 'desktop' && !!tooltipInfo?.participantList?.length && (
+
+      {tooltipInfo && isTooltipVisible && (
         <TableTooltip
           position={position}
-          positioning="mouse-follow"
           participantList={tooltipInfo.participantList}
           date={tooltipInfo.date}
           timeText={tooltipInfo.timeText}
