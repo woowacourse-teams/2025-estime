@@ -9,10 +9,15 @@ import { useRef, useState } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
 import MobileBasicSettings from '@/components/Mobile/MobileBasicSettings';
 import MobileCalendarSettings from '@/components/Mobile/MobileCalendarSettings';
+import IEstimeLogo from '@/icons/IEstimeLogo';
+import { useTheme } from '@emotion/react';
+import IEstimeIcon from '@/icons/IEstimeIcon';
+import * as S from '../styles/MobileCreateEventPage.styled';
 
 const MobileCreateEventPage = () => {
   //  Todo: funnel 반영하기 (임의로 step 정보)
   const [step, setStep] = useState(1);
+  const theme = useTheme();
 
   const navigate = useNavigate();
 
@@ -75,22 +80,30 @@ const MobileCreateEventPage = () => {
   return (
     <Wrapper maxWidth={430} padding="var(--padding-6)" borderRadius="var(--radius-4)">
       {step === 1 && (
-        <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
-          <Text variant="h3" color="primary">
-            약속 만들기
-          </Text>
-          <Text variant="h4" color="primary">
-            약속을 만들고, 친구들과 일정을 조율해보세요.
-          </Text>
-          <Button
-            color="primary"
-            selected={true}
-            size="small"
-            onClick={() => setStep((prev) => prev + 1)}
-          >
-            다음
-          </Button>
-        </Flex>
+        <Wrapper
+          paddingTop="var(--padding-11)"
+          paddingLeft="var(--padding-7)"
+          paddingRight="var(--padding-7)"
+        >
+          <Flex direction="column" align="center" justify="space-between" gap="var(--gap-11)">
+            <IEstimeLogo color={theme.colors.primary} />
+            <S.LogoWrapper>
+              <IEstimeIcon color={theme.colors.primary} />
+            </S.LogoWrapper>
+            <S.ButtonWrapper>
+              <Button color="primary" selected={true} onClick={() => setStep((prev) => prev + 1)}>
+                <Text variant="button" color="background">
+                  방 만들기
+                </Text>
+              </Button>
+              <Button color="primary" selected={true}>
+                <Text variant="button" color="background">
+                  방 참가하기
+                </Text>
+              </Button>
+            </S.ButtonWrapper>
+          </Flex>
+        </Wrapper>
       )}
       {step === 2 && (
         <Flex direction="column" justify="space-between" gap="var(--gap-8)">
