@@ -7,12 +7,12 @@ import useCreateRoom from '@/hooks/useCreateRoom';
 import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
 import { useRef, useState } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
-import MobileBasicSettings from '@/components/Mobile/MobileBasicSettings';
-import MobileCalendarSettings from '@/components/Mobile/MobileCalendarSettings';
 import IEstimeLogo from '@/icons/IEstimeLogo';
 import { useTheme } from '@emotion/react';
 import IEstimeIcon from '@/icons/IEstimeIcon';
 import * as S from '../styles/MobileCreateEventPage.styled';
+import CalendarSettings from '@/components/Sections/CalendarSettings';
+import BasicSettings from '@/components/Sections/BasicSettings';
 
 const MobileCreateEventPage = () => {
   //  Todo: funnel 반영하기 (임의로 step 정보)
@@ -102,7 +102,7 @@ const MobileCreateEventPage = () => {
       )}
       {step === 2 && (
         <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-          <MobileCalendarSettings
+          <CalendarSettings
             availableDateSlots={availableDateSlots}
             isValid={!showValidation.current || isCalendarReady}
             shouldShake={shouldShake}
@@ -131,7 +131,7 @@ const MobileCreateEventPage = () => {
 
       {step === 3 && (
         <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-          <MobileBasicSettings
+          <BasicSettings
             title={title}
             time={time}
             deadline={deadline}
