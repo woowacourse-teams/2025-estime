@@ -3,8 +3,7 @@ name: prepare-release
 on:
   pull_request:
     branches: [fe/prod]
-    paths:
-      - "frontend/**"
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write # PR 브랜치에 커밋/푸시하려면 필요

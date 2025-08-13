@@ -3,8 +3,6 @@ name: Release (prod push)
 on:
   push:
     branches: [fe/prod]
-    paths:
-      - "frontend/**"
 
 permissions:
   contents: write
