@@ -3,7 +3,6 @@ package com.estime.common.exception;
 import com.estime.common.CustomApiResponse;
 import com.estime.common.exception.application.ApplicationException;
 import com.estime.common.exception.domain.DomainException;
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,9 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public CustomApiResponse<Void> handleException(Exception e) {
         MDC.put("message", e.getMessage());
-        MDC.put("details", Arrays.toString(e.getStackTrace()));
-        log.error(e.getMessage());
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
         return CustomApiResponse.internalServerError("서버에서 예기치 못한 에러가 발생했습니다.");
     }
 }
