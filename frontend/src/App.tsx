@@ -4,8 +4,8 @@ import { ThemeProvider } from '@emotion/react';
 import { BrowserRouter } from 'react-router';
 import DesktopRoutes from './routes/DesktopRoutes';
 import MobileRoutes from './routes/MobileRoutes';
-import { useMobileContext } from './contexts/MobileContext';
-import MobileProvider from './providers/MobileProvider';
+
+const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(navigator.userAgent);
 
 const App = () => {
   const [isDark, setIsDark] = useState(false);
@@ -13,20 +13,21 @@ const App = () => {
     setIsDark((prev) => !prev);
   };
 
+  const themeWithMobile = {
+    ...(isDark ? DARK_THEME : LIGHT_THEME),
+    isMobile,
+  };
+
   return (
-    <ThemeProvider theme={isDark ? DARK_THEME : LIGHT_THEME}>
-      <MobileProvider>
-        <BrowserRouter>
-          <RoutesWrapper isDark={isDark} toggleTheme={toggleTheme} />
-        </BrowserRouter>
-      </MobileProvider>
+    <ThemeProvider theme={themeWithMobile}>
+      <BrowserRouter>
+        <RoutesWrapper isDark={isDark} toggleTheme={toggleTheme} />
+      </BrowserRouter>
     </ThemeProvider>
   );
 };
 
 const RoutesWrapper = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
-  const { isMobile } = useMobileContext();
-
   return isMobile ? (
     <MobileRoutes isDark={isDark} toggleTheme={toggleTheme} />
   ) : (
