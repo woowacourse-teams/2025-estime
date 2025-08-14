@@ -8,15 +8,15 @@ interface HeatMapDataCellProps {
   date: string;
   timeText: string;
   roomStatistics: Map<string, DateCellInfo>;
-  onEnter: (tooltipInfo: TooltipInfo, event: React.PointerEvent<HTMLDivElement>) => void;
-  onMobileTap: (element: HTMLDivElement) => void;
+  onMouseHover: (tooltipInfo: TooltipInfo, event: React.PointerEvent<HTMLDivElement>) => void;
+  onMobileTap: (tooltipInfo: TooltipInfo, element: HTMLDivElement) => void;
 }
 
 const HeatMapDataCell = ({
   date,
   timeText,
   roomStatistics,
-  onEnter,
+  onMouseHover,
   onMobileTap,
 }: HeatMapDataCellProps) => {
   const theme = useTheme();
@@ -36,9 +36,9 @@ const HeatMapDataCell = ({
     <S.Container
       backgroundColor={backgroundColor}
       data-time-text={`${date}T${timeText}`}
-      onPointerEnter={(e: React.PointerEvent<HTMLDivElement>) => onEnter(tooltipInfo, e)}
+      onMouseOver={(e: React.PointerEvent<HTMLDivElement>) => onMouseHover(tooltipInfo, e)}
       onPointerDown={(e: React.PointerEvent<HTMLDivElement>) =>
-        onMobileTap(e.target as HTMLDivElement)
+        onMobileTap(tooltipInfo, e.target as HTMLDivElement)
       }
     ></S.Container>
   );

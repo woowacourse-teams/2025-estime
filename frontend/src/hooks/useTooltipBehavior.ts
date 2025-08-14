@@ -13,23 +13,27 @@ export default function useTooltipBehavior() {
   const { position, onEnter, onMobileTap, onLeave } = useHoverTooltip();
   const theme = useTheme();
 
-  const handlePointerEnter = useCallback((tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
-    setTooltipInfo(tooltipInfo);
-    onEnter(event);
-  }, []);
+  const handleMouseHover = useCallback(
+    (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
+      setTooltipInfo(tooltipInfo);
+      onEnter(event);
+    },
+    [onEnter]
+  );
 
   const handlePointerLeave = useCallback(() => {
     if (theme.isMobile) return;
     onLeave();
     setTooltipInfo(null);
-  }, [theme.isMobile]);
+  }, [theme.isMobile, onLeave]);
 
   const handleMobileTap = useCallback(
-    (element: HTMLDivElement) => {
+    (tooltipInfo: TooltipInfo, element: HTMLDivElement) => {
       if (!theme.isMobile) return;
+      setTooltipInfo(tooltipInfo);
       onMobileTap(element);
     },
-    [theme.isMobile]
+    [theme.isMobile, onMobileTap]
   );
 
   const isTooltipVisible: boolean = !!tooltipInfo?.participantList.length;
@@ -37,7 +41,7 @@ export default function useTooltipBehavior() {
   return {
     tooltipInfo,
     position,
-    handlePointerEnter,
+    handleMouseHover,
     handlePointerLeave,
     handleMobileTap,
     isTooltipVisible,

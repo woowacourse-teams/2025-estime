@@ -38,24 +38,15 @@ export function useHoverTooltip() {
       });
     };
 
-    const handleClickOutside = (e: PointerEvent) => {
-      // 히트맵 셀이 아닌 곳을 클릭했을 때만 툴팁을 닫습니다
-      const target = e.target as HTMLElement;
-      if (!target.closest('[data-heatmap-cell]')) {
-        setOpen(false);
-      }
-    };
-
     if (open) {
       // 3.
       document.addEventListener('pointermove', handlePointerMove, { passive: true });
-      document.addEventListener('pointerdown', handleClickOutside);
     }
 
     return () => {
       // 4.
       document.removeEventListener('pointermove', handlePointerMove);
-      document.removeEventListener('pointerdown', handleClickOutside);
+
       // 만약 컴포넌트가 언마운트되거나 open이 false로 바뀌면
       // 현재 예약된 rAF가 있다면 취소한다.
       if (rafId) {
