@@ -63,7 +63,11 @@ class RoomApplicationServiceTest {
                 Room.withoutId(
                         "test",
                         List.of(DateSlot.from(LocalDate.now().plusDays(1))),
-                        List.of(TimeSlot.from(LocalTime.of(10, 0))),
+                        List.of(TimeSlot.from(LocalTime.of(10, 0)),
+                                TimeSlot.from(LocalTime.of(10, 30)),
+                                TimeSlot.from(LocalTime.of(11, 0)),
+                                TimeSlot.from(LocalTime.of(11, 30))
+                        ),
                         DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)))
                 ));
 
