@@ -29,6 +29,7 @@ export const LIGHT_THEME = {
     warningBorder: '#F9E4BE',
     warningText: '#73510D',
 
+    gray05: '#F9F9F9',
     gray10: '#F4F4F4',
     gray20: '#C6C6C6',
     gray30: '#AEAEB2',
@@ -97,15 +98,16 @@ export const DARK_THEME = {
     warningBorder: '#F9E4BE',
     warningText: '#73510D',
 
-    gray10: '#1C1C1E',
-    gray20: '#2C2C2E',
-    gray30: '#363639',
-    gray40: '#48484A',
-    gray50: '#636366',
-    gray60: '#8E8E93',
-    gray70: '#AEAEB2',
-    gray80: '#C6C6C6',
-    gray90: '#F4F4F4',
+    gray05: '#1C1C1E',
+    gray10: '#2C2C2E',
+    gray20: '#363639',
+    gray30: '#48484A',
+    gray40: '#636366',
+    gray50: '#8E8E93',
+    gray60: '#AEAEB2',
+    gray70: '#C6C6C6',
+    gray80: '#F4F4F4',
+    gray90: '#F9F9F9',
   },
   typography: {
     h1: {

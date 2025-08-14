@@ -14,7 +14,7 @@ export const CalendarContainer = styled.div`
   align-items: center;
   justify-content: center;
   max-height: 670px;
-  padding: var(--padding-9);
+  padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-7)' : 'var(--padding-9)')};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,8 +27,8 @@ export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(${column}, 1fr);
   grid-template-rows: repeat(${row}, 1fr);
-  grid-row-gap: var(--gap-4);
-  grid-column-gap: var(--gap-4);
+  grid-row-gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-3)' : 'var(--gap-4)')};
+  grid-column-gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-3)' : 'var(--gap-4)')};
   text-align: center;
 `;
 

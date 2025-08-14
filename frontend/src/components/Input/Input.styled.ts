@@ -16,6 +16,6 @@ export const Container = styled.input<{ isError?: boolean }>`
 
   ::placeholder {
     color: ${({ theme }) => theme.colors.gray50};
-    font-size: ${({ theme }) => theme.typography.body.fontSize};
+    font-size: ${({ theme }) => theme.typography.h4.fontSize};
   }
 `;

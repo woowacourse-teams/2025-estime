@@ -11,8 +11,9 @@ const rotateAnimation = keyframes`
 `;
 
 export const LogoWrapper = styled.div`
-  width: 100%;
+  display: inline-block;
   animation: ${rotateAnimation} 15s linear infinite;
+  transform-origin: center center;
 `;
 
 export const ButtonWrapper = styled.div`

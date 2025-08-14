@@ -7,7 +7,7 @@ export const Container = styled.div<{ isValid: boolean; shouldShake: boolean }>`
   display: flex;
   flex-direction: column;
   gap: var(--gap-9);
-  padding: var(--padding-10);
+  padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-8)' : 'var(--padding-10)')};
   border-radius: var(--radius-6);
   box-shadow: var(--shadow-card);
   background-color: ${({ theme }) => theme.colors.background};
