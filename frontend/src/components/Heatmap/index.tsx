@@ -6,7 +6,7 @@ import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
 import TableTooltip from '../TableTooltip';
-import useHeatMapInteraction from '@/hooks/useHeatMapInteraction';
+import useTooltipBehavior from '@/hooks/useTooltipBehavior';
 
 interface HeatmapProps {
   dateTimeSlots: string[];
@@ -22,7 +22,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
     handleMobileTap,
     isTooltipVisible,
     handlePointerLeave,
-  } = useHeatMapInteraction();
+  } = useTooltipBehavior();
 
   return (
     <S.HeatMapContent onPointerLeave={handlePointerLeave}>

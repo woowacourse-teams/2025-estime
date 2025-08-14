@@ -24,6 +24,13 @@ export default function useTooltipBehavior() {
     setTooltipInfo(null);
   }, []);
 
+  const handleMobileTap = useCallback(
+    (element: HTMLDivElement) => {
+      onMobileTap(element);
+    },
+    [tooltipInfo]
+  );
+
   const isTooltipVisible: boolean = !!tooltipInfo?.participantList.length;
 
   return {
@@ -31,8 +38,7 @@ export default function useTooltipBehavior() {
     position,
     handlePointerEnter,
     handlePointerLeave,
-    handleMobileTap: onMobileTap,
-    handleLeave: onLeave,
+    handleMobileTap,
     isTooltipVisible,
   };
 }
