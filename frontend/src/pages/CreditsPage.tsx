@@ -14,15 +14,27 @@ const CreditsPage = () => {
     navigate('/');
   };
   return (
-    <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
-      <Flex justify="space-between" align="center">
-        <Text variant="h3" color="primary">
-          아인슈타임을 만든 사람들
-        </Text>
-        <Button size="small" color="primary" onClick={handleClick}>
-          <Text variant="button">돌아가기</Text>
-        </Button>
-      </Flex>
+    <Wrapper
+      maxWidth={1280}
+      paddingTop="var(--padding-10)"
+      paddingLeft="var(--padding-6)"
+      paddingRight="var(--padding-6)"
+    >
+      <Wrapper
+        maxWidth="100%"
+        paddingLeft="var(--padding-4)"
+        paddingRight="var(--padding-4)"
+        paddingBottom="var(--padding-4)"
+      >
+        <Flex justify="space-between" align="center" gap="var(--gap-4)">
+          <Text variant="h3" color="primary">
+            아인슈타임을 만든 사람들
+          </Text>
+          <Button size="small" color="primary" onClick={handleClick}>
+            <Text variant="button">돌아가기</Text>
+          </Button>
+        </Flex>
+      </Wrapper>
       <S.Container>
         {credits.map(({ name, imageUrl, role, github }) => (
           <S.Person key={name}>

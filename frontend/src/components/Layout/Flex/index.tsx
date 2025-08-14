@@ -15,7 +15,7 @@ export interface FlexItemProps {
   children: React.ReactNode;
   flex?: number;
 }
-
+// TODO: isMobile 대응 패딩
 const Flex = ({ children, ...rest }: FlexProps) => {
   return <S.Container {...rest}>{children}</S.Container>;
 };
