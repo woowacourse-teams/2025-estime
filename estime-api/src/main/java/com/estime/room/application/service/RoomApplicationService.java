@@ -92,7 +92,10 @@ public class RoomApplicationService {
 
     @Transactional
     public Votes updateParticipantVotes(final VotesUpdateInput input) {
-        final Long roomId = getRoomIdBySession(input.session());
+        final Room room = roomRepository.findBySession(input.session())
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
+        final Long roomId = room.getId();
+        room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
 
         final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, input.participantName())
                 .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, input.participantName()));
