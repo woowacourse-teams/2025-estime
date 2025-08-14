@@ -9,7 +9,6 @@ import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -45,14 +44,14 @@ class RoomTest {
 
     @DisplayName("checkDeadlineOverdue - 마감이 지났을 때 예외 발생")
     @Test
-    void checkDeadlineOverdue_expired_throwException() {
+    void ensureDeadlineNotPassed_expired_throwException() {
         Room room = Room.withoutId(
                 "테스트방",
                 List.of(dateSlot),
                 List.of(timeSlot),
                 futureDeadline
         );
-        assertThatThrownBy(() -> room.checkDeadlineOverdue(now.plusDays(2)))
+        assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plusDays(2)))
                 .isInstanceOf(DeadlineOverdueException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }
@@ -74,14 +73,14 @@ class RoomTest {
 
     @DisplayName("checkDeadlineOverdue - 아직 마감 전이면 예외 발생 안 함")
     @Test
-    void checkDeadlineOverdue_notExpired_noException() {
+    void ensureDeadlineNotPassed_notExpired_noException() {
         Room room = Room.withoutId(
                 "테스트방",
                 List.of(dateSlot),
                 List.of(timeSlot),
                 futureDeadline
         );
-        assertThatCode(() -> room.checkDeadlineOverdue(now))
+        assertThatCode(() -> room.ensureDeadlineNotPassed(now))
                 .doesNotThrowAnyException();
     }
 }

@@ -93,7 +93,7 @@ public class RoomApplicationService {
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
         final Long roomId = room.getId();
         final Long participantId = getParticipantIdByRoomIdAndName(roomId, input.participantName());
-        room.checkDeadlineOverdue(LocalDateTime.now());
+        room.ensureDeadlineNotPassed(LocalDateTime.now());
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
@@ -109,7 +109,7 @@ public class RoomApplicationService {
         final Room room = roomRepository.findBySession(input.session())
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
         final Long roomId = room.getId();
-        room.checkDeadlineOverdue(LocalDateTime.now());
+        room.ensureDeadlineNotPassed(LocalDateTime.now());
 
         final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
         if (!isDuplicateName) {
