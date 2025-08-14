@@ -15,6 +15,7 @@ export default function useTooltipBehavior() {
 
   const handleDesktopHover = useCallback(
     (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
+      if (theme.isMobile) return;
       setTooltipInfo(tooltipInfo);
       onEnter(event);
     },
