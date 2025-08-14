@@ -3,11 +3,13 @@ import { LIGHT_THEME } from '@/styles/theme';
 
 export const Container = styled.button<{
   color: keyof typeof LIGHT_THEME.colors;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'x-small' | 'small' | 'medium' | 'large';
   selected?: boolean;
 }>`
   width: ${({ size }) => {
     switch (size) {
+      case 'x-small':
+        return '4rem';
       case 'small':
         return '8rem';
       case 'medium':
