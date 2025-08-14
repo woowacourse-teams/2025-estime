@@ -18,7 +18,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
   const {
     tooltipInfo,
     position,
-    handleMouseHover,
+    handleDesktopHover,
     handleMobileTap,
     isTooltipVisible,
     handlePointerLeave,
@@ -48,7 +48,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
               date={date}
               timeText={timeText}
               roomStatistics={roomStatistics}
-              onMouseHover={handleMouseHover}
+              onDesktopHover={handleDesktopHover}
               onMobileTap={handleMobileTap}
             />
           ))}
