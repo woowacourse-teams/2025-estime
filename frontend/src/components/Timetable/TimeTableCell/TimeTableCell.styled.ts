@@ -13,4 +13,7 @@ export const HeaderCell = styled.div<{
   height: 1.5rem;
   width: 100%;
   user-select: none;
+  &:hover {
+    cursor: pointer;
+  }
 `;

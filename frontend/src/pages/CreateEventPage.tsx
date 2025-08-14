@@ -63,12 +63,12 @@ const CreateEventPage = () => {
     }
 
     const session = await roomInfoSubmit();
-    addToast({
-      type: 'success',
-      message: '방 생성이 완료되었습니다.',
-    });
 
     if (session) {
+      addToast({
+        type: 'success',
+        message: '방 생성이 완료되었습니다.',
+      });
       navigate(`/check?id=${session}`, { replace: true });
     }
   };
