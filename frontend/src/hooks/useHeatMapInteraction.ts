@@ -9,7 +9,7 @@ export interface TooltipInfo {
 
 export default function useTooltipBehavior() {
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
-  const { position, onEnter, onMobileClick, onLeave } = useHoverTooltip();
+  const { position, onEnter, onMobileTap, onLeave } = useHoverTooltip();
 
   const handlePointerEnter = useCallback(
     (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
@@ -31,7 +31,7 @@ export default function useTooltipBehavior() {
     position,
     handlePointerEnter,
     handlePointerLeave,
-    handleMobileClick: onMobileClick,
+    handleMobileTap: onMobileTap,
     handleLeave: onLeave,
     isTooltipVisible,
   };

@@ -19,7 +19,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
     tooltipInfo,
     position,
     handlePointerEnter,
-    handleMobileClick,
+    handleMobileTap,
     isTooltipVisible,
     handlePointerLeave,
   } = useHeatMapInteraction();
@@ -49,7 +49,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
               timeText={timeText}
               roomStatistics={roomStatistics}
               onEnter={handlePointerEnter}
-              onMobileClick={handleMobileClick}
+              onMobileTap={handleMobileTap}
             />
           ))}
         </Wrapper>
