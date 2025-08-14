@@ -6,6 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
+import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -298,6 +299,38 @@ class RoomApplicationServiceTest {
 
         // then
         assertThat(output.isDuplicateName()).isTrue();
+    }
+
+    @DisplayName("사용 불가능한 DateTimeSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다.")
+    @Test
+    void updateParticipantVotes_withUnavailableDateTimeSlot() {
+        // given
+        final DateTimeSlot unavailableDateSlot = DateTimeSlot.from(
+                LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(10, 0)));
+
+        final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
+                List.of(unavailableDateSlot));
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.updateParticipantVotes(input))
+                .isInstanceOf(UnavailableSlotException.class)
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
+    }
+
+    @DisplayName("사용 불가능한 TimeSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다.")
+    @Test
+    void updateParticipantVotes_withUnavailableTimeSlot() {
+        // given
+        final DateTimeSlot unavailableTimeSlot = DateTimeSlot.from(
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(12, 0)));
+
+        final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
+                List.of(unavailableTimeSlot));
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.updateParticipantVotes(input))
+                .isInstanceOf(UnavailableSlotException.class)
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
     }
 
     private boolean isValidSession(final RoomSession session) {
