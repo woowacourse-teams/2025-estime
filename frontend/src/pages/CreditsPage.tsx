@@ -3,15 +3,12 @@ import * as S from '@/pages/styles/CreditsPage.styled';
 import { credits } from '@/constants/credits';
 import Wrapper from '@/components/Layout/Wrapper';
 import Flex from '@/components/Layout/Flex';
-import { useNavigate } from 'react-router';
 import Button from '@/components/Button';
 import GithubLogo from '@/icons/GithubLogo';
 
 const CreditsPage = () => {
-  const navigate = useNavigate();
-
   const handleClick = () => {
-    navigate('/');
+    window.history.back();
   };
   return (
     <Wrapper
