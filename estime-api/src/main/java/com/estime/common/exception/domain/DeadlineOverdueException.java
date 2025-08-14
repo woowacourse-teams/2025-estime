@@ -17,6 +17,6 @@ public class DeadlineOverdueException extends DomainException {
     }
 
     private static String buildUserMessage() {
-        return "마감시간이 경과되어 더이상 수정하실 수 없습니다. 결과를 확인해주세요.";
+        return "마감기한이 경과되어 더이상 추가/수정하실 수 없습니다. 결과를 확인해 주세요.";
     }
 }
