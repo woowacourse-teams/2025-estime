@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const dayCellRadius = 36;
@@ -37,18 +38,15 @@ export const Container = styled.div<DayCellProps>`
     if (isSelected) return theme.colors.primary;
     return 'none';
   }};
-  &:hover {
-    background-color: ${({ theme, isPast, isEmpty }) => {
-      if (isPast || isEmpty) return 'none';
-      return theme.colors.primary;
-    }};
-    color: ${({ theme, isPast, isEmpty }) => {
-      if (isEmpty) return 'inherit';
-      if (isPast) return theme.colors.gray20;
-      return theme.colors.background;
-    }};
-    cursor: ${({ isPast, isEmpty }) => (isPast || isEmpty ? 'not-allowed' : 'grab')};
-  }
+  ${({ theme, isPast, isEmpty }) =>
+    !theme.isMobile &&
+    css`
+      &:hover {
+        background-color: ${isPast || isEmpty ? 'none' : theme.colors.primary};
+        color: ${isEmpty ? 'inherit' : isPast ? theme.colors.gray20 : theme.colors.background};
+        cursor: ${isPast || isEmpty ? 'not-allowed' : 'grab'};
+      }
+    `}
   transform: ${({ isSelected }) => (isSelected ? 'scale(1.05)' : 'scale(1)')};
 
   ${({ isDateBlockedByLimit }) =>
