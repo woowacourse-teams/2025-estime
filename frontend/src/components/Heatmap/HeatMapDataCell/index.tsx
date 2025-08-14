@@ -35,7 +35,6 @@ const HeatMapDataCell = ({
   return (
     <S.Container
       backgroundColor={backgroundColor}
-      data-time-text={`${date}T${timeText}`}
       onMouseOver={(e: React.PointerEvent<HTMLDivElement>) => onMouseHover(tooltipInfo, e)}
       onPointerDown={(e: React.PointerEvent<HTMLDivElement>) =>
         onMobileTap(tooltipInfo, e.target as HTMLDivElement)
