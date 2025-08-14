@@ -17,3 +17,6 @@ discord:
 slack:
   bot:
     token: ${SLACK_BOT_TOKEN}
+
+logging:
+  config: classpath:logback.xml
