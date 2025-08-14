@@ -2,6 +2,7 @@ package com.estime.room.application.service;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
+import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -25,13 +26,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomApplicationService {
 
+    private final SseService sseService;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
@@ -102,6 +106,11 @@ public class RoomApplicationService {
 
         voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
+        try {
+            sseService.sendSseByRoomSession(input.session().getRoomSession(), "vote-changed");
+        } catch (Exception ignored) {
+            log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getRoomSession().toString());
+        }
 
         return updatedVotes;
     }
