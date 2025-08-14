@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 class RoomTest {
 
     private final LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
-    private final DateSlot dateSlot = DateSlot.from(LocalDate.of(2025, 8, 20));
+    private final DateSlot dateSlot = DateSlot.from(now.toLocalDate().plusDays(1));
     private final TimeSlot timeSlot = TimeSlot.from(LocalTime.of(10, 0));
     private final DateTimeSlot futureDeadline = DateTimeSlot.from(now.plusDays(1));
     private final DateTimeSlot pastDeadline = DateTimeSlot.from(now.minusDays(1));
