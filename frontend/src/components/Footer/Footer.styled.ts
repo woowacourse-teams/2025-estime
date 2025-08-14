@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Container = styled.footer`
   width: 100%;
-  height: 6rem;
+  height: 150px;
   background-color: ${({ theme }) => theme.colors.background};
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   display: flex;

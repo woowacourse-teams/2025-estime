@@ -19,6 +19,7 @@ const CreditsPage = () => {
       paddingTop="var(--padding-10)"
       paddingLeft="var(--padding-6)"
       paddingRight="var(--padding-6)"
+      paddingBottom="var(--padding-10)"
     >
       <Wrapper
         maxWidth="100%"
