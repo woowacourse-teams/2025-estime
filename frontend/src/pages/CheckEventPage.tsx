@@ -112,7 +112,7 @@ const CheckEventPage = () => {
   };
   return (
     <>
-      <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
+      <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
         <Flex direction="column" gap="var(--gap-6)">
           <CheckEventPageHeader
             deadline={roomInfo.deadline}
