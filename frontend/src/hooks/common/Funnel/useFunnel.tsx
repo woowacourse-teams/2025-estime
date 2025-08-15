@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 const useFunnel = <T extends string>(steps: T[]) => {
-  const [i, setI] = useState(0);
+  const [i, setI] = useState(0); // 숫자로 할까 내부 리얼 값으로 할까? 고민
   const step = steps[i];
 
   const prev = useCallback(() => {
@@ -12,9 +12,17 @@ const useFunnel = <T extends string>(steps: T[]) => {
     setI((prev) => prev + 1);
   }, [i]);
 
+  const setStep = useCallback(
+    (step: T) => {
+      const idx = steps.indexOf(step);
+      if (idx !== -1) setI(idx);
+    },
+    [steps]
+  );
+
   const Funnel = useMemo(() => createFunnelComponents<T>(), []);
 
-  return { Funnel, step, next, prev };
+  return { Funnel, step, setStep, next, prev };
 };
 
 export default useFunnel;
