@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import { useHoverTooltip } from './useHoverTooltip';
 import { useTheme } from '@emotion/react';
 
+import useTooltipLeave from './Tooltip/useTooltipLeave';
+
 export interface TooltipInfo {
   date: string;
   timeText: string;
@@ -13,20 +15,19 @@ export default function useTooltipBehavior() {
   const { position, onEnter, onMobileTap, onLeave } = useHoverTooltip();
   const theme = useTheme();
 
+  const closeTooltip = useCallback(() => {
+    setTooltipInfo(null);
+    onLeave();
+  }, [onLeave]);
+
   const handleDesktopHover = useCallback(
     (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
       if (theme.isMobile) return;
       setTooltipInfo(tooltipInfo);
       onEnter(event);
     },
-    [onEnter]
+    [theme.isMobile, onEnter]
   );
-
-  const handlePointerLeave = useCallback(() => {
-    if (theme.isMobile) return;
-    onLeave();
-    setTooltipInfo(null);
-  }, [theme.isMobile, onLeave]);
 
   const handleMobileTap = useCallback(
     (tooltipInfo: TooltipInfo, element: HTMLDivElement) => {
@@ -37,13 +38,20 @@ export default function useTooltipBehavior() {
     [theme.isMobile, onMobileTap]
   );
 
+  const handleContainerPointerLeave: React.PointerEventHandler = useCallback(() => {
+    if (theme.isMobile) return;
+    closeTooltip();
+  }, [theme.isMobile, closeTooltip]);
+
+  useTooltipLeave({ isMobile: theme.isMobile, handleTooltipLeave: closeTooltip });
+
   const isTooltipVisible: boolean = !!tooltipInfo?.participantList.length;
 
   return {
     tooltipInfo,
     position,
     handleDesktopHover,
-    handlePointerLeave,
+    handleContainerPointerLeave: theme.isMobile ? undefined : handleContainerPointerLeave,
     handleMobileTap,
     isTooltipVisible,
   };

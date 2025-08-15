@@ -21,11 +21,11 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
     handleDesktopHover,
     handleMobileTap,
     isTooltipVisible,
-    handlePointerLeave,
+    handleContainerPointerLeave,
   } = useTooltipBehavior();
 
   return (
-    <S.HeatMapContent onPointerLeave={handlePointerLeave}>
+    <S.HeatMapContent onPointerLeave={handleContainerPointerLeave}>
       <S.TimeSlotColumn>
         {dateTimeSlots.map((timeText) => (
           <S.GridContainer key={timeText}>
