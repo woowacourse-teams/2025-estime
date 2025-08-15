@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
+import { useTheme } from '@emotion/react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
 // 연속 입력(pointermove)이 초당 수백 번 들어와도, 매 이벤트마다 setState로 렌더를 유발하지 않도록,
@@ -19,6 +20,7 @@ export function useHoverTooltip() {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const latestPosRef = useRef({ x: 0, y: 0 });
+  const theme = useTheme();
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -38,7 +40,8 @@ export function useHoverTooltip() {
       });
     };
 
-    if (open) {
+    // 데스크톱 환경에서만 포인터 이동에 따라 툴팁이 따라다니도록 설정
+    if (open && !theme.isMobile) {
       // 3.
       document.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
@@ -54,7 +57,7 @@ export function useHoverTooltip() {
       }
       rafId = null;
     };
-  }, [open]);
+  }, [open, theme.isMobile]);
 
   // 이렇게 해주지 않으면...
   // 초기 위치가 0,0으로 잡혀서
