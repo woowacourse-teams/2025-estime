@@ -20,7 +20,7 @@ export function useHoverTooltip() {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const latestPosRef = useRef({ x: 0, y: 0 });
-  const theme = useTheme();
+  const { isMobile } = useTheme();
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -41,7 +41,7 @@ export function useHoverTooltip() {
     };
 
     // 데스크톱 환경에서만 포인터 이동에 따라 툴팁이 따라다니도록 설정
-    if (open && !theme.isMobile) {
+    if (open && !isMobile) {
       // 3.
       document.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
@@ -57,7 +57,7 @@ export function useHoverTooltip() {
       }
       rafId = null;
     };
-  }, [open, theme.isMobile]);
+  }, [open, isMobile]);
 
   // 이렇게 해주지 않으면...
   // 초기 위치가 0,0으로 잡혀서
