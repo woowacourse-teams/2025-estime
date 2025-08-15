@@ -15,13 +15,11 @@ import CalendarSettings from '@/components/Sections/CalendarSettings';
 import BasicSettings from '@/components/Sections/BasicSettings';
 import useFunnelWithHistory from '@/hooks/common/Funnel/useFunnelWithHistory';
 
+const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
+
 const MobileCreateEventPage = () => {
   const theme = useTheme();
-  const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory([
-    '메인 화면',
-    '캘린더 선택 화면',
-    '제목 및 시간 선택 화면',
-  ]);
+  const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory(STEP);
 
   const navigate = useNavigate();
 
@@ -36,8 +34,10 @@ const MobileCreateEventPage = () => {
   } = useCreateRoom();
 
   const { shouldShake, handleShouldShake } = useShakeAnimation();
-
-  const showValidation = useRef(false);
+  const showValidation = useRef({
+    calendar: false,
+    rest: false,
+  });
 
   const { addToast } = useToastContext();
 
@@ -82,7 +82,7 @@ const MobileCreateEventPage = () => {
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <CalendarSettings
               availableDateSlots={availableDateSlots}
-              isValid={!showValidation.current || isCalendarReady}
+              isValid={!showValidation.current.calendar || isCalendarReady}
               shouldShake={shouldShake}
             />
 
@@ -108,7 +108,7 @@ const MobileCreateEventPage = () => {
                       type: 'warning',
                       message: '날짜를 선택해주세요.',
                     });
-                    showValidation.current = true;
+                    showValidation.current.calendar = true;
                     handleShouldShake();
                     return;
                   }
@@ -129,7 +129,7 @@ const MobileCreateEventPage = () => {
               title={title}
               time={time}
               deadline={deadline}
-              isValid={!showValidation.current || isBasicReady}
+              isValid={!showValidation.current.rest || isBasicReady}
               shouldShake={shouldShake}
             />
             <Flex justify="space-between" gap="var(--gap-4)">
@@ -154,7 +154,7 @@ const MobileCreateEventPage = () => {
                       type: 'warning',
                       message: '약속 정보를 입력해주세요.',
                     });
-                    showValidation.current = true;
+                    showValidation.current.rest = true;
                     handleShouldShake();
                     return;
                   }
