@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
-export const useFunnel = <T extends string>(steps: T[]) => {
+const useFunnel = <T extends string>(steps: T[]) => {
   const [i, setI] = useState(0);
   const step = steps[i];
 
@@ -16,6 +16,8 @@ export const useFunnel = <T extends string>(steps: T[]) => {
 
   return { Funnel, step, next, prev };
 };
+
+export default useFunnel;
 
 const createFunnelComponents = <T extends string>() => {
   const StepContext = createContext<T | null>(null);
