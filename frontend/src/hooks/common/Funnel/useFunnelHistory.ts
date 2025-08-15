@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 const useFunnelHistory = <T>(step: T, setStep: (step: T) => void) => {
+  const stepRef = useRef(step);
   const setStepRef = useRef(setStep);
 
   // 초기에 현재 퍼널을 넣는다.
   useEffect(() => {
-    const state = { funnelStep: step };
+    const state = { funnelStep: stepRef.current };
     window.history.replaceState(state, '', window.location.href);
   }, []);
 

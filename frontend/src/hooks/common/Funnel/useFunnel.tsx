@@ -6,11 +6,11 @@ const useFunnel = <T extends string>(steps: T[]) => {
 
   const prev = useCallback(() => {
     setI((prev) => prev - 1);
-  }, [i]);
+  }, []);
 
   const next = useCallback(() => {
     setI((prev) => prev + 1);
-  }, [i]);
+  }, []);
 
   const setStep = useCallback(
     (step: T) => {

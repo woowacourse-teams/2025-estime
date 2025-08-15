@@ -2,8 +2,11 @@ import { useCallback } from 'react';
 import useFunnel from './useFunnel';
 import useFunnelHistory from './useFunnelHistory';
 
-const useFunnelWithHistory = <T extends string>(steps: T[]) => {
-  const { Funnel, step, setStep, next } = useFunnel(steps);
+const useFunnelWithHistory = <S extends readonly string[]>(steps: S) => {
+  type T = S[number];
+  const stepsMutable = [...steps];
+
+  const { Funnel, step, setStep, next } = useFunnel<T>(stepsMutable);
   const pushStep = useFunnelHistory(step, setStep);
 
   const stepNext = useCallback(() => {
@@ -14,7 +17,7 @@ const useFunnelWithHistory = <T extends string>(steps: T[]) => {
     const current = steps.indexOf(step);
     const nextStep = steps[current + 1];
     pushStep(nextStep);
-  }, [step, steps]);
+  }, [next, pushStep, step, steps]);
 
   const stepPrev = useCallback(() => {
     // prev 함수를 사용할 필요가 없음.
