@@ -16,6 +16,7 @@ import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
+import CopyLinkModal from '@/components/CopyLinkModal';
 
 const CheckEventPage = () => {
   const { addToast } = useToastContext();
@@ -110,14 +111,24 @@ const CheckEventPage = () => {
   const handleCancelContinueWithDuplicated = () => {
     handleCloseModal('EntryConfirm');
   };
+
+  const handleCloseCopyLinkModal = () => {
+    handleCloseModal('CopyLink');
+  };
+
+  const handleOpenCopyLinkModal = () => {
+    handleOpenModal('CopyLink');
+  };
+
   return (
     <>
-      <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
+      <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
         <Flex direction="column" gap="var(--gap-6)">
           <CheckEventPageHeader
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
+            openCopyModal={handleOpenCopyLinkModal}
           />
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
@@ -170,6 +181,11 @@ const CheckEventPage = () => {
         isEntryConfirmModalOpen={modals['EntryConfirm']}
         onConfirm={handleContinueWithDuplicated}
         onCancel={handleCancelContinueWithDuplicated}
+      />
+      <CopyLinkModal
+        isCopyLinkModalOpen={modals['CopyLink']}
+        sessionId={session}
+        onClose={handleCloseCopyLinkModal}
       />
     </>
   );
