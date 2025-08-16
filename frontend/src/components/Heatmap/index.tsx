@@ -6,6 +6,8 @@ import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
 import TableTooltip from '../TableTooltip';
+import MobileTooltipCloseBoundary from '@/components/Tooltip/MobileTooltipCloseBoundary';
+import { useTheme } from '@emotion/react';
 import useTooltipBehavior from '@/hooks/Tooltip/useTooltipBehavior';
 
 interface HeatmapProps {
@@ -22,39 +24,44 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
     handleMobileTap,
     isTooltipVisible,
     handleContainerPointerLeave,
+    closeTooltip,
   } = useTooltipBehavior();
+  const theme = useTheme();
 
   return (
-    <S.HeatMapContent onPointerLeave={handleContainerPointerLeave}>
-      <S.TimeSlotColumn>
-        {dateTimeSlots.map((timeText) => (
-          <S.GridContainer key={timeText}>
-            {timeText.endsWith(':00') && (
-              <S.TimeLabel>
-                <Text variant="body" color="text">
-                  {timeText}
-                </Text>
-              </S.TimeLabel>
-            )}
-          </S.GridContainer>
-        ))}
-      </S.TimeSlotColumn>
-      {[...availableDates].map((date) => (
-        <Wrapper key={date} center={false} maxWidth="100%">
-          <TimeTableDay date={date} key={`${date}-day`} />
-          {dateTimeSlots.map((timeText) => (
-            <HeatMapDataCell
-              key={`${date}T${timeText}`}
-              date={date}
-              timeText={timeText}
-              roomStatistics={roomStatistics}
-              onDesktopHover={handleDesktopHover}
-              onMobileTap={handleMobileTap}
-            />
+    <>
+      <MobileTooltipCloseBoundary isMobile={theme.isMobile} closeTooltip={closeTooltip}>
+        <S.HeatMapContent onPointerLeave={handleContainerPointerLeave}>
+          <S.TimeSlotColumn>
+            {dateTimeSlots.map((timeText) => (
+              <S.GridContainer key={timeText}>
+                {timeText.endsWith(':00') && (
+                  <S.TimeLabel>
+                    <Text variant="body" color="text">
+                      {timeText}
+                    </Text>
+                  </S.TimeLabel>
+                )}
+              </S.GridContainer>
+            ))}
+          </S.TimeSlotColumn>
+          {[...availableDates].map((date) => (
+            <Wrapper key={date} center={false} maxWidth="100%">
+              <TimeTableDay date={date} key={`${date}-day`} />
+              {dateTimeSlots.map((timeText) => (
+                <HeatMapDataCell
+                  key={`${date}T${timeText}`}
+                  date={date}
+                  timeText={timeText}
+                  roomStatistics={roomStatistics}
+                  onDesktopHover={handleDesktopHover}
+                  onMobileTap={handleMobileTap}
+                />
+              ))}
+            </Wrapper>
           ))}
-        </Wrapper>
-      ))}
-
+        </S.HeatMapContent>
+      </MobileTooltipCloseBoundary>
       {tooltipInfo && isTooltipVisible && (
         <TableTooltip
           position={position}
@@ -63,7 +70,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
           timeText={tooltipInfo.timeText}
         />
       )}
-    </S.HeatMapContent>
+    </>
   );
 };
 export default Heatmap;

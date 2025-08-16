@@ -2,8 +2,6 @@ import { useCallback, useState } from 'react';
 import { useTooltipPosition } from './useTooltipPosition';
 import { useTheme } from '@emotion/react';
 
-import useMobileTooltipClose from './useTooltipMobileClose';
-
 export interface TooltipInfo {
   date: string;
   timeText: string;
@@ -42,8 +40,6 @@ export default function useTooltipBehavior() {
     closeTooltip();
   }, [theme.isMobile, closeTooltip]);
 
-  useMobileTooltipClose({ isMobile: theme.isMobile, handleTooltipLeave: closeTooltip });
-
   const isTooltipVisible: boolean = !!tooltipInfo?.participantList.length;
 
   return {
@@ -52,6 +48,7 @@ export default function useTooltipBehavior() {
     handleDesktopHover,
     handleContainerPointerLeave: theme.isMobile ? undefined : handleContainerPointerLeave,
     handleMobileTap,
+    closeTooltip,
     isTooltipVisible,
   };
 }
