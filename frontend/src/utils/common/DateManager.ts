@@ -115,4 +115,18 @@ export const DateManager = {
     const dateStr = FormatManager.formatDate(date);
     return DateManager.hasReachedMaxSelection(selectedDates) && !selectedDates.has(dateStr);
   },
+  /**
+   * 시간, 날짜 문자열을 ISO 형식으로 변환후 Date 객체로 변환합니다.
+   * @param date - 확인할 날짜
+   * @param time - 확인할 시간 (HH:mm 형식)
+   * @returns Date 객체
+   */
+  ISOTimeStringToDate(date: string, time: string): Date {
+    return new Date(date + 'T' + time);
+  },
+
+  IsPastDeadline(deadline: { date: string; time: string }, now: Date = new Date()): boolean {
+    const deadlineDate = DateManager.ISOTimeStringToDate(deadline.date, deadline.time);
+    return now >= deadlineDate;
+  },
 };

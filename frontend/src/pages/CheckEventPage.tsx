@@ -16,6 +16,7 @@ import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
+import { DateManager } from '@/utils/common/DateManager';
 
 const CheckEventPage = () => {
   const { addToast } = useToastContext();
@@ -57,13 +58,24 @@ const CheckEventPage = () => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
   const handleToggleEditMode = async () => {
-    if (mode === 'view') {
-      if (isLoggedIn) setMode('edit');
-      else handleOpenModal('Login');
-    } else {
+    if (mode === 'edit') {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
+      return;
+    }
+    if (DateManager.IsPastDeadline(roomInfo.deadline)) {
+      addToast({
+        type: 'warning',
+        message: '마감일이 지나서 수정할 수 없습니다.',
+      });
+      return;
+    }
+
+    if (isLoggedIn) {
+      setMode('edit');
+    } else {
+      handleOpenModal('Login');
     }
   };
 
