@@ -6,7 +6,7 @@ import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
 import TableTooltip from '../TableTooltip';
-import useTooltipBehavior from '@/hooks/useTooltipBehavior';
+import useTooltipBehavior from '@/hooks/Tooltip/useTooltipBehavior';
 
 interface HeatmapProps {
   dateTimeSlots: string[];

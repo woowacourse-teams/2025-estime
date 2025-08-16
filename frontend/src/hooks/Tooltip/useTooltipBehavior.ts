@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import { useHoverTooltip } from './useHoverTooltip';
+import { useTooltipPosition } from './useTooltipPosition';
 import { useTheme } from '@emotion/react';
 
-import useTooltipLeave from './Tooltip/useTooltipLeave';
+import useTooltipLeave from './useTooltipLeave';
 
 export interface TooltipInfo {
   date: string;
@@ -12,13 +12,12 @@ export interface TooltipInfo {
 
 export default function useTooltipBehavior() {
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
-  const { position, onEnter, onMobileTap, onLeave } = useHoverTooltip();
+  const { position, onEnter, onMobileTap } = useTooltipPosition();
   const theme = useTheme();
 
   const closeTooltip = useCallback(() => {
     setTooltipInfo(null);
-    onLeave();
-  }, [onLeave]);
+  }, []);
 
   const handleDesktopHover = useCallback(
     (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {

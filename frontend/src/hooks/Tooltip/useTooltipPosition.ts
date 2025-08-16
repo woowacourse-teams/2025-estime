@@ -12,12 +12,11 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 // 3. 이 이벤트를 전역 이벤트 리스너에 걸어줍니다.
 // 4. 리턴으로 사용 끝난 훅은 정리해줍니다.
 
-export function useHoverTooltip() {
+export function useTooltipPosition() {
   // open이 없으면
   // 이 이벤트의 발생을 마우수 onLeave할때, 막을수 없어요.
   // 이 훅을 사용하는 컴포넌트에서 open을 관리해줘야 합니다.
 
-  const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const latestPosRef = useRef({ x: 0, y: 0 });
   const { isMobile } = useTheme();
@@ -41,7 +40,7 @@ export function useHoverTooltip() {
     };
 
     // 데스크톱 환경에서만 포인터 이동에 따라 툴팁이 따라다니도록 설정
-    if (open && !isMobile) {
+    if (!isMobile) {
       // 3.
       document.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
@@ -72,13 +71,9 @@ export function useHoverTooltip() {
   const onEnter = useCallback(
     (e: ReactPointerEvent) => {
       initializePosition(e);
-      setOpen(true);
     },
     [initializePosition]
   );
-  const onLeave = useCallback(() => {
-    setOpen(false);
-  }, []);
   const onMobileTap = useCallback((element: HTMLElement) => {
     const rect = element.getBoundingClientRect();
 
@@ -88,13 +83,11 @@ export function useHoverTooltip() {
     const p = { x: centerX, y: centerY };
     latestPosRef.current = p;
     setPosition(p);
-    setOpen(true);
   }, []);
 
   return {
     open,
     position,
-    onLeave,
     onEnter,
     onMobileTap,
   };
