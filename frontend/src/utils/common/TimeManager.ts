@@ -123,7 +123,7 @@ export const TimeManager = {
   filterHourOptions(deadline: { date: string; time: string }, now = new Date()): string[] {
     const { date } = deadline;
 
-    const today = FormatManager.formatDate(new Date());
+    const today = FormatManager.formatDate(now);
 
     if (date !== today) return DEFAULT_HOUR_OPTIONS;
 

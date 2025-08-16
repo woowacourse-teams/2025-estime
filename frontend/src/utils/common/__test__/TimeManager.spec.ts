@@ -111,21 +111,16 @@ describe('filterEarlierHoursUntil 함수는', () => {
 
 // filterHourOptions
 describe('filterHourOptions 함수는', () => {
-  beforeAll(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(new Date('2025-08-05T12:00:00'));
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
-  describe('성공 케이스', () => {
-    it('마감일이 오늘이 아니면 전체 옵션을 반환한다', () => {
-      const result = TimeManager.filterHourOptions({
-        date: '2025-08-06',
-        time: '12:00',
-      });
+  describe('마감일이 오늘이 아닌 경우', () => {
+    it('미래 날짜이면 전체 옵션을 반환한다', () => {
+      const now = new Date('2025-08-05T12:30:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-06',
+          time: '12:00',
+        },
+        now
+      );
 
       expect(result).toEqual([
         '00 : 00',
@@ -156,11 +151,131 @@ describe('filterHourOptions 함수는', () => {
       ]);
     });
 
-    it('마감일이 오늘이면 해당 시간 이후의 시간만 반환한다', () => {
-      const result = TimeManager.filterHourOptions({
-        date: '2025-08-05',
-        time: '13:00',
-      });
+    it('과거 날짜이면 전체 옵션을 반환한다', () => {
+      const now = new Date('2025-08-05T12:30:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-04',
+          time: '12:00',
+        },
+        now
+      );
+
+      expect(result).toEqual([
+        '00 : 00',
+        '01 : 00',
+        '02 : 00',
+        '03 : 00',
+        '04 : 00',
+        '05 : 00',
+        '06 : 00',
+        '07 : 00',
+        '08 : 00',
+        '09 : 00',
+        '10 : 00',
+        '11 : 00',
+        '12 : 00',
+        '13 : 00',
+        '14 : 00',
+        '15 : 00',
+        '16 : 00',
+        '17 : 00',
+        '18 : 00',
+        '19 : 00',
+        '20 : 00',
+        '21 : 00',
+        '22 : 00',
+        '23 : 00',
+        '24 : 00',
+      ]);
+    });
+  });
+
+  describe('마감일이 오늘인 경우', () => {
+    it('현재 시간이 오전 12시면 전체 옵션을 반환한다', () => {
+      const now = new Date('2025-08-05T00:00:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '12:00',
+        },
+        now
+      );
+
+      expect(result).toEqual([
+        '01 : 00',
+        '02 : 00',
+        '03 : 00',
+        '04 : 00',
+        '05 : 00',
+        '06 : 00',
+        '07 : 00',
+        '08 : 00',
+        '09 : 00',
+        '10 : 00',
+        '11 : 00',
+        '12 : 00',
+        '13 : 00',
+        '14 : 00',
+        '15 : 00',
+        '16 : 00',
+        '17 : 00',
+        '18 : 00',
+        '19 : 00',
+        '20 : 00',
+        '21 : 00',
+        '22 : 00',
+        '23 : 00',
+        '24 : 00',
+      ]);
+    });
+
+    it('현재 시간이 오후 2시 30분이면 15시 이후 옵션을 반환한다', () => {
+      const now = new Date('2025-08-05T14:30:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual([
+        '15 : 00',
+        '16 : 00',
+        '17 : 00',
+        '18 : 00',
+        '19 : 00',
+        '20 : 00',
+        '21 : 00',
+        '22 : 00',
+        '23 : 00',
+        '24 : 00',
+      ]);
+    });
+
+    it('현재 시간이 밤 11시 59분이면 24시 옵션만 반환한다', () => {
+      const now = new Date('2025-08-05T23:59:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual(['24 : 00']);
+    });
+
+    it('현재 시간이 정각이면 다음 시간부터 반환한다', () => {
+      const now = new Date('2025-08-05T12:00:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '13:00',
+        },
+        now
+      );
 
       expect(result).toEqual([
         '13 : 00',
@@ -176,6 +291,130 @@ describe('filterHourOptions 함수는', () => {
         '23 : 00',
         '24 : 00',
       ]);
+    });
+  });
+
+  describe('엣지 케이스', () => {
+    it('자정 (24시)에는 빈 배열을 반환한다', () => {
+      const now = new Date('2025-08-05T23:59:59');
+
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual(['24 : 00']);
+    });
+
+    it('윤년 2월 29일도 정상적으로 처리한다', () => {
+      const now = new Date('2024-02-29T10:30:00'); // 2024년은 윤년
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2024-02-29',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual([
+        '11 : 00',
+        '12 : 00',
+        '13 : 00',
+        '14 : 00',
+        '15 : 00',
+        '16 : 00',
+        '17 : 00',
+        '18 : 00',
+        '19 : 00',
+        '20 : 00',
+        '21 : 00',
+        '22 : 00',
+        '23 : 00',
+        '24 : 00',
+      ]);
+    });
+
+    it('연말 마지막 날도 정상적으로 처리한다', () => {
+      const now = new Date('2025-12-31T20:30:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-12-31',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual(['21 : 00', '22 : 00', '23 : 00', '24 : 00']);
+    });
+
+    it('다른 연도의 같은 월일은 다른 날로 인식한다', () => {
+      const now = new Date('2025-08-05T12:30:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2024-08-05', // 작년 같은 날
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual([
+        '00 : 00',
+        '01 : 00',
+        '02 : 00',
+        '03 : 00',
+        '04 : 00',
+        '05 : 00',
+        '06 : 00',
+        '07 : 00',
+        '08 : 00',
+        '09 : 00',
+        '10 : 00',
+        '11 : 00',
+        '12 : 00',
+        '13 : 00',
+        '14 : 00',
+        '15 : 00',
+        '16 : 00',
+        '17 : 00',
+        '18 : 00',
+        '19 : 00',
+        '20 : 00',
+        '21 : 00',
+        '22 : 00',
+        '23 : 00',
+        '24 : 00',
+      ]);
+    });
+  });
+
+  describe('경계값 테스트', () => {
+    it('현재 시간이 23시일 때 24시만 반환한다', () => {
+      const now = new Date('2025-08-05T23:00:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual(['24 : 00']);
+    });
+
+    it('현재 시간이 23시 1분일 때 24시만 반환한다', () => {
+      const now = new Date('2025-08-05T23:01:00');
+      const result = TimeManager.filterHourOptions(
+        {
+          date: '2025-08-05',
+          time: '13:00',
+        },
+        now
+      );
+
+      expect(result).toEqual(['24 : 00']);
     });
   });
 });
