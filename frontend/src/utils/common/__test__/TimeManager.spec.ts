@@ -163,6 +163,7 @@ describe('filterHourOptions 함수는', () => {
       });
 
       expect(result).toEqual([
+        '13 : 00',
         '14 : 00',
         '15 : 00',
         '16 : 00',
