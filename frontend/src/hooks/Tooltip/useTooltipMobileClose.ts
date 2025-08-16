@@ -5,7 +5,10 @@ interface UseTooltipLeaveProps {
   handleTooltipLeave: () => void;
 }
 
-export default function useTooltipLeave({ isMobile, handleTooltipLeave }: UseTooltipLeaveProps) {
+export default function useMobileTooltipClose({
+  isMobile,
+  handleTooltipLeave,
+}: UseTooltipLeaveProps) {
   useEffect(() => {
     if (!isMobile) return;
 
