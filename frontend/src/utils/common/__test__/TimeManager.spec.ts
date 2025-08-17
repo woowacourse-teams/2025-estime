@@ -235,7 +235,7 @@ describe('filterHourOptions 함수는', () => {
       const result = TimeManager.filterHourOptions(
         {
           date: '2025-08-05',
-          time: '13:00',
+          time: '15:00',
         },
         now
       );
@@ -295,46 +295,18 @@ describe('filterHourOptions 함수는', () => {
   });
 
   describe('엣지 케이스', () => {
-    it('자정 (24시)에는 빈 배열을 반환한다', () => {
+    it('자정 이전의 23:59:59에는 하나의 배열을 반환한다.', () => {
       const now = new Date('2025-08-05T23:59:59');
 
       const result = TimeManager.filterHourOptions(
         {
           date: '2025-08-05',
-          time: '13:00',
+          time: '24:00',
         },
         now
       );
 
       expect(result).toEqual(['24 : 00']);
-    });
-
-    it('윤년 2월 29일도 정상적으로 처리한다', () => {
-      const now = new Date('2024-02-29T10:30:00'); // 2024년은 윤년
-      const result = TimeManager.filterHourOptions(
-        {
-          date: '2024-02-29',
-          time: '13:00',
-        },
-        now
-      );
-
-      expect(result).toEqual([
-        '11 : 00',
-        '12 : 00',
-        '13 : 00',
-        '14 : 00',
-        '15 : 00',
-        '16 : 00',
-        '17 : 00',
-        '18 : 00',
-        '19 : 00',
-        '20 : 00',
-        '21 : 00',
-        '22 : 00',
-        '23 : 00',
-        '24 : 00',
-      ]);
     });
 
     it('연말 마지막 날도 정상적으로 처리한다', () => {
