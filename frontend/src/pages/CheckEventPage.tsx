@@ -16,7 +16,6 @@ import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
-import { DateManager } from '@/utils/common/DateManager';
 
 const CheckEventPage = () => {
   const { addToast } = useToastContext();
@@ -40,38 +39,35 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  //TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
-
-  // const checkEventPage = useCheckEventPage(session);
-  // const switchToEditMode = async () => {
-  //   await editModeData.initializeEditMode();
-  //   setMode('edit');
-  // };
-
-  // const switchToViewMode = async () => {
-  //   await editModeData.submitAndRefresh();
-  //   await viewModeData.refreshData();
-  //   setMode('view');
-  // };
-
-  // 이런식으로 선언적인 핸들러를 만들면 좋을것 같다!
+  // TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
-  const handleToggleEditMode = async () => {
-    if (mode === 'edit') {
+  // 공통 에러 핸들링 유틸리티
+  const handleError = (error: unknown, context: string) => {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    addToast({
+      type: 'error',
+      message: errorMessage,
+    });
+    Sentry.captureException(error, {
+      level: 'error',
+      tags: { context },
+    });
+  };
+
+  // 편집 모드에서 뷰 모드로 전환 (데이터 저장)
+  const switchToViewMode = async () => {
+    try {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
-      return;
+    } catch (error) {
+      handleError(error, 'switchToViewMode');
     }
-    if (DateManager.IsPastDeadline(roomInfo.deadline)) {
-      addToast({
-        type: 'warning',
-        message: '마감일이 지나서 수정할 수 없습니다.',
-      });
-      return;
-    }
+  };
 
+  // 뷰 모드에서 편집 모드로 전환 (로그인 체크)
+  const switchToEditMode = () => {
     if (isLoggedIn) {
       setMode('edit');
     } else {
@@ -79,7 +75,17 @@ const CheckEventPage = () => {
     }
   };
 
-  const loginAndLoadSchedulingData = async () => {
+  // 모드 토글 핸들러
+  const handleToggleEditMode = async () => {
+    if (mode === 'edit') {
+      await switchToViewMode();
+    } else {
+      switchToEditMode();
+    }
+  };
+
+  // 로그인 후 편집 모드로 전환
+  const handleLoginSuccess = async () => {
     try {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
@@ -89,33 +95,20 @@ const CheckEventPage = () => {
       await fetchUserAvailableTime();
       handleCloseModal('Login');
       setMode('edit');
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
+    } catch (error) {
+      handleError(error, 'handleLoginSuccess');
     }
   };
 
+  // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
       handleCloseModal('EntryConfirm');
       handleCloseModal('Login');
       await fetchUserAvailableTime();
       setMode('edit');
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
+    } catch (error) {
+      handleError(error, 'handleContinueWithDuplicated');
     }
   };
 
@@ -174,7 +167,7 @@ const CheckEventPage = () => {
       <LoginModal
         isLoginModalOpen={modals['Login']}
         handleCloseLoginModal={() => handleCloseModal('Login')}
-        handleModalLogin={loginAndLoadSchedulingData}
+        handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
       />
