@@ -5,76 +5,72 @@ import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
-import { useState } from 'react';
 import TableTooltip from '../TableTooltip';
-import Flex from '../Layout/Flex';
-import IPerson from '@/icons/IPerson';
-import { useHoverTooltip } from '@/hooks/useHoverTooltip';
+import MobileTooltipCloseBoundary from '@/components/Tooltip/MobileTooltipCloseBoundary';
+import { useTheme } from '@emotion/react';
+import useTooltipBehavior from '@/hooks/Tooltip/useTooltipBehavior';
+
 interface HeatmapProps {
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
 }
-export interface TooltipInfo {
-  date: string;
-  timeText: string;
-  participantList: string[];
-}
+
 const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const {
+    tooltipInfo,
+    position,
+    handleDesktopHover,
+    handleMobileTap,
+    isTooltipVisible,
+    handleContainerPointerLeave,
+    closeTooltip,
+  } = useTooltipBehavior();
+  const theme = useTheme();
 
-  const { position, onEnter, onLeave } = useHoverTooltip();
-
-  const handleMouseEnter = (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {
-    setTooltipInfo(tooltipInfo);
-    onEnter(event);
-  };
-
-  const handleMouseLeave = () => {
-    setTooltipInfo(null);
-    onLeave();
-  };
   return (
-    <S.HeatMapContent>
-      <S.TimeSlotColumn>
-        {dateTimeSlots.map((timeText) => (
-          <S.GridContainer key={timeText}>
-            {timeText.endsWith(':00') && (
-              <S.TimeLabel>
-                <Text variant="body" color="text">
-                  {timeText}
-                </Text>
-              </S.TimeLabel>
-            )}
-          </S.GridContainer>
-        ))}
-      </S.TimeSlotColumn>
-      {[...availableDates].map((date) => (
-        <Wrapper key={date} center={false} maxWidth="100%">
-          <TimeTableDay date={date} key={`${date}-day`} />
-          {dateTimeSlots.map((timeText) => (
-            <HeatMapDataCell
-              key={`${date}T${timeText}`}
-              date={date}
-              timeText={timeText}
-              roomStatistics={roomStatistics}
-              onEnter={handleMouseEnter}
-              onLeave={handleMouseLeave}
-            />
+    <>
+      <MobileTooltipCloseBoundary isMobile={theme.isMobile} closeTooltip={closeTooltip}>
+        <S.HeatMapContent onPointerLeave={handleContainerPointerLeave}>
+          <S.TimeSlotColumn>
+            {dateTimeSlots.map((timeText) => (
+              <S.GridContainer key={timeText}>
+                {timeText.endsWith(':00') && (
+                  <S.TimeLabel>
+                    <Text variant="body" color="text">
+                      {timeText}
+                    </Text>
+                  </S.TimeLabel>
+                )}
+              </S.GridContainer>
+            ))}
+          </S.TimeSlotColumn>
+          {[...availableDates].map((date) => (
+            <Wrapper key={date} center={false} maxWidth="100%">
+              <TimeTableDay date={date} key={`${date}-day`} />
+              {dateTimeSlots.map((timeText) => (
+                <HeatMapDataCell
+                  key={`${date}T${timeText}`}
+                  date={date}
+                  timeText={timeText}
+                  roomStatistics={roomStatistics}
+                  onDesktopHover={handleDesktopHover}
+                  onMobileTap={handleMobileTap}
+                />
+              ))}
+            </Wrapper>
           ))}
-        </Wrapper>
-      ))}
-      {!!tooltipInfo?.participantList?.length && (
-        <TableTooltip position={position}>
-          <Flex direction="row" gap="var(--gap-4)" align="center">
-            <IPerson />
-            <Text variant="body" color="text">
-              {tooltipInfo.participantList.join(', ')} 가능!
-            </Text>
-          </Flex>
-        </TableTooltip>
+        </S.HeatMapContent>
+      </MobileTooltipCloseBoundary>
+      {tooltipInfo && isTooltipVisible && (
+        <TableTooltip
+          position={position}
+          participantList={tooltipInfo.participantList}
+          date={tooltipInfo.date}
+          timeText={tooltipInfo.timeText}
+        />
       )}
-    </S.HeatMapContent>
+    </>
   );
 };
 export default Heatmap;
