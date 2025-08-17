@@ -1,6 +1,7 @@
 package com.estime.connection.domain;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,15 +13,15 @@ public enum PlatformCommand {
     CREATE("시작하기", "아인슈타임에게 도움 요청하기"),
     ;
 
-    private final String name;
+    private final String value;
     private final String description;
 
     public static boolean exists(final String command) {
-        return Arrays.stream(values())
-                .anyMatch(cmd -> cmd.getCommandWithSlash().equals(command));
+        return Stream.of(values())
+                .anyMatch(cmd -> cmd.getValueWithSlash().equals(command));
     }
 
-    public String getCommandWithSlash() {
-        return "/" + name;
+    public String getValueWithSlash() {
+        return "/" + value;
     }
 }

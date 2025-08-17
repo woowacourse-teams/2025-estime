@@ -25,7 +25,7 @@ public class DiscordSlashCommandRegistrar extends ListenerAdapter {
     private void updateCommand(final JDA jda) {
         final List<SlashCommandData> commands =
                 Stream.of(PlatformCommand.values())
-                        .map(each -> Commands.slash(each.getName(), each.getDescription()))
+                        .map(each -> Commands.slash(each.getValue(), each.getDescription()))
                 .toList();
 
         jda.updateCommands()

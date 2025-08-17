@@ -1,5 +1,6 @@
 package com.estime.connection.infrastructure.discord;
 
+import com.estime.connection.domain.PlatformMessage;
 import com.estime.connection.domain.PlatformMessageStyle;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,8 +22,8 @@ public class DiscordGuildJoinMessageRegistrar extends ListenerAdapter {
         channel.sendMessageEmbeds(
                         new EmbedBuilder()
                                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
-                                .setTitle("아인슈타임을 호출했습니다! 👋")
-                                .setDescription("`/도움말` 로 사용법을 확인해 보세요!")
+                                .setTitle(PlatformMessage.HELP.getTitle())
+                                .setDescription(PlatformMessage.HELP.getDescription())
                                 .build()
                 ).queue();
     }

@@ -25,7 +25,7 @@ public class SlackService {
             return;
         }
 
-        if (PlatformCommand.CREATE.getCommandWithSlash().equals(command)) {
+        if (PlatformCommand.CREATE.getValueWithSlash().equals(command)) {
             handleCreateCommand(input);
         } else {
             slackMessageSender.sendTextMessage(input.channelId(), UNSUPPORTED_COMMAND_MESSAGE);

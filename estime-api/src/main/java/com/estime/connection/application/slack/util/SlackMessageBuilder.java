@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class SlackMessageBuilder {
 
     public List<LayoutBlock> buildConnectedRoomCreateBlocks(final ConnectedRoomCreateMessageInput input) {
-        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATE;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATE;
 
         return List.of(
                 HeaderBlock.builder()
@@ -27,7 +27,7 @@ public class SlackMessageBuilder {
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plainText(platformMessage.getShortcutDescription()))
+                                        .text(plainText(platformMessage.getDescription()))
                                         .url(input.shortcut())
                                         .actionId("create-connected-room")
                                         .build()
@@ -37,7 +37,7 @@ public class SlackMessageBuilder {
     }
 
     public List<LayoutBlock> buildConnectedRoomCreatedBlocks(final ConnectedRoomCreatedMessageInput input) {
-        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATED;
         final String formattedDeadline = input.deadline().getStartAt()
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
 
@@ -51,7 +51,7 @@ public class SlackMessageBuilder {
                 ActionsBlock.builder()
                         .elements(List.of(
                                 ButtonElement.builder()
-                                        .text(plainText(platformMessage.getShortcutDescription()))
+                                        .text(plainText(platformMessage.getDescription()))
                                         .url(input.shortcut())
                                         .actionId("view-created-room")
                                         .build()
