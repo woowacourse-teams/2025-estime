@@ -1,36 +1,13 @@
-import { useEffect } from 'react';
 import Button from '../Button';
 import Text from '../Text';
 import IChat from '@/icons/IChat';
+import { useKakaoInit } from '@/hooks/useKakaoInit';
 
-const KakaoShareButton = ({ link }: { link: string }) => {
-  useEffect(() => {
-    if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init(process.env.KAKAO_JAVASCRIPT_KEY);
-    }
-  }, []);
-
-  const handleShare = () => {
-    if (!window.Kakao || !window.Kakao.isInitialized()) {
-      return;
-    }
-
-    window.Kakao.Link.sendDefault({
-      objectType: 'feed',
-      content: {
-        title: '약속 시간 정하기',
-        description: '지금 방에 들어와서 함께 약속 시간을 정해주세요!',
-        imageUrl: `${process.env.AWS_S3_URL}/bether/fe-prod/assets/images/einstime.png`,
-        link: {
-          mobileWebUrl: link,
-          webUrl: link,
-        },
-      },
-    });
-  };
+const KakaoShareButton = ({ onClick }: { onClick: () => void }) => {
+  useKakaoInit();
 
   return (
-    <Button color="kakao" selected={true} onClick={handleShare}>
+    <Button color="kakao" selected={true} onClick={onClick}>
       <IChat />
       <Text variant="h4" color="kakaoLabel">
         카카오톡으로 공유하기
