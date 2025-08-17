@@ -7,7 +7,7 @@ const useFunnelWithHistory = <S extends readonly string[]>(steps: S) => {
   const stepsMutable = [...steps];
 
   const { Funnel, step, setStep, next } = useFunnel<T>(stepsMutable);
-  const pushStep = useFunnelHistory(step, setStep);
+  const navigateToStep = useFunnelHistory(step, setStep);
 
   const stepNext = useCallback(() => {
     // funnel 변경
@@ -16,8 +16,8 @@ const useFunnelWithHistory = <S extends readonly string[]>(steps: S) => {
     // history 축적
     const current = steps.indexOf(step);
     const nextStep = steps[current + 1];
-    pushStep(nextStep);
-  }, [next, pushStep, step, steps]);
+    navigateToStep(nextStep);
+  }, [next, navigateToStep, step, steps]);
 
   const stepPrev = useCallback(() => {
     // prev 함수를 사용할 필요가 없음.
