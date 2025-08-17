@@ -56,7 +56,7 @@ export function useTooltipPosition() {
       }
       rafId = null;
     };
-  }, [open, isMobile]);
+  }, [isMobile]);
 
   // 이렇게 해주지 않으면...
   // 초기 위치가 0,0으로 잡혀서
@@ -86,7 +86,6 @@ export function useTooltipPosition() {
   }, []);
 
   return {
-    open,
     position,
     onEnter,
     onMobileTap,
