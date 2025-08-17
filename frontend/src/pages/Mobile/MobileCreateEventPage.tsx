@@ -52,6 +52,30 @@ const MobileCreateEventPage = () => {
     }
   };
 
+  const handleNextStep = async (type: 'calendar' | 'rest') => {
+    if (type === 'calendar') {
+      if (!isCalendarReady) {
+        addToast({ type: 'warning', message: '날짜를 선택해주세요.' });
+        showValidation.current.calendar = true;
+        handleShouldShake();
+        return; // 유효하지 않으면 종료
+      }
+      stepNext();
+      return;
+    }
+
+    if (type === 'rest') {
+      if (!isBasicReady) {
+        addToast({ type: 'warning', message: '약속 정보를 입력해주세요.' });
+        showValidation.current.rest = true;
+        handleShouldShake();
+        return;
+      }
+      await handleCreateRoom(); // 최종 단계는 생성으로 종료
+      return;
+    }
+  };
+
   return (
     <Wrapper maxWidth={430} padding="var(--padding-6)" borderRadius="var(--radius-4)">
       <Funnel step={step}>
@@ -102,18 +126,7 @@ const MobileCreateEventPage = () => {
                 color="primary"
                 selected={true}
                 size="large"
-                onClick={() => {
-                  if (!isCalendarReady) {
-                    addToast({
-                      type: 'warning',
-                      message: '날짜를 선택해주세요.',
-                    });
-                    showValidation.current.calendar = true;
-                    handleShouldShake();
-                    return;
-                  }
-                  stepNext();
-                }}
+                onClick={() => handleNextStep('calendar')}
               >
                 <Text variant="button" color="background">
                   다음
@@ -148,18 +161,7 @@ const MobileCreateEventPage = () => {
                 color="primary"
                 selected={true}
                 size="large"
-                onClick={async () => {
-                  if (!isBasicReady) {
-                    addToast({
-                      type: 'warning',
-                      message: '약속 정보를 입력해주세요.',
-                    });
-                    showValidation.current.rest = true;
-                    handleShouldShake();
-                    return;
-                  }
-                  await handleCreateRoom();
-                }}
+                onClick={() => handleNextStep('rest')}
                 data-ga-id="create-event-button"
               >
                 <Text variant="button" color="background">
