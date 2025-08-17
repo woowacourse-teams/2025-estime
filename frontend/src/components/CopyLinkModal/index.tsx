@@ -6,6 +6,7 @@ import CopyLinkButton from '../CopyLinkButton';
 import { useState } from 'react';
 import Text from '../Text';
 import Wrapper from '../Layout/Wrapper';
+import { useToastContext } from '@/contexts/ToastContext';
 
 export interface CopyLinkModalProps {
   isCopyLinkModalOpen: boolean;
@@ -14,13 +15,15 @@ export interface CopyLinkModalProps {
 }
 export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyLinkModalProps) => {
   const [isCopied, setIsCopied] = useState(false);
+  const { addToast } = useToastContext();
   const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link);
     setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 2000);
+    addToast({
+      type: 'success',
+      message: '링크가 복사되었습니다!',
+    });
   };
 
   return (
@@ -32,7 +35,7 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
         <Modal.Content>
           <Wrapper padding="var(--padding-4)">
             <Flex direction="column" align="center" gap="var(--gap-4)">
-              <KakaoShareButton />
+              <KakaoShareButton link={link} />
               <Flex direction="row" align="center" gap="var(--gap-4)">
                 <S.TextWrapper>
                   <Text variant="h4" color="gray40">

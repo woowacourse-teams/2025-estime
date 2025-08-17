@@ -20,11 +20,6 @@ const CopyLinkButton = ({ isCopied, onClick }: { isCopied: boolean; onClick: () 
             )}
           </S.ImageWrapper>
         </Button>
-        {/* <MiniPopup isVisible={isCopied}>
-          <Text variant="caption" color="background">
-            링크 복사되었습니다!
-          </Text>
-        </MiniPopup> */}
       </Flex>
     </>
   );
