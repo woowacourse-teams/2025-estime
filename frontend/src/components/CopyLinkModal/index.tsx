@@ -26,6 +26,25 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
     });
   };
 
+  const handleKakaoShare = () => {
+    if (!window.Kakao || !window.Kakao.isInitialized()) {
+      return;
+    }
+
+    window.Kakao.Link.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '약속 시간 정하기',
+        description: '지금 방에 들어와서 함께 약속 시간을 정해주세요!',
+        imageUrl: `${process.env.AWS_S3_URL}/bether/fe-prod/assets/images/einstime.png`,
+        link: {
+          mobileWebUrl: link,
+          webUrl: link,
+        },
+      },
+    });
+  };
+
   return (
     <Modal isOpen={isCopyLinkModalOpen} onClose={onClose} position="center">
       <S.CopyLinkModalContainer>
@@ -35,7 +54,7 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
         <Modal.Content>
           <Wrapper padding="var(--padding-4)">
             <Flex direction="column" align="center" gap="var(--gap-4)">
-              <KakaoShareButton link={link} />
+              <KakaoShareButton onClick={handleKakaoShare} />
               <Flex direction="row" align="center" gap="var(--gap-4)">
                 <S.TextWrapper>
                   <Text variant="h4" color="gray40">
