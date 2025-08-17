@@ -3,7 +3,7 @@ import Flex from '@/components/Layout/Flex';
 import * as S from './CopyLinkModal.styled';
 import KakaoShareButton from '../KakaoShareButton';
 import CopyLinkButton from '../CopyLinkButton';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Text from '../Text';
 import Wrapper from '../Layout/Wrapper';
 import { useToastContext } from '@/contexts/ToastContext';
@@ -17,6 +17,8 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
   const [isCopied, setIsCopied] = useState(false);
   const { addToast } = useToastContext();
   const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link);
     setIsCopied(true);
@@ -24,6 +26,15 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
       type: 'success',
       message: '링크가 복사되었습니다!',
     });
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setIsCopied(false);
+      timeoutRef.current = null;
+    }, 2400);
   };
 
   const handleKakaoShare = () => {
