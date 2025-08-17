@@ -32,7 +32,9 @@ const KakaoShareButton = ({ link }: { link: string }) => {
   return (
     <Button color="kakao" selected={true} onClick={handleShare}>
       <IChat />
-      <Text variant="h4"> 카카오톡으로 공유하기</Text>
+      <Text variant="h4" color="kakaoLabel">
+        카카오톡으로 공유하기
+      </Text>
     </Button>
   );
 };

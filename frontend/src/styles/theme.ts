@@ -17,6 +17,7 @@ export const LIGHT_THEME = {
     red40: '#EF4444',
     green30: '#27874D',
     kakao: '#FEE500',
+    kakaoLabel: '#191919',
 
     successBackground: '#D6F0E0',
     successBorder: '#C0E7D0',
@@ -87,6 +88,7 @@ export const DARK_THEME = {
     red40: '#7F1E1D',
     green30: '#27874D',
     kakao: '#FEE500',
+    kakaoLabel: '#191919',
 
     successBackground: '#D6F0E0',
     successBorder: '#C0E7D0',
