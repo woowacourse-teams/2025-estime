@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-const useFunnelHistory = <T>(step: T, setStep: (step: T) => void) => {
+const useFunnelHistory = <T extends string>(step: T, setStep: (step: T) => void) => {
   const stepRef = useRef(step);
   const setStepRef = useRef(setStep);
 
