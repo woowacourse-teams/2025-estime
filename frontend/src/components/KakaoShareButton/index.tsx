@@ -20,7 +20,7 @@ const KakaoShareButton = ({ link }: { link: string }) => {
       content: {
         title: '약속 시간 정하기',
         description: '지금 방에 들어와서 함께 약속 시간을 정해주세요!',
-        imageUrl: '',
+        imageUrl: `${process.env.AWS_S3_URL}/bether/fe-prod/assets/images/einstime.png`,
         link: {
           mobileWebUrl: link,
           webUrl: link,
