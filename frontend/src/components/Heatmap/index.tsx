@@ -5,12 +5,13 @@ import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
-import { useState } from 'react';
+import { RefObject, useState } from 'react';
 import TableTooltip from '../TableTooltip';
 import Flex from '../Layout/Flex';
 import IPerson from '@/icons/IPerson';
 import { useHoverTooltip } from '@/hooks/useHoverTooltip';
 interface HeatmapProps {
+  timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
@@ -20,7 +21,12 @@ export interface TooltipInfo {
   timeText: string;
   participantList: string[];
 }
-const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
+const Heatmap = ({
+  timeColumnRef,
+  dateTimeSlots,
+  availableDates,
+  roomStatistics,
+}: HeatmapProps) => {
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
 
   const { position, onEnter, onLeave } = useHoverTooltip();
@@ -34,9 +40,10 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
     setTooltipInfo(null);
     onLeave();
   };
+
   return (
     <S.HeatMapContent>
-      <S.TimeSlotColumn>
+      <S.TimeSlotColumn ref={timeColumnRef}>
         {dateTimeSlots.map((timeText) => (
           <S.GridContainer key={timeText}>
             {timeText.endsWith(':00') && (

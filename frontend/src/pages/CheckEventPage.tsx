@@ -16,9 +16,13 @@ import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
+import { useTheme } from '@emotion/react';
+import MobileTimeTablePageButtons from '@/components/MobileTimeTablePageButtons';
+import { useTimeTablePagination } from '@/hooks/Pagination/useTimeTablePagination';
 
 const CheckEventPage = () => {
   const { addToast } = useToastContext();
+  const theme = useTheme();
 
   const { roomInfo, session } = useCheckRoomSession();
 
@@ -110,6 +114,20 @@ const CheckEventPage = () => {
   const handleCancelContinueWithDuplicated = () => {
     handleCloseModal('EntryConfirm');
   };
+
+  const {
+    timeTableContainerRef,
+    timeColumnRef,
+    currentPageDates,
+    canPagePrev,
+    canPageNext,
+    handlePagePrev,
+    handlePageNext,
+  } = useTimeTablePagination({
+    availableDates: roomInfo.availableDateSlots,
+    mode,
+  });
+
   return (
     <>
       <Wrapper
@@ -128,37 +146,58 @@ const CheckEventPage = () => {
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
             <S.FrontFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer>
+              <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
                     mode="view"
                     onToggleEditMode={handleToggleEditMode}
                   />
-                  <Heatmap
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    roomStatistics={roomStatistics}
-                  />
+                  <Flex direction="column" gap="var(--gap-4)">
+                    {theme.isMobile && (
+                      <MobileTimeTablePageButtons
+                        handlePrev={handlePagePrev}
+                        handleNext={handlePageNext}
+                        canPrev={canPagePrev}
+                        canNext={canPageNext}
+                      />
+                    )}
+                    <Heatmap
+                      timeColumnRef={timeColumnRef}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={currentPageDates}
+                      roomStatistics={roomStatistics}
+                    />
+                  </Flex>
                 </Flex>
               </S.TimeTableContainer>
             </S.FrontFace>
 
             {/* edit 모드 */}
             <S.BackFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer>
+              <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={userName.value}
                     mode="edit"
                     onToggleEditMode={handleToggleEditMode}
                   />
-
-                  <Timetable
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    selectedTimes={selectedTimes}
-                  />
+                  <Flex direction="column" gap="var(--gap-4)">
+                    {theme.isMobile && (
+                      <MobileTimeTablePageButtons
+                        handlePrev={handlePagePrev}
+                        handleNext={handlePageNext}
+                        canPrev={canPagePrev}
+                        canNext={canPageNext}
+                      />
+                    )}
+                    <Timetable
+                      timeColumnRef={timeColumnRef}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={currentPageDates}
+                      selectedTimes={selectedTimes}
+                    />
+                  </Flex>
                 </Flex>
               </S.TimeTableContainer>
             </S.BackFace>

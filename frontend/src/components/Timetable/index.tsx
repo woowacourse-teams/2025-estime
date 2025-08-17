@@ -6,14 +6,21 @@ import Text from '@/components/Text';
 import TimeTableCell from './TimeTableCell';
 import Wrapper from '@/components/Layout/Wrapper';
 import TimeTableDay from './TimeTableDay';
+import { RefObject } from 'react';
 
 interface TimetableProps {
+  timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
   selectedTimes: Field<Set<string>>;
 }
 
-const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetableProps) => {
+const Timetable = ({
+  timeColumnRef,
+  dateTimeSlots,
+  availableDates,
+  selectedTimes,
+}: TimetableProps) => {
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = useTimeSelection({
     selectedTimes: selectedTimes.value,
     setSelectedTimes: selectedTimes.set,
@@ -22,7 +29,7 @@ const Timetable = ({ dateTimeSlots, availableDates, selectedTimes }: TimetablePr
 
   return (
     <S.TimetableContent onMouseLeave={onMouseLeave}>
-      <S.TimeSlotColumn>
+      <S.TimeSlotColumn ref={timeColumnRef}>
         {dateTimeSlots.map((dateTimeSlot) => (
           <S.GridContainer key={dateTimeSlot}>
             {dateTimeSlot.endsWith(':00') && (
