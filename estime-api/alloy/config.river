@@ -1,0 +1,24 @@
+loki.write "default" {
+    endpoint {
+       url = "http://localhost:3100/loki/api/v1/push" // 수정하셈
+    }
+}
+
+loki.source.file "estime_api_logs" {
+    targets = [{ "__path__" = "/app/logs/spring.log" }]
+
+    forward_to = [loki.relabel.add_api_labels.receiver]
+}
+
+loki.relabel "add_api_labels" {
+    forward_to = [loki.write.default.receiver]
+
+    rule {
+        target_label = "job"
+        replacement = "estime-api"
+    }
+    rule {
+        target_label = "app"
+        replacement = "estime-api"
+    }
+}

@@ -23,9 +23,30 @@ springdoc:
   swagger-ui:
     path: /docs
 
+#logging:
+#  level:
+#    root: INFO
+#    com.estime: DEBUG
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+
 logging:
+#  file:
+#    name: /app/logs/estime-api.log
   level:
     root: INFO
     com.estime: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus, health"
+
+  metrics:
+    tags:
+      application: "estime-api"
+      environment: "local"
