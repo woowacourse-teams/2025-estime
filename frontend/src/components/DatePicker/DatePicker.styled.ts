@@ -7,7 +7,7 @@ export const Container = styled.input<{ isError: boolean }>`
   border: 1px solid ${({ theme, isError }) => (isError ? theme.colors.red40 : theme.colors.gray20)};
   padding: var(--padding-8);
 
-  background-color: ${({ theme }) => theme.colors.gray10};
+  background-color: ${({ theme }) => theme.colors.gray05};
   color: ${({ theme }) => theme.colors.gray50};
   outline: none;
 `;
