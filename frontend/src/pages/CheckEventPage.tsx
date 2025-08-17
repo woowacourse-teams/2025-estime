@@ -112,14 +112,6 @@ const CheckEventPage = () => {
     handleCloseModal('EntryConfirm');
   };
 
-  const handleCloseCopyLinkModal = () => {
-    handleCloseModal('CopyLink');
-  };
-
-  const handleOpenCopyLinkModal = () => {
-    handleOpenModal('CopyLink');
-  };
-
   return (
     <>
       <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -128,7 +120,7 @@ const CheckEventPage = () => {
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
-            openCopyModal={handleOpenCopyLinkModal}
+            openCopyModal={() => handleOpenModal('CopyLink')}
           />
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
@@ -185,7 +177,7 @@ const CheckEventPage = () => {
       <CopyLinkModal
         isCopyLinkModalOpen={modals['CopyLink']}
         sessionId={session}
-        onClose={handleCloseCopyLinkModal}
+        onClose={() => handleCloseModal('CopyLink')}
       />
     </>
   );
