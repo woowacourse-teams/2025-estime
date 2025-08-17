@@ -1,24 +1,27 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
-const useFunnel = <T extends string>(steps: T[]) => {
-  const [i, setI] = useState(0); // 숫자로 할까 내부 리얼 값으로 할까? 고민
-  const step = steps[i];
+const useFunnel = <T extends string>(initialSteps: T[]) => {
+  const [step, setStep] = useState<T>(initialSteps[0]);
+
+  const indexMap = useMemo(() => {
+    const m = new Map<T, number>();
+    initialSteps.forEach((s, i) => m.set(s, i));
+    return m;
+  }, [initialSteps]);
 
   const prev = useCallback(() => {
-    setI((prev) => prev - 1);
-  }, []);
+    setStep((prev) => {
+      const idx = indexMap.get(prev)!;
+      return initialSteps[idx - 1];
+    });
+  }, [indexMap, initialSteps]);
 
   const next = useCallback(() => {
-    setI((prev) => prev + 1);
-  }, []);
-
-  const setStep = useCallback(
-    (step: T) => {
-      const idx = steps.indexOf(step);
-      if (idx !== -1) setI(idx);
-    },
-    [steps]
-  );
+    setStep((prev) => {
+      const idx = indexMap.get(prev)!;
+      return initialSteps[idx + 1];
+    });
+  }, [indexMap, initialSteps]);
 
   const Funnel = useMemo(() => createFunnelComponents<T>(), []);
 
