@@ -19,7 +19,7 @@ public class SseController {
 
     private final SseSubscriptionManager subscriptionManager;
 
-    @GetMapping(value = "/rooms/{session}/stream")
+    @GetMapping("/rooms/{session}/stream")
     public SseEmitter stream(@PathVariable("session") final Tsid roomSession) {
         final SseEmitter emitter = subscriptionManager.subscribe(roomSession);
         try {
