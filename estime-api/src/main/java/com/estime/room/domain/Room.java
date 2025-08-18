@@ -104,7 +104,7 @@ public class Room extends BaseEntity {
 
     public void ensureDeadlineNotPassed(final LocalDateTime currentDateTime) {
         if (deadline.isBefore(currentDateTime)) {
-            throw new DeadlineOverdueException(DomainTerm.DEADLINE, session, deadline, currentDateTime);
+            throw new DeadlineOverdueException(session, deadline, currentDateTime);
         }
     }
 }

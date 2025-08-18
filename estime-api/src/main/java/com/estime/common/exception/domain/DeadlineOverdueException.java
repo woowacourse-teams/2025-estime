@@ -5,15 +5,15 @@ import com.estime.common.exception.util.ExceptionMessageFormatter;
 
 public class DeadlineOverdueException extends DomainException {
 
-    public DeadlineOverdueException(final DomainTerm term, final Object... params) {
+    public DeadlineOverdueException(final Object... params) {
         super(
-                buildLogMessage(term, params),
+                buildLogMessage(params),
                 buildUserMessage()
         );
     }
 
-    private static String buildLogMessage(final DomainTerm term, final Object... params) {
-        return ExceptionMessageFormatter.format("Deadline exceeded for %s".formatted(term), params);
+    private static String buildLogMessage(final Object... params) {
+        return ExceptionMessageFormatter.format("%s exceeded".formatted(DomainTerm.DEADLINE), params);
     }
 
     private static String buildUserMessage() {
