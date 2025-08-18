@@ -42,4 +42,25 @@ export const FormatManager = {
   zeroFill2(value: number | string): string {
     return value.toString().padStart(2, '0');
   },
+  formatAvailableTimeRange(date: string, timeText: string) {
+    const currentTime = new Date(`${date}T${timeText}`);
+    const nextTime = new Date(currentTime);
+    nextTime.setMinutes(nextTime.getMinutes() + 30);
+
+    const timeFormat = {
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    } as const;
+
+    const currentTimeString = currentTime.toLocaleString('ko-KR', timeFormat);
+    const nextTimeString = nextTime.toLocaleString('ko-KR', timeFormat);
+
+    return {
+      currentTime: currentTimeString,
+      nextTime: nextTimeString,
+    };
+  },
 };
