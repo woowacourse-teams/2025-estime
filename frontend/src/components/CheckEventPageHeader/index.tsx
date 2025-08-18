@@ -14,6 +14,8 @@ const CheckEventPageHeader = ({ deadline, title, roomSession }: CheckEventPageHe
   const theme = useTheme();
 
   const deadLineTime = TimeManager.addMinutes(deadline.time, 30);
+  const deadLineDate =
+    deadline.time === '23:30' ? TimeManager.getNextDateString(deadline.date) : deadline.date;
 
   return (
     <Flex gap="var(--gap-5)" justify="space-between" direction="column">
@@ -28,7 +30,7 @@ const CheckEventPageHeader = ({ deadline, title, roomSession }: CheckEventPageHe
           <IClock color={theme.colors.text} />
 
           <Text variant="h4" color="text">
-            마감일 : {deadline ? `${deadline.date} ${deadLineTime}` : '설정되지 않음'}
+            마감일 : {deadline ? `${deadLineDate} ${deadLineTime}` : '설정되지 않음'}
           </Text>
         </Flex>
       </Flex>
