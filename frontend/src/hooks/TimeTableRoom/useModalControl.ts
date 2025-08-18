@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 type modalTypeKey = 'Login' | 'EntryConfirm';
 type Modals = Record<modalTypeKey, boolean>;
@@ -7,17 +7,32 @@ export function useModalControl() {
     Login: false,
     EntryConfirm: false,
   });
-
-  const handleOpenModal = (key: modalTypeKey) => {
+  const handleOpenModal = useCallback((key: modalTypeKey) => {
     setModals((prev) => ({ ...prev, [key]: true }));
-  };
-  const handleCloseModal = (key: modalTypeKey) => {
+  }, []);
+  const handleCloseModal = useCallback((key: modalTypeKey) => {
     setModals((prev) => ({ ...prev, [key]: false }));
-  };
+  }, []);
 
+  const modalHelpers = {
+    login: {
+      open: () => handleOpenModal('Login'),
+      close: () => handleCloseModal('Login'),
+      isOpen: modals.Login,
+    },
+    entryConfirm: {
+      open: () => handleOpenModal('EntryConfirm'),
+      close: () => handleCloseModal('EntryConfirm'),
+      isOpen: modals.EntryConfirm,
+    },
+    // copyLink: {
+    //   open: () => handleOpenModal('CopyLink'),
+    //   close: () => handleCloseModal('CopyLink'),
+    //   isOpen: modals.CopyLink,
+    // },
+  };
   return {
     modals,
-    handleOpenModal,
-    handleCloseModal,
+    modalHelpers,
   };
 }

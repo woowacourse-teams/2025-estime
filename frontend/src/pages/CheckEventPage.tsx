@@ -14,15 +14,12 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
-import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/contexts/ToastContext';
+import useHandleError from '@/utils/Error/useCreateError';
 
 const CheckEventPage = () => {
-  const { addToast } = useToastContext();
-
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { modals, handleCloseModal, handleOpenModal } = useModalControl();
+  const { modalHelpers } = useModalControl();
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
     session,
@@ -43,17 +40,7 @@ const CheckEventPage = () => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
   // 공통 에러 핸들링 유틸리티
-  const handleError = (error: unknown, context: string) => {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    addToast({
-      type: 'error',
-      message: errorMessage,
-    });
-    Sentry.captureException(error, {
-      level: 'error',
-      tags: { context },
-    });
-  };
+  const handleError = useHandleError();
 
   // 편집 모드에서 뷰 모드로 전환 (데이터 저장)
   const switchToViewMode = async () => {
@@ -71,7 +58,7 @@ const CheckEventPage = () => {
     if (isLoggedIn) {
       setMode('edit');
     } else {
-      handleOpenModal('Login');
+      modalHelpers.login.open();
     }
   };
 
@@ -89,11 +76,11 @@ const CheckEventPage = () => {
     try {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
-        handleOpenModal('EntryConfirm');
+        modalHelpers.entryConfirm.open();
         return;
       }
       await fetchUserAvailableTime();
-      handleCloseModal('Login');
+      modalHelpers.login.close();
       setMode('edit');
     } catch (error) {
       handleError(error, 'handleLoginSuccess');
@@ -103,8 +90,8 @@ const CheckEventPage = () => {
   // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
-      handleCloseModal('EntryConfirm');
-      handleCloseModal('Login');
+      modalHelpers.entryConfirm.close();
+      modalHelpers.login.close();
       await fetchUserAvailableTime();
       setMode('edit');
     } catch (error) {
@@ -112,9 +99,6 @@ const CheckEventPage = () => {
     }
   };
 
-  const handleCancelContinueWithDuplicated = () => {
-    handleCloseModal('EntryConfirm');
-  };
   return (
     <>
       <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -165,16 +149,16 @@ const CheckEventPage = () => {
         </Flex>
       </Wrapper>
       <LoginModal
-        isLoginModalOpen={modals['Login']}
-        handleCloseLoginModal={() => handleCloseModal('Login')}
+        isLoginModalOpen={modalHelpers.login.isOpen}
+        handleCloseLoginModal={modalHelpers.login.close}
         handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
       />
       <EntryConfirmModal
-        isEntryConfirmModalOpen={modals['EntryConfirm']}
+        isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
-        onCancel={handleCancelContinueWithDuplicated}
+        onCancel={modalHelpers.entryConfirm.close}
       />
     </>
   );
