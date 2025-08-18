@@ -42,7 +42,7 @@ class RoomTest {
         });
     }
 
-    @DisplayName("checkDeadlineOverdue - 마감이 지났을 때 예외 발생")
+    @DisplayName("ensureDeadlineNotPassed - 마감이 지났을 때 예외 발생")
     @Test
     void ensureDeadlineNotPassed_expired_throwException() {
         Room room = Room.withoutId(
@@ -71,7 +71,7 @@ class RoomTest {
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }
 
-    @DisplayName("checkDeadlineOverdue - 아직 마감 전이면 예외 발생 안 함")
+    @DisplayName("ensureDeadlineNotPassed - 아직 마감 전이면 예외 발생 안 함")
     @Test
     void ensureDeadlineNotPassed_notExpired_noException() {
         Room room = Room.withoutId(
