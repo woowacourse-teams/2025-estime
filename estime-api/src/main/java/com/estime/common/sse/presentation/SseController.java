@@ -25,6 +25,7 @@ public class SseController {
         try {
             emitter.send(SseEmitter.event().data("connected"));
         } catch (IOException e) {
+            log.error("Failed to send SSE 'connected' event for session {}: {}", roomSession, e.getMessage(), e);
             emitter.complete();
         }
         return emitter;
