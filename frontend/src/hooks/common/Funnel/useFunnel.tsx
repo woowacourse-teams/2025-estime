@@ -39,7 +39,7 @@ const createFunnelComponents = <T extends string>() => {
 
   Funnel.Step = function Content({ name, children }: { name: T; children: React.ReactNode }) {
     const step = useContext(StepContext);
-    if (step == null) throw new Error('Funnel.Content는 <Funnel> 내부에서 사용해야한다.');
+    if (step == null) throw new Error('Funnel.Step는 <Funnel> 내부에서 사용해야한다.');
     return step === name ? children : null;
   };
   return Funnel;
