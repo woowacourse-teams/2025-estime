@@ -22,10 +22,3 @@ spring:
 springdoc:
   swagger-ui:
     path: /docs
-
-logging:
-  level:
-    root: INFO
-    com.estime: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{traceId}] %-5level %logger{36} - %msg%n"
