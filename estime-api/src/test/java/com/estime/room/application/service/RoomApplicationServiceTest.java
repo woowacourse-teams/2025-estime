@@ -301,9 +301,9 @@ class RoomApplicationServiceTest {
         assertThat(output.isDuplicateName()).isTrue();
     }
 
-    @DisplayName("사용 불가능한 DateTimeSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다.")
+    @DisplayName("사용 불가능한 DateSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다.")
     @Test
-    void updateParticipantVotes_withUnavailableDateTimeSlot() {
+    void updateParticipantVotes_withUnavailableDateSlot() {
         // given
         final DateTimeSlot unavailableDateSlot = DateTimeSlot.from(
                 LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(10, 0)));
