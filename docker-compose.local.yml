@@ -6,6 +6,7 @@ services:
       mysql:
         condition: service_healthy
     build:
+      context: ./estime-api
       dockerfile: Dockerfile
     env_file:
       - ./estime-api/.env.local
@@ -13,8 +14,14 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: local
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
-      - /app/logs:/app/logs
+      - app-logs:/app/logs
 
   mysql:
     ports:
@@ -35,9 +42,14 @@ services:
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
+    env_file:
+      - ./estime-api/.env.local
+    depends_on:
+      api:
+        condition: service_healthy
     volumes:
       - ./estime-api/alloy/config.river:/etc/alloy/config.river
-      - app-logs:/logs:ro
+      - app-logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config.river"
     restart: unless-stopped

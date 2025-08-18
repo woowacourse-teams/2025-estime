@@ -34,6 +34,11 @@ public class ApiLogFilter implements Filter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        if (request.getRequestURI().startsWith("/actuator")) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
         final String traceId = Optional.ofNullable(request.getHeader(REQUEST_ID_HEADER))
                 .filter(s -> !s.isBlank())
                 .orElseGet(this::generateTraceId);
