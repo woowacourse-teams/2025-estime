@@ -5,7 +5,6 @@
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="Console"/>
-            <appender-ref ref="File"/>
         </root>
     </springProfile>
 
