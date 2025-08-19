@@ -1,11 +1,15 @@
 version: 0.2
 
+env:
+  exported-variables:
+    - COMMIT_HASH
+
 phases:
   pre_build:
     commands:
       - 'echo "=== Pre-Build ==="'
       # 1) .git 없어도 찍히는 SHA/시간
-      - 'echo "Resolved SHA (full): $CODEBUILD_RESOLVED_SOURCE_VERSION"'
+      - export COMMIT_HASH=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}
       - 'echo "Resolved SHA (short): ${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}"'
 
   install:

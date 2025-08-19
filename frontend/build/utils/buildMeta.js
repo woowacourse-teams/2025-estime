@@ -2,14 +2,11 @@ import { execSync } from 'child_process';
 
 // ── git HEAD 해시 + 빌드 시각 수집 ──
 const getBuildMeta = () => {
-  let commit = 'unknown';
-  let message = 'unknown';
-  try {
-    commit = execSync('git rev-parse --short HEAD').toString().trim();
-    message = execSync('git log -1 --pretty=%s').toString().trim();
-  } catch {
-    commit = 'unknown';
-  }
+  const commit =
+    process.env.COMMIT_HASH ||
+    process.env.CODEBUILD_RESOLVED_SOURCE_VERSION ||
+    execSync('git rev-parse --short HEAD').toString().trim() ||
+    'unknown';
 
   const builtAt = new Intl.DateTimeFormat('ko-KR', {
     timeZone: 'Asia/Seoul',
@@ -21,7 +18,7 @@ const getBuildMeta = () => {
     second: '2-digit',
   }).format(new Date());
 
-  return { commit, message, builtAt };
+  return { commit, builtAt };
 };
 
 export default getBuildMeta;
