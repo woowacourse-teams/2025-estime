@@ -95,7 +95,12 @@ jobs:
       - name: Backup existing .env.dev file
         working-directory: ./estime-api
         run: |
-          mv .env.dev .env.before || true
+          if [ -f .env.dev ]; then
+            echo "Found .env.dev, backing up to .env.before"
+            mv .env.dev .env.before
+          else
+            echo "No .env.dev file found, skipping backup."
+          fi
 
       - name: Create env file for Docker Compose
         run: |
