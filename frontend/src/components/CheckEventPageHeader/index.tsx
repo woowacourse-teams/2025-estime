@@ -3,13 +3,14 @@ import IClock from '@/icons/IClock';
 import Text from '@/components/Text';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/types/roomInfo';
-import CopyLinkButton from '../CopyLinkButton';
+import ShareButton from '../ShareButton';
 
 type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
   roomSession: string;
+  openCopyModal: () => void;
 };
 
-const CheckEventPageHeader = ({ deadline, title, roomSession }: CheckEventPageHeaderProps) => {
+const CheckEventPageHeader = ({ deadline, title, openCopyModal }: CheckEventPageHeaderProps) => {
   const theme = useTheme();
 
   return (
@@ -18,7 +19,7 @@ const CheckEventPageHeader = ({ deadline, title, roomSession }: CheckEventPageHe
         <Text variant="h1" color="primary">
           {title}
         </Text>
-        <CopyLinkButton sessionId={roomSession} />
+        <ShareButton onClick={openCopyModal} />
       </Flex>
       <Flex gap="var(--gap-6)" justify="flex-start" align="center">
         <Flex justify="space-between" align="center" gap="var(--gap-3)">
