@@ -1,6 +1,5 @@
-package com.estime.connection.domain;
+package com.estime.room.domain.platform;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

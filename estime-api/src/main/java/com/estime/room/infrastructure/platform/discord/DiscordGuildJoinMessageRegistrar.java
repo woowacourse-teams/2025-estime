@@ -1,7 +1,7 @@
-package com.estime.connection.infrastructure.discord;
+package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.connection.domain.PlatformMessage;
-import com.estime.connection.domain.PlatformMessageStyle;
+import com.estime.room.domain.platform.PlatformMessage;
+import com.estime.room.domain.platform.PlatformMessageStyle;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -20,12 +20,12 @@ public class DiscordGuildJoinMessageRegistrar extends ListenerAdapter {
         }
 
         channel.sendMessageEmbeds(
-                        new EmbedBuilder()
-                                .setColor(PlatformMessageStyle.DEFAULT.getColor())
-                                .setTitle(PlatformMessage.HELP.getTitle())
-                                .setDescription(PlatformMessage.HELP.getDescription())
-                                .build()
-                ).queue();
+                new EmbedBuilder()
+                        .setColor(PlatformMessageStyle.DEFAULT.getColor())
+                        .setTitle(PlatformMessage.HELP.getTitle())
+                        .setDescription(PlatformMessage.HELP.getDescription())
+                        .build()
+        ).queue();
     }
 
     private TextChannel pickWritableChannel(final Guild guild) {

@@ -1,6 +1,6 @@
-package com.estime.connection.infrastructure.discord;
+package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.connection.domain.PlatformCommand;
+import com.estime.room.domain.platform.PlatformCommand;
 import java.util.List;
 import java.util.stream.Stream;
 import net.dv8tion.jda.api.JDA;
@@ -26,7 +26,7 @@ public class DiscordSlashCommandRegistrar extends ListenerAdapter {
         final List<SlashCommandData> commands =
                 Stream.of(PlatformCommand.values())
                         .map(each -> Commands.slash(each.getValue(), each.getDescription()))
-                .toList();
+                        .toList();
 
         jda.updateCommands()
                 .addCommands(commands)

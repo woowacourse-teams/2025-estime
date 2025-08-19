@@ -1,4 +1,4 @@
-package com.estime.connection.domain;
+package com.estime.room.domain.platform;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;

@@ -29,12 +29,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
+@FieldNameConstants(level = AccessLevel.PRIVATE)
 public class Room extends BaseEntity {
 
     @Column(name = "session", nullable = false)
@@ -90,10 +92,10 @@ public class Room extends BaseEntity {
             final DateTimeSlot deadline
     ) {
         Validator.builder()
-                .add("title", title)
-                .add("availableDateSlots", availableDateSlots)
-                .add("availableTimeSlots", availableTimeSlots)
-                .add("deadline", deadline)
+                .add(Fields.title, title)
+                .add(Fields.availableDateSlots, availableDateSlots)
+                .add(Fields.availableTimeSlots, availableTimeSlots)
+                .add(Fields.deadline, deadline)
                 .validateNull();
     }
 
@@ -104,7 +106,7 @@ public class Room extends BaseEntity {
     }
 
     public void ensureAvailableDateTimeSlots(final List<DateTimeSlot> dateTimeSlots) {
-        for (DateTimeSlot dateTimeSlot : dateTimeSlots) {
+        for (final DateTimeSlot dateTimeSlot : dateTimeSlots) {
             final DateSlot dateSlot = dateTimeSlot.toDateSlot();
             final TimeSlot timeSlot = dateTimeSlot.toTimeSlot();
             if (!availableDateSlots.contains(dateSlot) || !availableTimeSlots.contains(timeSlot)) {

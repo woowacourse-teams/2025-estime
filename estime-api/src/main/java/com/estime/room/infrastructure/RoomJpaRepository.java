@@ -8,6 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RoomJpaRepository extends JpaRepository<Room, Long> {
 
     Optional<Room> findBySession(RoomSession session);
-
-    Optional<Long> findIdBySession(RoomSession session);
 }

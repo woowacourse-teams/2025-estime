@@ -1,8 +1,7 @@
-package com.estime.connection.infrastructure.discord;
+package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.connection.application.MessageSender;
-import com.estime.connection.application.discord.util.DiscordMessageBuilder;
-import com.estime.connection.application.dto.input.ConnectedRoomCreatedMessageInput;
+import com.estime.room.domain.platform.PlatformMessage;
+import com.estime.room.domain.slot.vo.DateTimeSlot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
@@ -10,15 +9,14 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.stereotype.Component;
 
-@Component("DISCORD")
+@Component
 @Slf4j
 @RequiredArgsConstructor
-public class DiscordMessageSender implements MessageSender {
+public class DiscordMessageSender {
 
     private final JDA jda;
     private final DiscordMessageBuilder discordMessageBuilder;
 
-    @Override
     public void sendTextMessage(final String channelId, final String message) {
         final TextChannel channel = getChannel(channelId);
         if (channel == null) {
@@ -28,15 +26,22 @@ public class DiscordMessageSender implements MessageSender {
         channel.sendMessage(message).queue();
     }
 
-    @Override
-    public void sendConnectedRoomCreatedMessage(final String channelId, final ConnectedRoomCreatedMessageInput input) {
+    public void sendConnectedRoomCreatedMessage(
+            final String channelId,
+            final String shortcut,
+            final String roomTitle,
+            final DateTimeSlot deadline
+    ) {
         final TextChannel channel = getChannel(channelId);
         if (channel == null) {
             return;
         }
 
-        final MessageCreateData message = discordMessageBuilder.buildConnectedRoomCreatedMessage(input);
-        sendDiscordMessage(channel, message, "Connected room created message");
+        final MessageCreateData message = discordMessageBuilder.buildConnectedRoomCreatedMessage(
+                shortcut, roomTitle, deadline
+        );
+
+        sendMessage(channel, message);
     }
 
     private TextChannel getChannel(final String channelId) {
@@ -47,15 +52,13 @@ public class DiscordMessageSender implements MessageSender {
         return channel;
     }
 
-    private void sendDiscordMessage(
-            final TextChannel channel,
-            final MessageCreateData message,
-            final String logPrefix
-    ) {
+    private void sendMessage(final TextChannel channel, final MessageCreateData message) {
         channel.sendMessage(message)
                 .queue(
-                        success -> log.info("{} sent to channel={}", logPrefix, channel.getId()),
-                        failure -> log.error("Failed to send {}: {}", logPrefix, failure.getMessage(), failure)
+                        success -> log.info("Success to send, channelId:{}, message:{}",
+                                channel.getId(), PlatformMessage.ROOM_CREATED.name()),
+                        failure -> log.error("Fail to send, channelId:{}, message:{}, failure:{}",
+                                channel.getId(), PlatformMessage.ROOM_CREATED.name(), failure.getMessage())
                 );
     }
 }

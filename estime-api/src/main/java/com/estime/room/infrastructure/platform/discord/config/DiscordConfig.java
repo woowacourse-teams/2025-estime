@@ -1,9 +1,9 @@
-package com.estime.connection.config.discord;
+package com.estime.room.infrastructure.platform.discord.config;
 
-import com.estime.connection.domain.PlatformMessage;
-import com.estime.connection.infrastructure.discord.DiscordSlashCommandListener;
-import com.estime.connection.infrastructure.discord.DiscordSlashCommandRegistrar;
-import com.estime.connection.infrastructure.discord.DiscordGuildJoinMessageRegistrar;
+import com.estime.room.domain.platform.PlatformMessage;
+import com.estime.room.infrastructure.platform.discord.DiscordGuildJoinMessageRegistrar;
+import com.estime.room.infrastructure.platform.discord.DiscordSlashCommandListener;
+import com.estime.room.infrastructure.platform.discord.DiscordSlashCommandRegistrar;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;

@@ -1,7 +1,6 @@
-package com.estime.connection.application.dto.input;
+package com.estime.room.application.dto.input;
 
-import com.estime.connection.domain.Platform;
-import com.estime.room.domain.Room;
+import com.estime.room.domain.platform.PlatformType;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
@@ -12,16 +11,11 @@ public record ConnectedRoomCreateInput(
         List<DateSlot> availableDates,
         List<TimeSlot> availableTimes,
         DateTimeSlot deadline,
-        Platform platform,
+        PlatformType platform,
         String channelId
 ) {
 
-    public Room toRoomEntity() {
-        return Room.withoutId(
-                title,
-                availableDates,
-                availableTimes,
-                deadline
-        );
+    public RoomCreateInput toRoomCreateInput() {
+        return new RoomCreateInput(title, availableDates, availableTimes, deadline);
     }
 }

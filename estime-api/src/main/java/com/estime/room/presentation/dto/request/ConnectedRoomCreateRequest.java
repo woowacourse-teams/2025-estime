@@ -1,7 +1,7 @@
-package com.estime.connection.presentation.dto.request;
+package com.estime.room.presentation.dto.request;
 
-import com.estime.connection.application.dto.input.ConnectedRoomCreateInput;
-import com.estime.connection.domain.Platform;
+import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.domain.platform.PlatformType;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
@@ -27,7 +27,7 @@ public record ConnectedRoomCreateRequest(
         LocalDateTime deadline,
 
         @Schema(example = "DISCORD", description = "알림 대상 플랫폼 이름")
-        Platform platform,
+        String platformType,
 
         @Schema(example = "1393585306225348700", description = "대상 채널 ID")
         String channelId
@@ -39,7 +39,7 @@ public record ConnectedRoomCreateRequest(
                 availableDateSlots.stream().map(DateSlot::from).toList(),
                 availableTimeSlots.stream().map(TimeSlot::from).toList(),
                 DateTimeSlot.from(deadline),
-                platform,
+                PlatformType.from(platformType),
                 channelId
         );
     }
