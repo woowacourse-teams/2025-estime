@@ -3,13 +3,14 @@ package com.estime.room.presentation;
 import com.estime.common.CustomApiResponse;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
-import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
 import com.estime.room.domain.participant.vote.Votes;
+import com.estime.room.presentation.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
+import com.estime.room.presentation.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
@@ -30,17 +31,26 @@ public class RoomController implements RoomControllerSpecification {
     private final RoomApplicationService roomApplicationService;
 
     @Override
+    public CustomApiResponse<RoomCreateResponse> createRoom(@RequestBody final RoomCreateRequest request) {
+        return CustomApiResponse.ok(
+                RoomCreateResponse.from(
+                        roomApplicationService.createRoom(request.toInput())));
+    }
+
+    @Override
+    public CustomApiResponse<ConnectedRoomCreateResponse> createConnectedRoom(
+            @RequestBody final ConnectedRoomCreateRequest request) {
+        return CustomApiResponse.ok(
+                ConnectedRoomCreateResponse.from(
+                        roomApplicationService.createConnectedRoom(request.toInput())));
+    }
+
+    @Override
     public CustomApiResponse<RoomResponse> getBySession(
             @PathVariable("session") final Tsid roomSession
     ) {
         final RoomOutput output = roomApplicationService.getRoomBySession(roomSession);
         return CustomApiResponse.ok(RoomResponse.from(output));
-    }
-
-    @Override
-    public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
-        final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
-        return CustomApiResponse.ok(RoomCreateResponse.from(saved));
     }
 
     @Override
@@ -76,7 +86,7 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final Tsid roomSession,
             @RequestBody final ParticipantCreateRequest request
     ) {
-        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(
+        final ParticipantCheckOutput output = roomApplicationService.createParticipant(
                 request.toInput(roomSession));
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
