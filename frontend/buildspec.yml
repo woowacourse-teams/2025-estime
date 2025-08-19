@@ -1,9 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    GIT_REMOTE_URL: 'https://github.com/woowacourse-teams/2025-estime.git'
-
 phases:
   pre_build:
     commands:
