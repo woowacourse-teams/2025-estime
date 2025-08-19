@@ -4,11 +4,11 @@ import styled from '@emotion/styled';
 export const Container = styled.span<{
   variant: TypographyKey;
   color: ColorsKey;
-  opacity: boolean;
+  opacity: number;
 }>`
   ${({ variant, theme }) => getTypographyStyle(variant, theme)};
   ${({ color, theme }) => getColor(color, theme)};
-  opacity: ${({ opacity }) => (opacity ? '1' : '0')};
+  opacity: ${({ opacity }) => opacity};
 `;
 
 const getTypographyStyle = (variant: TypographyKey, theme: Theme) => {
