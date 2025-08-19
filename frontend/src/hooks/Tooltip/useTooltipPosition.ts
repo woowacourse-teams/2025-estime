@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
+import { useTheme } from '@emotion/react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 
 // 연속 입력(pointermove)이 초당 수백 번 들어와도, 매 이벤트마다 setState로 렌더를 유발하지 않도록,
@@ -11,14 +12,14 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 // 3. 이 이벤트를 전역 이벤트 리스너에 걸어줍니다.
 // 4. 리턴으로 사용 끝난 훅은 정리해줍니다.
 
-export function useHoverTooltip() {
+export function useTooltipPosition() {
   // open이 없으면
   // 이 이벤트의 발생을 마우수 onLeave할때, 막을수 없어요.
   // 이 훅을 사용하는 컴포넌트에서 open을 관리해줘야 합니다.
 
-  const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const latestPosRef = useRef({ x: 0, y: 0 });
+  const { isMobile } = useTheme();
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -38,7 +39,8 @@ export function useHoverTooltip() {
       });
     };
 
-    if (open) {
+    // 데스크톱 환경에서만 포인터 이동에 따라 툴팁이 따라다니도록 설정
+    if (!isMobile) {
       // 3.
       document.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
@@ -46,6 +48,7 @@ export function useHoverTooltip() {
     return () => {
       // 4.
       document.removeEventListener('pointermove', handlePointerMove);
+
       // 만약 컴포넌트가 언마운트되거나 open이 false로 바뀌면
       // 현재 예약된 rAF가 있다면 취소한다.
       if (rafId) {
@@ -53,7 +56,7 @@ export function useHoverTooltip() {
       }
       rafId = null;
     };
-  }, [open]);
+  }, [isMobile]);
 
   // 이렇게 해주지 않으면...
   // 초기 위치가 0,0으로 잡혀서
@@ -68,14 +71,23 @@ export function useHoverTooltip() {
   const onEnter = useCallback(
     (e: ReactPointerEvent) => {
       initializePosition(e);
-      setOpen(true);
     },
     [initializePosition]
   );
+  const onMobileTap = useCallback((element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
 
-  const onLeave = useCallback(() => {
-    setOpen(false);
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const p = { x: centerX, y: centerY };
+    latestPosRef.current = p;
+    setPosition(p);
   }, []);
 
-  return { open, position, onEnter, onLeave };
+  return {
+    position,
+    onEnter,
+    onMobileTap,
+  };
 }
