@@ -96,8 +96,8 @@ jobs:
         working-directory: ./estime-api
         run: |
           if [ -f .env.prod ]; then
-            echo "Found .env.prod, backing up to .env.before"
-            mv .env.prod .env.before
+            echo "Found .env.prod, backing up to .env.prod.before"
+            mv .env.prod .env.prod.before
           else
             echo "No .env.prod file found, skipping backup."
           fi
