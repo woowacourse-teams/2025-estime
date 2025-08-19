@@ -14,14 +14,11 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
-import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/contexts/ToastContext';
-import CopyLinkModal from '@/components/CopyLinkModal';
+import useHandleError from '@/hooks/Error/useCreateError';
 import Modal from '@/components/Modal';
+import CopyLinkModal from '@/components/CopyLinkModal';
 
 const CheckEventPage = () => {
-  const { addToast } = useToastContext();
-
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
@@ -41,35 +38,43 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  //TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
-
-  // const checkEventPage = useCheckEventPage(session);
-  // const switchToEditMode = async () => {
-  //   await editModeData.initializeEditMode();
-  //   setMode('edit');
-  // };
-
-  // const switchToViewMode = async () => {
-  //   await editModeData.submitAndRefresh();
-  //   await viewModeData.refreshData();
-  //   setMode('view');
-  // };
-
-  // 이런식으로 선언적인 핸들러를 만들면 좋을것 같다!
+  // TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
-  const handleToggleEditMode = async () => {
-    if (mode === 'view') {
-      if (isLoggedIn) setMode('edit');
-      else modalHelpers.login.open();
-    } else {
+  // 공통 에러 핸들링 유틸리티
+  const handleError = useHandleError();
+
+  // 편집 모드에서 뷰 모드로 전환 (데이터 저장)
+  const switchToViewMode = async () => {
+    try {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
+    } catch (error) {
+      handleError(error, 'switchToViewMode');
     }
   };
 
-  const loginAndLoadSchedulingData = async () => {
+  // 뷰 모드에서 편집 모드로 전환 (로그인 체크)
+  const switchToEditMode = () => {
+    if (isLoggedIn) {
+      setMode('edit');
+    } else {
+      modalHelpers.login.open();
+    }
+  };
+
+  // 모드 토글 핸들러
+  const handleToggleMode = async () => {
+    if (mode === 'edit') {
+      await switchToViewMode();
+    } else {
+      switchToEditMode();
+    }
+  };
+
+  // 로그인 후 편집 모드로 전환
+  const handleLoginSuccess = async () => {
     try {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
@@ -79,38 +84,21 @@ const CheckEventPage = () => {
       await fetchUserAvailableTime();
       modalHelpers.login.close();
       setMode('edit');
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
+    } catch (error) {
+      handleError(error, 'handleLoginSuccess');
     }
   };
 
+  // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
       await fetchUserAvailableTime();
       setMode('edit');
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
+    } catch (error) {
+      handleError(error, 'handleContinueWithDuplicated');
     }
-  };
-
-  const handleCancelContinueWithDuplicated = () => {
-    modalHelpers.entryConfirm.close();
   };
 
   return (
@@ -131,7 +119,7 @@ const CheckEventPage = () => {
                   <TimeTableHeader
                     name={roomInfo.title}
                     mode="view"
-                    onToggleEditMode={handleToggleEditMode}
+                    onToggleEditMode={handleToggleMode}
                   />
                   <Heatmap
                     dateTimeSlots={roomInfo.availableTimeSlots}
@@ -149,7 +137,7 @@ const CheckEventPage = () => {
                   <TimeTableHeader
                     name={userName.value}
                     mode="edit"
-                    onToggleEditMode={handleToggleEditMode}
+                    onToggleEditMode={handleToggleMode}
                   />
 
                   <Timetable
@@ -166,14 +154,14 @@ const CheckEventPage = () => {
       <LoginModal
         isLoginModalOpen={modalHelpers.login.isOpen}
         handleCloseLoginModal={modalHelpers.login.close}
-        handleModalLogin={loginAndLoadSchedulingData}
+        handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
       />
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
-        onCancel={handleCancelContinueWithDuplicated}
+        onCancel={modalHelpers.entryConfirm.close}
       />
       <Modal
         isOpen={modalHelpers.copyLink.isOpen}
