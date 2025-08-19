@@ -23,7 +23,7 @@ const CheckEventPage = () => {
 
   const { modalHelpers } = useModalControl();
 
-  const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
+  const { handleLogin, userData, handleUserData, name, isLoggedIn, handleLoggedIn } = useUserLogin({
     session,
   });
 
@@ -83,6 +83,7 @@ const CheckEventPage = () => {
       }
       await fetchUserAvailableTime();
       modalHelpers.login.close();
+      handleLoggedIn.setTrue();
       setMode('edit');
     } catch (error) {
       handleError(error, 'handleLoginSuccess');
@@ -95,12 +96,17 @@ const CheckEventPage = () => {
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
       await fetchUserAvailableTime();
+      handleLoggedIn.setTrue();
       setMode('edit');
     } catch (error) {
       handleError(error, 'handleContinueWithDuplicated');
     }
   };
 
+  const handleDuplicatedCancel = () => {
+    modalHelpers.entryConfirm.close();
+    handleLoggedIn.setFalse();
+  };
   return (
     <>
       <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
@@ -161,7 +167,7 @@ const CheckEventPage = () => {
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
-        onCancel={modalHelpers.entryConfirm.close}
+        onCancel={handleDuplicatedCancel}
       />
       <Modal
         isOpen={modalHelpers.copyLink.isOpen}
