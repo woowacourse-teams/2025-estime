@@ -63,7 +63,7 @@ const CheckEventPage = () => {
   };
 
   // 모드 토글 핸들러
-  const handleToggleEditMode = async () => {
+  const handleToggleMode = async () => {
     if (mode === 'edit') {
       await switchToViewMode();
     } else {
@@ -116,7 +116,7 @@ const CheckEventPage = () => {
                   <TimeTableHeader
                     name={roomInfo.title}
                     mode="view"
-                    onToggleEditMode={handleToggleEditMode}
+                    onToggleEditMode={handleToggleMode}
                   />
                   <Heatmap
                     dateTimeSlots={roomInfo.availableTimeSlots}
@@ -134,7 +134,7 @@ const CheckEventPage = () => {
                   <TimeTableHeader
                     name={userName.value}
                     mode="edit"
-                    onToggleEditMode={handleToggleEditMode}
+                    onToggleEditMode={handleToggleMode}
                   />
 
                   <Timetable
