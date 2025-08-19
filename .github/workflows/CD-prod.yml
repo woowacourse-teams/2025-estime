@@ -92,6 +92,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Backup existing .env.prod file
+        working-directory: ./estime-api
+        run: |
+          mv .env.prod .env.before || true
+
       - name: Create env file for Docker Compose
         run: |
           printf '%s\n' "IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}" > .env
