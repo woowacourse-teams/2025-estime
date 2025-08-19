@@ -10,25 +10,22 @@ phases:
   pre_build:
     commands:
       - echo "=== Pre-Build ==="
-      # 1) .git 없어도 항상 나오는 CodeBuild 기본 변수 (현재 커밋 SHA)
-      - echo "Resolved SHA: $CODEBUILD_RESOLVED_SOURCE_VERSION"
+      # 1) .git 없어도 찍힘
+      - echo "Resolved SHA (full): $CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - echo "Resolved SHA (short): ${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}"
       - echo "Build time: $(date '+%Y-%m-%d %H:%M:%S%z')"
 
-      # 2) (옵션) 커밋 메시지까지 보고 싶을 때: 얕은 fetch로 .git 메타만 주입
-      - |
-        if [ -n "$GIT_REMOTE_URL" ]; then
-          echo "[git meta] injecting .git into frontend/"
-          cd "$CODEBUILD_SRC_DIR/frontend"
-          git init
-          git remote add origin "$GIT_REMOTE_URL"
-          git fetch --depth=1 --filter=blob:none origin "$CODEBUILD_RESOLVED_SOURCE_VERSION"
-          git update-ref HEAD "$CODEBUILD_RESOLVED_SOURCE_VERSION"
-          echo "Commit short : $(git rev-parse --short HEAD)"
-          echo "Commit message: $(git log -1 --pretty=%s)"
-          cd "$CODEBUILD_SRC_DIR"
-        else
-          echo "[git meta] GIT_REMOTE_URL not set -> skip git log"
-        fi
+      # 2) (옵션) 커밋 메시지까지 보고 싶을 때: .git 메타만 주입해서 로그로 출력
+      - test -n "$GIT_REMOTE_URL" || echo "[git meta] GIT_REMOTE_URL not set -> skip git log"
+      - test -z "$GIT_REMOTE_URL" || echo "[git meta] injecting .git into frontend/"
+      - test -z "$GIT_REMOTE_URL" || cd "$CODEBUILD_SRC_DIR/frontend"
+      - test -z "$GIT_REMOTE_URL" || git init
+      - test -z "$GIT_REMOTE_URL" || git remote add origin "$GIT_REMOTE_URL"
+      - test -z "$GIT_REMOTE_URL" || git fetch --depth=1 --filter=blob:none origin "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - test -z "$GIT_REMOTE_URL" || git update-ref HEAD "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - test -z "$GIT_REMOTE_URL" || git rev-parse --short HEAD
+      - test -z "$GIT_REMOTE_URL" || git log -1 --pretty="Commit msg: %s"
+      - test -z "$GIT_REMOTE_URL" || cd "$CODEBUILD_SRC_DIR"
 
   install:
     commands:
