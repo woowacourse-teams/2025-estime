@@ -15,11 +15,12 @@ import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import useHandleError from '@/hooks/Error/useCreateError';
+import Modal from '@/components/Modal';
+import CopyLinkModal from '@/components/CopyLinkModal';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { modalHelpers } = useModalControl();
   const { modalHelpers } = useModalControl();
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
@@ -162,7 +163,6 @@ const CheckEventPage = () => {
         handleUserData={handleUserData}
       />
       <EntryConfirmModal
-        isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
         onCancel={modalHelpers.entryConfirm.close}
