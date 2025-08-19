@@ -92,6 +92,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Backup existing .env.dev file
+        working-directory: ./estime-api
+        run: |
+          if [ -f .env.dev ]; then
+            echo "Found .env.dev, backing up to .env.dev.before"
+            mv .env.dev .env.dev.before
+          else
+            echo "No .env.dev file found, skipping backup."
+          fi
+
       - name: Create env file for Docker Compose
         run: |
           printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
