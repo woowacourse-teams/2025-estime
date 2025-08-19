@@ -1,6 +1,7 @@
 package com.estime.room.presentation.dto.response;
 
-import com.estime.room.domain.participant.vote.Votes;
+import com.estime.room.application.dto.input.ParticipantVotesOutput;
+import com.estime.room.domain.participant.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -15,11 +16,11 @@ public record ParticipantVotesUpdateResponse(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public static ParticipantVotesUpdateResponse of(final Votes votes, final String participantName) {
-        return new ParticipantVotesUpdateResponse(participantName,
-                votes.getElements().stream()
-                        .map(vote -> vote.getId().getDateTimeSlot().getStartAt())
-                        .sorted()
+    public static ParticipantVotesUpdateResponse from(final ParticipantVotesOutput output) {
+        return new ParticipantVotesUpdateResponse(
+                output.participantName(),
+                output.votes().stream()
+                        .map(Vote::startAt)
                         .toList()
         );
     }
