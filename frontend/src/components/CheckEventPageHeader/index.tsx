@@ -4,7 +4,6 @@ import Text from '@/components/Text';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/types/roomInfo';
 import CopyLinkButton from '../CopyLinkButton';
-import { TimeManager } from '@/utils/common/TimeManager';
 
 type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
   roomSession: string;
@@ -12,10 +11,6 @@ type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
 
 const CheckEventPageHeader = ({ deadline, title, roomSession }: CheckEventPageHeaderProps) => {
   const theme = useTheme();
-
-  const deadLineTime = TimeManager.addMinutes(deadline.time, 30);
-  const deadLineDate =
-    deadline.time === '23:30' ? TimeManager.getNextDateString(deadline.date) : deadline.date;
 
   return (
     <Flex gap="var(--gap-5)" justify="space-between" direction="column">
@@ -30,7 +25,7 @@ const CheckEventPageHeader = ({ deadline, title, roomSession }: CheckEventPageHe
           <IClock color={theme.colors.text} />
 
           <Text variant="h4" color="text">
-            마감일 : {deadline ? `${deadLineDate} ${deadLineTime}` : '설정되지 않음'}
+            마감일 : {deadline ? `${deadline.date} ${deadline.time}` : '설정되지 않음'}
           </Text>
         </Flex>
       </Flex>

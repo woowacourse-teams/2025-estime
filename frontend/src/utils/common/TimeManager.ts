@@ -134,10 +134,4 @@ export const TimeManager = {
       return targetHour < optionHour;
     });
   },
-
-  getNextDateString(date: string): string {
-    const nextDate = new Date(date);
-    nextDate.setDate(nextDate.getDate() + 1);
-    return FormatManager.formatDate(nextDate);
-  },
 };
