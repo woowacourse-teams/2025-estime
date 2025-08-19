@@ -20,6 +20,7 @@ const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
+  const { modalHelpers } = useModalControl();
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
     session,
@@ -77,9 +78,11 @@ const CheckEventPage = () => {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
         modalHelpers.entryConfirm.open();
+        modalHelpers.entryConfirm.open();
         return;
       }
       await fetchUserAvailableTime();
+      modalHelpers.login.close();
       modalHelpers.login.close();
       setMode('edit');
     } catch (error) {
@@ -92,6 +95,8 @@ const CheckEventPage = () => {
     try {
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
+      modalHelpers.entryConfirm.close();
+      modalHelpers.login.close();
       await fetchUserAvailableTime();
       setMode('edit');
     } catch (error) {
@@ -101,12 +106,13 @@ const CheckEventPage = () => {
 
   return (
     <>
-      <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
+      <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
         <Flex direction="column" gap="var(--gap-6)">
           <CheckEventPageHeader
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
+            openCopyModal={modalHelpers.copyLink.open}
           />
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
@@ -157,9 +163,17 @@ const CheckEventPage = () => {
       />
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
+        isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
         onCancel={modalHelpers.entryConfirm.close}
       />
+      <Modal
+        isOpen={modalHelpers.copyLink.isOpen}
+        onClose={modalHelpers.copyLink.close}
+        position="center"
+      >
+        <CopyLinkModal sessionId={session} />
+      </Modal>
     </>
   );
 };

@@ -1,11 +1,12 @@
 import { useCallback, useState } from 'react';
 
-type modalTypeKey = 'Login' | 'EntryConfirm';
+type modalTypeKey = 'Login' | 'EntryConfirm' | 'CopyLink';
 type Modals = Record<modalTypeKey, boolean>;
 export function useModalControl() {
   const [modals, setModals] = useState<Modals>({
     Login: false,
     EntryConfirm: false,
+    CopyLink: false,
   });
   const handleOpenModal = useCallback((key: modalTypeKey) => {
     setModals((prev) => ({ ...prev, [key]: true }));
@@ -25,11 +26,11 @@ export function useModalControl() {
       close: () => handleCloseModal('EntryConfirm'),
       isOpen: modals.EntryConfirm,
     },
-    // copyLink: {
-    //   open: () => handleOpenModal('CopyLink'),
-    //   close: () => handleCloseModal('CopyLink'),
-    //   isOpen: modals.CopyLink,
-    // },
+    copyLink: {
+      open: () => handleOpenModal('CopyLink'),
+      close: () => handleCloseModal('CopyLink'),
+      isOpen: modals.CopyLink,
+    },
   };
   return {
     modals,
