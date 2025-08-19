@@ -1,4 +1,4 @@
-package com.estime.common.sse.application.service;
+package com.estime.common.sse.application;
 
 import com.estime.common.sse.domain.SseEmitters;
 import com.github.f4b6a3.tsid.Tsid;

@@ -2,6 +2,7 @@ package com.estime.room.application.service;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
+import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -19,27 +20,30 @@ import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomApplicationService {
 
+    private final SseService sseService;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
 
     @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final Tsid roomSession) {
-        final Room room = roomRepository.findBySession(RoomSession.from(roomSession))
-                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomSession));
+        final Room room = getRoomByRoomSession(roomSession);
         return RoomOutput.from(room);
     }
 
@@ -83,10 +87,7 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public Votes getParticipantVotesBySessionAndParticipantName(final Tsid roomSession, final String participantName) {
         final Long roomId = getRoomIdBySession(RoomSession.from(roomSession));
-
-        final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, participantName)
-                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId, participantName));
-
+        final Long participantId = getParticipantIdByRoomIdAndName(roomId, participantName);
         return voteRepository.findAllByParticipantId(participantId);
     }
 
@@ -95,10 +96,10 @@ public class RoomApplicationService {
         final Room room = roomRepository.findBySession(input.session())
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
         final Long roomId = room.getId();
-        room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
+        final Long participantId = getParticipantIdByRoomIdAndName(roomId, input.participantName());
 
-        final Long participantId = participantRepository.findIdByRoomIdAndName(roomId, input.participantName())
-                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, input.participantName()));
+        room.ensureDeadlineNotPassed(LocalDateTime.now());
+        room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
@@ -106,15 +107,23 @@ public class RoomApplicationService {
         voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
 
+        try {
+            sseService.sendSseByRoomSession(input.session().getRoomSession(), "vote-changed");
+        } catch (Exception ignored) {
+            log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getRoomSession().toString());
+        }
+
         return updatedVotes;
     }
 
     @Transactional
     public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
-        final Long roomId = getRoomIdBySession(input.session());
+        final Room room = roomRepository.findBySession(input.session())
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
+        final Long roomId = room.getId();
+        room.ensureDeadlineNotPassed(LocalDateTime.now());
 
         final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
-
         if (!isDuplicateName) {
             participantRepository.save(input.toEntity(roomId));
         }
@@ -122,8 +131,18 @@ public class RoomApplicationService {
         return ParticipantCheckOutput.from(isDuplicateName);
     }
 
+    private Room getRoomByRoomSession(final Tsid roomSession) {
+        return roomRepository.findBySession(RoomSession.from(roomSession))
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomSession));
+    }
+
     private Long getRoomIdBySession(final RoomSession session) {
         return roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
+    }
+
+    private Long getParticipantIdByRoomIdAndName(final Long roomId, final String participantName) {
+        return participantRepository.findIdByRoomIdAndName(roomId, participantName)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId, participantName));
     }
 }

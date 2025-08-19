@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class DiscordMessageBuilder {
 
     public MessageCreateData buildConnectedRoomCreateMessage(final ConnectedRoomCreateMessageInput input) {
-        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATE;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATE;
         final MessageEmbed embed = new EmbedBuilder()
                 .setTitle(platformMessage.getTitle())
                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
@@ -23,12 +23,12 @@ public class DiscordMessageBuilder {
 
         return new MessageCreateBuilder()
                 .setEmbeds(embed)
-                .setActionRow(Button.link(input.shortcut(), platformMessage.getShortcutDescription()))
+                .setActionRow(Button.link(input.shortcut(), platformMessage.getDescription()))
                 .build();
     }
 
     public MessageCreateData buildConnectedRoomCreatedMessage(final ConnectedRoomCreatedMessageInput input) {
-        final PlatformMessage platformMessage = PlatformMessage.CONNECTED_ROOM_CREATED;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATED;
         final String formattedDeadline = input.deadline().getStartAt()
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
         final MessageEmbed embed = new EmbedBuilder()
@@ -42,7 +42,7 @@ public class DiscordMessageBuilder {
 
         return new MessageCreateBuilder()
                 .setEmbeds(embed)
-                .setActionRow(Button.link(input.shortcut(), platformMessage.getShortcutDescription()))
+                .setActionRow(Button.link(input.shortcut(), platformMessage.getDescription()))
                 .build();
     }
 }
