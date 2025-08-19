@@ -275,3 +275,118 @@ describe('isDateBlockedByLimit 함수는', () => {
     });
   });
 });
+
+// ISOTimeStringToDate 함수
+describe('ISOTimeStringToDate 함수는', () => {
+  describe('성공 케이스', () => {
+    it('날짜와 시간 문자열을 Date 객체로 변환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('2025-08-05', '14:30');
+      const expected = new Date('2025-08-05T14:30');
+      expect(result).toEqual(expected);
+    });
+
+    it('자정 시간을 올바르게 변환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('2025-12-25', '00:00');
+      const expected = new Date('2025-12-25T00:00');
+      expect(result).toEqual(expected);
+    });
+
+    it('오후 11시 59분을 올바르게 변환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('2025-01-01', '23:59');
+      const expected = new Date('2025-01-01T23:59');
+      expect(result).toEqual(expected);
+    });
+
+    it('윤년 2월 29일을 올바르게 변환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('2024-02-29', '12:00');
+      const expected = new Date('2024-02-29T12:00');
+      expect(result).toEqual(expected);
+    });
+
+    it('월의 마지막 날을 올바르게 변환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('2025-01-31', '09:15');
+      const expected = new Date('2025-01-31T09:15');
+      expect(result).toEqual(expected);
+    });
+  });
+
+  describe('실패 케이스', () => {
+    it('잘못된 날짜 형식이면 Invalid Date를 반환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('invalid-date', '12:00');
+      expect(result.toString()).toBe('Invalid Date');
+    });
+
+    it('잘못된 시간 형식이면 Invalid Date를 반환한다', () => {
+      const result = DateManager.ISOTimeStringToDate('2025-08-05', 'invalid-time');
+      expect(result.toString()).toBe('Invalid Date');
+    });
+  });
+});
+
+describe('IsPastDeadline 함수는', () => {
+  describe('성공 케이스', () => {
+    it('현재 시간이 마감 시간 이후이면 true를 반환한다', () => {
+      const deadline = { date: '2025-08-05', time: '14:00' };
+      const now = new Date('2025-08-05T15:00');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(true);
+    });
+    // 버저비터 허용 안함!
+    it('현재 시간이 마감 시간과 정확히 같으면 true를 반환한다', () => {
+      const deadline = { date: '2025-08-05', time: '14:00' };
+      const now = new Date('2025-08-05T14:00');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(true);
+    });
+
+    it('현재 시간이 마감 시간 이전이면 false를 반환한다', () => {
+      const deadline = { date: '2025-08-05', time: '14:00' };
+      const now = new Date('2025-08-05T13:59');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(false);
+    });
+
+    it('다른 날짜에서 현재 시간이 마감 시간 이후이면 true를 반환한다', () => {
+      const deadline = { date: '2025-08-04', time: '23:59' };
+      const now = new Date('2025-08-05T00:01');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(true);
+    });
+
+    it('다른 날짜에서 현재 시간이 마감 시간 이전이면 false를 반환한다', () => {
+      const deadline = { date: '2025-08-06', time: '10:00' };
+      const now = new Date('2025-08-05T15:00');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(false);
+    });
+
+    it('now 매개변수를 생략하면 실제 현재 시간과 비교한다', () => {
+      const pastDeadline = { date: '2020-01-01', time: '00:00' };
+      const futureDeadline = { date: '2030-12-31', time: '23:59' };
+
+      expect(DateManager.IsPastDeadline(pastDeadline)).toBe(true);
+      expect(DateManager.IsPastDeadline(futureDeadline)).toBe(false);
+    });
+
+    it('자정을 넘어가는 마감시간을 올바르게 처리한다', () => {
+      const deadline = { date: '2025-08-04', time: '23:59' };
+      const nowMidnight = new Date('2025-08-05T00:00');
+      expect(DateManager.IsPastDeadline(deadline, nowMidnight)).toBe(true);
+    });
+
+    it('윤년 2월 29일 마감시간을 올바르게 처리한다', () => {
+      const deadline = { date: '2024-02-29', time: '15:30' };
+      const now = new Date('2024-03-01T10:00');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(true);
+    });
+  });
+
+  describe('실패 케이스', () => {
+    it('잘못된 날짜 형식이면 Invalid Date로 인해 NaN 비교가 되어 false를 반환한다', () => {
+      const deadline = { date: 'invalid-date', time: '12:00' };
+      const now = new Date('2025-08-05T15:00');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(false);
+    });
+
+    it('잘못된 시간 형식이면 Invalid Date로 인해 NaN 비교가 되어 false를 반환한다', () => {
+      const deadline = { date: '2025-08-05', time: 'invalid-time' };
+      const now = new Date('2025-08-05T15:00');
+      expect(DateManager.IsPastDeadline(deadline, now)).toBe(false);
+    });
+  });
+});
