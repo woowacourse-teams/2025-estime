@@ -62,12 +62,15 @@ const CheckEventPage = () => {
 
   const handleToggleEditMode = async () => {
     if (mode === 'view') {
-      if (isLoggedIn) setMode('edit');
-      else handleOpenModal('Login');
+      if (isLoggedIn) {
+        setMode('edit');
+        pageReset();
+      } else handleOpenModal('Login');
     } else {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
+      pageReset();
     }
   };
 
@@ -81,6 +84,7 @@ const CheckEventPage = () => {
       await fetchUserAvailableTime();
       handleCloseModal('Login');
       setMode('edit');
+      pageReset();
     } catch (err) {
       const e = err as Error;
       addToast({
@@ -99,6 +103,7 @@ const CheckEventPage = () => {
       handleCloseModal('Login');
       await fetchUserAvailableTime();
       setMode('edit');
+      pageReset();
     } catch (err) {
       const e = err as Error;
       addToast({
@@ -116,6 +121,8 @@ const CheckEventPage = () => {
   };
 
   const {
+    totalPages,
+    page,
     timeTableContainerRef,
     timeColumnRef,
     currentPageDates,
@@ -123,9 +130,9 @@ const CheckEventPage = () => {
     canPageNext,
     handlePagePrev,
     handlePageNext,
+    pageReset,
   } = useTimeTablePagination({
     availableDates: roomInfo.availableDateSlots,
-    mode,
   });
 
   return (
@@ -156,6 +163,8 @@ const CheckEventPage = () => {
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
                       <MobileTimeTablePageButtons
+                        totalPage={totalPages}
+                        currentPage={page}
                         handlePrev={handlePagePrev}
                         handleNext={handlePageNext}
                         canPrev={canPagePrev}
@@ -185,6 +194,8 @@ const CheckEventPage = () => {
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
                       <MobileTimeTablePageButtons
+                        totalPage={totalPages}
+                        currentPage={page}
                         handlePrev={handlePagePrev}
                         handleNext={handlePageNext}
                         canPrev={canPagePrev}
