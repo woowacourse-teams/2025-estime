@@ -1,9 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    GIT_REMOTE_URL: 'https://github.com/woowacourse-teams/2025-estime.git'
-
 phases:
   pre_build:
     commands:
@@ -11,9 +7,6 @@ phases:
       # 1) .git 없어도 찍히는 SHA/시간
       - 'echo "Resolved SHA (full): $CODEBUILD_RESOLVED_SOURCE_VERSION"'
       - 'echo "Resolved SHA (short): ${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}"'
-      - 'echo "Build time: $(date "+%Y-%m-%d %H:%M:%S%z")"'
-      # 2) (옵션) 커밋 메시지 출력: 얕은 fetch로 .git 메타만 주입
-      - 'if [ -n "$GIT_REMOTE_URL" ]; then echo "[git meta] injecting .git into frontend/"; cd "$CODEBUILD_SRC_DIR/frontend"; git init; git remote add origin "$GIT_REMOTE_URL"; git fetch --depth=1 --filter=blob:none origin "$CODEBUILD_RESOLVED_SOURCE_VERSION"; git update-ref HEAD "$CODEBUILD_RESOLVED_SOURCE_VERSION"; echo "Commit short : $(git rev-parse --short HEAD)"; git log -1 --pretty="Commit message: %s"; cd "$CODEBUILD_SRC_DIR"; else echo "[git meta] GIT_REMOTE_URL not set -> skip git log"; fi'
 
   install:
     commands:
