@@ -4,6 +4,7 @@ import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
 import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
+import com.estime.room.application.dto.input.ParticipantVotesOutput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
@@ -86,17 +87,17 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public Votes getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
+    public ParticipantVotesOutput getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
         final Long roomId = loadRoomIdBySession(input.session());
         final Long participantId = loadParticipantIdByRoomIdAndName(roomId, input.participantName());
-        return voteRepository.findAllByParticipantId(participantId);
+        final Votes votes = voteRepository.findAllByParticipantId(participantId);
+        return ParticipantVotesOutput.from(input.participantName(), votes);
     }
 
     @Transactional
-    public Votes updateParticipantVotes(final VotesUpdateInput input) {
+    public ParticipantVotesOutput updateParticipantVotes(final VotesUpdateInput input) {
         final Room room = loadRoomBySession(input.session());
-        final Long roomId = room.getId();
-        final Long participantId = loadParticipantIdByRoomIdAndName(roomId, input.participantName());
+        final Long participantId = loadParticipantIdByRoomIdAndName(room.getId(), input.participantName());
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
         room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
@@ -113,7 +114,7 @@ public class RoomApplicationService {
             log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getRoomSession().toString());
         }
 
-        return updatedVotes;
+        return ParticipantVotesOutput.from(input.participantName(), updatedVotes);
     }
 
     @Transactional
