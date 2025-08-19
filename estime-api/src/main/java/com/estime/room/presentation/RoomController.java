@@ -1,6 +1,8 @@
 package com.estime.room.presentation;
 
 import com.estime.common.CustomApiResponse;
+import com.estime.room.application.dto.input.RoomSessionInput;
+import com.estime.room.application.dto.input.VotesFindInput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
@@ -33,12 +35,14 @@ public class RoomController implements RoomControllerSpecification {
     public CustomApiResponse<RoomResponse> getBySession(
             @PathVariable("session") final Tsid roomSession
     ) {
-        final RoomOutput output = roomApplicationService.getRoomBySession(roomSession);
+        final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(roomSession));
         return CustomApiResponse.ok(RoomResponse.from(output));
     }
 
     @Override
-    public CustomApiResponse<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
+    public CustomApiResponse<RoomCreateResponse> create(
+            @RequestBody final RoomCreateRequest request
+    ) {
         final RoomCreateOutput saved = roomApplicationService.saveRoom(request.toInput());
         return CustomApiResponse.ok(RoomCreateResponse.from(saved));
     }
@@ -47,7 +51,8 @@ public class RoomController implements RoomControllerSpecification {
     public CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
             @PathVariable("session") final Tsid roomSession
     ) {
-        final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(roomSession);
+        final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(
+                RoomSessionInput.from(roomSession));
         return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
     }
 
@@ -56,8 +61,8 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final Tsid roomSession,
             @RequestParam("participantName") final String participantName
     ) {
-        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(roomSession,
-                participantName);
+        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
+                VotesFindInput.of(roomSession, participantName));
         return CustomApiResponse.ok(ParticipantVotesResponse.from(votes, participantName));
     }
 
@@ -76,8 +81,7 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final Tsid roomSession,
             @RequestBody final ParticipantCreateRequest request
     ) {
-        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(
-                request.toInput(roomSession));
+        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(request.toInput(roomSession));
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }
