@@ -17,13 +17,14 @@ import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
 import CopyLinkModal from '@/components/CopyLinkModal';
+import Modal from '@/components/Modal';
 
 const CheckEventPage = () => {
   const { addToast } = useToastContext();
 
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { modals, handleCloseModal, handleOpenModal } = useModalControl();
+  const { modalHelpers } = useModalControl();
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
     session,
@@ -60,7 +61,7 @@ const CheckEventPage = () => {
   const handleToggleEditMode = async () => {
     if (mode === 'view') {
       if (isLoggedIn) setMode('edit');
-      else handleOpenModal('Login');
+      else modalHelpers.login.open();
     } else {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
@@ -72,11 +73,11 @@ const CheckEventPage = () => {
     try {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
-        handleOpenModal('EntryConfirm');
+        modalHelpers.entryConfirm.open();
         return;
       }
       await fetchUserAvailableTime();
-      handleCloseModal('Login');
+      modalHelpers.login.close();
       setMode('edit');
     } catch (err) {
       const e = err as Error;
@@ -92,8 +93,8 @@ const CheckEventPage = () => {
 
   const handleContinueWithDuplicated = async () => {
     try {
-      handleCloseModal('EntryConfirm');
-      handleCloseModal('Login');
+      modalHelpers.entryConfirm.close();
+      modalHelpers.login.close();
       await fetchUserAvailableTime();
       setMode('edit');
     } catch (err) {
@@ -109,7 +110,7 @@ const CheckEventPage = () => {
   };
 
   const handleCancelContinueWithDuplicated = () => {
-    handleCloseModal('EntryConfirm');
+    modalHelpers.entryConfirm.close();
   };
 
   return (
@@ -120,7 +121,7 @@ const CheckEventPage = () => {
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
-            openCopyModal={() => handleOpenModal('CopyLink')}
+            openCopyModal={modalHelpers.copyLink.open}
           />
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
@@ -163,22 +164,24 @@ const CheckEventPage = () => {
         </Flex>
       </Wrapper>
       <LoginModal
-        isLoginModalOpen={modals['Login']}
-        handleCloseLoginModal={() => handleCloseModal('Login')}
+        isLoginModalOpen={modalHelpers.login.isOpen}
+        handleCloseLoginModal={modalHelpers.login.close}
         handleModalLogin={loginAndLoadSchedulingData}
         userData={userData}
         handleUserData={handleUserData}
       />
       <EntryConfirmModal
-        isEntryConfirmModalOpen={modals['EntryConfirm']}
+        isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
         onCancel={handleCancelContinueWithDuplicated}
       />
-      <CopyLinkModal
-        isCopyLinkModalOpen={modals['CopyLink']}
-        sessionId={session}
-        onClose={() => handleCloseModal('CopyLink')}
-      />
+      <Modal
+        isOpen={modalHelpers.copyLink.isOpen}
+        onClose={modalHelpers.copyLink.close}
+        position="center"
+      >
+        <CopyLinkModal sessionId={session} />
+      </Modal>
     </>
   );
 };
