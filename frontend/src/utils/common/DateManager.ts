@@ -115,10 +115,4 @@ export const DateManager = {
     const dateStr = FormatManager.formatDate(date);
     return DateManager.hasReachedMaxSelection(selectedDates) && !selectedDates.has(dateStr);
   },
-
-  getNextDateString(date: string): string {
-    const nextDate = new Date(date);
-    nextDate.setDate(nextDate.getDate() + 1);
-    return FormatManager.formatDate(nextDate);
-  },
 };
