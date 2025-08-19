@@ -6,6 +6,8 @@ import Button from '@/components/Button';
 import * as S from './EntryConfirmModal.styled';
 import Tooltip from '@/components/Tooltip';
 import { useTheme } from '@emotion/react';
+import { useEnterKeySubmit } from '@/hooks/useEnterKeySubmit';
+import { useRef } from 'react';
 
 export interface EntryConfirmModalProps {
   isEntryConfirmModalOpen: boolean;
@@ -18,6 +20,9 @@ export const EntryConfirmModal = ({
   onCancel,
 }: EntryConfirmModalProps) => {
   const theme = useTheme();
+
+  const entryButtonRef = useRef<HTMLButtonElement>(null);
+  useEnterKeySubmit({ buttonRef: entryButtonRef });
 
   return (
     <Modal isOpen={isEntryConfirmModalOpen} onClose={onCancel} position="center">
@@ -46,7 +51,12 @@ export const EntryConfirmModal = ({
 
             <Flex.Item flex={1}>
               <Flex direction="row" gap="var(--gap-4)">
-                <Button color={'primary'} selected={true} onClick={onConfirm}>
+                <Button
+                  buttonRef={entryButtonRef}
+                  color={'primary'}
+                  selected={true}
+                  onClick={onConfirm}
+                >
                   <Text variant="button" color="gray10">
                     예
                   </Text>

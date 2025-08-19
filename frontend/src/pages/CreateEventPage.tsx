@@ -12,10 +12,13 @@ import IInfo from '@/icons/IInfo';
 import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
 import { useRef } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
+import { useEnterKeySubmit } from '@/hooks/useEnterKeySubmit';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
   const { colors } = useTheme();
+
+  const createButtonRef = useRef<HTMLButtonElement>(null);
 
   const {
     title,
@@ -73,6 +76,8 @@ const CreateEventPage = () => {
     }
   };
 
+  useEnterKeySubmit({ buttonRef: createButtonRef });
+
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
@@ -100,6 +105,7 @@ const CreateEventPage = () => {
             </Information>
             <Flex justify="flex-end">
               <Button
+                buttonRef={createButtonRef}
                 color="primary"
                 selected={true}
                 size="small"
