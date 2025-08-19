@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import { useColumnsPerPage } from './useColumnPerPage';
 import { usePagination } from './usePagination';
 
+const MIN_COLUMN_WIDTH = 60;
+
 interface TimeTablePaginationProps {
   availableDates: Set<string>;
   mode: 'view' | 'edit';
 }
 
 export const useTimeTablePagination = ({ availableDates, mode }: TimeTablePaginationProps) => {
-  const MIN_COLUMN_WIDTH = 60;
-
   const timeTableContainerRef = useRef<HTMLDivElement>(null);
   const timeColumnRef = useRef<HTMLDivElement>(null);
 
