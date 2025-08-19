@@ -14,7 +14,7 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
-import useHandleError from '@/utils/Error/useCreateError';
+import useHandleError from '@/hooks/Error/useCreateError';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
