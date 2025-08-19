@@ -3,21 +3,17 @@ import Flex from '@/components/Layout/Flex';
 import * as S from './CopyLinkModal.styled';
 import KakaoShareButton from '../KakaoShareButton';
 import CopyLinkButton from '../CopyLinkButton';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Text from '../Text';
 import Wrapper from '../Layout/Wrapper';
 import { useToastContext } from '@/contexts/ToastContext';
-
 export interface CopyLinkModalProps {
-  isCopyLinkModalOpen: boolean;
   sessionId: string;
-  onClose: () => void;
 }
-export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyLinkModalProps) => {
+export const CopyLinkModal = ({ sessionId }: CopyLinkModalProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const { addToast } = useToastContext();
   const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link);
@@ -26,15 +22,6 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
       type: 'success',
       message: '링크가 복사되었습니다!',
     });
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      setIsCopied(false);
-      timeoutRef.current = null;
-    }, 2400);
   };
 
   const handleKakaoShare = () => {
@@ -57,28 +44,26 @@ export const CopyLinkModal = ({ isCopyLinkModalOpen, sessionId, onClose }: CopyL
   };
 
   return (
-    <Modal isOpen={isCopyLinkModalOpen} onClose={onClose} position="center">
-      <S.CopyLinkModalContainer>
-        <Modal.Header>
-          <Text variant="h3">링크 공유하기</Text>
-        </Modal.Header>
-        <Modal.Content>
-          <Wrapper padding="var(--padding-4)">
-            <Flex direction="column" align="center" gap="var(--gap-4)">
-              <KakaoShareButton onClick={handleKakaoShare} />
-              <Flex direction="row" align="center" gap="var(--gap-4)">
-                <S.TextWrapper>
-                  <Text variant="h4" color="gray40">
-                    {link}
-                  </Text>
-                </S.TextWrapper>
-                <CopyLinkButton isCopied={isCopied} onClick={handleCopyLink} />
-              </Flex>
+    <S.CopyLinkModalContainer>
+      <Modal.Header>
+        <Text variant="h3">링크 공유하기</Text>
+      </Modal.Header>
+      <Modal.Content>
+        <Wrapper padding="var(--padding-4)">
+          <Flex direction="column" align="center" gap="var(--gap-4)">
+            <KakaoShareButton onClick={handleKakaoShare} />
+            <Flex direction="row" align="center" gap="var(--gap-4)">
+              <S.TextWrapper>
+                <Text variant="h4" color="gray40">
+                  {link}
+                </Text>
+              </S.TextWrapper>
+              <CopyLinkButton isCopied={isCopied} onClick={handleCopyLink} />
             </Flex>
-          </Wrapper>
-        </Modal.Content>
-      </S.CopyLinkModalContainer>
-    </Modal>
+          </Flex>
+        </Wrapper>
+      </Modal.Content>
+    </S.CopyLinkModalContainer>
   );
 };
 
