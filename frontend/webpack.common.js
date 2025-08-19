@@ -16,7 +16,7 @@ const pkg = JSON.parse(readFileSync(path.resolve('./package.json'), 'utf-8'));
 
 dotenv.config();
 
-const { commit: COMMIT_HASH, message: COMMIT_MESSAGE, builtAt: BUILD_TIME } = getBuildMeta();
+const { commit: COMMIT_HASH, builtAt: BUILD_TIME } = getBuildMeta();
 
 export default {
   entry: './src/index.tsx',
@@ -65,7 +65,6 @@ export default {
     new InjectVersionConsolePlugin({
       version: pkg.version,
       commit: COMMIT_HASH,
-      message: COMMIT_MESSAGE,
       builtAt: BUILD_TIME,
     }),
     new webpack.DefinePlugin({
