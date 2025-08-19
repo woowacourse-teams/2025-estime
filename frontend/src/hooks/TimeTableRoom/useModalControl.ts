@@ -16,9 +16,25 @@ export function useModalControl() {
     setModals((prev) => ({ ...prev, [key]: false }));
   };
 
+  const modalHelpers = {
+    login: {
+      open: () => handleOpenModal('Login'),
+      close: () => handleCloseModal('Login'),
+      isOpen: modals.Login,
+    },
+    entryConfirm: {
+      open: () => handleOpenModal('EntryConfirm'),
+      close: () => handleCloseModal('EntryConfirm'),
+      isOpen: modals.EntryConfirm,
+    },
+    copyLink: {
+      open: () => handleOpenModal('CopyLink'),
+      close: () => handleCloseModal('CopyLink'),
+      isOpen: modals.CopyLink,
+    },
+  };
+
   return {
-    modals,
-    handleOpenModal,
-    handleCloseModal,
+    modalHelpers,
   };
 }
