@@ -79,11 +79,9 @@ const CheckEventPage = () => {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
         modalHelpers.entryConfirm.open();
-        modalHelpers.entryConfirm.open();
         return;
       }
       await fetchUserAvailableTime();
-      modalHelpers.login.close();
       modalHelpers.login.close();
       setMode('edit');
     } catch (error) {
@@ -94,8 +92,6 @@ const CheckEventPage = () => {
   // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
-      modalHelpers.entryConfirm.close();
-      modalHelpers.login.close();
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
       await fetchUserAvailableTime();
