@@ -4,6 +4,7 @@ import com.estime.common.util.Validator;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -28,5 +29,17 @@ public class Vote {
                 .add("dateTimeSlot", dateTimeSlot)
                 .validateNull();
         return new Vote(VoteId.of(participantId, dateTimeSlot));
+    }
+
+    public Long participantId() {
+        return id.getParticipantId();
+    }
+
+    public DateTimeSlot dateTimeSlot() {
+        return id.getDateTimeSlot();
+    }
+
+    public LocalDateTime startAt() {
+        return dateTimeSlot().getStartAt();
     }
 }
