@@ -26,6 +26,10 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         return new DateTimeSlot(startAt);
     }
 
+    public static DateTimeSlot of(final DateSlot dateSlot, final TimeSlot timeSlot) {
+        return from(LocalDateTime.of(dateSlot.getStartAt(), timeSlot.getStartAt()));
+    }
+
     private static void validateNull(final LocalDateTime startAt) {
         Validator.builder()
                 .add("startAt", startAt)
@@ -36,6 +40,14 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         if (startAt.getMinute() != 0 && startAt.getMinute() != UNIT.toMinutes()) {
             throw new SlotNotDivideException(DomainTerm.DATE_TIME_SLOT, startAt);
         }
+    }
+
+    public DateSlot toDateSlot() {
+        return DateSlot.from(startAt.toLocalDate());
+    }
+
+    public TimeSlot toTimeSlot() {
+        return TimeSlot.from(startAt.toLocalTime());
     }
 
     public boolean isBefore(final LocalDateTime other) {

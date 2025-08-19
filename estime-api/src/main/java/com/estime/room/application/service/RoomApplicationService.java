@@ -97,13 +97,16 @@ public class RoomApplicationService {
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
         final Long roomId = room.getId();
         final Long participantId = getParticipantIdByRoomIdAndName(roomId, input.participantName());
+
         room.ensureDeadlineNotPassed(LocalDateTime.now());
+        room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
 
         voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
+
         try {
             sseService.sendSseByRoomSession(input.session().getRoomSession(), "vote-changed");
         } catch (Exception ignored) {

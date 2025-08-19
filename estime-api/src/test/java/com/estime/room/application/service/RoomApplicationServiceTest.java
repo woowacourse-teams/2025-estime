@@ -6,6 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
+import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -30,9 +31,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,13 +62,31 @@ class RoomApplicationServiceTest {
     private Participant participant1;
     private Participant participant2;
 
+    private static Stream<Arguments> unavailableDateTimeSlots() {
+        return Stream.of(
+                Arguments.of( // Case 1: 날짜(date)가 범위를 벗어나는 경우
+                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(10, 0)))
+                ),
+                Arguments.of( // Case 2: 시간(time)이 범위를 벗어나는 경우
+                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(12, 0)))
+                ),
+                Arguments.of( // Case 3: 날짜(date)와 시간(time) 둘 다 범위를 벗어나는 경우
+                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(12, 0)))
+                )
+        );
+    }
+
     @BeforeEach
     void setUp() {
         room = roomRepository.save(
                 Room.withoutId(
                         "test",
                         List.of(DateSlot.from(LocalDate.now().plusDays(1))),
-                        List.of(TimeSlot.from(LocalTime.of(10, 0))),
+                        List.of(TimeSlot.from(LocalTime.of(10, 0)),
+                                TimeSlot.from(LocalTime.of(10, 30)),
+                                TimeSlot.from(LocalTime.of(11, 0)),
+                                TimeSlot.from(LocalTime.of(11, 30))
+                        ),
                         DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)))
                 ));
 
@@ -294,6 +317,20 @@ class RoomApplicationServiceTest {
 
         // then
         assertThat(output.isDuplicateName()).isTrue();
+    }
+
+    @DisplayName("사용 불가능한 DateTimeSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다.")
+    @ParameterizedTest
+    @MethodSource("unavailableDateTimeSlots")
+    void updateParticipantVotes_withUnavailableDateTimeSlot(final DateTimeSlot unavailableSlot) {
+        // given
+        final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
+                List.of(unavailableSlot));
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.updateParticipantVotes(input))
+                .isInstanceOf(UnavailableSlotException.class)
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
     }
 
     private boolean isValidSession(final RoomSession session) {
