@@ -65,7 +65,7 @@ public class RoomApplicationService {
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
                         room.getId(),
-                        input.platform(),
+                        input.type(),
                         input.channelId()));
 
         discordMessageSender.sendConnectedRoomCreatedMessage(

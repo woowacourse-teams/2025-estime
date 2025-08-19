@@ -11,7 +11,7 @@ public record ConnectedRoomCreateInput(
         List<DateSlot> availableDates,
         List<TimeSlot> availableTimes,
         DateTimeSlot deadline,
-        PlatformType platform,
+        PlatformType type,
         String channelId
 ) {
 
