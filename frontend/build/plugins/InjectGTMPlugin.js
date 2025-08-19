@@ -37,7 +37,7 @@ export default class InjectGtmInProdPlugin {
             data.html += `\n${banner}\n`;
           }
         }
-        return data; // WaterfallHook: 수정된 data를 꼭 반환
+        return data;
       });
     });
   }
