@@ -128,6 +128,7 @@ jobs:
         run: docker ps -a
 
       - name: Clean up temporary backup file
+        if: always()
         run: |
           echo "Cleaning up temporary backup file from home directory."
           rm -f ~/.env.prod.backup
