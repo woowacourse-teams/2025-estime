@@ -12,7 +12,7 @@ export interface TextProps extends ComponentProps<'span'> {
 
 const Text = ({ variant = 'body', color = 'gray90', opacity = true, children }: TextProps) => {
   return (
-    <S.Container variant={variant} color={color} opacity={opacity}>
+    <S.Container variant={variant} color={color} opacity={opacity ? 1 : 0}>
       {children}
     </S.Container>
   );
