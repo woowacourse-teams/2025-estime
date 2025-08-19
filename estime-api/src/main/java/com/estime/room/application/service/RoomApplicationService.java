@@ -109,8 +109,8 @@ public class RoomApplicationService {
 
         try {
             sseService.sendSseByRoomSession(input.session().getRoomSession(), "vote-changed");
-        } catch (Exception ignored) {
-            log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getRoomSession().toString());
+        } catch (final Exception ignored) {
+            log.warn("Failed to send SSE event [vote-changed] for roomSession {}", input.session().getRoomSession().toString());
         }
 
         return updatedVotes;
