@@ -34,7 +34,7 @@ public interface RoomControllerSpecification {
     );
 
     @Operation(summary = "커넥티드 룸 생성")
-    @PostMapping("/connceted")
+    @PostMapping("/connected")
     CustomApiResponse<ConnectedRoomCreateResponse> createConnectedRoom(
             @RequestBody ConnectedRoomCreateRequest request
     );
