@@ -1,6 +1,7 @@
 package com.estime.common.sse.application;
 
 import com.estime.common.sse.domain.SseEmitters;
+import com.estime.common.sse.presentation.dto.SseResponse;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class SseSender {
                         SseEmitter.event()
                                 .name(message)
                                 .id(TsidCreator.getTsid().toString())
-                                .data("ok")
+                                .data(SseResponse.of("ok"))
                 );
             } catch (final IOException e) {
                 throw new RuntimeException("Failed to send SSE message for roomSession " + roomSession + ":" + e.getMessage(), e);

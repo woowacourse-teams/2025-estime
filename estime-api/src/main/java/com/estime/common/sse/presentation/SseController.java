@@ -1,6 +1,7 @@
 package com.estime.common.sse.presentation;
 
 import com.estime.common.sse.application.SseSubscriptionManager;
+import com.estime.common.sse.presentation.dto.SseResponse;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class SseController {
                     SseEmitter.event()
                             .name("connected")
                             .id(TsidCreator.getTsid().toString())
-                            .data("ok")
+                            .data(SseResponse.of("ok"))
             );
         } catch (final IOException e) {
             log.error("Failed to send SSE event [connected] for roomSession {}: {}", roomSession, e.getMessage(), e);
