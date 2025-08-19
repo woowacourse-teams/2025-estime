@@ -22,12 +22,16 @@ const FocusTrap = ({ children }: { children: React.ReactNode }) => {
 
     const focusableElements = getFocusableElements(modalEl);
     const first = focusableElements[0];
-
+    const preferred = modalEl.querySelector<HTMLElement>('[data-autofocus], [autofocus]');
     if (focusableElements.length === 0) {
       modalEl.setAttribute('tabindex', '-1');
       modalEl.focus();
     } else {
-      first?.focus();
+      if (preferred) {
+        preferred.focus();
+      } else {
+        first?.focus();
+      }
     }
 
     const onKeyDown = (e: KeyboardEvent) => {

@@ -52,7 +52,8 @@ export const LoginModal = ({
                     id="userid"
                     placeholder="닉네임을 입력해주세요."
                     maxLength={12}
-                    autoFocus={true}
+                    data-autofocus
+                    value={userData.name}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
                   />
                   <Text
