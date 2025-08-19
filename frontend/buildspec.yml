@@ -4,7 +4,7 @@ env:
   variables:
     # 선택: 커밋 메시지까지 찍고 싶으면 CodeBuild 환경변수에 GIT_REMOTE_URL을 세팅해줘
     # 예) https://github.com/woowacourse-teams/2025-estime.git
-    # GIT_REMOTE_URL: "https://github.com/<owner>/<repo>.git"
+    GIT_REMOTE_URL: 'https://github.com/woowacourse-teams/2025-estime.git'
 
 phases:
   pre_build:
