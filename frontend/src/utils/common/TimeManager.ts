@@ -138,7 +138,6 @@ export const TimeManager = {
   getNextDateString(date: string): string {
     const nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 1);
-    console.log('nextDate', nextDate);
     return FormatManager.formatDate(nextDate);
   },
 };
