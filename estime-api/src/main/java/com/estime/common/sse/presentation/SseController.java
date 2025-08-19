@@ -29,7 +29,7 @@ public class SseController {
                     SseEmitter.event()
                             .name("connected")
                             .id(TsidCreator.getTsid().toString())
-                            .data(SseResponse.of("ok"))
+                            .data(SseResponse.from("ok"))
             );
         } catch (final IOException e) {
             log.error("Failed to send SSE event [connected] for roomSession {}: {}", roomSession, e.getMessage(), e);

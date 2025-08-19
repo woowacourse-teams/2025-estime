@@ -24,7 +24,7 @@ public class SseSender {
                         SseEmitter.event()
                                 .name(message)
                                 .id(TsidCreator.getTsid().toString())
-                                .data(SseResponse.of("ok"))
+                                .data(SseResponse.from("ok"))
                 );
             } catch (final IOException e) {
                 throw new RuntimeException("Failed to send SSE message for roomSession " + roomSession + ":" + e.getMessage(), e);
