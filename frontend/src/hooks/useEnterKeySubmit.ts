@@ -1,35 +1,34 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface UseEnterKeySubmitOptions {
-  callback?: () => void;
-  buttonRef?: React.RefObject<HTMLButtonElement | null>;
+  callback?: () => void | Promise<void>;
 }
 
-export function useEnterKeySubmit({ callback, buttonRef }: UseEnterKeySubmitOptions) {
-  // input에서 쓰는 경우
-  const handleInputKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+export function useEnterKeySubmit({ callback }: UseEnterKeySubmitOptions) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter') return;
+
+      e.preventDefault();
+
+      if (document.activeElement === inputRef.current && !e.isComposing) {
         callback?.();
       }
-    },
-    [callback]
-  );
 
-  // 버튼 ref에서 쓰는 경우
-  useEffect(() => {
-    if (!buttonRef) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        buttonRef.current?.click();
-      }
+      buttonRef.current?.click();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [buttonRef]);
+  }, []);
 
-  return { handleInputKeyDown };
+  return { inputRef, buttonRef };
 }
