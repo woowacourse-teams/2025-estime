@@ -10,7 +10,7 @@ public class SseService {
 
     private final SseSender sseSender;
 
-    public void sendSseByRoomSession(Tsid roomSession, String message) {
-        sseSender.sendMessage(roomSession, message);
+    public void sendSseByRoomSession(final Tsid roomSession, final String message) {
+        sseSender.broadcast(roomSession, message);
     }
 }

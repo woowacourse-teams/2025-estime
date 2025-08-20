@@ -4,6 +4,7 @@ import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.DuplicateNotAllowedException;
 import com.estime.common.util.Validator;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,18 +43,23 @@ public class Votes {
         final Map<DateTimeSlot, Set<Long>> statistic = new HashMap<>();
         for (final Vote element : elements) {
             statistic
-                    .computeIfAbsent(DateTimeSlot.from(element.getId().getDateTimeSlot().getStartAt()),
+                    .computeIfAbsent(DateTimeSlot.from(element.startAt()),
                             slot -> new HashSet<>())
-                    .add(element.getId().getParticipantId());
+                    .add(element.participantId());
         }
-
         return statistic;
     }
 
     public Set<DateTimeSlot> calculateUniqueStartAts() {
         return elements.stream()
-                .map(element -> element.getId().getDateTimeSlot())
+                .map(Vote::dateTimeSlot)
                 .collect(Collectors.toSet());
+    }
+
+    public List<Vote> getSortedVotes() {
+        return elements.stream()
+                .sorted(Comparator.comparing(Vote::dateTimeSlot))
+                .toList();
     }
 
     public boolean isEmpty() {
