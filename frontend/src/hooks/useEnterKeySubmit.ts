@@ -20,7 +20,7 @@ export function useEnterKeySubmit({ callback }: UseEnterKeySubmitOptions) {
       e.preventDefault();
 
       if (document.activeElement === inputRef.current && !e.isComposing) {
-        callback?.();
+        callbackRef.current?.();
       }
 
       buttonRef.current?.click();
