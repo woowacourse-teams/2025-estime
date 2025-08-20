@@ -99,13 +99,17 @@ jobs:
 
       - name: Create env file for Docker Compose
         run: |
-          printf '%s\n' "IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}" > .env
-          printf '%s\n' "IMAGE_TAG=${{ needs.build-and-push.outputs.version }}" >> .env
+          cat << EOF > .env
+          IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
+          IMAGE_TAG=${{ github.event.inputs.version }}
+          EOF
 
       - name: Create env file for env.prod file
         working-directory: ./estime-api
         run: |
-          printf '%s\n' "${{ secrets.ENV_PROD }}" > .env.prod
+          cat << EOF > .env.prod
+          ${{ secrets.ENV_PROD }}
+          EOF
 
       - name: Deploy with Docker Compose
         run: |
