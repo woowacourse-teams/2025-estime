@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
 
+export type HandleErrorReturn = (error: unknown, context: string) => void;
 export default function useHandleError() {
   const { addToast } = useToastContext();
 

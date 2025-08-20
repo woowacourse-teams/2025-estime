@@ -17,6 +17,7 @@ import { EntryConfirmModal } from '@/components/EntryConfirmModal';
 import useHandleError from '@/hooks/Error/useCreateError';
 import Modal from '@/components/Modal';
 import CopyLinkModal from '@/components/CopyLinkModal';
+import useSSE from '@/hooks/SSE/useSSE';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -38,13 +39,10 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  // TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
-  // 공통 에러 핸들링 유틸리티
   const handleError = useHandleError();
 
-  // 편집 모드에서 뷰 모드로 전환 (데이터 저장)
   const switchToViewMode = async () => {
     try {
       await userAvailabilitySubmit();
@@ -55,7 +53,6 @@ const CheckEventPage = () => {
     }
   };
 
-  // 뷰 모드에서 편집 모드로 전환 (로그인 체크)
   const switchToEditMode = () => {
     if (isLoggedIn) {
       setMode('edit');
@@ -64,7 +61,6 @@ const CheckEventPage = () => {
     }
   };
 
-  // 모드 토글 핸들러
   const handleToggleMode = async () => {
     if (mode === 'edit') {
       await switchToViewMode();
@@ -73,7 +69,6 @@ const CheckEventPage = () => {
     }
   };
 
-  // 로그인 후 편집 모드로 전환
   const handleLoginSuccess = async () => {
     try {
       const isDuplicated = await handleLogin();
@@ -89,7 +84,6 @@ const CheckEventPage = () => {
     }
   };
 
-  // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
       modalHelpers.entryConfirm.close();
@@ -100,7 +94,11 @@ const CheckEventPage = () => {
       handleError(error, 'handleContinueWithDuplicated');
     }
   };
-
+  useSSE(session, handleError, {
+    onVoteChange: async () => {
+      await fetchRoomStatistics(session);
+    },
+  });
   return (
     <>
       <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
