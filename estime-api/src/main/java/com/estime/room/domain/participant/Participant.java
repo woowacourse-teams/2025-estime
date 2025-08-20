@@ -32,8 +32,9 @@ public class Participant extends BaseEntity {
             final String name
     ) {
         validateNull(roomId, name);
-        validateName(name);
-        return new Participant(roomId, name.trim());
+        final String trimmedName = name.trim();
+        validateName(trimmedName);
+        return new Participant(roomId, trimmedName);
     }
 
     private static void validateNull(final Long roomId, final String name) {
@@ -43,9 +44,9 @@ public class Participant extends BaseEntity {
                 .validateNull();
     }
 
-    private static void validateName(final String name) {
-        if (name.isBlank() || name.trim().length() > NAME_MAX_LENGTH) {
-            throw new InvalidLengthException(DomainTerm.PARTICIPANT, name);
+    private static void validateName(final String trimmedName) {
+        if (trimmedName.isBlank() || trimmedName.length() > NAME_MAX_LENGTH) {
+            throw new InvalidLengthException(DomainTerm.PARTICIPANT, trimmedName);
         }
     }
 }

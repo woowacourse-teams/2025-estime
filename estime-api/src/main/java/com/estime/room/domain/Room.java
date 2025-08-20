@@ -76,11 +76,12 @@ public class Room extends BaseEntity {
             final DateTimeSlot deadline
     ) {
         validateNull(title, availableDateSlots, availableTimeSlots, deadline);
-        validateTitle(title);
+        final String trimmedTitle = title.trim();
+        validateTitle(trimmedTitle);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
-                title.trim(),
+                trimmedTitle,
                 Set.copyOf(availableDateSlots),
                 Set.copyOf(availableTimeSlots),
                 deadline
@@ -101,9 +102,9 @@ public class Room extends BaseEntity {
                 .validateNull();
     }
 
-    private static void validateTitle(final String title) {
-        if (title.isBlank() || title.length() > TITLE_MAX_LENGTH) {
-            throw new InvalidLengthException(DomainTerm.ROOM, title);
+    private static void validateTitle(final String trimmedTitle) {
+        if (trimmedTitle.isBlank() || trimmedTitle.length() > TITLE_MAX_LENGTH) {
+            throw new InvalidLengthException(DomainTerm.ROOM, trimmedTitle);
         }
     }
 
