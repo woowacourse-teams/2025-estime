@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const Container = styled.button`
@@ -19,7 +20,11 @@ export const Container = styled.button`
     border-color: ${({ theme }) => theme.colors.gray20};
     cursor: not-allowed;
   }
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.gray10};
-  }
+  ${({ theme }) =>
+    !theme.isMobile &&
+    css`
+      &:hover {
+        background-color: ${theme.colors.gray10};
+      }
+    `}
 `;

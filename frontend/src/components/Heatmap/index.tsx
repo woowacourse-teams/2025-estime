@@ -5,18 +5,24 @@ import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
 import TimeTableDay from '@/components/Timetable/TimeTableDay';
+import { RefObject } from 'react';
 import TableTooltip from '../TableTooltip';
 import MobileTooltipCloseBoundary from '@/components/Tooltip/MobileTooltipCloseBoundary';
 import { useTheme } from '@emotion/react';
 import useTooltipBehavior from '@/hooks/Tooltip/useTooltipBehavior';
 
 interface HeatmapProps {
+  timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
 }
-
-const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps) => {
+const Heatmap = ({
+  timeColumnRef,
+  dateTimeSlots,
+  availableDates,
+  roomStatistics,
+}: HeatmapProps) => {
   const {
     tooltipInfo,
     position,
@@ -32,7 +38,7 @@ const Heatmap = ({ dateTimeSlots, availableDates, roomStatistics }: HeatmapProps
     <>
       <MobileTooltipCloseBoundary isMobile={theme.isMobile} closeTooltip={closeTooltip}>
         <S.HeatMapContent onPointerLeave={handleContainerPointerLeave}>
-          <S.TimeSlotColumn>
+          <S.TimeSlotColumn ref={timeColumnRef}>
             {dateTimeSlots.map((timeText) => (
               <S.GridContainer key={timeText}>
                 {timeText.endsWith(':00') && (
