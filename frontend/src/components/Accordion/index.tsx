@@ -1,7 +1,7 @@
 import React from 'react';
 import * as S from './Accordion.styled';
 import Text from '../Text';
-import ArrowButton from '../ArrowButton';
+import AccordionToggleButton from '../AccordionToggleButton';
 
 interface AccordionProps {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ const Accordion = ({ title, children, isOpen, onToggle }: AccordionProps) => {
     <S.Container>
       <S.Header onClick={onToggle}>
         <Text variant={'h3'}>{title}</Text>
-        <ArrowButton isOpen={isOpen} />
+        <AccordionToggleButton isOpen={isOpen} />
       </S.Header>
       <S.Content isOpen={isOpen}>{children}</S.Content>
     </S.Container>

@@ -58,6 +58,8 @@ export const LoginModal = ({
                     maxLength={12}
                     autoFocus={true}
                     ref={inputRef}
+                    data-autofocus
+                    value={userData.name}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
                   />
                   <Text
