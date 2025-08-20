@@ -134,7 +134,7 @@ public class RoomApplicationService {
     @Transactional
     public VotesOutput updateParticipantVotes(final VotesUpdateInput input) {
         final Room room = obtainRoomBySession(input.session());
-        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.participantName());
+        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.name());
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
         room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
@@ -157,7 +157,7 @@ public class RoomApplicationService {
             }
         });
 
-        return VotesOutput.from(input.participantName(), updatedVotes);
+        return VotesOutput.from(input.name(), updatedVotes);
     }
 
     @Transactional
