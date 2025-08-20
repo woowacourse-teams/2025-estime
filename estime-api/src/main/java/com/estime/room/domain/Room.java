@@ -80,7 +80,7 @@ public class Room extends BaseEntity {
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
-                title,
+                title.trim(),
                 Set.copyOf(availableDateSlots),
                 Set.copyOf(availableTimeSlots),
                 deadline
@@ -102,7 +102,7 @@ public class Room extends BaseEntity {
     }
 
     private static void validateTitle(final String title) {
-        if (title.isBlank() || title.trim().length() > TITLE_MAX_LENGTH) {
+        if (title.isBlank() || title.length() > TITLE_MAX_LENGTH) {
             throw new InvalidLengthException(DomainTerm.ROOM, title);
         }
     }

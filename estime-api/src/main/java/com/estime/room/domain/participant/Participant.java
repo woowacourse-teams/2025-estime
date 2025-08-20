@@ -33,7 +33,7 @@ public class Participant extends BaseEntity {
     ) {
         validateNull(roomId, name);
         validateName(name);
-        return new Participant(roomId, name);
+        return new Participant(roomId, name.trim());
     }
 
     private static void validateNull(final Long roomId, final String name) {
