@@ -26,7 +26,7 @@ jobs:
       - name: rollback 대상 tag가 be/prod branch에 있는지 검증
         run: |
           git fetch origin be/prod
-          if git merge-base --is-ancestor ${{ github.sha }} origin/be/prod; then
+          if git merge-base --is-ancestor HEAD origin/be/prod; then
             echo "Rollback target tag is on the be/prod branch. Proceeding."
           else
             echo "Error: The tag you are trying to roll back to is not on the be/prod branch."
@@ -68,20 +68,27 @@ jobs:
 
       - name: rollback 후 application 상태 확인
         run: |
-          echo "Waiting up to 60 seconds for application to be healthy..."
+          echo "Waiting 10 seconds for application to start up..."
+          sleep 10
+          echo "Starting health checks..."
           for i in {1..12}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || true)
             if [ "$STATUS" -eq 200 ]; then
-              echo "Application is healthy!"
+              echo "✅ Rollback successful! Application is healthy."
               docker ps -a
-              exit 0 # workflow 성공
+              exit 0 # 배포 성공
             fi
             echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
             sleep 5
           done
-          echo "Health check failed after 60 seconds."
+          
+          echo "❌ Health check failed after 60 seconds."
+          echo "==== docker container status ===="
           docker ps -a
-          exit 1 # workflow 실패
+          echo "==== docker container logs (api) ===="
+          docker logs $(docker ps --filter "name=api" --format "{{.ID}}") || true
+          
+          exit 1 # 배포 실패
 
       - name: 사용하지 않는 Docker resource 정리
         if: always()
