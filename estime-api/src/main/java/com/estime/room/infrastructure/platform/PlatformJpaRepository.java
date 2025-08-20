@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlatformJpaRepository extends JpaRepository<Platform, Long> {
 
-    Optional<Platform> findByRoomId(Long roomId);
+    Optional<Platform> findByRoomIdAndActiveTrue(Long roomId);
 }
