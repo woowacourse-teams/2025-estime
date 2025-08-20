@@ -6,6 +6,20 @@ interface DragSelectOptions {
   setSelectedTimes: (times: Set<string>) => void;
 }
 
+const getEventCoords = (event: React.MouseEvent | React.TouchEvent) => {
+  if ('touches' in event) {
+    const touch = event.touches[0];
+    return { x: touch.clientX, y: touch.clientY };
+  } else {
+    return { x: event.clientX, y: event.clientY };
+  }
+};
+
+const toggleItem = (item: string, set: Set<string>) => {
+  if (set.has(item)) set.delete(item);
+  else set.add(item);
+};
+
 const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions) => {
   const draggingRef = useRef(false);
   const startX = useRef(0);
@@ -15,21 +29,8 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
   useLockBodyScroll(isTouch);
 
   // 좌표 추출 공통 함수
-  const getEventCoords = (event: React.MouseEvent | React.TouchEvent) => {
-    if ('touches' in event) {
-      const touch = event.touches[0];
-      return { x: touch.clientX, y: touch.clientY };
-    } else {
-      return { x: event.clientX, y: event.clientY };
-    }
-  };
 
   const hoveredRef = useRef<Set<string>>(new Set());
-
-  const toggleItem = (item: string, set: Set<string>) => {
-    if (set.has(item)) set.delete(item);
-    else set.add(item);
-  };
 
   const onStart = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
@@ -80,7 +81,8 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
           toggleItem(time, updatedSet);
           hoveredRef.current.add(time);
         } else if (!inArea && hoveredRef.current.has(time)) {
-          hoveredRef.current.delete(time); // 영역 벗어나면 다시 진입 가능
+          toggleItem(time, updatedSet);
+          hoveredRef.current.delete(time);
         }
       });
 
@@ -89,38 +91,6 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
     [selectedTimes, setSelectedTimes]
   );
 
-  // 이전
-  // const onMove = useCallback(
-  //   (event: React.MouseEvent | React.TouchEvent) => {
-  //     if (!draggingRef.current) return;
-
-  //     const { x: endX, y: endY } = getEventCoords(event);
-  //     const minX = Math.min(startX.current, endX);
-  //     const minY = Math.min(startY.current, endY);
-  //     const maxX = Math.max(startX.current, endX);
-  //     const maxY = Math.max(startY.current, endY);
-
-  //     const newSelectedSet = new Set<string>();
-
-  //     Array.from(document.querySelectorAll('.selectable')).forEach((el) => {
-  //       const time = el.getAttribute('data-time');
-  //       if (!time) return;
-
-  //       const rect = el.getBoundingClientRect();
-  //       const inArea = rect.left < maxX && rect.right > minX && rect.top < maxY && rect.bottom > minY;
-
-  //       if (inArea) {
-  //         newSelectedSet.add(time); // 영역 안에 있으면 선택
-  //         hoveredRef.current.add(time); // 진입 기록
-  //       } else {
-  //         hoveredRef.current.delete(time); // 영역 밖이면 다시 진입 가능
-  //       }
-  //     });
-
-  //     setSelectedTimes(newSelectedSet); // 영역 안 셀만 선택 상태로
-  //   },
-  //   [setSelectedTimes]
-  // );
   const onEnd = useCallback(() => {
     draggingRef.current = false;
     setIsTouch(false);
