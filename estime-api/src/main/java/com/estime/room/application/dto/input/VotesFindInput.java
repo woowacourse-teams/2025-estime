@@ -6,7 +6,7 @@ import com.github.f4b6a3.tsid.Tsid;
 
 public record VotesFindInput(
         RoomSession session,
-        ParticipantName participantName
+        ParticipantName name
 ) {
 
     public static VotesFindInput of(Tsid roomSession, String participantName) {

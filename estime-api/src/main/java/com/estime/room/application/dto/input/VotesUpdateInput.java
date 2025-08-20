@@ -8,7 +8,7 @@ import java.util.List;
 
 public record VotesUpdateInput(
         RoomSession session,
-        ParticipantName participantName,
+        ParticipantName name,
         List<DateTimeSlot> dateTimeSlots
 ) {
 

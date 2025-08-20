@@ -6,9 +6,9 @@ import com.estime.room.domain.vo.RoomSession;
 
 public record ParticipantCreateInput(
         RoomSession session,
-        ParticipantName participantName
+        ParticipantName name
 ) {
     public Participant toEntity(final Long roomId) {
-        return Participant.withoutId(roomId, participantName);
+        return Participant.withoutId(roomId, name);
     }
 }

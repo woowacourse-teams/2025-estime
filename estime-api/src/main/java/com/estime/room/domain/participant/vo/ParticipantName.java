@@ -17,15 +17,15 @@ public class ParticipantName {
 
     private String value;
 
-    public static ParticipantName from(final String name) {
-        final String trimmedName = name.trim();
+    public static ParticipantName from(final String participantName) {
+        final String trimmedName = participantName.trim();
         validate(trimmedName);
         return new ParticipantName(trimmedName);
     }
 
-    private static void validate(final String name) {
-        if (name.isBlank() || name.length() > NAME_MAX_LENGTH) {
-            throw new InvalidLengthException(DomainTerm.PARTICIPANT, name);
+    private static void validate(final String participantName) {
+        if (participantName.isBlank() || participantName.length() > NAME_MAX_LENGTH) {
+            throw new InvalidLengthException(DomainTerm.PARTICIPANT, participantName);
         }
     }
 }

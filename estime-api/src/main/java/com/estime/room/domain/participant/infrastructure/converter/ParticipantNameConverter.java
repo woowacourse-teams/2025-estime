@@ -8,8 +8,8 @@ import jakarta.persistence.Converter;
 public class ParticipantNameConverter implements AttributeConverter<ParticipantName, String> {
 
     @Override
-    public String convertToDatabaseColumn(final ParticipantName participantName) {
-        return participantName == null ? null : participantName.getValue();
+    public String convertToDatabaseColumn(final ParticipantName name) {
+        return name == null ? null : name.getValue();
     }
 
     @Override

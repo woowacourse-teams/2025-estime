@@ -126,9 +126,9 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public VotesOutput getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
         final Long roomId = obtainRoomIdBySession(input.session());
-        final Long participantId = obtainParticipantIdByRoomIdAndName(roomId, input.participantName());
+        final Long participantId = obtainParticipantIdByRoomIdAndName(roomId, input.name());
         final Votes votes = voteRepository.findAllByParticipantId(participantId);
-        return VotesOutput.from(input.participantName(), votes);
+        return VotesOutput.from(input.name(), votes);
     }
 
     @Transactional
@@ -167,7 +167,7 @@ public class RoomApplicationService {
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
 
-        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
+        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.name());
         if (!isDuplicateName) {
             participantRepository.save(input.toEntity(roomId));
         }
@@ -185,8 +185,8 @@ public class RoomApplicationService {
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 
-    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final ParticipantName participantName) {
-        return participantRepository.findIdByRoomIdAndName(roomId, participantName)
-                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, participantName));
+    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return participantRepository.findIdByRoomIdAndName(roomId, name)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, name));
     }
 }

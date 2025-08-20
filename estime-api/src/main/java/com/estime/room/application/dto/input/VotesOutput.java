@@ -6,14 +6,11 @@ import com.estime.room.domain.participant.vote.Votes;
 import java.util.List;
 
 public record VotesOutput(
-        ParticipantName participantName,
+        ParticipantName name,
         List<Vote> votes
 ) {
 
-    public static VotesOutput from(final ParticipantName participantName, final Votes votes) {
-        return new VotesOutput(
-                participantName,
-                votes.getSortedVotes()
-        );
+    public static VotesOutput from(final ParticipantName name, final Votes votes) {
+        return new VotesOutput(name, votes.getSortedVotes());
     }
 }

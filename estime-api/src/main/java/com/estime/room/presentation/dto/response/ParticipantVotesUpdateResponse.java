@@ -18,7 +18,7 @@ public record ParticipantVotesUpdateResponse(
 
     public static ParticipantVotesUpdateResponse from(final VotesOutput output) {
         return new ParticipantVotesUpdateResponse(
-                output.participantName().getValue(),
+                output.name().getValue(),
                 output.votes().stream()
                         .map(Vote::startAt)
                         .toList()
