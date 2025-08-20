@@ -2,7 +2,7 @@ import discordLogo from '@/assets/images/discord.png';
 import slackLogo from '@/assets/images/slack.png';
 
 interface PlatformLogoProps {
-  platform: 'DISCORD' | 'SLACK';
+  platformType: 'DISCORD' | 'SLACK';
 }
 
 const logos: Record<'DISCORD' | 'SLACK', string> = {
@@ -10,8 +10,8 @@ const logos: Record<'DISCORD' | 'SLACK', string> = {
   SLACK: slackLogo,
 };
 
-const PlatformLogo = ({ platform }: PlatformLogoProps) => {
-  return <img src={logos[platform]} alt={platform} width={48} height={48} />;
+const PlatformLogo = ({ platformType }: PlatformLogoProps) => {
+  return <img src={logos[platformType]} alt={platformType} width={48} height={48} />;
 };
 
 export default PlatformLogo;
