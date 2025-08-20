@@ -75,7 +75,7 @@ public class RoomDeadlineScheduler {
                 lastCheckedRoomId.get(), taskQueue.size());
     }
 
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void processTaskQueue() {
         final LocalDateTime now = LocalDateTime.now();
         log.debug("Processing task queue at {}. Current queue size: {}", now, taskQueue.size());
