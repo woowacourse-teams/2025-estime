@@ -16,7 +16,7 @@
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n</pattern>
+                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n</pattern>
             </layout>
             <username>🚨DEV ERROR LOGS 🚨</username>
             <tts>false</tts>
