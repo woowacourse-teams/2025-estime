@@ -3,6 +3,7 @@ package com.estime.room.domain.platform;
 import com.estime.common.BaseEntity;
 import com.estime.common.util.Validator;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,16 +32,29 @@ public class Platform extends BaseEntity {
     @Column(name = "channel_id", nullable = false)
     private String channelId;
 
-    public static Platform withoutId(final Long roomId, final PlatformType platformType, final String channelId) {
-        validateNull(roomId, platformType, channelId);
-        return new Platform(roomId, platformType, channelId);
+    @Embedded
+    private PlatformNotification notification;
+
+    public static Platform withoutId(
+            final Long roomId,
+            final PlatformType platformType,
+            final String channelId,
+            final PlatformNotification notification
+    ) {
+        validateNull(roomId, platformType, channelId, notification);
+        return new Platform(roomId, platformType, channelId, notification);
     }
 
-    private static void validateNull(final Long roomId, final PlatformType platformType, final String channelId) {
+    private static void validateNull(
+            final Long roomId,
+            final PlatformType platformType,
+            final String channelId,
+            final PlatformNotification notification) {
         Validator.builder()
                 .add(Fields.roomId, roomId)
                 .add(Fields.type, platformType)
                 .add(Fields.channelId, channelId)
+                .add(Fields.notification, notification)
                 .validateNull();
     }
 }

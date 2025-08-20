@@ -1,5 +1,6 @@
 package com.estime.room.application.dto.input;
 
+import com.estime.room.domain.platform.PlatformNotification;
 import com.estime.room.domain.platform.PlatformType;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
@@ -12,7 +13,8 @@ public record ConnectedRoomCreateInput(
         List<TimeSlot> availableTimes,
         DateTimeSlot deadline,
         PlatformType type,
-        String channelId
+        String channelId,
+        PlatformNotification notification
 ) {
 
     public RoomCreateInput toRoomCreateInput() {
