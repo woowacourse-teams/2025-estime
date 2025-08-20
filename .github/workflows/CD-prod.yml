@@ -137,9 +137,11 @@ jobs:
 
       - name: healthcheck application containers
         run: |
-          echo "Waiting up to 60 seconds for application to be healthy..."
+          echo "Waiting 10 seconds for application to start up..."
+          sleep 10
+          echo "Starting health checks..."
           for i in {1..12}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || true)
             if [ "$STATUS" -eq 200 ]; then
               echo "✅ Deployment successful! Application is healthy."
               docker ps -a
@@ -148,7 +150,7 @@ jobs:
             echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
             sleep 5
           done
-
+          
           echo "❌ Health check failed after 60 seconds."
           echo "==== docker container status ===="
           docker ps -a
