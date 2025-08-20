@@ -1,5 +1,9 @@
 name: CD Prod Pipeline
 
+concurrency:
+  group: be-prod
+  cancel-in-progress: true # CD 작업은 한번에 하나만 실행하도록 제한
+
 on:
   push:
     tags:
