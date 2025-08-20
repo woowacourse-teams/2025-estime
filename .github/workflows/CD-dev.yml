@@ -89,17 +89,25 @@ jobs:
       SPRING_PROFILES_ACTIVE: dev
 
     steps:
+      - name: Move .env.dev to home directory
+        run: |
+          if [ -f ./estime-api/.env.dev ]; then
+            echo "Found .env.dev, moving it to home directory for backup."
+            mv ./estime-api/.env.dev ~/.env.dev.backup
+          else
+            echo "No .env.dev file found to back up."
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Backup existing .env.dev file
-        working-directory: ./estime-api
+      - name: Restore .env.dev from backup
         run: |
-          if [ -f .env.dev ]; then
-            echo "Found .env.dev, backing up to .env.dev.before"
-            mv .env.dev .env.dev.before
+          if [ -f ~/.env.dev.backup ]; then
+            echo "Restoring .env.dev.before from backup."
+            mv ~/.env.dev.backup ./estime-api/.env.dev.before
           else
-            echo "No .env.dev file found, skipping backup."
+            echo "No backup file found to restore."
           fi
 
       - name: Create env file for Docker Compose
@@ -118,3 +126,9 @@ jobs:
 
       - name: Debug running containers
         run: docker ps -a
+
+      - name: Clean up temporary backup file
+        if: always()
+        run: |
+          echo "Cleaning up temporary backup file from home directory."
+          rm -f ~/.env.dev.backup
