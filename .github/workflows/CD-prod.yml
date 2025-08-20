@@ -90,9 +90,11 @@ jobs:
       - name: Backup existing .env.prod file
         working-directory: ./estime-api
         run: |
+          mkdir -p ~/backup
           if [ -f .env.prod ]; then
-            echo "Found .env.prod, backing up to .env.prod.before"
-            mv .env.prod .env.prod.before
+            BACKUP_NAME=".env.prod.backup.$(date +%Y%m%d%H%M%S)"
+            echo "Found .env.prod, backing up to ~/backup/$BACKUP_NAME"
+            mv .env.prod ~/backup/"$BACKUP_NAME"
           else
             echo "No .env.prod file found, skipping backup."
           fi
@@ -101,7 +103,7 @@ jobs:
         run: |
           cat << EOF > .env
           IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
-          IMAGE_TAG=${{ github.event.inputs.version }}
+          IMAGE_TAG=${{ needs.build-and-push.outputs.version }}
           EOF
 
       - name: Create env file for env.prod file
