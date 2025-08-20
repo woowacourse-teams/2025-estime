@@ -4,7 +4,6 @@ import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.domain.platform.PlatformNotification;
 import com.estime.room.domain.platform.PlatformType;
 import com.estime.room.domain.slot.vo.DateSlot;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,7 +41,7 @@ public record ConnectedRoomCreateRequest(
                 title,
                 availableDateSlots.stream().map(DateSlot::from).toList(),
                 availableTimeSlots.stream().map(TimeSlot::from).toList(),
-                DateTimeSlot.from(deadline),
+                deadline,
                 PlatformType.from(platformType),
                 channelId,
                 PlatformNotification.of(notification.created, notification.remind, notification.deadline)

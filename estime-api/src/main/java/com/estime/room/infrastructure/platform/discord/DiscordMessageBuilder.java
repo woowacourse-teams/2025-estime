@@ -2,7 +2,7 @@ package com.estime.room.infrastructure.platform.discord;
 
 import com.estime.room.domain.platform.PlatformMessage;
 import com.estime.room.domain.platform.PlatformMessageStyle;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
+import java.time.LocalDateTime;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -45,9 +45,9 @@ public class DiscordMessageBuilder {
     public MessageCreateData buildConnectedRoomCreatedMessage(
             final String shortcut,
             final String title,
-            final DateTimeSlot deadline) {
+            final LocalDateTime deadline) {
         final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATED;
-        final String formattedDeadline = deadline.getStartAt()
+        final String formattedDeadline = deadline
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
         final MessageEmbed embed = new EmbedBuilder()
                 .setTitle(platformMessage.getTitleWithEmoji())

@@ -2,7 +2,6 @@ package com.estime.room.presentation.dto.request;
 
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.domain.slot.vo.DateSlot;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +32,7 @@ public record RoomCreateRequest(
                 title,
                 availableDateSlots.stream().map(DateSlot::from).toList(),
                 availableTimeSlots.stream().map(TimeSlot::from).toList(),
-                DateTimeSlot.from(deadline)
+                deadline
         );
     }
 }

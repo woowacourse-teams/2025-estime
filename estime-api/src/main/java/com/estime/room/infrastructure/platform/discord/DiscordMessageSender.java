@@ -1,7 +1,7 @@
 package com.estime.room.infrastructure.platform.discord;
 
 import com.estime.room.domain.platform.PlatformMessage;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
@@ -30,7 +30,7 @@ public class DiscordMessageSender {
             final String channelId,
             final String shortcut,
             final String title,
-            final DateTimeSlot deadline
+            final LocalDateTime deadline
     ) {
         final TextChannel channel = getChannel(channelId);
         if (channel == null) {
