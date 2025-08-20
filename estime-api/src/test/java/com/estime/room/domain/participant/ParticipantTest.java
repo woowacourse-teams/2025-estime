@@ -32,4 +32,16 @@ class ParticipantTest {
         assertThatCode(() -> Participant.withoutId(1L, exactLengthName))
                 .doesNotThrowAnyException();
     }
+
+    @DisplayName("이름이 빈 문자열이면 InvalidLengthException이 발생한다")
+    @Test
+    void validateName_blank_throwsException() {
+        // given
+        String blankName = "   ";
+
+        // when & then
+        assertThatThrownBy(() -> Participant.withoutId(1L, blankName))
+                .isInstanceOf(InvalidLengthException.class)
+                .hasMessageContaining(DomainTerm.PARTICIPANT.name());
+    }
 }

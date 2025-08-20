@@ -115,4 +115,20 @@ class RoomTest {
                 futureDeadline
         )).doesNotThrowAnyException();
     }
+
+    @DisplayName("제목이 빈 문자열이면 InvalidLengthException이 발생한다")
+    @Test
+    void validateTitle_blank_throwsException() {
+        // given
+        String blankTitle = "   ";
+
+        // when & then
+        assertThatThrownBy(() -> Room.withoutId(
+                blankTitle,
+                List.of(dateSlot),
+                List.of(timeSlot),
+                futureDeadline
+        )).isInstanceOf(InvalidLengthException.class)
+          .hasMessageContaining(DomainTerm.ROOM.name());
+    }
 }
