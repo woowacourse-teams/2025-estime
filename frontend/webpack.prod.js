@@ -1,6 +1,5 @@
 import { merge } from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import InjectGtmInProdPlugin from './build/plugins/InjectGTMPlugin.js';
 // import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import common from './webpack.common.js';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
@@ -31,7 +30,6 @@ export default merge(common, {
 
       // deleteAfterCompile: true,
     }),
-    new InjectGtmInProdPlugin('GTM-5G2XCWPL'),
   ],
   //   optimization: {
   //     minimizer: [
