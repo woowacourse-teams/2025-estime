@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 public class Participant extends BaseEntity {
 
-    private static final int NAME_MAX_LENGTH = 10;
+    private static final int NAME_MAX_LENGTH = 12;
 
     @Column(name = "room_id", nullable = false)
     private Long roomId;
