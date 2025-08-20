@@ -18,8 +18,6 @@ const CreateEventPage = () => {
   const navigate = useNavigate();
   const { colors } = useTheme();
 
-  const createButtonRef = useRef<HTMLButtonElement>(null);
-
   const {
     title,
     availableDateSlots,
@@ -76,7 +74,7 @@ const CreateEventPage = () => {
     }
   };
 
-  useEnterKeySubmit({ buttonRef: createButtonRef });
+  const { buttonRef } = useEnterKeySubmit({ callback: handleCreateRoom });
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
@@ -105,7 +103,7 @@ const CreateEventPage = () => {
             </Information>
             <Flex justify="flex-end">
               <Button
-                buttonRef={createButtonRef}
+                ref={buttonRef}
                 color="primary"
                 selected={true}
                 size="small"

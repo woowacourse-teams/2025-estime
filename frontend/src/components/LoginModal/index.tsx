@@ -26,7 +26,7 @@ export const LoginModal = ({
 }: LoginModalProps) => {
   const theme = useTheme();
 
-  const { handleInputKeyDown } = useEnterKeySubmit({ callback: handleModalLogin });
+  const { inputRef } = useEnterKeySubmit({ callback: handleModalLogin });
 
   return (
     <Modal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal} position="center">
@@ -57,7 +57,7 @@ export const LoginModal = ({
                     placeholder="닉네임을 입력해주세요."
                     maxLength={12}
                     autoFocus={true}
-                    onKeyDown={handleInputKeyDown}
+                    ref={inputRef}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
                   />
                   <Text
