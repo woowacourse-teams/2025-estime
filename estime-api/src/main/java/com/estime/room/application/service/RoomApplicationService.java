@@ -23,6 +23,7 @@ import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.domain.platform.Platform;
+import com.estime.room.domain.platform.PlatformNotificationType;
 import com.estime.room.domain.platform.PlatformRepository;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
@@ -71,13 +72,16 @@ public class RoomApplicationService {
                 Platform.withoutId(
                         room.getId(),
                         input.type(),
-                        input.channelId()));
+                        input.channelId(),
+                        input.notification()));
 
-        discordMessageSender.sendConnectedRoomCreatedMessage(
-                input.channelId(),
-                platformShortcutBuilder.buildConnectedRoomCreatedUrl(room.getSession()),
-                room.getTitle(),
-                room.getDeadline());
+        if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
+            discordMessageSender.sendConnectedRoomCreatedMessage(
+                    input.channelId(),
+                    platformShortcutBuilder.buildConnectedRoomCreatedUrl(room.getSession()),
+                    room.getTitle(),
+                    room.getDeadline());
+        }
 
         return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }
