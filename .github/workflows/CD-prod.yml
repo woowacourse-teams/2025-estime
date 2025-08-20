@@ -39,8 +39,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 태그 검증을 위해 전체 Git 히스토리 필요
 
-      - name: Get version from git tag
+      - name: tag가 be/prod branch에 있는지 검증
+        run: |
+          if git branch -r --contains ${{ github.sha }} | grep -q "origin/be/prod"; then
+            echo "Tag is on the be/prod branch. Proceeding with deployment."
+          else
+            echo "Error: This tag is not on the be/prod branch."
+            exit 1
+          fi
+
+      - name: Git tag에서 버전 정보 추출
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
 
