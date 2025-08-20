@@ -44,7 +44,7 @@ public class Participant extends BaseEntity {
     }
 
     private static void validateName(final String name) {
-        if (name.length() > NAME_MAX_LENGTH) {
+        if (name.isBlank() || name.length() > NAME_MAX_LENGTH) {
             throw new InvalidLengthException(DomainTerm.PARTICIPANT, name);
         }
     }
