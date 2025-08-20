@@ -23,13 +23,13 @@ const MobileTimeTablePageButtons = ({
   return (
     <Flex gap="var(--gap-3)" justify="flex-end" align="center">
       <PageArrowButton onClick={handlePrev} disabled={!canPrev}>
-        <IChevronLeft />
+        <IChevronLeft width={20} height={20} />
       </PageArrowButton>
       <Text variant="h4">
         {currentPage} / {totalPage}
       </Text>
       <PageArrowButton onClick={handleNext} disabled={!canNext}>
-        <IChevronRight />
+        <IChevronRight width={20} height={20} />
       </PageArrowButton>
     </Flex>
   );
