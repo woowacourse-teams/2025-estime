@@ -27,6 +27,7 @@ export default merge(common, {
       sourcemaps: {
         filesToDeleteAfterUpload: '**/*.js.map',
       },
+
       // deleteAfterCompile: true,
     }),
   ],
