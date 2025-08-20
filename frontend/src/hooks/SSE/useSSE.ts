@@ -14,6 +14,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
     const onConnected = (ev: MessageEvent<string>) => {
       try {
         const data = JSON.parse(ev.data);
+        // 삭제하거나, 유의미한 데이터를 파싱할때까지는 유지
         console.log('SSE 연결됨:', data);
       } catch (error) {
         handleError(error, 'SSE 연결 오류');
