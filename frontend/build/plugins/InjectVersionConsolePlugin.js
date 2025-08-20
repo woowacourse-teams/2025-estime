@@ -21,12 +21,10 @@ class InjectVersionConsolePlugin {
       [
         '%c📦 Version : v${this.version}',
         '%c🔀 Commit  : ${this.commit}',
-        '%c📝 Message : ${this.message}',
         '%c🕒 Built   : ${this.builtAt}'
       ].join('\\n'),
       'font-weight:bold;color:#4cafef;',
       'font-weight:bold;color:#9c27b0;',
-      'font-weight:bold;color:#4caf50;',
       'font-weight:bold;color:#ff9800;'
     );
 </script>`;
