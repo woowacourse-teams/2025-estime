@@ -48,8 +48,9 @@ jobs:
 
       - name: tag가 be/prod branch에 있는지 검증
         run: |
-          if git branch -r --contains ${{ github.sha }} | grep -q "origin/be/prod"; then
-            echo "Tag is on the be/prod branch. Proceeding with deployment."
+          git fetch origin be/prod
+          if git merge-base --is-ancestor ${{ github.sha }} origin/be/prod; then
+            echo "Tag is an ancestor of the be/prod branch. Proceeding with deployment."
           else
             echo "Error: This tag is not on the be/prod branch."
             exit 1
@@ -116,7 +117,7 @@ jobs:
 
       - name: Create env file for Docker Compose
         run: |
-          cat << EOF > .env
+          cat <<EOF > .env
           IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
           IMAGE_TAG=${{ needs.build-and-push.outputs.version }}
           EOF
@@ -124,7 +125,7 @@ jobs:
       - name: Create env file for env.prod file
         working-directory: ./estime-api
         run: |
-          cat << EOF > .env.prod
+          cat <<EOF > .env.prod
           ${{ secrets.ENV_PROD }}
           EOF
 
