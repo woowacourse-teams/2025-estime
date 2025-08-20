@@ -57,14 +57,6 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<RoomCreateResponse> create(
-            @RequestBody final RoomCreateRequest request
-    ) {
-        final RoomCreateOutput output = roomApplicationService.saveRoom(request.toInput());
-        return CustomApiResponse.ok(RoomCreateResponse.from(output));
-    }
-
-    @Override
     public CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
             @PathVariable("session") final Tsid roomSession
     ) {
@@ -101,7 +93,6 @@ public class RoomController implements RoomControllerSpecification {
     ) {
         final ParticipantCheckOutput output = roomApplicationService.createParticipant(
                 request.toInput(roomSession));
-        final ParticipantCheckOutput output = roomApplicationService.saveParticipant(request.toInput(roomSession));
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }

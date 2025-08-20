@@ -148,9 +148,6 @@ public class RoomApplicationService {
 
     @Transactional
     public ParticipantCheckOutput createParticipant(final ParticipantCreateInput input) {
-        final Room room = roomRepository.findBySession(input.session())
-                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, input.session()));
-    public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
         final Room room = obtainRoomBySession(input.session());
         final Long roomId = room.getId();
 

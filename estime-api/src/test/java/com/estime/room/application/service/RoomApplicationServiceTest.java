@@ -11,10 +11,10 @@ import com.estime.common.exception.application.NotFoundException;
 import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
-import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.application.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
@@ -134,8 +134,8 @@ class RoomApplicationServiceTest {
     @Test
     void getRoomBySession() {
         // when
-        final RoomOutput output = roomApplicationService.getRoomBySession(room.getSession().getValue());
-        final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(room.getSession().getRoomSession()));
+        final RoomOutput output = roomApplicationService.getRoomBySession(
+                RoomSessionInput.from(room.getSession().getValue()));
 
         // then
         assertSoftly(softAssertions -> {
@@ -175,8 +175,7 @@ class RoomApplicationServiceTest {
 
         // when
         final DateTimeSlotStatisticOutput result = roomApplicationService.calculateVoteStatistic(
-                room.getSession().getValue());
-                RoomSessionInput.from(room.getSession().getRoomSession()));
+                RoomSessionInput.from(room.getSession().getValue()));
 
         // then
         assertSoftly(softly -> {
@@ -186,7 +185,8 @@ class RoomApplicationServiceTest {
             softly.assertThat(result.statistic().getFirst().participantNames())
                     .containsExactlyInAnyOrder("user1", "user2");
             softly.assertThat(result.statistic().getFirst().dateTimeSlot()).isEqualTo(slot1);
-            softly.assertThat(result.statistic().getFirst().participantNames()).containsExactlyInAnyOrder("user1", "user2");
+            softly.assertThat(result.statistic().getFirst().participantNames())
+                    .containsExactlyInAnyOrder("user1", "user2");
         });
     }
 
@@ -200,10 +200,7 @@ class RoomApplicationServiceTest {
 
         // when
         final VotesOutput votesOutput = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
-                VotesFindInput.of(room.getSession().getRoomSession(), participant1.getName()));
-        final Votes votes = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
-                room.getSession().getValue(),
-                participant1.getName());
+                VotesFindInput.of(room.getSession().getValue(), participant1.getName()));
 
         // then
         assertSoftly(softly -> {
