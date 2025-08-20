@@ -20,6 +20,7 @@ import useHandleError from '@/hooks/Error/useCreateError';
 import Modal from '@/components/Modal';
 import CopyLinkModal from '@/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
+import useSSE from '@/hooks/SSE/useSSE';
 
 const CheckEventPage = () => {
   const theme = useTheme();
@@ -123,6 +124,14 @@ const CheckEventPage = () => {
     modalHelpers.entryConfirm.close();
     handleLoggedIn.setFalse();
   };
+
+  useSSE(session, handleError, {
+    onVoteChange: async () => {
+      console.log('🔄 SSE vote-changed event 확인... fetch중...');
+      await fetchRoomStatistics(session);
+      console.log('✅ fetch 완료!');
+    },
+  });
   return (
     <>
       <Wrapper
