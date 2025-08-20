@@ -53,8 +53,9 @@ const CheckEventPage = () => {
     }
   };
 
-  const switchToEditMode = () => {
+  const switchToEditMode = async () => {
     if (isLoggedIn) {
+      await fetchUserAvailableTime();
       setMode('edit');
     } else {
       modalHelpers.login.open();
@@ -96,7 +97,9 @@ const CheckEventPage = () => {
   };
   useSSE(session, handleError, {
     onVoteChange: async () => {
+      console.log('🔄 SSE vote-changed event 확인... fetch중...');
       await fetchRoomStatistics(session);
+      console.log('✅ fetch 완료!');
     },
   });
   return (
