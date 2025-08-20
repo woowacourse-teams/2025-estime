@@ -31,6 +31,7 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
   // 좌표 추출 공통 함수
 
   const hoveredRef = useRef<Set<string>>(new Set());
+  const dragModeRef = useRef<'add' | 'remove'>('add');
 
   const onStart = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
@@ -44,19 +45,23 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
       const isTouchEvent = 'touches' in event;
 
       setIsTouch(isTouchEvent);
-      if (isTouchEvent) {
-        return;
-      }
 
       const target = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
       if (!target) return;
       const time = target.getAttribute('data-time');
       if (!time) return;
 
-      const updated = new Set(selectedTimes);
-      toggleItem(time, updated);
+      // 드래그 모드 결정
+      dragModeRef.current = selectedTimes.has(time) ? 'remove' : 'add';
+      if (isTouchEvent) return;
+
+      // 첫 셀 처리
+      const updatedSet = new Set(selectedTimes);
+      if (dragModeRef.current === 'add') updatedSet.add(time);
+      else updatedSet.delete(time);
+
       hoveredRef.current.add(time);
-      setSelectedTimes(updated);
+      setSelectedTimes(updatedSet);
     },
     [selectedTimes, setSelectedTimes]
   );
@@ -80,13 +85,12 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
         const rect = el.getBoundingClientRect();
         const inArea =
           rect.left < maxX && rect.right > minX && rect.top < maxY && rect.bottom > minY;
-
         if (inArea && !hoveredRef.current.has(time)) {
-          toggleItem(time, updatedSet);
+          // dragMode에 따라 add 또는 remove
+          if (dragModeRef.current === 'add') updatedSet.add(time);
+          else updatedSet.delete(time);
+
           hoveredRef.current.add(time);
-        } else if (!inArea && hoveredRef.current.has(time)) {
-          toggleItem(time, updatedSet);
-          hoveredRef.current.delete(time);
         }
       });
 
@@ -101,6 +105,7 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
       hoveredRef.current.forEach((time) => toggleItem(time, updatedSet));
       setSelectedTimes(updatedSet);
     }
+
     hoveredRef.current.clear();
     draggingRef.current = false;
     setIsTouch(false);
