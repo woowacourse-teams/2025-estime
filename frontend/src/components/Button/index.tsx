@@ -7,12 +7,11 @@ interface ButtonProps extends ComponentProps<'button'> {
   color: ColorsKey;
   selected?: boolean;
   children: React.ReactNode;
-  buttonRef?: React.Ref<HTMLButtonElement>;
 }
 
-const Button = ({ size, color, selected, children, buttonRef, ...props }: ButtonProps) => {
+const Button = ({ size, color, selected, children, ...props }: ButtonProps) => {
   return (
-    <S.Container ref={buttonRef} size={size} color={color} selected={selected} {...props}>
+    <S.Container size={size} color={color} selected={selected} {...props}>
       {children}
     </S.Container>
   );
