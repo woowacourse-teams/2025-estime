@@ -14,16 +14,20 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
+import MobileTimeTablePageButtons from '@/components/MobileTimeTablePageButtons';
+import { useTimeTablePagination } from '@/hooks/Pagination/useTimeTablePagination';
 import useHandleError from '@/hooks/Error/useCreateError';
 import Modal from '@/components/Modal';
 import CopyLinkModal from '@/components/CopyLinkModal';
+import { useTheme } from '@emotion/react';
 
 const CheckEventPage = () => {
+  const theme = useTheme();
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
 
-  const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
+  const { handleLogin, userData, handleUserData, name, isLoggedIn, handleLoggedIn } = useUserLogin({
     session,
   });
 
@@ -50,6 +54,7 @@ const CheckEventPage = () => {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
+      pageReset();
     } catch (error) {
       handleError(error, 'switchToViewMode');
     }
@@ -83,7 +88,9 @@ const CheckEventPage = () => {
       }
       await fetchUserAvailableTime();
       modalHelpers.login.close();
+      handleLoggedIn.setTrue();
       setMode('edit');
+      pageReset();
     } catch (error) {
       handleError(error, 'handleLoginSuccess');
     }
@@ -95,15 +102,42 @@ const CheckEventPage = () => {
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
       await fetchUserAvailableTime();
+      handleLoggedIn.setTrue();
       setMode('edit');
+      pageReset();
     } catch (error) {
       handleError(error, 'handleContinueWithDuplicated');
     }
   };
 
+  const {
+    totalPages,
+    page,
+    timeTableContainerRef,
+    timeColumnRef,
+    currentPageDates,
+    canPagePrev,
+    canPageNext,
+    handlePagePrev,
+    handlePageNext,
+    pageReset,
+  } = useTimeTablePagination({
+    availableDates: roomInfo.availableDateSlots,
+  });
+
+  const handleDuplicatedCancel = () => {
+    modalHelpers.entryConfirm.close();
+    handleLoggedIn.setFalse();
+  };
   return (
     <>
-      <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
+      <Wrapper
+        maxWidth={1280}
+        paddingTop="var(--padding-11)"
+        paddingBottom="var(--padding-11)"
+        paddingLeft="var(--padding-7)"
+        paddingRight="var(--padding-7)"
+      >
         <Flex direction="column" gap="var(--gap-6)">
           <CheckEventPageHeader
             deadline={roomInfo.deadline}
@@ -114,37 +148,62 @@ const CheckEventPage = () => {
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
             <S.FrontFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer>
+              <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
                     mode="view"
                     onToggleEditMode={handleToggleMode}
                   />
-                  <Heatmap
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    roomStatistics={roomStatistics}
-                  />
+                  <Flex direction="column" gap="var(--gap-4)">
+                    {theme.isMobile && (
+                      <MobileTimeTablePageButtons
+                        totalPage={totalPages}
+                        currentPage={page}
+                        handlePrev={handlePagePrev}
+                        handleNext={handlePageNext}
+                        canPrev={canPagePrev}
+                        canNext={canPageNext}
+                      />
+                    )}
+                    <Heatmap
+                      timeColumnRef={timeColumnRef}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={currentPageDates}
+                      roomStatistics={roomStatistics}
+                    />
+                  </Flex>
                 </Flex>
               </S.TimeTableContainer>
             </S.FrontFace>
 
             {/* edit 모드 */}
             <S.BackFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer>
+              <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={userName.value}
                     mode="edit"
                     onToggleEditMode={handleToggleMode}
                   />
-
-                  <Timetable
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    selectedTimes={selectedTimes}
-                  />
+                  <Flex direction="column" gap="var(--gap-4)">
+                    {theme.isMobile && (
+                      <MobileTimeTablePageButtons
+                        totalPage={totalPages}
+                        currentPage={page}
+                        handlePrev={handlePagePrev}
+                        handleNext={handlePageNext}
+                        canPrev={canPagePrev}
+                        canNext={canPageNext}
+                      />
+                    )}
+                    <Timetable
+                      timeColumnRef={timeColumnRef}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={currentPageDates}
+                      selectedTimes={selectedTimes}
+                    />
+                  </Flex>
                 </Flex>
               </S.TimeTableContainer>
             </S.BackFace>
@@ -161,7 +220,7 @@ const CheckEventPage = () => {
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
-        onCancel={modalHelpers.entryConfirm.close}
+        onCancel={handleDuplicatedCancel}
       />
       <Modal
         isOpen={modalHelpers.copyLink.isOpen}

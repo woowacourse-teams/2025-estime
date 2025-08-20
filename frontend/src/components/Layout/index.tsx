@@ -5,8 +5,11 @@ import ErrorBoundary from '@/ErrorBoundary';
 import ErrorPage from '@/pages/ErrorPage';
 import ToastProvider from '@/providers/ToastProvider';
 import Footer from '../Footer';
+import { useTheme } from '@emotion/react';
 
 const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
+  const { isMobile } = useTheme();
+
   return (
     <>
       <Header isDark={isDark} toggleTheme={toggleTheme} />
@@ -17,7 +20,7 @@ const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
           </S.Container>
         </ErrorBoundary>
       </ToastProvider>
-      <Footer />
+      {!isMobile && <Footer />}
     </>
   );
 };

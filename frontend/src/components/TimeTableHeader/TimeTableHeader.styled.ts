@@ -9,5 +9,5 @@ export const Container = styled.header`
   flex-direction: row;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.background};
-  padding-bottom: var(--padding-8);
+  padding-bottom: ${({ theme }) => (theme.isMobile ? 0 : 'var(--padding-8)')};
 `;

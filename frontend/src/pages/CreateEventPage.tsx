@@ -12,6 +12,7 @@ import IInfo from '@/icons/IInfo';
 import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
 import { useRef } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
+import { useEnterKeySubmit } from '@/hooks/useEnterKeySubmit';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -73,6 +74,8 @@ const CreateEventPage = () => {
     }
   };
 
+  const { buttonRef } = useEnterKeySubmit({ callback: handleCreateRoom });
+
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
@@ -100,6 +103,7 @@ const CreateEventPage = () => {
             </Information>
             <Flex justify="flex-end">
               <Button
+                ref={buttonRef}
                 color="primary"
                 selected={true}
                 size="small"
