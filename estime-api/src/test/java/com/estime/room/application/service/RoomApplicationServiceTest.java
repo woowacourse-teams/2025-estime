@@ -28,6 +28,7 @@ import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.participant.vote.Vote;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
+import com.estime.room.domain.platform.PlatformNotification;
 import com.estime.room.domain.platform.PlatformRepository;
 import com.estime.room.domain.platform.PlatformType;
 import com.estime.room.domain.slot.vo.DateSlot;
@@ -369,7 +370,8 @@ class RoomApplicationServiceTest {
                 List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
                 DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
                 PlatformType.DISCORD,
-                "testChannelId"
+                "testChannelId",
+                PlatformNotification.of(false, false, false)
         );
 
         doNothing().when(discordMessageSender).sendConnectedRoomCreatedMessage(any(), any(), any(), any());
