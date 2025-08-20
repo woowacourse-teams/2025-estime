@@ -25,6 +25,7 @@ import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.vo.ParticipantName;
 import com.estime.room.domain.participant.vote.Vote;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
@@ -108,8 +109,8 @@ class RoomApplicationServiceTest {
                         DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)))
                 ));
 
-        participant1 = participantRepository.save(Participant.withoutId(room.getId(), "user1"));
-        participant2 = participantRepository.save(Participant.withoutId(room.getId(), "user2"));
+        participant1 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user1")));
+        participant2 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user2")));
     }
 
     @DisplayName("방을 생성할 수 있다.")
@@ -184,10 +185,10 @@ class RoomApplicationServiceTest {
             softly.assertThat(result.statistic()).hasSize(1);
             softly.assertThat(result.statistic().getFirst().dateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(result.statistic().getFirst().participantNames())
-                    .containsExactlyInAnyOrder("user1", "user2");
+                    .containsExactlyInAnyOrder(ParticipantName.from("user1"), ParticipantName.from("user2"));
             softly.assertThat(result.statistic().getFirst().dateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(result.statistic().getFirst().participantNames())
-                    .containsExactlyInAnyOrder("user1", "user2");
+                    .containsExactlyInAnyOrder(ParticipantName.from("user1"), ParticipantName.from("user2"));
         });
     }
 
@@ -201,7 +202,7 @@ class RoomApplicationServiceTest {
 
         // when
         final VotesOutput votesOutput = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
-                VotesFindInput.of(room.getSession().getValue(), participant1.getName()));
+                VotesFindInput.of(room.getSession().getValue(), participant1.getName().getValue()));
 
         // then
         assertSoftly(softly -> {
@@ -321,7 +322,8 @@ class RoomApplicationServiceTest {
     @Test
     void createParticipant() {
         // given
-        final ParticipantCreateInput input = new ParticipantCreateInput(room.getSession(), "newUser");
+        final ParticipantCreateInput input = new ParticipantCreateInput(room.getSession(),
+                ParticipantName.from("newUser"));
 
         // when
         final ParticipantCheckOutput output = roomApplicationService.createParticipant(input);
@@ -329,7 +331,9 @@ class RoomApplicationServiceTest {
         // then
         assertSoftly(softly -> {
             softly.assertThat(output.isDuplicateName()).isFalse();
-            softly.assertThat(participantRepository.existsByRoomIdAndName(room.getId(), "newUser")).isTrue();
+            softly.assertThat(
+                            participantRepository.existsByRoomIdAndName(room.getId(), ParticipantName.from("newUser")))
+                    .isTrue();
         });
     }
 
