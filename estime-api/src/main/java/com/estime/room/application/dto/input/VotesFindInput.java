@@ -9,7 +9,7 @@ public record VotesFindInput(
         ParticipantName name
 ) {
 
-    public static VotesFindInput of(Tsid roomSession, String participantName) {
+    public static VotesFindInput of(final Tsid roomSession, final String participantName) {
         return new VotesFindInput(
                 RoomSession.from(roomSession),
                 ParticipantName.from(participantName)
