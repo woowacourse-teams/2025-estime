@@ -135,11 +135,27 @@ jobs:
           docker compose -f docker-compose.prod.yml pull api
           docker compose -f docker-compose.prod.yml up -d
 
-      - name: Debug running containers
+      - name: healthcheck application containers
         run: |
-          echo "Waiting 10 seconds for containers to stabilize..."
-          sleep 10
+          echo "Waiting up to 60 seconds for application to be healthy..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "✅ Deployment successful! Application is healthy."
+              docker ps -a
+              exit 0 # 배포 성공
+            fi
+            echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
+            sleep 5
+          done
+
+          echo "❌ Health check failed after 60 seconds."
+          echo "==== docker container status ===="
           docker ps -a
+          echo "==== docker container logs (api) ===="
+          docker logs $(docker ps --filter "name=api" --format "{{.ID}}") || true
+          
+          exit 1 # 배포 실패
 
       - name: Clean up unused Docker resources
         if: always()
