@@ -3,7 +3,7 @@ import { LIGHT_THEME } from '@/styles/theme';
 
 export const Container = styled.button<{
   color: keyof typeof LIGHT_THEME.colors;
-  size?: 'x-small' | 'small' | 'medium' | 'large' | 'auto';
+  size?: 'x-small' | 'small' | 'medium' | 'large';
   selected?: boolean;
 }>`
   width: ${({ size }) => {

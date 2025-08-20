@@ -3,7 +3,7 @@ import * as S from './Button.styled';
 import { ColorsKey } from '@/styles/theme';
 
 interface ButtonProps extends ComponentProps<'button'> {
-  size?: 'x-small' | 'small' | 'medium' | 'large' | 'auto';
+  size?: 'x-small' | 'small' | 'medium' | 'large';
   color: ColorsKey;
   selected?: boolean;
   children: React.ReactNode;

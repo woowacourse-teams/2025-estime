@@ -60,7 +60,6 @@ const NotificationModal = ({ notification, handleCreateRoom }: NotificationModal
           <Button
             color="primary"
             selected={true}
-            size="auto"
             onClick={handleCreateRoom}
             data-ga-id="create-event-button"
           >
