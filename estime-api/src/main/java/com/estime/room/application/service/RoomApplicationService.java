@@ -20,6 +20,7 @@ import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.vo.ParticipantName;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.domain.platform.Platform;
@@ -106,7 +107,7 @@ public class RoomApplicationService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        final Map<Long, String> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
+        final Map<Long, ParticipantName> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
                 .collect(Collectors.toMap(Participant::getId, Participant::getName));
 
         return new DateTimeSlotStatisticOutput(
@@ -146,7 +147,8 @@ public class RoomApplicationService {
 
         final Tsid roomSession = input.session().getValue();
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override public void afterCommit() {
+            @Override
+            public void afterCommit() {
                 try {
                     sseService.sendSseByRoomSession(roomSession, "vote-changed");
                 } catch (final Exception e) {
@@ -183,7 +185,7 @@ public class RoomApplicationService {
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 
-    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final String participantName) {
+    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final ParticipantName participantName) {
         return participantRepository.findIdByRoomIdAndName(roomId, participantName)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, participantName));
     }
