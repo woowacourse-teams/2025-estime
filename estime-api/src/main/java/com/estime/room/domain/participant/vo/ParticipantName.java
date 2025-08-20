@@ -2,15 +2,18 @@ package com.estime.room.domain.participant.vo;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.InvalidLengthException;
+import com.estime.common.util.Validator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.experimental.FieldNameConstants;
 
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
+@FieldNameConstants
 public class ParticipantName {
 
     private static final int NAME_MAX_LENGTH = 12;
@@ -18,12 +21,19 @@ public class ParticipantName {
     private String value;
 
     public static ParticipantName from(final String participantName) {
+        validateNull(participantName);
         final String trimmedName = participantName.trim();
-        validate(trimmedName);
+        validateName(trimmedName);
         return new ParticipantName(trimmedName);
     }
 
-    private static void validate(final String participantName) {
+    private static void validateNull(final String participantName) {
+        Validator.builder()
+                .add("participantName", participantName)
+                .validateNull();
+    }
+
+    private static void validateName(final String participantName) {
         if (participantName.isBlank() || participantName.length() > NAME_MAX_LENGTH) {
             throw new InvalidLengthException(DomainTerm.PARTICIPANT, participantName);
         }
