@@ -1,6 +1,6 @@
 name: Rollback Prod
 
-# rollback 작업이 새로운 CD 작업에 의해 중단되지 않도록 보장
+# 롤백 작업이 새로운 CD 작업에 의해 중단되지 않도록 보장
 concurrency:
   group: be-prod
   cancel-in-progress: false
@@ -16,7 +16,21 @@ on:
 jobs:
   rollback:
     runs-on: [ self-hosted, estime-prod ]
+
     steps:
+      - name: rollback 시점의 .env.prod 파일 백업 # rollback 원인 분석 목적
+        working-directory: ${{ github.workspace }}/estime-api
+        run: |
+          BACKUP_DIR=~/rollbacked
+          mkdir -p "$BACKUP_DIR"
+          if [ -f .env.prod ]; then
+            BACKUP_NAME=".env.rollbacked.${{ github.event.inputs.version }}.$(date +%Y%m%d%H%M%S)"
+            echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
+            mv .env.prod "$BACKUP_DIR/$BACKUP_NAME"
+          else
+            echo "No .env.prod file found to back up."
+          fi
+
       - name: 특정 tag의 repository checkout
         uses: actions/checkout@v4
         with:
@@ -33,19 +47,6 @@ jobs:
             exit 1
           fi
 
-      - name: rollback 시점의 .env.prod 파일 백업 # 실패 원인 분석 목적
-        working-directory: ${{ github.workspace }}/estime-api
-        run: |
-          $BACKUP_DIR=~/rollbacked
-          mkdir -p $BACKUP_DIR
-          if [ -f .env.prod ]; then
-            BACKUP_NAME=".env.rollbacked.${{ github.event.inputs.version }}.$(date +%Y%m%d%H%M%S)"
-            echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
-            mv .env.prod $BACKUP_DIR/"$BACKUP_NAME"
-          else
-            echo "No .env.prod file found to back up."
-          fi
-
       - name: Docker Compose용 .env 파일 생성
         run: |
           cat <<EOF > .env
@@ -53,7 +54,7 @@ jobs:
           IMAGE_TAG=${{ github.event.inputs.version }}
           EOF
 
-      - name: Spring Boot용 .env.prod 파일 생성
+      - name: Application용 .env.prod 파일 생성
         working-directory: ./estime-api
         run: |
           cat <<EOF > .env.prod
@@ -76,7 +77,7 @@ jobs:
             if [ "$STATUS" -eq 200 ]; then
               echo "✅ Rollback successful! Application is healthy."
               docker ps -a
-              exit 0 # 배포 성공
+              exit 0 # 롤백 성공
             fi
             echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
             sleep 5
@@ -88,7 +89,7 @@ jobs:
           echo "==== docker container logs (api) ===="
           docker logs $(docker ps --filter "name=api" --format "{{.ID}}") || true
           
-          exit 1 # 배포 실패
+          exit 1 # 롤백 실패
 
       - name: 사용하지 않는 Docker resource 정리
         if: always()
