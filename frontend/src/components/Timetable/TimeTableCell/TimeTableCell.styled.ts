@@ -16,4 +16,5 @@ export const HeaderCell = styled.div<{
   &:hover {
     cursor: pointer;
   }
+  touch-action: none;
 `;
