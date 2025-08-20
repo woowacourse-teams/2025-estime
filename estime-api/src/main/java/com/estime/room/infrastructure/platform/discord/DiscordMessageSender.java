@@ -44,6 +44,26 @@ public class DiscordMessageSender {
         sendMessage(channel, message);
     }
 
+    public void sendReminderMessage(final String channelId, final String roomTitle) {
+        final TextChannel channel = getChannel(channelId);
+        if (channel == null) {
+            return;
+        }
+
+        final MessageCreateData message = discordMessageBuilder.buildReminderMessage(roomTitle);
+        sendMessage(channel, message);
+    }
+
+    public void sendDeadlineAlertMessage(final String channelId, final String roomTitle) {
+        final TextChannel channel = getChannel(channelId);
+        if (channel == null) {
+            return;
+        }
+
+        final MessageCreateData message = discordMessageBuilder.buildDeadlineAlertMessage(roomTitle);
+        sendMessage(channel, message);
+    }
+
     private TextChannel getChannel(final String channelId) {
         final TextChannel channel = jda.getTextChannelById(channelId);
         if (channel == null) {

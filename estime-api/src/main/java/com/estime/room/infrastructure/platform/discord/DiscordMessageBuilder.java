@@ -63,4 +63,28 @@ public class DiscordMessageBuilder {
                 .setActionRow(Button.link(shortcut, platformMessage.getDescriptionWithEmoji()))
                 .build();
     }
+
+    public MessageCreateData buildReminderMessage(final String roomTitle) {
+        final MessageEmbed embed = new EmbedBuilder()
+                .setTitle("⏰ 리마인더")
+                .setDescription(String.format("> '%s' 방의 마감이 1시간 남았습니다! 서둘러 참여해주세요!", roomTitle))
+                .setColor(PlatformMessageStyle.DEFAULT.getColor())
+                .build();
+
+        return new MessageCreateBuilder()
+                .setEmbeds(embed)
+                .build();
+    }
+
+    public MessageCreateData buildDeadlineAlertMessage(final String roomTitle) {
+        final MessageEmbed embed = new EmbedBuilder()
+                .setTitle("⌛️ 마감 알림")
+                .setDescription(String.format("> '%s' 방이 마감되었습니다. 참여해주셔서 감사합니다!", roomTitle))
+                .setColor(PlatformMessageStyle.DEFAULT.getColor())
+                .build();
+
+        return new MessageCreateBuilder()
+                .setEmbeds(embed)
+                .build();
+    }
 }
