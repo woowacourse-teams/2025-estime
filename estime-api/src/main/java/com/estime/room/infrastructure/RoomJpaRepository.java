@@ -6,16 +6,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface RoomJpaRepository extends JpaRepository<Room, Long> {
 
     Optional<Room> findBySessionAndActiveTrue(RoomSession session);
 
-    List<Room> findAllByIdGreaterThanOrderByIdAsc(Long id);
+    Optional<Room> findByIdAndActiveTrue(Long id);
 
-    @Query("SELECT r FROM Room r WHERE r.deadline > :deadline")
-    List<Room> findAllByDeadlineAfter(@Param("deadline") LocalDateTime deadline);
+    List<Room> findAllByIdGreaterThanAndActiveTrueOrderByIdAsc(Long id);
 
+    List<Room> findAllByDeadlineAfterAndActiveTrue(LocalDateTime deadline);
 }

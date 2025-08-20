@@ -21,21 +21,6 @@ public class RoomRepositoryImpl implements RoomRepository {
     }
 
     @Override
-    public Optional<Room> findById(final Long id) {
-        return roomJpaRepository.findById(id);
-    }
-
-    @Override
-    public List<Room> findAllByIdGreaterThanOrderByIdAsc(final Long id) {
-        return roomJpaRepository.findAllByIdGreaterThanOrderByIdAsc(id);
-    }
-
-    @Override
-    public List<Room> findAllByDeadlineAfter(final LocalDateTime criterion) {
-        return roomJpaRepository.findAllByDeadlineAfter(criterion);
-    }
-
-    @Override
     public Optional<Room> findBySession(final RoomSession session) {
         return roomJpaRepository.findBySessionAndActiveTrue(session);
     }
@@ -43,5 +28,20 @@ public class RoomRepositoryImpl implements RoomRepository {
     @Override
     public Optional<Long> findIdBySession(final RoomSession session) {
         return findBySession(session).map(Room::getId);
+    }
+
+    @Override
+    public Optional<Room> findById(final Long id) {
+        return roomJpaRepository.findByIdAndActiveTrue(id);
+    }
+
+    @Override
+    public List<Room> findAllByIdGreaterThanOrderByIdAsc(final Long id) {
+        return roomJpaRepository.findAllByIdGreaterThanAndActiveTrueOrderByIdAsc(id);
+    }
+
+    @Override
+    public List<Room> findAllByDeadlineAfter(final LocalDateTime criterion) {
+        return roomJpaRepository.findAllByDeadlineAfterAndActiveTrue(criterion);
     }
 }
