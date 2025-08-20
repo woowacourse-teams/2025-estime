@@ -10,6 +10,7 @@ import TableTooltip from '../TableTooltip';
 import MobileTooltipCloseBoundary from '@/components/Tooltip/MobileTooltipCloseBoundary';
 import { useTheme } from '@emotion/react';
 import useTooltipBehavior from '@/hooks/Tooltip/useTooltipBehavior';
+import { useToastContext } from '@/contexts/ToastContext';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -33,11 +34,25 @@ const Heatmap = ({
     closeTooltip,
   } = useTooltipBehavior();
   const theme = useTheme();
+  const { addToast } = useToastContext();
+
+  const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
+    if (!cell) return;
+
+    addToast({
+      type: 'warning',
+      message: '시간을 등록하려면 "편집하기"를 눌러주세요',
+    });
+  };
 
   return (
     <>
       <MobileTooltipCloseBoundary isMobile={theme.isMobile} closeTooltip={closeTooltip}>
-        <S.HeatMapContent onPointerLeave={handleContainerPointerLeave}>
+        <S.HeatMapContent
+          onPointerLeave={handleContainerPointerLeave}
+          onPointerDown={handleBeforeEdit}
+        >
           <S.TimeSlotColumn ref={timeColumnRef}>
             {dateTimeSlots.map((timeText) => (
               <S.GridContainer key={timeText}>
