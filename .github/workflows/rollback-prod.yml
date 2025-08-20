@@ -1,5 +1,10 @@
 name: Rollback Prod
 
+# 배포와 롤백 작업을 동시에 진행하지 못하도록 방지
+concurrency:
+  group: be-prod
+  cancel-in-progress: false
+
 on:
   workflow_dispatch:
     inputs:
@@ -37,11 +42,22 @@ jobs:
           docker compose -f docker-compose.prod.yml pull api
           docker compose -f docker-compose.prod.yml up -d --force-recreate
 
-      - name: 실행 중인 컨테이너 상태 확인
+      - name: 롤백 후 애플리케이션 상태 확인
         run: |
-          echo "Waiting 10 seconds for containers to stabilize..."
-          sleep 10
+          echo "Waiting up to 60 seconds for application to be healthy..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "Application is healthy!"
+              docker ps -a
+              exit 0
+            fi
+            echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
+            sleep 5
+          done
+          echo "Health check failed after 60 seconds."
           docker ps -a
+          exit 1 # 워크플로우 실패 처리
 
       - name: 사용하지 않는 Docker 리소스 정리
         if: always()
