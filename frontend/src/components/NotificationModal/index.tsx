@@ -20,9 +20,9 @@ const NOTIFICATION_DATA = {
     { id: 'remind', label: '독려' },
     { id: 'deadline', label: '마감' },
   ],
-} as const satisfies {
+} satisfies {
   title: string;
-  options: readonly { id: OptionId; label: string }[];
+  options: { id: OptionId; label: string }[];
 };
 
 interface NotificationState {
