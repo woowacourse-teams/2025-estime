@@ -14,6 +14,7 @@ import { useRef, useState } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import NotificationModal from '@/components/NotificationModal';
+import { useEnterKeySubmit } from '@/hooks/useEnterKeySubmit';
 
 const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
@@ -97,6 +98,8 @@ const CreateEventPage = () => {
     setNotificationModal(false);
   };
 
+  const { buttonRef } = useEnterKeySubmit({ callback: handleCreateRoom });
+
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
@@ -124,6 +127,7 @@ const CreateEventPage = () => {
             </Information>
             <Flex justify="flex-end">
               <Button
+                ref={buttonRef}
                 color="primary"
                 selected={true}
                 size="small"
