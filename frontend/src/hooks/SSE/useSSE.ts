@@ -43,8 +43,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
     es.addEventListener('connected', onConnected);
     es.addEventListener('vote-changed', onVoteChange);
 
-    const onPageHide = () => cleanup();
-    window.addEventListener('pagehide', onPageHide);
+    // const onPageHide = () => cleanup();
 
     es.onerror = (e) => {
       console.error('SSE 오류:', e);
@@ -54,7 +53,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
     return () => {
       es.removeEventListener('connected', onConnected);
       es.removeEventListener('vote-changed', onVoteChange);
-      window.removeEventListener('pagehide', onPageHide);
+
       cleanup();
     };
   }, [session]);
