@@ -36,7 +36,8 @@ jobs:
       - name: rollback 시점의 .env.prod 파일 백업 # 실패 원인 분석 목적
         working-directory: ${{ github.workspace }}/estime-api
         run: |
-          mkdir -p ~/rollbacked
+          $BACKUP_DIR=~/rollbacked
+          mkdir -p $BACKUP_DIR
           if [ -f .env.prod ]; then
             BACKUP_NAME=".env.rollbacked.${{ github.event.inputs.version }}.$(date +%Y%m%d%H%M%S)"
             echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
