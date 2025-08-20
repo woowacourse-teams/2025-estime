@@ -10,4 +10,7 @@ export const Container = styled.input<{ isError: boolean }>`
   background-color: ${({ theme }) => theme.colors.gray10};
   color: ${({ theme }) => theme.colors.gray50};
   outline: none;
+
+  -webkit-appearance: none;
+  appearance: none;
 `;
