@@ -18,6 +18,13 @@ public class DiscordSlashCommandListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
+        if (event.getName().equals(PlatformCommand.HELP.getValue())) {
+            final MessageCreateData messageData = discordMessageBuilder.buildHelpMessage();
+            event.reply(messageData)
+                    .setEphemeral(true)
+                    .queue();
+        }
+
         if (event.getName().equals(PlatformCommand.CREATE.getValue())) {
             final String shortcut = getConnectedRoomCreateUrl(event);
             final MessageCreateData messageData = discordMessageBuilder.buildConnectedRoomCreateMessage(shortcut);

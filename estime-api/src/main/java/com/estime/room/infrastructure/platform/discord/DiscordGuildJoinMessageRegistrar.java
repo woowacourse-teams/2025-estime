@@ -22,8 +22,8 @@ public class DiscordGuildJoinMessageRegistrar extends ListenerAdapter {
         channel.sendMessageEmbeds(
                 new EmbedBuilder()
                         .setColor(PlatformMessageStyle.DEFAULT.getColor())
-                        .setTitle(PlatformMessage.HELP.getTitle())
-                        .setDescription(PlatformMessage.HELP.getDescription())
+                        .setTitle(PlatformMessage.JOIN.getTitleWithEmoji())
+                        .setDescription(PlatformMessage.JOIN.getDescriptionWithEmoji())
                         .build()
         ).queue();
     }

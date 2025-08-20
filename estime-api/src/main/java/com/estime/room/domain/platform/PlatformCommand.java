@@ -1,6 +1,5 @@
 package com.estime.room.domain.platform;
 
-import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,13 +13,4 @@ public enum PlatformCommand {
 
     private final String value;
     private final String description;
-
-    public static boolean exists(final String command) {
-        return Stream.of(values())
-                .anyMatch(cmd -> cmd.getValueWithSlash().equals(command));
-    }
-
-    public String getValueWithSlash() {
-        return "/" + value;
-    }
 }

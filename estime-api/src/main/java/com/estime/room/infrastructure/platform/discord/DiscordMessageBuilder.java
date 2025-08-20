@@ -13,16 +13,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class DiscordMessageBuilder {
 
-    public MessageCreateData buildConnectedRoomCreateMessage(final String shortcut) {
+    public MessageCreateData buildHelpMessage() {
+        final PlatformMessage platformMessage = PlatformMessage.HELP;
+
+        final MessageEmbed embed = new EmbedBuilder()
+                .setTitle(platformMessage.getTitleWithEmoji())
+                .setDescription(platformMessage.getDescription())
+                .setColor(PlatformMessageStyle.DEFAULT.getColor())
+                .build();
+
+        final String creditsShortcut = "https://estime.today/credits";
+        return new MessageCreateBuilder()
+                .setEmbeds(embed)
+                .setActionRow(Button.link(creditsShortcut, "아인슈타임을 만든 사람들"))
+                .build();
+    }
+
+    public MessageCreateData buildConnectedRoomCreateMessage(final String roomCreateShortcut) {
         final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATE;
         final MessageEmbed embed = new EmbedBuilder()
-                .setTitle(platformMessage.getTitle())
+                .setTitle(platformMessage.getTitleWithEmoji())
                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
                 .build();
 
         return new MessageCreateBuilder()
                 .setEmbeds(embed)
-                .setActionRow(Button.link(shortcut, platformMessage.getDescription()))
+                .setActionRow(Button.link(roomCreateShortcut, platformMessage.getDescriptionWithEmoji()))
                 .build();
     }
 
@@ -34,7 +50,7 @@ public class DiscordMessageBuilder {
         final String formattedDeadline = deadline.getStartAt()
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
         final MessageEmbed embed = new EmbedBuilder()
-                .setTitle(platformMessage.getTitle())
+                .setTitle(platformMessage.getTitleWithEmoji())
                 .setDescription(String.format("""
                         > **제목 : ** %s
                         > **마감기한 : ** %s
@@ -44,7 +60,7 @@ public class DiscordMessageBuilder {
 
         return new MessageCreateBuilder()
                 .setEmbeds(embed)
-                .setActionRow(Button.link(shortcut, platformMessage.getDescription()))
+                .setActionRow(Button.link(shortcut, platformMessage.getDescriptionWithEmoji()))
                 .build();
     }
 }
