@@ -3,12 +3,14 @@ package com.estime.room.application.service;
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
 import com.estime.common.sse.application.SseService;
+import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
-import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
+import com.estime.room.application.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipantsOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
@@ -20,8 +22,12 @@ import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
+import com.estime.room.domain.platform.Platform;
+import com.estime.room.domain.platform.PlatformRepository;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
+import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -42,18 +48,41 @@ public class RoomApplicationService {
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
+    private final PlatformRepository platformRepository;
+    private final DiscordMessageSender discordMessageSender; // TODO EVENT
+    private final PlatformShortcutBuilder platformShortcutBuilder; // TODO EVENT
+
+    @Transactional
+    public RoomCreateOutput createRoom(final RoomCreateInput input) {
+        return RoomCreateOutput.from(
+                roomRepository.save(
+                        input.toEntity()));
+    }
+
+    @Transactional
+    public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
+        final Room room = roomRepository.save(
+                input.toRoomCreateInput().toEntity());
+
+        final Platform platform = platformRepository.save(
+                Platform.withoutId(
+                        room.getId(),
+                        input.type(),
+                        input.channelId()));
+
+        discordMessageSender.sendConnectedRoomCreatedMessage(
+                input.channelId(),
+                platformShortcutBuilder.buildConnectedRoomCreatedUrl(room.getSession()),
+                room.getTitle(),
+                room.getDeadline());
+
+        return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
+    }
 
     @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final RoomSessionInput input) {
         final Room room = obtainRoomBySession(input.session());
         return RoomOutput.from(room);
-    }
-
-    @Transactional
-    public RoomCreateOutput saveRoom(final RoomCreateInput input) {
-        final Room room = input.toEntity();
-        final Room saved = roomRepository.save(room);
-        return RoomCreateOutput.from(saved);
     }
 
     @Transactional(readOnly = true)
@@ -109,16 +138,16 @@ public class RoomApplicationService {
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
 
         try {
-            sseService.sendSseByRoomSession(input.session().getRoomSession(), "vote-changed");
+            sseService.sendSseByRoomSession(input.session().getValue(), "vote-changed");
         } catch (final Exception ignored) {
-            log.warn("Failed to send SSE event [vote-changed] for roomSession {}", input.session().getRoomSession().toString());
+            log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getValue().toString());
         }
 
         return VotesOutput.from(input.participantName(), updatedVotes);
     }
 
     @Transactional
-    public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
+    public ParticipantCheckOutput createParticipant(final ParticipantCreateInput input) {
         final Room room = obtainRoomBySession(input.session());
         final Long roomId = room.getId();
 

@@ -14,7 +14,7 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class RoomSession implements Serializable {
 
-    private final Tsid roomSession;
+    private final Tsid value;
 
     public static RoomSession from(final Tsid roomSession) {
         validateNull(roomSession);
@@ -33,6 +33,6 @@ public class RoomSession implements Serializable {
 
     @Override
     public String toString() {
-        return roomSession.toString();
+        return value.toString();
     }
 }
