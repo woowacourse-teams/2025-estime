@@ -5,7 +5,7 @@ import Text from '@/components/Text';
 import { useNavigate } from 'react-router';
 import useCreateRoom from '@/hooks/useCreateRoom';
 import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
 import IEstimeLogo from '@/icons/IEstimeLogo';
 import { useTheme } from '@emotion/react';
@@ -14,43 +14,33 @@ import * as S from '../styles/MobileCreateEventPage.styled';
 import CalendarSettings from '@/components/Sections/CalendarSettings';
 import BasicSettings from '@/components/Sections/BasicSettings';
 import useFunnelWithHistory from '@/hooks/common/Funnel/useFunnelWithHistory';
+import Modal from '@/components/Modal';
+import NotificationModal from '@/components/NotificationModal';
 
 const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
 
 const MobileCreateEventPage = () => {
-  const theme = useTheme();
-  const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory(STEP);
-
-  const navigate = useNavigate();
-
-  const {
-    title,
-    availableDateSlots,
-    time,
-    deadline,
-    isCalendarReady,
-    isBasicReady,
-    roomInfoSubmit,
-  } = useCreateRoom();
-
-  const { shouldShake, handleShouldShake } = useShakeAnimation();
+  const [notificationModal, setNotificationModal] = useState(false);
   const showValidation = useRef({
     calendar: false,
     rest: false,
   });
-
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory(STEP);
+  const {
+    platformType,
+    title,
+    availableDateSlots,
+    time,
+    deadline,
+    notification,
+    isCalendarReady,
+    isBasicReady,
+    roomInfoSubmit,
+  } = useCreateRoom();
+  const { shouldShake, handleShouldShake } = useShakeAnimation();
   const { addToast } = useToastContext();
-
-  const handleCreateRoom = async () => {
-    const session = await roomInfoSubmit();
-    if (session) {
-      addToast({
-        type: 'success',
-        message: '방 생성이 완료되었습니다.',
-      });
-      navigate(`/check?id=${session}`, { replace: true });
-    }
-  };
 
   const handleNextStep = async (type: 'calendar' | 'rest') => {
     if (type === 'calendar') {
@@ -74,6 +64,35 @@ const MobileCreateEventPage = () => {
       await handleCreateRoom(); // 최종 단계는 생성으로 종료
       return;
     }
+  };
+
+  const onSubmitSuccess = (session: string) => {
+    addToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
+    navigate(`/check?id=${session}`, { replace: true });
+  };
+
+  //  실제 제출
+  const submitAndNavigate = async () => {
+    const session = await roomInfoSubmit();
+    if (session) onSubmitSuccess(session);
+  };
+
+  // 메인 버튼 핸들러
+  const handleCreateRoom = async () => {
+    // 디스코드 연동이면 모달 오픈 후 모달에서 최종 제출
+    if (platformType) {
+      setNotificationModal(true);
+      return;
+    }
+
+    // 일반 생성 플로우
+    await submitAndNavigate();
+  };
+
+  // 디스코드 핸들러
+  const handleDiscordCreateRoom = async () => {
+    await submitAndNavigate();
+    setNotificationModal(false);
   };
 
   return (
@@ -172,6 +191,13 @@ const MobileCreateEventPage = () => {
           </Flex>
         </Funnel.Step>
       </Funnel>
+      <Modal
+        isOpen={notificationModal}
+        onClose={() => setNotificationModal(false)}
+        position="center"
+      >
+        <NotificationModal notification={notification} handleCreateRoom={handleDiscordCreateRoom} />
+      </Modal>
     </Wrapper>
   );
 };

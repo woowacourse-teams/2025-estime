@@ -6,8 +6,13 @@ export interface CreateRoomRequestType {
 }
 
 export interface CreateChannelRoomRequestType extends CreateRoomRequestType {
-  platform: 'DISCORD' | 'SLACK';
+  platformType: 'DISCORD' | 'SLACK';
   channelId: string;
+  notification: {
+    created: boolean;
+    remind: boolean;
+    deadline: boolean;
+  };
 }
 
 export interface CreateRoomResponseType {
