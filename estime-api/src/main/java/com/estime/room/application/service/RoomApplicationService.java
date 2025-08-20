@@ -45,7 +45,7 @@ public class RoomApplicationService {
 
     @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final RoomSessionInput input) {
-        final Room room = loadRoomBySession(input.session());
+        final Room room = obtainRoomBySession(input.session());
         return RoomOutput.from(room);
     }
 
@@ -58,7 +58,7 @@ public class RoomApplicationService {
 
     @Transactional(readOnly = true)
     public DateTimeSlotStatisticOutput calculateVoteStatistic(final RoomSessionInput input) {
-        final Long roomId = loadRoomIdBySession(input.session());
+        final Long roomId = obtainRoomIdBySession(input.session());
 
         final List<Long> participantIds = participantRepository.findIdsByRoomId(roomId);
 
@@ -88,16 +88,16 @@ public class RoomApplicationService {
 
     @Transactional(readOnly = true)
     public ParticipantVotesOutput getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
-        final Long roomId = loadRoomIdBySession(input.session());
-        final Long participantId = loadParticipantIdByRoomIdAndName(roomId, input.participantName());
+        final Long roomId = obtainRoomIdBySession(input.session());
+        final Long participantId = obtainParticipantIdByRoomIdAndName(roomId, input.participantName());
         final Votes votes = voteRepository.findAllByParticipantId(participantId);
         return ParticipantVotesOutput.from(input.participantName(), votes);
     }
 
     @Transactional
     public ParticipantVotesOutput updateParticipantVotes(final VotesUpdateInput input) {
-        final Room room = loadRoomBySession(input.session());
-        final Long participantId = loadParticipantIdByRoomIdAndName(room.getId(), input.participantName());
+        final Room room = obtainRoomBySession(input.session());
+        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.participantName());
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
         room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
@@ -119,7 +119,7 @@ public class RoomApplicationService {
 
     @Transactional
     public ParticipantCheckOutput saveParticipant(final ParticipantCreateInput input) {
-        final Room room = loadRoomBySession(input.session());
+        final Room room = obtainRoomBySession(input.session());
         final Long roomId = room.getId();
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
@@ -132,17 +132,17 @@ public class RoomApplicationService {
         return ParticipantCheckOutput.from(isDuplicateName);
     }
 
-    private Room loadRoomBySession(final RoomSession session) {
+    private Room obtainRoomBySession(final RoomSession session) {
         return roomRepository.findBySession(session)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 
-    private Long loadRoomIdBySession(final RoomSession session) {
+    private Long obtainRoomIdBySession(final RoomSession session) {
         return roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 
-    private Long loadParticipantIdByRoomIdAndName(final Long roomId, final String participantName) {
+    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final String participantName) {
         return participantRepository.findIdByRoomIdAndName(roomId, participantName)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, participantName));
     }
