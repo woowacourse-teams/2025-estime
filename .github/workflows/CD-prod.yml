@@ -100,20 +100,21 @@ jobs:
       SPRING_PROFILES_ACTIVE: prod
 
     steps:
+      - name: Backup existing .env.prod file
+        working-directory: ${{ github.workspace }}/estime-api
+        run: |
+          BACKUP_DIR=~/env_backups/successful
+          mkdir -p "$BACKUP_DIR"
+          if [ -f .env.prod ]; then
+            BACKUP_NAME=".env.prod.backup.${{ needs.build-and-push.outputs.version }}.$(date +%Y%m%d%H%M%S)"
+            echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
+            mv .env.prod "$BACKUP_DIR/$BACKUP_NAME"
+          else
+            echo "No .env.prod file found to back up."
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Backup existing .env.prod file
-        working-directory: ./estime-api
-        run: |
-          mkdir -p ~/backup
-          if [ -f .env.prod ]; then
-            BACKUP_NAME=".env.prod.backup.$(date +%Y%m%d%H%M%S)"
-            echo "Found .env.prod, backing up to ~/backup/$BACKUP_NAME"
-            mv .env.prod ~/backup/"$BACKUP_NAME"
-          else
-            echo "No .env.prod file found, skipping backup."
-          fi
 
       - name: Create env file for Docker Compose
         run: |
