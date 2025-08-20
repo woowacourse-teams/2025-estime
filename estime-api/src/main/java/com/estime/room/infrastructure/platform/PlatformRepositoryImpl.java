@@ -19,6 +19,6 @@ public class PlatformRepositoryImpl implements PlatformRepository {
 
     @Override
     public Optional<Platform> findByRoomId(final Long roomId) {
-        return jpaRepository.findByRoomId(roomId);
+        return jpaRepository.findByRoomIdAndActiveTrue(roomId);
     }
 }

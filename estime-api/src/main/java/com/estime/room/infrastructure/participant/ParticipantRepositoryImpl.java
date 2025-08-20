@@ -22,24 +22,24 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public boolean existsByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.existsByRoomIdAndName(roomId, name);
+        return jpaRepository.existsByRoomIdAndNameAndActiveTrue(roomId, name);
     }
 
     @Override
     public List<Long> findIdsByRoomId(final Long roomId) {
-        return jpaRepository.findAllByRoomId(roomId).stream()
+        return jpaRepository.findAllByRoomIdAndActiveTrue(roomId).stream()
                 .map(BaseEntity::getId)
                 .toList();
     }
 
     @Override
     public List<Participant> findAllByIdIn(final Set<Long> ids) {
-        return jpaRepository.findByIdIn(ids);
+        return jpaRepository.findByIdInAndActiveTrue(ids);
     }
 
     @Override
     public Optional<Long> findIdByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.findByRoomIdAndName(roomId, name)
+        return jpaRepository.findByRoomIdAndNameAndActiveTrue(roomId, name)
                 .map(Participant::getId);
     }
 }
