@@ -72,7 +72,7 @@ const useTimeSelection = (selectedTimes: Field<Set<string>>) => {
       }
       // 4.0: 이 컨테이너를 기준으로....(타임테이블 컨테이너)
       const containerRect = containerRef.current.getBoundingClientRect();
-      const next = new Set(selectedTimeSlots);
+      const newSelectedTimeSlots = new Set(selectedTimeSlots);
 
       // 4.1: 컨테이너 내의 모든 data-item 요소를 찾는데요,
       const items = containerRef.current.querySelectorAll('[data-item]');
@@ -105,14 +105,14 @@ const useTimeSelection = (selectedTimes: Field<Set<string>>) => {
         // 4.4: 모드에 따라 추가/제거
         if (hit) {
           if (dragMode === 'add') {
-            next.add(key);
+            newSelectedTimeSlots.add(key);
           } else {
-            next.delete(key);
+            newSelectedTimeSlots.delete(key);
           }
         }
       });
 
-      setSelectedTimeSlots(next);
+      setSelectedTimeSlots(newSelectedTimeSlots);
     },
     [selectedTimeSlots, setSelectedTimeSlots, dragMode]
   );
@@ -253,13 +253,13 @@ const useTimeSelection = (selectedTimes: Field<Set<string>>) => {
       if (!isDragging.current) {
         const key = getItemKeyAt(e.clientX, e.clientY);
         if (key) {
-          const next = new Set(selectedTimeSlots);
+          const newSelectedTimeSlots = new Set(selectedTimeSlots);
           if (selectedTimeSlots.has(key)) {
-            next.delete(key);
+            newSelectedTimeSlots.delete(key);
           } else {
-            next.add(key);
+            newSelectedTimeSlots.add(key);
           }
-          setSelectedTimeSlots(next);
+          setSelectedTimeSlots(newSelectedTimeSlots);
         }
       }
 
@@ -296,20 +296,7 @@ const useTimeSelection = (selectedTimes: Field<Set<string>>) => {
 
     // 외부에서 수동으로 상태 초기화하고 싶을 때 사용
     // 또한, 완전 초기화 하고 싶을때 어떤 플래그를 초기화 해야 하는지 알수 있겠지용.
-    reset: () => {
-      if (containerRef.current && activePointerId.current !== null) {
-        try {
-          containerRef.current.releasePointerCapture(activePointerId.current);
-        } catch {
-          // 에러를 받기만 하고
-          // noop(no-operation) 아무것도 하지 않아유.
-          // uncaught 에러를 방지
-        }
-      }
-      activePointerId.current = null;
-      setDragStart(null);
-      isDragging.current = false;
-    },
+    reset: onPointerCancel,
   };
 };
 
