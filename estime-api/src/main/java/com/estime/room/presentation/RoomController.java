@@ -1,14 +1,13 @@
 package com.estime.room.presentation;
 
 import com.estime.common.CustomApiResponse;
-import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.application.service.RoomApplicationService;
-import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.presentation.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;

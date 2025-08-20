@@ -20,6 +20,7 @@ import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.vo.ParticipantName;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.domain.platform.Platform;
@@ -106,7 +107,7 @@ public class RoomApplicationService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        final Map<Long, String> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
+        final Map<Long, ParticipantName> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
                 .collect(Collectors.toMap(Participant::getId, Participant::getName));
 
         return new DateTimeSlotStatisticOutput(
@@ -125,15 +126,15 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public VotesOutput getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
         final Long roomId = obtainRoomIdBySession(input.session());
-        final Long participantId = obtainParticipantIdByRoomIdAndName(roomId, input.participantName());
+        final Long participantId = obtainParticipantIdByRoomIdAndName(roomId, input.name());
         final Votes votes = voteRepository.findAllByParticipantId(participantId);
-        return VotesOutput.from(input.participantName(), votes);
+        return VotesOutput.from(input.name(), votes);
     }
 
     @Transactional
     public VotesOutput updateParticipantVotes(final VotesUpdateInput input) {
         final Room room = obtainRoomBySession(input.session());
-        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.participantName());
+        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.name());
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
         room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
@@ -146,7 +147,8 @@ public class RoomApplicationService {
 
         final Tsid roomSession = input.session().getValue();
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override public void afterCommit() {
+            @Override
+            public void afterCommit() {
                 try {
                     sseService.sendSseByRoomSession(roomSession, "vote-changed");
                 } catch (final Exception e) {
@@ -155,7 +157,7 @@ public class RoomApplicationService {
             }
         });
 
-        return VotesOutput.from(input.participantName(), updatedVotes);
+        return VotesOutput.from(input.name(), updatedVotes);
     }
 
     @Transactional
@@ -165,7 +167,7 @@ public class RoomApplicationService {
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
 
-        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.participantName());
+        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.name());
         if (!isDuplicateName) {
             participantRepository.save(input.toEntity(roomId));
         }
@@ -183,8 +185,8 @@ public class RoomApplicationService {
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 
-    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final String participantName) {
-        return participantRepository.findIdByRoomIdAndName(roomId, participantName)
-                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, participantName));
+    private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return participantRepository.findIdByRoomIdAndName(roomId, name)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, name));
     }
 }

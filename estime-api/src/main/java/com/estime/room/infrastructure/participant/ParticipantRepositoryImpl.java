@@ -3,6 +3,7 @@ package com.estime.room.infrastructure.participant;
 import com.estime.common.BaseEntity;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.vo.ParticipantName;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     }
 
     @Override
-    public boolean existsByRoomIdAndName(final Long roomId, final String name) {
+    public boolean existsByRoomIdAndName(final Long roomId, final ParticipantName name) {
         return jpaRepository.existsByRoomIdAndNameAndActiveTrue(roomId, name);
     }
 
@@ -38,7 +39,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     }
 
     @Override
-    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final String name) {
+    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
         return jpaRepository.findByRoomIdAndNameAndActiveTrue(roomId, name)
                 .map(Participant::getId);
     }

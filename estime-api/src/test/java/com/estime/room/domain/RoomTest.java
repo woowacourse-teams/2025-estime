@@ -98,7 +98,7 @@ class RoomTest {
                 List.of(timeSlot),
                 futureDeadline
         )).isInstanceOf(InvalidLengthException.class)
-          .hasMessageContaining(DomainTerm.ROOM.name());
+                .hasMessageContaining(DomainTerm.ROOM.name());
     }
 
     @DisplayName("제목이 최대 길이(20)와 같으면 예외가 발생하지 않는다")
@@ -129,6 +129,6 @@ class RoomTest {
                 List.of(timeSlot),
                 futureDeadline
         )).isInstanceOf(InvalidLengthException.class)
-          .hasMessageContaining(DomainTerm.ROOM.name());
+                .hasMessageContaining(DomainTerm.ROOM.name());
     }
 }
