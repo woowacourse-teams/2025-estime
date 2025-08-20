@@ -1,11 +1,12 @@
 package com.estime.notification.application;
 
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.application.NotFoundException;
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
 import com.estime.room.domain.platform.Platform;
 import com.estime.room.domain.platform.PlatformRepository;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,11 @@ public class NotificationService {
         log.info("Preparing REMINDER notification for room: {}", roomId);
         try {
             final Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() -> new NoSuchElementException("Room not found with id: " + roomId));
+                    .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
             final Platform platform = platformRepository.findByRoomId(roomId)
-                    .orElseThrow(() -> new NoSuchElementException("Platform not found for room id: " + roomId));
+                    .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            final String channelId = platform.getChannelId();
-            final String roomTitle = room.getTitle();
-
-            discordMessageSender.sendReminderMessage(channelId, roomTitle);
+            discordMessageSender.sendReminderMessage(platform.getChannelId(), room.getTitle());
             log.info("Successfully sent REMINDER for room {}", roomId);
 
         } catch (final Exception e) {
@@ -45,14 +43,11 @@ public class NotificationService {
         log.info("Preparing DEADLINE ALERT for room: {}", roomId);
         try {
             final Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() -> new NoSuchElementException("Room not found with id: " + roomId));
+                    .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
             final Platform platform = platformRepository.findByRoomId(roomId)
-                    .orElseThrow(() -> new NoSuchElementException("Platform not found for room id: " + roomId));
+                    .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            final String channelId = platform.getChannelId();
-            final String roomTitle = room.getTitle();
-
-            discordMessageSender.sendDeadlineAlertMessage(channelId, roomTitle);
+            discordMessageSender.sendDeadlineAlertMessage(platform.getChannelId(), room.getTitle());
             log.info("Successfully sent DEADLINE ALERT for room {}", roomId);
 
         } catch (final Exception e) {

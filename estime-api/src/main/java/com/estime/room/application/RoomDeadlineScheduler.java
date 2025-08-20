@@ -98,11 +98,6 @@ public class RoomDeadlineScheduler {
 
         for (final Room room : rooms) {
             final LocalDateTime deadline = room.getDeadline();
-            if (deadline == null) {
-                log.warn("Room {} has null deadline, skipping", room.getId());
-                continue;
-            }
-
             if (!deadline.isAfter(referenceTime)) {
                 continue;
             }
