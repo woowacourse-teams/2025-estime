@@ -20,7 +20,7 @@ export const TimeSlotColumn = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: var(--padding-8);
-  min-width: 5rem;
+  min-width: ${({ theme }) => (theme.isMobile ? '4rem' : '5rem')};
 `;
 
 export const GridContainer = styled.div`

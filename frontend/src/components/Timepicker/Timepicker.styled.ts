@@ -14,7 +14,7 @@ const slideUp = keyframes`
 export const Container = styled.div`
   width: 100%;
   height: 2rem;
-  background-color: ${({ theme }) => theme.colors.gray10};
+  background-color: ${({ theme }) => theme.colors.gray05};
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-8);
   border-radius: var(--radius-4);

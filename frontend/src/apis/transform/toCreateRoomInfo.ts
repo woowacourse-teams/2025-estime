@@ -21,6 +21,6 @@ export const toCreateRoomInfo = (
       endTime: time.endTime,
       interval: 30,
     }),
-    deadline: `${deadline.date}T${TimeManager.subtractMinutes(deadline.time, 30)}`,
+    deadline: `${deadline.date}T${deadline.time}`,
   };
 };
