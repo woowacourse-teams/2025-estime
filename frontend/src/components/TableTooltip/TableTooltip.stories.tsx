@@ -4,6 +4,7 @@ import { ThemeProvider } from '@emotion/react';
 import Heatmap from '@/components/Heatmap';
 import { LIGHT_THEME } from '@/styles/theme';
 import type { DateCellInfo } from '@/hooks/useRoomStatistics';
+import ToastProvider from '@/providers/ToastProvider';
 
 const meta: Meta<typeof Heatmap> = {
   title: 'Components/TableTooltip',
@@ -14,6 +15,13 @@ const meta: Meta<typeof Heatmap> = {
     availableDates: { control: { type: 'object' }, description: '가능한 날짜들' },
     roomStatistics: { control: { type: 'object' }, description: '방 통계 데이터' },
   },
+  decorators: [
+    (Story) => (
+      <ToastProvider>
+        <Story />
+      </ToastProvider>
+    ),
+  ],
 };
 
 export default meta;

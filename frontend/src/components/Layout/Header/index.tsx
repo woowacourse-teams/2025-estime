@@ -6,7 +6,7 @@ import { useExtractQueryParams } from '@/hooks/common/useExtractQueryParams';
 import IEstimeLogo from '@/icons/IEstimeLogo';
 
 const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
-  const platform = useExtractQueryParams('platform') as 'DISCORD' | 'SLACK';
+  const platformType = useExtractQueryParams('platformType') as 'DISCORD' | 'SLACK';
   return (
     <S.Container>
       <S.Content>
@@ -18,7 +18,7 @@ const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
           </Text>
         </S.Wrapper>
         <S.Wrapper>
-          {platform && <PlatformLogo platform={platform} />}
+          {platformType && <PlatformLogo platformType={platformType} />}
           <ThemeButton isDark={isDark} onToggle={toggleTheme} />
         </S.Wrapper>
       </S.Content>

@@ -2,7 +2,7 @@ import * as S from './Calendar.styled';
 import { weekdays } from '@/constants/calender';
 import { useCalender } from '@/hooks/Calendar/useCalender';
 
-import CalendarButton from './CalendarButton/CalendarButton';
+import PageArrowButton from '../PageArrowButton';
 import DayCell from './DayCell';
 import Text from '@/components/Text';
 import IChevronLeft from '@/icons/IChevronLeft';
@@ -34,15 +34,15 @@ const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
               {current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}
             </Text>
             <S.ButtonContainer>
-              <CalendarButton
+              <PageArrowButton
                 onClick={prevMonth}
                 disabled={DateManager.isCurrentMonth(current, today)}
               >
                 <IChevronLeft width={20} height={20} />
-              </CalendarButton>
-              <CalendarButton onClick={nextMonth}>
+              </PageArrowButton>
+              <PageArrowButton onClick={nextMonth}>
                 <IChevronRight width={20} height={20} />
-              </CalendarButton>
+              </PageArrowButton>
             </S.ButtonContainer>
           </S.Header>
           <Text variant="h4">날짜는 최대 7개까지 선택 가능합니다.</Text>

@@ -4,26 +4,31 @@ import Text from '@/components/Text';
 import Button from '@/components/Button';
 import Flex from '@/components/Layout/Flex';
 import { ComponentProps } from 'react';
+import { useTheme } from '@emotion/react';
 
 //로딩 구현시 saving을 쓰면 됨.
 type HeaderMode = 'view' | 'edit';
 
 interface Presets {
-  title: (name: string) => string;
-  description: string;
+  title: string;
+  description: (name: string, isMobile?: boolean) => string;
   //call-to-action
   cta: string;
   disabled?: boolean;
 }
+
 const HeaderPresets: Record<HeaderMode, Presets> = {
   view: {
-    title: (name: string) => `${name}방의 시간 집계에요!`,
-    description: '현재 시간표를 확인해보세요!',
+    title: `전체 시간표`,
+    description: () => '현재 시간표를 확인해보세요!',
     cta: '편집하기',
   },
   edit: {
-    title: (name: string) => `${name}의 시간 등록하기`,
-    description: '가능한 시간을 아래 시간표에서 드래그 해주세요 !',
+    title: `나의 시간표`,
+    description: (name: string, isMobile?: boolean) =>
+      isMobile
+        ? `${name}님의 \n 가능한 시간을 드래그 해주세요!`
+        : `${name}님의 가능한 시간을 드래그 해주세요!`,
     cta: '저장하기',
   },
 };
@@ -43,15 +48,16 @@ const TimeTableHeader = ({
   ...props
 }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
+  const theme = useTheme();
 
   return (
     <S.Container {...props}>
       <Flex direction="column" gap="var(--gap-4)">
         <Text variant="h2" color="text">
-          {presets.title(name)}
+          {presets.title}
         </Text>
-        <Text variant="body" color="text">
-          {presets.description}
+        <Text variant="body" color="text" style={{ whiteSpace: 'pre-wrap' }}>
+          {presets.description(name, theme.isMobile)}
         </Text>
       </Flex>
 

@@ -7,4 +7,6 @@ export const Container = styled.div`
   @media (max-width: 768px) {
     min-height: calc(100vh - 5rem - 200px);
   }
+
+  overflow: ${({ theme }) => theme.isMobile && 'hidden'};
 `;
