@@ -3,6 +3,7 @@ package com.estime.room.domain;
 import com.estime.common.BaseEntity;
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.DeadlineOverdueException;
+import com.estime.common.exception.domain.InvalidLengthException;
 import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.common.util.Validator;
@@ -38,6 +39,8 @@ import lombok.experimental.FieldNameConstants;
 @ToString
 @FieldNameConstants(level = AccessLevel.PRIVATE)
 public class Room extends BaseEntity {
+
+    private static final int TITLE_MAX_LENGTH = 20;
 
     @Column(name = "session", nullable = false)
     @Convert(converter = RoomSessionConverter.class)
@@ -75,10 +78,12 @@ public class Room extends BaseEntity {
             final DateTimeSlot deadline
     ) {
         validateNull(title, availableDateSlots, availableTimeSlots, deadline);
+        final String trimmedTitle = title.trim();
+        validateTitle(trimmedTitle);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
-                title,
+                trimmedTitle,
                 Set.copyOf(availableDateSlots),
                 Set.copyOf(availableTimeSlots),
                 deadline
@@ -97,6 +102,12 @@ public class Room extends BaseEntity {
                 .add(Fields.availableTimeSlots, availableTimeSlots)
                 .add(Fields.deadline, deadline)
                 .validateNull();
+    }
+
+    private static void validateTitle(final String trimmedTitle) {
+        if (trimmedTitle.isBlank() || trimmedTitle.length() > TITLE_MAX_LENGTH) {
+            throw new InvalidLengthException(DomainTerm.ROOM, trimmedTitle);
+        }
     }
 
     private static void validateDeadline(final DateTimeSlot deadline) {

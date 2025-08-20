@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.DeadlineOverdueException;
+import com.estime.common.exception.domain.InvalidLengthException;
 import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
@@ -82,5 +83,52 @@ class RoomTest {
         );
         assertThatCode(() -> room.ensureDeadlineNotPassed(now))
                 .doesNotThrowAnyException();
+    }
+
+    @DisplayName("제목이 최대 길이(20)를 초과하면 InvalidLengthException이 발생한다")
+    @Test
+    void validateTitle_exceedMaxLength_throwsException() {
+        // given
+        String invalidTitle = "제목이 너무 길어서 예외가 발생하는 경우입니다";
+
+        // when & then
+        assertThatThrownBy(() -> Room.withoutId(
+                invalidTitle,
+                List.of(dateSlot),
+                List.of(timeSlot),
+                futureDeadline
+        )).isInstanceOf(InvalidLengthException.class)
+          .hasMessageContaining(DomainTerm.ROOM.name());
+    }
+
+    @DisplayName("제목이 최대 길이(20)와 같으면 예외가 발생하지 않는다")
+    @Test
+    void validateTitle_exactMaxLength_success() {
+        // given
+        String exactLengthTitle = "이십글자제목입니다이십글자";
+
+        // when & then
+        assertThatCode(() -> Room.withoutId(
+                exactLengthTitle,
+                List.of(dateSlot),
+                List.of(timeSlot),
+                futureDeadline
+        )).doesNotThrowAnyException();
+    }
+
+    @DisplayName("제목이 빈 문자열이면 InvalidLengthException이 발생한다")
+    @Test
+    void validateTitle_blank_throwsException() {
+        // given
+        String blankTitle = "   ";
+
+        // when & then
+        assertThatThrownBy(() -> Room.withoutId(
+                blankTitle,
+                List.of(dateSlot),
+                List.of(timeSlot),
+                futureDeadline
+        )).isInstanceOf(InvalidLengthException.class)
+          .hasMessageContaining(DomainTerm.ROOM.name());
     }
 }

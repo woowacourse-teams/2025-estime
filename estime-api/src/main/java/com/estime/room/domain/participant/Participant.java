@@ -1,6 +1,8 @@
 package com.estime.room.domain.participant;
 
 import com.estime.common.BaseEntity;
+import com.estime.common.DomainTerm;
+import com.estime.common.exception.domain.InvalidLengthException;
 import com.estime.common.util.Validator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +19,8 @@ import lombok.ToString;
 @ToString
 public class Participant extends BaseEntity {
 
+    private static final int NAME_MAX_LENGTH = 12;
+
     @Column(name = "room_id", nullable = false)
     private Long roomId;
 
@@ -28,7 +32,9 @@ public class Participant extends BaseEntity {
             final String name
     ) {
         validateNull(roomId, name);
-        return new Participant(roomId, name);
+        final String trimmedName = name.trim();
+        validateName(trimmedName);
+        return new Participant(roomId, trimmedName);
     }
 
     private static void validateNull(final Long roomId, final String name) {
@@ -36,5 +42,11 @@ public class Participant extends BaseEntity {
                 .add("roomId", roomId)
                 .add("name", name)
                 .validateNull();
+    }
+
+    private static void validateName(final String trimmedName) {
+        if (trimmedName.isBlank() || trimmedName.length() > NAME_MAX_LENGTH) {
+            throw new InvalidLengthException(DomainTerm.PARTICIPANT, trimmedName);
+        }
     }
 }
