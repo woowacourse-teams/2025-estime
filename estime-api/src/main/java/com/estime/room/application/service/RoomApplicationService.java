@@ -28,6 +28,7 @@ import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
 import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
+import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +39,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -137,11 +140,16 @@ public class RoomApplicationService {
         voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
 
-        try {
-            sseService.sendSseByRoomSession(input.session().getValue(), "vote-changed");
-        } catch (final Exception ignored) {
-            log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getValue().toString());
-        }
+        final Tsid roomSession = input.session().getValue();
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override public void afterCommit() {
+                try {
+                    sseService.sendSseByRoomSession(roomSession, "vote-changed");
+                } catch (final Exception e) {
+                    log.warn("Failed to send SSE [vote-changed] after commit. roomSession={}", roomSession, e);
+                }
+            }
+        });
 
         return VotesOutput.from(input.participantName(), updatedVotes);
     }
