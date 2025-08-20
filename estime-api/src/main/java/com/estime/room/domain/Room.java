@@ -3,6 +3,7 @@ package com.estime.room.domain;
 import com.estime.common.BaseEntity;
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.DeadlineOverdueException;
+import com.estime.common.exception.domain.InvalidLengthException;
 import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.common.util.Validator;
@@ -36,6 +37,8 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Room extends BaseEntity {
+
+    private static final int TITLE_MAX_LENGTH = 20;
 
     @Column(name = "session", nullable = false)
     @Convert(converter = RoomSessionConverter.class)
@@ -73,6 +76,7 @@ public class Room extends BaseEntity {
             final DateTimeSlot deadline
     ) {
         validateNull(title, availableDateSlots, availableTimeSlots, deadline);
+        validateTitle(title);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
@@ -95,6 +99,12 @@ public class Room extends BaseEntity {
                 .add("availableTimeSlots", availableTimeSlots)
                 .add("deadline", deadline)
                 .validateNull();
+    }
+
+    private static void validateTitle(final String title) {
+        if (title.length() > TITLE_MAX_LENGTH) {
+            throw new InvalidLengthException(DomainTerm.ROOM, title);
+        }
     }
 
     private static void validateDeadline(final DateTimeSlot deadline) {
