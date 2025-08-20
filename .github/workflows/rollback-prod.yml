@@ -1,0 +1,48 @@
+name: Rollback Prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '롤백 시킬 git tag version을 입력하세요. (e.g. v1.0.0-be)'
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    runs-on: [ self-hosted, estime-prod ]
+    steps:
+      - name: 특정 tag의 repo checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Docker Compose용 .env 파일 생성
+        run: |
+          cat << EOF > .env
+          IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
+          IMAGE_TAG=${{ github.event.inputs.version }}
+          EOF
+
+      - name: Spring Boot용 .env.prod 파일 생성
+        working-directory: ./estime-api
+        run: |
+          cat <<EOF > .env.prod
+          ${{ secrets.ENV_PROD }}
+          EOF
+
+      - name: Docker Compose를 사용하여 롤백 진행
+        run: |
+          echo "Rolling back to version: ${{ github.event.inputs.version }}"
+          docker compose -f docker-compose.prod.yml pull api
+          docker compose -f docker-compose.prod.yml up -d --force-recreate
+
+      - name: 실행 중인 컨테이너 상태 확인
+        run: |
+          echo "Waiting 10 seconds for containers to stabilize..."
+          sleep 10
+          docker ps -a
+
+      - name: 사용하지 않는 Docker 리소스 정리
+        if: always()
+        run: docker system prune -a -f
