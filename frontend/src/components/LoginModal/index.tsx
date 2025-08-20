@@ -8,6 +8,7 @@ import * as S from './LoginModal.styled';
 import Tooltip from '@/components/Tooltip';
 import { useTheme } from '@emotion/react';
 import type { LoginData } from '@/hooks/Login/useUserLogin';
+import { useEnterKeySubmit } from '@/hooks/useEnterKeySubmit';
 
 export interface LoginModalProps {
   isLoginModalOpen: boolean;
@@ -24,6 +25,9 @@ export const LoginModal = ({
   handleUserData,
 }: LoginModalProps) => {
   const theme = useTheme();
+
+  const { inputRef } = useEnterKeySubmit({ callback: handleModalLogin });
+
   return (
     <Modal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal} position="center">
       <S.LoginModalContainer>
@@ -52,6 +56,8 @@ export const LoginModal = ({
                     id="userid"
                     placeholder="닉네임을 입력해주세요."
                     maxLength={12}
+                    autoFocus={true}
+                    ref={inputRef}
                     data-autofocus
                     value={userData.name}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
