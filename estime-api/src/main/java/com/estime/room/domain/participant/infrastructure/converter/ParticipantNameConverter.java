@@ -1,0 +1,19 @@
+package com.estime.room.domain.participant.infrastructure.converter;
+
+import com.estime.room.domain.participant.vo.ParticipantName;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+
+@Converter(autoApply = true)
+public class ParticipantNameConverter implements AttributeConverter<ParticipantName, String> {
+
+    @Override
+    public String convertToDatabaseColumn(final ParticipantName participantName) {
+        return participantName == null ? null : participantName.getValue();
+    }
+
+    @Override
+    public ParticipantName convertToEntityAttribute(final String dbData) {
+        return dbData == null ? null : ParticipantName.from(dbData);
+    }
+}
