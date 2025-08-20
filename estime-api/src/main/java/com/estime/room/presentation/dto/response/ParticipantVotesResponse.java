@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.response;
 
-import com.estime.room.application.dto.input.ParticipantVotesOutput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.domain.participant.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ public record ParticipantVotesResponse(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public static ParticipantVotesResponse from(final ParticipantVotesOutput output) {
+    public static ParticipantVotesResponse from(final VotesOutput output) {
         return new ParticipantVotesResponse(
                 output.participantName(),
                 output.votes().stream()

@@ -1,7 +1,7 @@
 package com.estime.room.presentation;
 
 import com.estime.common.CustomApiResponse;
-import com.estime.room.application.dto.input.ParticipantVotesOutput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
@@ -61,7 +61,7 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final Tsid roomSession,
             @RequestParam("participantName") final String participantName
     ) {
-        final ParticipantVotesOutput output = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
+        final VotesOutput output = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
                 VotesFindInput.of(roomSession, participantName));
         return CustomApiResponse.ok(ParticipantVotesResponse.from(output));
     }
@@ -71,7 +71,7 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final Tsid roomSession,
             @RequestBody final ParticipantVotesUpdateRequest request
     ) {
-        final ParticipantVotesOutput output = roomApplicationService.updateParticipantVotes(
+        final VotesOutput output = roomApplicationService.updateParticipantVotes(
                 request.toInput(roomSession));
         return CustomApiResponse.ok("Update success",
                 ParticipantVotesUpdateResponse.from(output));

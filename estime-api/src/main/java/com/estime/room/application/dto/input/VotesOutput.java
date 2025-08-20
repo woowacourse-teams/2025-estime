@@ -4,13 +4,13 @@ import com.estime.room.domain.participant.vote.Vote;
 import com.estime.room.domain.participant.vote.Votes;
 import java.util.List;
 
-public record ParticipantVotesOutput(
+public record VotesOutput(
         String participantName,
         List<Vote> votes
 ) {
 
-    public static ParticipantVotesOutput from(final String participantName, final Votes votes) {
-        return new ParticipantVotesOutput(
+    public static VotesOutput from(final String participantName, final Votes votes) {
+        return new VotesOutput(
                 participantName,
                 votes.getSortedVotes()
         );

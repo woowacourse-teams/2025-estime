@@ -8,7 +8,7 @@ import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
 import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
-import com.estime.room.application.dto.input.ParticipantVotesOutput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
@@ -180,7 +180,7 @@ class RoomApplicationServiceTest {
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         // when
-        final ParticipantVotesOutput votesOutput = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
+        final VotesOutput votesOutput = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
                 VotesFindInput.of(room.getSession().getRoomSession(), participant1.getName()));
 
         // then
@@ -209,7 +209,7 @@ class RoomApplicationServiceTest {
                 List.of(slotToKeep, slotToAdd));
 
         // when
-        final ParticipantVotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
+        final VotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
 
         // then
         assertSoftly(softly -> {
@@ -244,7 +244,7 @@ class RoomApplicationServiceTest {
                 List.of(newSlot1, newSlot2));
 
         // when
-        final ParticipantVotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
+        final VotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
 
         // then
         assertSoftly(softly -> {
@@ -266,7 +266,7 @@ class RoomApplicationServiceTest {
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of());
 
         // when
-        final ParticipantVotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
+        final VotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
 
         // then
         assertSoftly(softly -> {
@@ -287,7 +287,7 @@ class RoomApplicationServiceTest {
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of(slot1));
 
         // when
-        final ParticipantVotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
+        final VotesOutput updatedVotesOutput = roomApplicationService.updateParticipantVotes(input);
 
         // then
         assertSoftly(softly -> {

@@ -4,7 +4,7 @@ import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
 import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
-import com.estime.room.application.dto.input.ParticipantVotesOutput;
+import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
@@ -87,15 +87,15 @@ public class RoomApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public ParticipantVotesOutput getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
+    public VotesOutput getParticipantVotesBySessionAndParticipantName(final VotesFindInput input) {
         final Long roomId = obtainRoomIdBySession(input.session());
         final Long participantId = obtainParticipantIdByRoomIdAndName(roomId, input.participantName());
         final Votes votes = voteRepository.findAllByParticipantId(participantId);
-        return ParticipantVotesOutput.from(input.participantName(), votes);
+        return VotesOutput.from(input.participantName(), votes);
     }
 
     @Transactional
-    public ParticipantVotesOutput updateParticipantVotes(final VotesUpdateInput input) {
+    public VotesOutput updateParticipantVotes(final VotesUpdateInput input) {
         final Room room = obtainRoomBySession(input.session());
         final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.participantName());
 
@@ -114,7 +114,7 @@ public class RoomApplicationService {
             log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getRoomSession().toString());
         }
 
-        return ParticipantVotesOutput.from(input.participantName(), updatedVotes);
+        return VotesOutput.from(input.participantName(), updatedVotes);
     }
 
     @Transactional
