@@ -25,8 +25,8 @@ public class Platform extends BaseEntity {
     private Long roomId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "platform_type", nullable = false)
-    private PlatformType platformType;
+    @Column(name = "type", nullable = false)
+    private PlatformType type;
 
     @Column(name = "channel_id", nullable = false)
     private String channelId;
@@ -39,7 +39,7 @@ public class Platform extends BaseEntity {
     private static void validateNull(final Long roomId, final PlatformType platformType, final String channelId) {
         Validator.builder()
                 .add(Fields.roomId, roomId)
-                .add(Fields.platformType, platformType)
+                .add(Fields.type, platformType)
                 .add(Fields.channelId, channelId)
                 .validateNull();
     }

@@ -74,7 +74,7 @@ public class RoomApplicationService {
                 room.getTitle(),
                 room.getDeadline());
 
-        return ConnectedRoomCreateOutput.from(room.getSession(), platform.getPlatformType());
+        return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }
 
     @Transactional(readOnly = true)
@@ -138,7 +138,7 @@ public class RoomApplicationService {
 
         try {
             sseService.sendSseByRoomSession(input.session().getValue(), "vote-changed");
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
             log.warn("투표 갱신 이후 sse 전송 실패: {}", input.session().getValue().toString());
         }
 

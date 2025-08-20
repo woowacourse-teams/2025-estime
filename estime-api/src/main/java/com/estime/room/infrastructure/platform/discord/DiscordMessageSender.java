@@ -29,7 +29,7 @@ public class DiscordMessageSender {
     public void sendConnectedRoomCreatedMessage(
             final String channelId,
             final String shortcut,
-            final String roomTitle,
+            final String title,
             final DateTimeSlot deadline
     ) {
         final TextChannel channel = getChannel(channelId);
@@ -38,7 +38,7 @@ public class DiscordMessageSender {
         }
 
         final MessageCreateData message = discordMessageBuilder.buildConnectedRoomCreatedMessage(
-                shortcut, roomTitle, deadline
+                shortcut, title, deadline
         );
 
         sendMessage(channel, message);

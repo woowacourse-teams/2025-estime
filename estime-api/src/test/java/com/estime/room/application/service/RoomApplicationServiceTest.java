@@ -305,7 +305,7 @@ class RoomApplicationServiceTest {
         });
     }
 
-    @DisplayName("새로운 참여자를 저장한다.")
+    @DisplayName("새로운 참여자를 생성한다.")
     @Test
     void createParticipant() {
         // given
@@ -321,7 +321,7 @@ class RoomApplicationServiceTest {
         });
     }
 
-    @DisplayName("중복된 이름의 참여자를 저장하면 isDuplicateName이 true를 반환한다.")
+    @DisplayName("중복된 이름의 참여자를 생성하면 isDuplicateName이 true를 반환한다.")
     @Test
     void createParticipantWithDuplicateName() {
         // given

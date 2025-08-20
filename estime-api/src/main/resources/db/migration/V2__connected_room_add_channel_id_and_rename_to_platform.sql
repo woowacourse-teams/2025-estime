@@ -13,9 +13,9 @@ ALTER TABLE connected_room
 
 -- 4) platform → platform_type (ENUM 유지)
 ALTER TABLE connected_room
-    CHANGE COLUMN platform platform_type ENUM('DISCORD') NOT NULL;
+    CHANGE COLUMN platform type ENUM('DISCORD') NOT NULL;
 
--- 5) manual.sql #1
-
--- 6) 테이블명 변경
+-- 5) 테이블명 변경
 RENAME TABLE connected_room TO platform;
+
+-- 6) manual.sql 수동 실행 #1

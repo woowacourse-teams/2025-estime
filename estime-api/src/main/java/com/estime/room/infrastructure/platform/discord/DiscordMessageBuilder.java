@@ -28,7 +28,7 @@ public class DiscordMessageBuilder {
 
     public MessageCreateData buildConnectedRoomCreatedMessage(
             final String shortcut,
-            final String roomTitle,
+            final String title,
             final DateTimeSlot deadline) {
         final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATED;
         final String formattedDeadline = deadline.getStartAt()
@@ -38,7 +38,7 @@ public class DiscordMessageBuilder {
                 .setDescription(String.format("""
                         > **제목 : ** %s
                         > **마감기한 : ** %s
-                        """, roomTitle, formattedDeadline))
+                        """, title, formattedDeadline))
                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
                 .build();
 
