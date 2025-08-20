@@ -34,7 +34,6 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
 
   const onStart = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
-      event.preventDefault();
       draggingRef.current = true;
       hoveredRef.current.clear();
 
@@ -42,7 +41,12 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
       startX.current = x;
       startY.current = y;
 
-      setIsTouch('touches' in event);
+      const isTouchEvent = 'touches' in event;
+
+      setIsTouch(isTouchEvent);
+      if (isTouchEvent) {
+        return;
+      }
 
       const target = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
       if (!target) return;
@@ -92,9 +96,15 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
   );
 
   const onEnd = useCallback(() => {
+    if (!draggingRef.current) {
+      const updatedSet = new Set(selectedTimes);
+      hoveredRef.current.forEach((time) => toggleItem(time, updatedSet));
+      setSelectedTimes(updatedSet);
+    }
+    hoveredRef.current.clear();
     draggingRef.current = false;
     setIsTouch(false);
-  }, []);
+  }, [selectedTimes, setSelectedTimes]);
 
   return {
     onMouseDown: onStart,
