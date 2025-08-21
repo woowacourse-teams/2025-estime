@@ -1,6 +1,8 @@
 package com.estime.room.infrastructure.platform.discord;
 
 import com.estime.room.domain.platform.PlatformMessage;
+import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ public class DiscordMessageSender {
 
     private final JDA jda;
     private final DiscordMessageBuilder discordMessageBuilder;
+    private final PlatformShortcutBuilder platformShortcutBuilder;
 
     public void sendTextMessage(final String channelId, final String message) {
         final TextChannel channel = getChannel(channelId);
@@ -28,7 +31,7 @@ public class DiscordMessageSender {
 
     public void sendConnectedRoomCreatedMessage(
             final String channelId,
-            final String shortcut,
+            final RoomSession session,
             final String title,
             final LocalDateTime deadline
     ) {
@@ -38,29 +41,47 @@ public class DiscordMessageSender {
         }
 
         final MessageCreateData message = discordMessageBuilder.buildConnectedRoomCreatedMessage(
-                shortcut, title, deadline
+                platformShortcutBuilder.buildConnectedRoomUrl(session),
+                title,
+                deadline
         );
 
         sendMessage(channel, message);
     }
 
-    public void sendReminderMessage(final String channelId, final String roomTitle) {
+    public void sendReminderMessage(
+            final String channelId,
+            final RoomSession session,
+            final String title,
+            final LocalDateTime deadline
+    ) {
         final TextChannel channel = getChannel(channelId);
         if (channel == null) {
             return;
         }
 
-        final MessageCreateData message = discordMessageBuilder.buildReminderMessage(roomTitle);
+        final MessageCreateData message = discordMessageBuilder.buildReminderMessage(
+                platformShortcutBuilder.buildConnectedRoomUrl(session),
+                title,
+                deadline
+        );
         sendMessage(channel, message);
     }
 
-    public void sendDeadlineAlertMessage(final String channelId, final String roomTitle) {
+    public void sendDeadlineAlertMessage(
+            final String channelId,
+            final RoomSession session,
+            final String title
+    ) {
         final TextChannel channel = getChannel(channelId);
         if (channel == null) {
             return;
         }
 
-        final MessageCreateData message = discordMessageBuilder.buildDeadlineAlertMessage(roomTitle);
+        final MessageCreateData message = discordMessageBuilder.buildDeadlineAlertMessage(
+                platformShortcutBuilder.buildConnectedRoomUrl(session),
+                title
+        );
         sendMessage(channel, message);
     }
 

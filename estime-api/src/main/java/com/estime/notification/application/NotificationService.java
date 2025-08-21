@@ -30,7 +30,12 @@ public class NotificationService {
             final Platform platform = platformRepository.findByRoomId(roomId)
                     .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            discordMessageSender.sendReminderMessage(platform.getChannelId(), room.getTitle());
+            discordMessageSender.sendReminderMessage(
+                    platform.getChannelId(),
+                    room.getSession(),
+                    room.getTitle(),
+                    room.getDeadline()
+            );
             log.info("Successfully sent REMINDER for room {}", roomId);
 
         } catch (final Exception e) {
@@ -47,7 +52,11 @@ public class NotificationService {
             final Platform platform = platformRepository.findByRoomId(roomId)
                     .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            discordMessageSender.sendDeadlineAlertMessage(platform.getChannelId(), room.getTitle());
+            discordMessageSender.sendDeadlineAlertMessage(
+                    platform.getChannelId(),
+                    room.getSession(),
+                    room.getTitle()
+            );
             log.info("Successfully sent DEADLINE ALERT for room {}", roomId);
 
         } catch (final Exception e) {
