@@ -10,5 +10,4 @@ class EstimeApiApplicationTests {
     void contextLoads() {
     }
 
-
 }
