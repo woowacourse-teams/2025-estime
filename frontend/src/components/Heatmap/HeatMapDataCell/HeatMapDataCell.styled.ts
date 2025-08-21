@@ -12,6 +12,8 @@ export const Container = styled.div<{
   user-select: none;
   background-color: ${({ backgroundColor, theme }) => backgroundColor || theme.colors.gray10};
   touch-action: manipulation;
+  transition: background-color 0.3s ease;
+
   &:hover {
     border: 1.5px dashed ${({ theme }) => theme.colors.gray30};
   }

@@ -60,7 +60,14 @@ export const LoginModal = ({
                     ref={inputRef}
                     data-autofocus
                     value={userData.name}
-                    onChange={(e) => handleUserData({ ...userData, name: e.target.value })}
+                    onChange={(e) => handleUserData({ ...userData, name: e.target.value.trim() })}
+                    onPaste={(e) => {
+                      const text = e.clipboardData.getData('text');
+                      e.preventDefault();
+                      // https://stackoverflow.com/a/45421387
+                      const trimmedText = text.split(' ').join('');
+                      handleUserData({ ...userData, name: trimmedText });
+                    }}
                   />
                   <Text
                     variant="caption"
