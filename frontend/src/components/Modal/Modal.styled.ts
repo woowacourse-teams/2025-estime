@@ -101,8 +101,8 @@ export const ModalContainer = styled.div<{
 `;
 
 export const CloseButton = styled.button`
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   background: none;
   border: none;

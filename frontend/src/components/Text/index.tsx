@@ -10,9 +10,15 @@ export interface TextProps extends ComponentProps<'span'> {
   children: React.ReactNode;
 }
 
-const Text = ({ variant = 'body', color = 'gray90', opacity = true, children }: TextProps) => {
+const Text = ({
+  variant = 'body',
+  color = 'gray90',
+  opacity = true,
+  children,
+  ...props
+}: TextProps) => {
   return (
-    <S.Container variant={variant} color={color} opacity={opacity}>
+    <S.Container variant={variant} color={color} opacity={opacity ? 1 : 0} {...props}>
       {children}
     </S.Container>
   );

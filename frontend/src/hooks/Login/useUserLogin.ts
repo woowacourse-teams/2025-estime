@@ -20,8 +20,12 @@ export function useUserLogin({ session }: { session: string | null }) {
     const response = await joinUser(session, {
       participantName: userData.name,
     });
-    isLoggedIn.current = true;
     return response.isDuplicateName;
+  };
+
+  const handleLoggedIn = {
+    setTrue: () => (isLoggedIn.current = true),
+    setFalse: () => (isLoggedIn.current = false),
   };
   const resetUserData = () => setUserData({ name: '' });
   return {
@@ -29,6 +33,7 @@ export function useUserLogin({ session }: { session: string | null }) {
     userData,
     handleUserData,
     handleLogin,
+    handleLoggedIn,
     resetUserData,
     isLoggedIn: isLoggedIn.current,
   };

@@ -6,7 +6,7 @@ export const Container = styled.input<{ isError?: boolean }>`
   border-radius: var(--radius-4);
   border: 1px solid ${({ theme, isError }) => (isError ? theme.colors.red40 : theme.colors.gray20)};
   padding: var(--padding-8);
-  background-color: ${({ theme }) => theme.colors.gray10};
+  background-color: ${({ theme }) => theme.colors.gray05};
   color: ${({ theme }) => theme.colors.text};
 
   &:focus {
@@ -16,6 +16,6 @@ export const Container = styled.input<{ isError?: boolean }>`
 
   ::placeholder {
     color: ${({ theme }) => theme.colors.gray50};
-    font-size: ${({ theme }) => theme.typography.body.fontSize};
+    font-size: ${({ theme }) => theme.typography.h4.fontSize};
   }
 `;
