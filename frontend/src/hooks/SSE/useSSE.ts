@@ -13,11 +13,23 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
   const retryCountRef = useRef(0);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
+  const reconnectIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const connectionFailed = useRef(false);
 
   useEffect(() => {
     if (!session) return;
 
     const connectSSE = () => {
+      // 기존 연결이 있으면 먼저 끊기
+      if (eventSourceRef.current) {
+        try {
+          eventSourceRef.current.close();
+        } catch {
+          // 연결이 이미 닫혔을 경우 오류 무시
+        }
+        eventSourceRef.current = null;
+      }
+
       const eventSource = new EventSource(
         `${process.env.API_BASE_URL}api/v1/sse/rooms/${session}/stream`
       );
@@ -28,6 +40,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
           const data = JSON.parse(ev.data);
           // 연결 성공시 재시도 카운트 초기화
           retryCountRef.current = 0;
+          connectionFailed.current = false;
           // 삭제하거나, 유의미한 데이터를 파싱할때까지는 유지
           console.log('SSE 연결됨:', data);
         } catch (error) {
@@ -49,16 +62,16 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
       eventSource.addEventListener('vote-changed', onVoteChange);
 
       eventSource.onerror = (e) => {
-        console.error('SSE 연결 오류:', e);
-
         if (retryCountRef.current < MAX_RETRY_COUNT) {
           retryCountRef.current += 1;
+          console.error('SSE 연결 오류:', e);
           console.log(`SSE 재연결 시도 ${retryCountRef.current}/${MAX_RETRY_COUNT}`);
 
           retryTimeoutRef.current = setTimeout(() => {
             connectSSE();
           }, RETRY_INTERVAL);
-        } else {
+        } else if (!connectionFailed.current) {
+          connectionFailed.current = true;
           console.error('SSE 최대 재시도 횟수 초과');
           handleError(new Error('SSE 연결 실패'), 'SSE 연결을 복구할 수 없습니다');
         }
@@ -74,6 +87,12 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
         retryTimeoutRef.current = null;
       }
 
+      // 재연결 인터벌 정리
+      if (reconnectIntervalRef.current) {
+        clearInterval(reconnectIntervalRef.current);
+        reconnectIntervalRef.current = null;
+      }
+
       // EventSource 정리
       if (eventSourceRef.current) {
         try {
@@ -85,8 +104,17 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
       }
     };
 
-    // 초기 연결
+    // 첫 연결 시도
     connectSSE();
+
+    // 5분마다 재연결 (기존 연결을 끊고 새로 연결)
+    reconnectIntervalRef.current = setInterval(
+      () => {
+        console.log('SSE 정기 재연결 시도');
+        connectSSE();
+      },
+      5 * 60 * 1000
+    );
 
     return cleanup;
   }, [session]);
