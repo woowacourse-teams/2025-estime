@@ -6,9 +6,6 @@ import Button from '@/components/Button';
 import Text from '@/components/Text';
 import { useNavigate } from 'react-router';
 import useCreateRoom from '@/hooks/useCreateRoom';
-import Information from '@/components/Information';
-import { useTheme } from '@emotion/react';
-import IInfo from '@/icons/IInfo';
 import useShakeAnimation from '@/hooks/CreateRoom/useShakeAnimation';
 import { useRef, useState } from 'react';
 import { useToastContext } from '@/contexts/ToastContext';
@@ -20,7 +17,6 @@ const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
   const showValidation = useRef(false);
   const navigate = useNavigate();
-  const { colors } = useTheme();
   const { addToast } = useToastContext();
   const {
     platformType,
@@ -119,12 +115,6 @@ const CreateEventPage = () => {
               isValid={!showValidation.current || isBasicReady}
               shouldShake={shouldShake}
             />
-            <Information color="orange30">
-              <IInfo color={colors.orange40} />
-              <Text variant="h4" color="orange40">
-                마감 기한은 약속을 생성한 시점으로부터 1일 뒤까지로 자동 설정되어 있습니다.
-              </Text>
-            </Information>
             <Flex justify="flex-end">
               <Button
                 ref={buttonRef}
