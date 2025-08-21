@@ -18,8 +18,10 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
     if (!session) return;
 
     const connectSSE = () => {
-      const es = new EventSource(`${process.env.API_BASE_URL}api/v1/sse/rooms/${session}/stream`);
-      eventSourceRef.current = es;
+      const eventSource = new EventSource(
+        `${process.env.API_BASE_URL}api/v1/sse/rooms/${session}/stream`
+      );
+      eventSourceRef.current = eventSource;
 
       const onConnected = (ev: MessageEvent<string>) => {
         try {
@@ -43,10 +45,10 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
         }
       };
 
-      es.addEventListener('connected', onConnected);
-      es.addEventListener('vote-changed', onVoteChange);
+      eventSource.addEventListener('connected', onConnected);
+      eventSource.addEventListener('vote-changed', onVoteChange);
 
-      es.onerror = (e) => {
+      eventSource.onerror = (e) => {
         console.error('SSE 연결 오류:', e);
 
         if (retryCountRef.current < MAX_RETRY_COUNT) {
@@ -62,7 +64,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
         }
       };
 
-      return es;
+      return eventSource;
     };
 
     const cleanup = () => {
