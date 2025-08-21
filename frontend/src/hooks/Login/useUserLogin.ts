@@ -18,7 +18,7 @@ export function useUserLogin({ session }: { session: string | null }) {
       throw new Error('아이디를 입력해주세요.');
     }
     const response = await joinUser(session, {
-      participantName: userData.name,
+      participantName: userData.name.trim(),
     });
     return response.isDuplicateName;
   };
