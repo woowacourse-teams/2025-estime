@@ -1,21 +1,26 @@
--- 1) channel_id 컬럼 NULL 허용으로 추가
-ALTER TABLE connected_room
-    ADD COLUMN channel_id VARCHAR(255) NULL;
+-- 1) platform 테이블 생성
+CREATE TABLE platform
+(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    room_id BIGINT NOT NULL,
+    type ENUM ('DISCORD') NOT NULL,
+    channel_id VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY UK_platform_room_id (room_id),
+    CONSTRAINT FK_platform_room_id
+        FOREIGN KEY (room_id)
+        REFERENCES room (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
--- 2) 기존 행 더미 값으로 백필
-UPDATE connected_room
-SET channel_id = CONCAT('DUMMY_', id)
-WHERE channel_id IS NULL;
+-- 2) platform에 기존 데이터 삽입
+INSERT INTO platform (id, room_id, type, channel_id)
+    SELECT id,
+           room_id,
+           platform,
+           CONCAT('DUMMY_', id) AS channel_id
+    FROM connected_room
+    WHERE platform = 'DISCORD';
 
--- 3) NOT NULL로 고정
-ALTER TABLE connected_room
-    MODIFY COLUMN channel_id VARCHAR(255) NOT NULL;
-
--- 4) platform → platform_type (ENUM 유지)
-ALTER TABLE connected_room
-    CHANGE COLUMN platform type ENUM('DISCORD') NOT NULL;
-
--- 5) 테이블명 변경
-RENAME TABLE connected_room TO platform;
-
--- 6) manual.sql 수동 실행 #1
+-- 3) manual.sql 수동 실행 #1

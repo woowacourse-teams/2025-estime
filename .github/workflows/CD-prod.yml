@@ -1,15 +1,20 @@
 name: CD Prod Pipeline
 
+concurrency:
+  group: be-prod
+  cancel-in-progress: true # CD 작업은 한번에 하나만 실행하도록 제한
+
 on:
   push:
-    branches: [ be/prod ]
+    tags:
+      - 'v*.*.*-be'
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     outputs:
-      short_sha: ${{ steps.set_short_sha.outputs.short_sha }}
+      version: ${{ steps.get_version.outputs.VERSION }}
 
     services:
       mysql:
@@ -27,26 +32,33 @@ jobs:
 
     env:
       SPRING_PROFILES_ACTIVE: prod
-
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: testpw
-
       URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
       URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
-
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # 태그 검증을 위해 전체 Git 히스토리 필요
 
-      - name: Calc short sha
-        id: set_short_sha
-        run: echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - name: tag가 be/prod branch에 있는지 검증
+        run: |
+          git fetch origin be/prod
+          if git merge-base --is-ancestor ${{ github.sha }} origin/be/prod; then
+            echo "Tag is an ancestor of the be/prod branch. Proceeding with deployment."
+          else
+            echo "Error: This tag is not on the be/prod branch."
+            exit 1
+          fi
+
+      - name: Git tag에서 버전 정보 추출
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
 
       - name: Setup JDK 21
         uses: actions/setup-java@v4
@@ -61,8 +73,7 @@ jobs:
         run: ./gradlew clean build -x test --stacktrace -Dspring.profiles.active=prod
 
       - name: Docker Hub Login
-        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" \
-          | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -78,7 +89,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ secrets.PROD_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
+            ${{ secrets.PROD_IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }}
             ${{ secrets.PROD_IMAGE_NAME }}:latest
 
   deploy:
@@ -89,11 +100,15 @@ jobs:
       SPRING_PROFILES_ACTIVE: prod
 
     steps:
-      - name: Move .env.prod to a home directory
+      - name: Backup existing .env.prod file
+        working-directory: ${{ github.workspace }}/estime-api
         run: |
-          if [ -f ./estime-api/.env.prod ]; then
-            echo "Found .env.prod, moving it to home directory for backup."
-            mv ./estime-api/.env.prod ~/.env.prod.backup
+          BACKUP_DIR=~/env_backups/successful
+          mkdir -p "$BACKUP_DIR"
+          if [ -f .env.prod ]; then
+            BACKUP_NAME=".env.prod.backup.${{ needs.build-and-push.outputs.version }}.$(date +%Y%m%d%H%M%S)"
+            echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
+            mv .env.prod "$BACKUP_DIR/$BACKUP_NAME"
           else
             echo "No .env.prod file found to back up."
           fi
@@ -112,23 +127,47 @@ jobs:
 
       - name: Create env file for Docker Compose
         run: |
-          printf '%s\n' "IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}" > .env
+          cat <<EOF > .env
+          IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
+          IMAGE_TAG=${{ needs.build-and-push.outputs.version }}
+          EOF
 
       - name: Create env file for env.prod file
         working-directory: ./estime-api
         run: |
-          printf '%s\n' "${{ secrets.ENV_PROD }}" > .env.prod
+          cat <<EOF > .env.prod
+          ${{ secrets.ENV_PROD }}
+          EOF
 
       - name: Deploy with Docker Compose
         run: |
           docker compose -f docker-compose.prod.yml pull api
           docker compose -f docker-compose.prod.yml up -d
 
-      - name: Debug running containers
-        run: docker ps -a
-
-      - name: Clean up temporary backup file
-        if: always()
+      - name: healthcheck application containers
         run: |
-          echo "Cleaning up temporary backup file from home directory."
-          rm -f ~/.env.prod.backup
+          echo "Waiting 10 seconds for application to start up..."
+          sleep 10
+          echo "Starting health checks..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || true)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "✅ Deployment successful! Application is healthy."
+              docker ps -a
+              exit 0 # 배포 성공
+            fi
+            echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
+            sleep 5
+          done
+          
+          echo "❌ Health check failed after 60 seconds."
+          echo "==== docker container status ===="
+          docker ps -a
+          echo "==== docker container logs (api) ===="
+          docker logs $(docker ps --filter "name=api" --format "{{.ID}}") || true
+          
+          exit 1 # 배포 실패
+
+      - name: Clean up unused Docker resources
+        if: always()
+        run: docker system prune -a -f
