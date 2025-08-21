@@ -1,0 +1,104 @@
+name: Rollback Prod
+
+# 롤백 작업이 새로운 CD 작업에 의해 중단되지 않도록 보장
+concurrency:
+  group: be-prod
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'rollback 시킬 git tag version을 입력하세요. (e.g. v1.0.0-be)'
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    environment: be-prod
+    runs-on: [ self-hosted, estime-prod ]
+
+    steps:
+      - name: rollback 시점의 .env.prod 파일 백업 # rollback 원인 분석 목적
+        run: |
+          CURRENT_VERSION="unknown"
+          if [ -f ${{ github.workspace }}/.env ]; then
+            CURRENT_VERSION=$(grep IMAGE_TAG ${{ github.workspace }}/.env | cut -d '=' -f2)
+            if [ -z "$CURRENT_VERSION" ]; then
+              CURRENT_VERSION="tag-not-found"
+            fi
+          fi
+
+          BACKUP_DIR=~/env_backups/rollbacked
+          mkdir -p "$BACKUP_DIR"
+          if [ -f ${{ github.workspace }}/estime-api/.env.prod ]; then
+            BACKUP_NAME=".env.rollbacked_from_${CURRENT_VERSION}_to_${{ github.event.inputs.version }}.$(date +%Y%m%d%H%M%S)"
+            echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
+            mv ${{ github.workspace }}/estime-api/.env.prod "$BACKUP_DIR/$BACKUP_NAME"
+          else
+            echo "No .env.prod file found to back up."
+          fi
+
+      - name: 특정 tag의 repository checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+          fetch-depth: 0
+
+      - name: rollback 대상 tag가 be/prod branch에 있는지 검증
+        run: |
+          git fetch origin be/prod
+          if git merge-base --is-ancestor HEAD origin/be/prod; then
+            echo "Rollback target tag is on the be/prod branch. Proceeding."
+          else
+            echo "Error: The tag you are trying to roll back to is not on the be/prod branch."
+            exit 1
+          fi
+
+      - name: Docker Compose용 .env 파일 생성
+        run: |
+          cat <<EOF > .env
+          IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
+          IMAGE_TAG=${{ github.event.inputs.version }}
+          EOF
+
+      - name: Application용 .env.prod 파일 생성
+        working-directory: ./estime-api
+        run: |
+          cat <<EOF > .env.prod
+          ${{ secrets.ENV_PROD }}
+          EOF
+
+      - name: Docker Compose를 사용하여 rollback 진행
+        run: |
+          echo "Rolling back to version: ${{ github.event.inputs.version }}"
+          docker compose -f docker-compose.prod.yml pull api
+          docker compose -f docker-compose.prod.yml up -d --force-recreate
+
+      - name: rollback 후 application 상태 확인
+        run: |
+          echo "Waiting 10 seconds for application to start up..."
+          sleep 10
+          echo "Starting health checks..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || true)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "✅ Rollback successful! Application is healthy."
+              docker ps -a
+              exit 0 # 롤백 성공
+            fi
+            echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
+            sleep 5
+          done
+          
+          echo "❌ Health check failed after 60 seconds."
+          echo "==== docker container status ===="
+          docker ps -a
+          echo "==== docker container logs (api) ===="
+          docker logs $(docker ps --filter "name=api" --format "{{.ID}}") || true
+          
+          exit 1 # 롤백 실패
+
+      - name: 사용하지 않는 Docker resource 정리
+        if: always()
+        run: docker system prune -a -f
