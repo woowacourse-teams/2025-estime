@@ -7,11 +7,13 @@ import com.github.f4b6a3.tsid.TsidCreator;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class SseSender {
 
     private final SseEmitters sseEmitters;
@@ -27,8 +29,9 @@ public class SseSender {
                                 .data(SseResponse.from("ok"))
                 );
             } catch (final IOException e) {
-                throw new RuntimeException(
-                        "Failed to send SSE message for roomSession " + roomSession + ":" + e.getMessage(), e);
+                log.debug("Failed to send SSE message, connection likely closed for roomSession {}: {}", roomSession,
+                        e.getMessage());
+                emitter.completeWithError(e);
             }
         }
     }
