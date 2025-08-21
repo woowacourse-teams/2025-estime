@@ -55,7 +55,6 @@ public class RoomApplicationService {
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
     private final DiscordMessageSender discordMessageSender; // TODO EVENT
-    private final PlatformShortcutBuilder platformShortcutBuilder; // TODO EVENT
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
@@ -79,7 +78,7 @@ public class RoomApplicationService {
         if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
             discordMessageSender.sendConnectedRoomCreatedMessage(
                     input.channelId(),
-                    platformShortcutBuilder.buildConnectedRoomCreatedUrl(room.getSession()),
+                    room.getSession(),
                     room.getTitle(),
                     room.getDeadline());
         }

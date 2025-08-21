@@ -21,7 +21,7 @@ public class PlatformShortcutBuilder {
                 .toUriString();
     }
 
-    public String buildConnectedRoomCreatedUrl(final RoomSession session) {
+    public String buildConnectedRoomUrl(final RoomSession session) {
         return UriComponentsBuilder.fromUriString(clientOriginProperties.prod() + "check")
                 .queryParam("id", session.toString())
                 .build()
