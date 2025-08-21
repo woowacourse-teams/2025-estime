@@ -1,3 +1,9 @@
+## 1.2.0 (2025-08-21)
+
+* feat: 히트맵 sse 도입 (#465) ([08a5f78](https://github.com/woowacourse-teams/2025-estime/commit/08a5f78)), closes [#465](https://github.com/woowacourse-teams/2025-estime/issues/465)
+
+
+
 ## 1.1.0 (2025-08-21)
 
 * feat: 안내 문구 제거 완료 (#484) ([76d6987](https://github.com/woowacourse-teams/2025-estime/commit/76d6987)), closes [#484](https://github.com/woowacourse-teams/2025-estime/issues/484)

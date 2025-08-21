@@ -22,9 +22,10 @@ interface ToastProps {
 export const ToastThemeContext = createContext<ToastType>('warning');
 export const useToastTheme = () => useContext(ToastThemeContext);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Toast = ({ id, type, message, onClose }: ToastProps) => {
   const [phase, setPhase] = useState<ToastPhase>('idle');
-  console.log(id, onClose);
+  // console.log(id, onClose);
   useEffect(() => {
     const showTimer = setTimeout(() => setPhase('visible'), 30);
     const fadeOutTimer = setTimeout(() => setPhase('hidden'), 1500);
