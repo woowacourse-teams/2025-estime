@@ -20,9 +20,13 @@ import useHandleError from '@/hooks/Error/useCreateError';
 import Modal from '@/components/Modal';
 import CopyLinkModal from '@/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
+import useSSE from '@/hooks/SSE/useSSE';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const CheckEventPage = () => {
   const theme = useTheme();
+  const { addToast } = useToastContext();
+
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
@@ -42,13 +46,10 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  // TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
-  // 공통 에러 핸들링 유틸리티
   const handleError = useHandleError();
 
-  // 편집 모드에서 뷰 모드로 전환 (데이터 저장)
   const switchToViewMode = async () => {
     try {
       await userAvailabilitySubmit();
@@ -60,16 +61,16 @@ const CheckEventPage = () => {
     }
   };
 
-  // 뷰 모드에서 편집 모드로 전환 (로그인 체크)
-  const switchToEditMode = () => {
+  const switchToEditMode = async () => {
     if (isLoggedIn) {
+      await fetchUserAvailableTime();
       setMode('edit');
+      pageReset();
     } else {
       modalHelpers.login.open();
     }
   };
 
-  // 모드 토글 핸들러
   const handleToggleMode = async () => {
     if (mode === 'edit') {
       await switchToViewMode();
@@ -78,7 +79,6 @@ const CheckEventPage = () => {
     }
   };
 
-  // 로그인 후 편집 모드로 전환
   const handleLoginSuccess = async () => {
     try {
       const isDuplicated = await handleLogin();
@@ -96,7 +96,6 @@ const CheckEventPage = () => {
     }
   };
 
-  // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
       modalHelpers.entryConfirm.close();
@@ -129,6 +128,27 @@ const CheckEventPage = () => {
     modalHelpers.entryConfirm.close();
     handleLoggedIn.setFalse();
   };
+
+  // 로그인 안했을 때, 토스트 띄우기
+  const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isLoggedIn) return;
+
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
+    if (!cell) return;
+
+    addToast({
+      type: 'warning',
+      message: '시간을 등록하려면 "편집하기"를 눌러주세요',
+    });
+  };
+
+  useSSE(session, handleError, {
+    onVoteChange: async () => {
+      console.log('🔄 SSE vote-changed event 확인... fetch중...');
+      await fetchRoomStatistics(session);
+      console.log('✅ fetch 완료!');
+    },
+  });
   return (
     <>
       <Wrapper
@@ -171,6 +191,7 @@ const CheckEventPage = () => {
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
                       roomStatistics={roomStatistics}
+                      handleBeforeEdit={handleBeforeEdit}
                     />
                   </Flex>
                 </Flex>

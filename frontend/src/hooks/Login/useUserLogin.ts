@@ -12,15 +12,25 @@ export function useUserLogin({ session }: { session: string | null }) {
 
   const handleUserData = (data: LoginData) => setUserData(data);
   const isLoggedIn = useRef(false);
+  const isLoginLoading = useRef(false);
 
   const handleLogin = async (): Promise<boolean> => {
     if (userData.name.trim().length === 0) {
       throw new Error('아이디를 입력해주세요.');
     }
-    const response = await joinUser(session, {
-      participantName: userData.name,
-    });
-    return response.isDuplicateName;
+    if (isLoginLoading.current) {
+      throw new Error('로그인 중입니다. 잠시 후 다시 시도해주세요.');
+    }
+
+    isLoginLoading.current = true;
+    try {
+      const response = await joinUser(session, {
+        participantName: userData.name.trim(),
+      });
+      return response.isDuplicateName;
+    } finally {
+      isLoginLoading.current = false;
+    }
   };
 
   const handleLoggedIn = {
