@@ -14,17 +14,20 @@ import * as S from './styles/CheckEventPage.styled';
 import useRoomStatistics from '@/hooks/useRoomStatistics';
 import { weightCalculateStrategy } from '@/utils/getWeight';
 import { EntryConfirmModal } from '@/components/EntryConfirmModal';
-import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/contexts/ToastContext';
+import MobileTimeTablePageButtons from '@/components/MobileTimeTablePageButtons';
+import { useTimeTablePagination } from '@/hooks/Pagination/useTimeTablePagination';
+import useHandleError from '@/hooks/Error/useCreateError';
+import Modal from '@/components/Modal';
+import CopyLinkModal from '@/components/CopyLinkModal';
+import { useTheme } from '@emotion/react';
 
 const CheckEventPage = () => {
-  const { addToast } = useToastContext();
-
+  const theme = useTheme();
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { modals, handleCloseModal, handleOpenModal } = useModalControl();
+  const { modalHelpers } = useModalControl();
 
-  const { handleLogin, userData, handleUserData, name, isLoggedIn } = useUserLogin({
+  const { handleLogin, userData, handleUserData, name, isLoggedIn, handleLoggedIn } = useUserLogin({
     session,
   });
 
@@ -39,120 +42,168 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  //TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
-
-  // const checkEventPage = useCheckEventPage(session);
-  // const switchToEditMode = async () => {
-  //   await editModeData.initializeEditMode();
-  //   setMode('edit');
-  // };
-
-  // const switchToViewMode = async () => {
-  //   await editModeData.submitAndRefresh();
-  //   await viewModeData.refreshData();
-  //   setMode('view');
-  // };
-
-  // 이런식으로 선언적인 핸들러를 만들면 좋을것 같다!
+  // TODO: view와 edit, 모드별로 훅을 분리하는 것....으로 하면 좋을것 같아서.
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
-  const handleToggleEditMode = async () => {
-    if (mode === 'view') {
-      if (isLoggedIn) setMode('edit');
-      else handleOpenModal('Login');
-    } else {
+  // 공통 에러 핸들링 유틸리티
+  const handleError = useHandleError();
+
+  // 편집 모드에서 뷰 모드로 전환 (데이터 저장)
+  const switchToViewMode = async () => {
+    try {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
+      pageReset();
+    } catch (error) {
+      handleError(error, 'switchToViewMode');
     }
   };
 
-  const loginAndLoadSchedulingData = async () => {
+  // 뷰 모드에서 편집 모드로 전환 (로그인 체크)
+  const switchToEditMode = () => {
+    if (isLoggedIn) {
+      setMode('edit');
+    } else {
+      modalHelpers.login.open();
+    }
+  };
+
+  // 모드 토글 핸들러
+  const handleToggleMode = async () => {
+    if (mode === 'edit') {
+      await switchToViewMode();
+    } else {
+      switchToEditMode();
+    }
+  };
+
+  // 로그인 후 편집 모드로 전환
+  const handleLoginSuccess = async () => {
     try {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
-        handleOpenModal('EntryConfirm');
+        modalHelpers.entryConfirm.open();
         return;
       }
       await fetchUserAvailableTime();
-      handleCloseModal('Login');
+      modalHelpers.login.close();
+      handleLoggedIn.setTrue();
       setMode('edit');
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
+      pageReset();
+    } catch (error) {
+      handleError(error, 'handleLoginSuccess');
     }
   };
 
+  // 중복 사용자 확인 후 진행
   const handleContinueWithDuplicated = async () => {
     try {
-      handleCloseModal('EntryConfirm');
-      handleCloseModal('Login');
+      modalHelpers.entryConfirm.close();
+      modalHelpers.login.close();
       await fetchUserAvailableTime();
+      handleLoggedIn.setTrue();
       setMode('edit');
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
+      pageReset();
+    } catch (error) {
+      handleError(error, 'handleContinueWithDuplicated');
     }
   };
 
-  const handleCancelContinueWithDuplicated = () => {
-    handleCloseModal('EntryConfirm');
+  const {
+    totalPages,
+    page,
+    timeTableContainerRef,
+    timeColumnRef,
+    currentPageDates,
+    canPagePrev,
+    canPageNext,
+    handlePagePrev,
+    handlePageNext,
+    pageReset,
+  } = useTimeTablePagination({
+    availableDates: roomInfo.availableDateSlots,
+  });
+
+  const handleDuplicatedCancel = () => {
+    modalHelpers.entryConfirm.close();
+    handleLoggedIn.setFalse();
   };
   return (
     <>
-      <Wrapper maxWidth={1280} paddingTop="var(--padding-10)">
+      <Wrapper
+        maxWidth={1280}
+        paddingTop="var(--padding-11)"
+        paddingBottom="var(--padding-11)"
+        paddingLeft="var(--padding-7)"
+        paddingRight="var(--padding-7)"
+      >
         <Flex direction="column" gap="var(--gap-6)">
           <CheckEventPageHeader
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
+            openCopyModal={modalHelpers.copyLink.open}
           />
           <S.FlipCard isFlipped={mode !== 'view'}>
             {/* view 모드 */}
             <S.FrontFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer>
+              <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
                     mode="view"
-                    onToggleEditMode={handleToggleEditMode}
+                    onToggleEditMode={handleToggleMode}
                   />
-                  <Heatmap
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    roomStatistics={roomStatistics}
-                  />
+                  <Flex direction="column" gap="var(--gap-4)">
+                    {theme.isMobile && (
+                      <MobileTimeTablePageButtons
+                        totalPage={totalPages}
+                        currentPage={page}
+                        handlePrev={handlePagePrev}
+                        handleNext={handlePageNext}
+                        canPrev={canPagePrev}
+                        canNext={canPageNext}
+                      />
+                    )}
+                    <Heatmap
+                      timeColumnRef={timeColumnRef}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={currentPageDates}
+                      roomStatistics={roomStatistics}
+                    />
+                  </Flex>
                 </Flex>
               </S.TimeTableContainer>
             </S.FrontFace>
 
             {/* edit 모드 */}
             <S.BackFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer>
+              <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={userName.value}
                     mode="edit"
-                    onToggleEditMode={handleToggleEditMode}
+                    onToggleEditMode={handleToggleMode}
                   />
-
-                  <Timetable
-                    dateTimeSlots={roomInfo.availableTimeSlots}
-                    availableDates={roomInfo.availableDateSlots}
-                    selectedTimes={selectedTimes}
-                  />
+                  <Flex direction="column" gap="var(--gap-4)">
+                    {theme.isMobile && (
+                      <MobileTimeTablePageButtons
+                        totalPage={totalPages}
+                        currentPage={page}
+                        handlePrev={handlePagePrev}
+                        handleNext={handlePageNext}
+                        canPrev={canPagePrev}
+                        canNext={canPageNext}
+                      />
+                    )}
+                    <Timetable
+                      timeColumnRef={timeColumnRef}
+                      dateTimeSlots={roomInfo.availableTimeSlots}
+                      availableDates={currentPageDates}
+                      selectedTimes={selectedTimes}
+                    />
+                  </Flex>
                 </Flex>
               </S.TimeTableContainer>
             </S.BackFace>
@@ -160,17 +211,24 @@ const CheckEventPage = () => {
         </Flex>
       </Wrapper>
       <LoginModal
-        isLoginModalOpen={modals['Login']}
-        handleCloseLoginModal={() => handleCloseModal('Login')}
-        handleModalLogin={loginAndLoadSchedulingData}
+        isLoginModalOpen={modalHelpers.login.isOpen}
+        handleCloseLoginModal={modalHelpers.login.close}
+        handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
       />
       <EntryConfirmModal
-        isEntryConfirmModalOpen={modals['EntryConfirm']}
+        isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
         onConfirm={handleContinueWithDuplicated}
-        onCancel={handleCancelContinueWithDuplicated}
+        onCancel={handleDuplicatedCancel}
       />
+      <Modal
+        isOpen={modalHelpers.copyLink.isOpen}
+        onClose={modalHelpers.copyLink.close}
+        position="center"
+      >
+        <CopyLinkModal sessionId={session} />
+      </Modal>
     </>
   );
 };

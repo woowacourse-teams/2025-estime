@@ -2,19 +2,33 @@ import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialCreateRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/types/roomInfo';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useExtractQueryParams } from './common/useExtractQueryParams';
 import { TimeManager } from '@/utils/common/TimeManager';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/contexts/ToastContext';
 
+interface checkedNotification {
+  created: boolean;
+  remind: boolean;
+  deadline: boolean;
+}
+
 export const useCreateRoom = () => {
   const { addToast } = useToastContext();
+  const submittingRef = useRef(false);
 
-  const { platform, channelId } = useExtractQueryParams(['platform', 'channelId'] as const);
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { time: { startTime: string; endTime: string } }
   >(initialCreateRoomInfo);
+
+  //디스코드 관련 상태
+  const { platformType, channelId } = useExtractQueryParams(['platformType', 'channelId'] as const);
+  const [checkedNotification, setCheckedNotification] = useState<checkedNotification>({
+    created: true,
+    remind: true,
+    deadline: true,
+  });
 
   const isTimeRangeValid = TimeManager.isValidRange(roomInfo.time.startTime, roomInfo.time.endTime);
 
@@ -42,6 +56,12 @@ export const useCreateRoom = () => {
       setRoomInfo((prev) => ({ ...prev, deadline: { date, time } })),
   };
 
+  const notification = {
+    value: checkedNotification,
+    set: (id: keyof checkedNotification) =>
+      setCheckedNotification((prev) => ({ ...prev, [id]: !prev[id] })),
+  };
+
   const isCalendarReady = roomInfo.availableDateSlots.size > 0;
 
   const isBasicReady =
@@ -55,13 +75,16 @@ export const useCreateRoom = () => {
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
   const roomInfoSubmit = async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     try {
       const payload = toCreateRoomInfo(roomInfo);
-      if (platform && channelId) {
+      if (platformType && channelId) {
         const response = await createChannelRoom({
           ...payload,
-          platform: platform as 'DISCORD' | 'SLACK',
+          platformType: platformType as 'DISCORD' | 'SLACK',
           channelId,
+          notification: checkedNotification,
         });
         return response.session;
       }
@@ -76,14 +99,18 @@ export const useCreateRoom = () => {
       Sentry.captureException(err, {
         level: 'error',
       });
+    } finally {
+      submittingRef.current = false;
     }
   };
 
   return {
+    platformType,
     title,
     availableDateSlots,
     time,
     deadline,
+    notification,
     isCalendarReady,
     isBasicReady,
     roomInfoSubmit,

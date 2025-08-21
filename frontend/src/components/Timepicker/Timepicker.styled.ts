@@ -14,7 +14,7 @@ const slideUp = keyframes`
 export const Container = styled.div`
   width: 100%;
   height: 2rem;
-  background-color: ${({ theme }) => theme.colors.gray10};
+  background-color: ${({ theme }) => theme.colors.gray05};
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   padding: var(--padding-8);
   border-radius: var(--radius-4);
@@ -64,8 +64,8 @@ export const ListItemWrapper = styled.div`
 export const ListItem = styled.li`
   cursor: pointer;
   display: flex;
-  justify-content: center;
-  padding: var(--padding-4);
+  justify-content: ${({ theme }) => (theme.isMobile ? 'flex-start' : 'center')};
+  padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-6)' : 'var(--padding-4)')};
   &:hover {
     background-color: ${({ theme }) => theme.colors.plum30};
   }

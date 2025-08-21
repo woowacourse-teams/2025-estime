@@ -1,3 +1,30 @@
+## 1.1.0 (2025-08-21)
+
+* feat: 안내 문구 제거 완료 (#484) ([76d6987](https://github.com/woowacourse-teams/2025-estime/commit/76d6987)), closes [#484](https://github.com/woowacourse-teams/2025-estime/issues/484)
+* Enter 키 기능 추가 (#440) ([5c8b71d](https://github.com/woowacourse-teams/2025-estime/commit/5c8b71d)), closes [#440](https://github.com/woowacourse-teams/2025-estime/issues/440)
+* GTM을 prod 환경에서만 실행하게 설정 (#449) ([da6d256](https://github.com/woowacourse-teams/2025-estime/commit/da6d256)), closes [#449](https://github.com/woowacourse-teams/2025-estime/issues/449)
+* useFunnel 제작 및 모바일에 적용 (#412) ([be388ad](https://github.com/woowacourse-teams/2025-estime/commit/be388ad)), closes [#412](https://github.com/woowacourse-teams/2025-estime/issues/412)
+* 드래그 로직 레전드 개선 (#473) ([0c4ba9e](https://github.com/woowacourse-teams/2025-estime/commit/0c4ba9e)), closes [#473](https://github.com/woowacourse-teams/2025-estime/issues/473)
+* 마감기한 관련 함수 수정 (#416) ([5dcd98c](https://github.com/woowacourse-teams/2025-estime/commit/5dcd98c)), closes [#416](https://github.com/woowacourse-teams/2025-estime/issues/416)
+* 모바일 UI 수정 (#457) ([13bf21f](https://github.com/woowacourse-teams/2025-estime/commit/13bf21f)), closes [#457](https://github.com/woowacourse-teams/2025-estime/issues/457)
+* 모바일 버전 방 생성 페이지 (#393) ([011eeb9](https://github.com/woowacourse-teams/2025-estime/commit/011eeb9)), closes [#393](https://github.com/woowacourse-teams/2025-estime/issues/393)
+* 모바일 시작 페이지 작업 (#387) ([2af061d](https://github.com/woowacourse-teams/2025-estime/commit/2af061d)), closes [#387](https://github.com/woowacourse-teams/2025-estime/issues/387)
+* 모바일 타임테이블(히트맵) 페이지네이션  (#420) ([534e9fe](https://github.com/woowacourse-teams/2025-estime/commit/534e9fe)), closes [#420](https://github.com/woowacourse-teams/2025-estime/issues/420)
+* 배포시, 커밋해시 codeBuild 환경변수로 export (#455) ([27875d8](https://github.com/woowacourse-teams/2025-estime/commit/27875d8)), closes [#455](https://github.com/woowacourse-teams/2025-estime/issues/455)
+* 배포시, 커밋해시 및 커밋메시지 확인 수정 (#447) ([8e57e04](https://github.com/woowacourse-teams/2025-estime/commit/8e57e04)), closes [#447](https://github.com/woowacourse-teams/2025-estime/issues/447)
+* 배포시, 커밋해시 및 커밋메시지 확인 수정 (#451) ([af4fe2f](https://github.com/woowacourse-teams/2025-estime/commit/af4fe2f)), closes [#451](https://github.com/woowacourse-teams/2025-estime/issues/451)
+* 배포시, 커밋해시 및 커밋메시지 확인 수정 (#452) ([c4851c7](https://github.com/woowacourse-teams/2025-estime/commit/c4851c7)), closes [#452](https://github.com/woowacourse-teams/2025-estime/issues/452)
+* 배포시, 커밋해시 및 커밋메시지 확인 수정 (#453) ([267ee33](https://github.com/woowacourse-teams/2025-estime/commit/267ee33)), closes [#453](https://github.com/woowacourse-teams/2025-estime/issues/453)
+* 앙구 일구 버그 fix (#445) ([e0b2e7e](https://github.com/woowacourse-teams/2025-estime/commit/e0b2e7e)), closes [#445](https://github.com/woowacourse-teams/2025-estime/issues/445)
+* 연동된 디스코드 방에 알림 보내기 (#475) ([6590389](https://github.com/woowacourse-teams/2025-estime/commit/6590389)), closes [#475](https://github.com/woowacourse-teams/2025-estime/issues/475)
+* 최신 배포 버전이 노출되도록 설정 (#423) ([30dbf0d](https://github.com/woowacourse-teams/2025-estime/commit/30dbf0d)), closes [#423](https://github.com/woowacourse-teams/2025-estime/issues/423)
+* 카카오톡으로 공유하기 기능 추가 (#418) ([f5c7cc5](https://github.com/woowacourse-teams/2025-estime/commit/f5c7cc5)), closes [#418](https://github.com/woowacourse-teams/2025-estime/issues/418)
+* 툴팁 모바일대응 (#386) ([f4476ea](https://github.com/woowacourse-teams/2025-estime/commit/f4476ea)), closes [#386](https://github.com/woowacourse-teams/2025-estime/issues/386)
+* 푸터 제작 및 핫픽스 (#368) ([2c4f7ef](https://github.com/woowacourse-teams/2025-estime/commit/2c4f7ef)), closes [#368](https://github.com/woowacourse-teams/2025-estime/issues/368)
+* 히트맵 로그인 안한 경우 토스트 표시 (#479) ([81a9de8](https://github.com/woowacourse-teams/2025-estime/commit/81a9de8)), closes [#479](https://github.com/woowacourse-teams/2025-estime/issues/479)
+
+
+
 ## <small>1.0.2 (2025-08-13)</small>
 
 * docs: CHANGELOG.md 이전 버전 내용 추가 ([e8c60aa](https://github.com/woowacourse-teams/2025-estime/commit/e8c60aa))

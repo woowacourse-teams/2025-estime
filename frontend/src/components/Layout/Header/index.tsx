@@ -1,23 +1,24 @@
 import Text from '@/components/Text';
 import * as S from './Header.styled';
 import ThemeButton from '@/components/ThemeButton';
-import Logo from '@/icons/Logo';
 import PlatformLogo from '@/components/PlatformLogo';
 import { useExtractQueryParams } from '@/hooks/common/useExtractQueryParams';
+import IEstimeLogo from '@/icons/IEstimeLogo';
 
 const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
-  const platform = useExtractQueryParams('platform') as 'DISCORD' | 'SLACK';
+  const platformType = useExtractQueryParams('platformType') as 'DISCORD' | 'SLACK';
   return (
     <S.Container>
       <S.Content>
         <S.Wrapper>
-          <Logo />
           <Text variant="h2" color="primary">
-            아인슈타임
+            <S.LogoWrapper>
+              <IEstimeLogo />
+            </S.LogoWrapper>
           </Text>
         </S.Wrapper>
         <S.Wrapper>
-          {platform && <PlatformLogo platform={platform} />}
+          {platformType && <PlatformLogo platformType={platformType} />}
           <ThemeButton isDark={isDark} onToggle={toggleTheme} />
         </S.Wrapper>
       </S.Content>

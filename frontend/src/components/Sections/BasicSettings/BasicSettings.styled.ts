@@ -7,8 +7,8 @@ export const Container = styled.div<{ isValid: boolean; shouldShake: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-8);
-  padding: var(--padding-10);
+  gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-10)' : 'var(--gap-8)')};
+  padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-8)' : 'var(--padding-10)')};
   border-radius: var(--radius-6);
   max-width: 50rem;
   box-shadow: var(--shadow-card);
@@ -39,7 +39,7 @@ export const InfoWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--gap-5);
+  gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-7)' : 'var(--gap-5)')};
 `;
 
 export const InputWrapper = styled.div`

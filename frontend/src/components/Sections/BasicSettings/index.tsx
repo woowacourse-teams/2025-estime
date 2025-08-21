@@ -39,20 +39,21 @@ const BasicSettings = ({ title, time, deadline, isValid, shouldShake }: BasicSet
     <S.Container isValid={isValid} shouldShake={shouldShake}>
       <S.InfoWrapper>
         <S.TextWrapper>
-          <Text variant="h3">약속 제목</Text>
+          <Text variant="h3">제목</Text>
           <Text variant="h4">참여자들에게 표시될 약속의 제목을 입력해주세요.</Text>
         </S.TextWrapper>
         <S.InputWrapper>
           <Input
-            placeholder="예: 1팀 7월 정기 회의"
+            placeholder="예: 아인슈타임 정기 산악회"
             value={title.value}
             onChange={(e) => title.set(e.target.value)}
+            maxLength={20}
           />
         </S.InputWrapper>
       </S.InfoWrapper>
       <S.InfoWrapper>
         <S.TextWrapper>
-          <Text variant="h3">약속 시간 선택</Text>
+          <Text variant="h3">시간 선택</Text>
           <Text variant="h4">참여자가 선택할 수 있는 시간의 범위를 설정합니다.</Text>
         </S.TextWrapper>
 

@@ -1,6 +1,10 @@
 export const getSimpleWeight = (vote: number, participantCount: number) => {
   const perOnePersonWeight = 1 / participantCount;
-  return vote * perOnePersonWeight;
+  const weight = vote * perOnePersonWeight;
+  if (weight <= 0) {
+    return 0;
+  }
+  return Math.max(weight, 0.15);
 };
 // 가중치 계산 전략의 공통 인터페이스
 // 서로의 파라메터가 다르므로, 공통 인터페이스를 만들고, 팩토리 패턴을 통해서 구현부를 다르게 하여,
