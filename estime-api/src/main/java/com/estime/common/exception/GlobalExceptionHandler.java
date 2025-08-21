@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 @Slf4j
 @RestControllerAdvice
@@ -22,6 +23,12 @@ public class GlobalExceptionHandler {
     public CustomApiResponse<Void> handleApplicationException(final ApplicationException e) {
         log.warn(e.getLogMessage());
         return CustomApiResponse.badRequest(e.getUserMessage());
+    }
+
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void handleAsyncRequestTimeoutException(final AsyncRequestTimeoutException e) {
+        MDC.put("message", e.getMessage());
+        log.debug("Async request timed out");
     }
 
     @ExceptionHandler(Exception.class)
