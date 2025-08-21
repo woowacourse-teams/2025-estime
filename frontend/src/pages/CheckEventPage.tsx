@@ -62,6 +62,7 @@ const CheckEventPage = () => {
     if (isLoggedIn) {
       await fetchUserAvailableTime();
       setMode('edit');
+      pageReset();
     } else {
       modalHelpers.login.open();
     }
