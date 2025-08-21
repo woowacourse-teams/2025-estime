@@ -5,6 +5,7 @@ import com.estime.room.application.vo.NotificationTask;
 import com.estime.room.application.vo.NotificationTaskType;
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
+import com.estime.room.domain.platform.PlatformRepository;
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -23,7 +24,9 @@ import org.springframework.stereotype.Component;
 public class RoomDeadlineScheduler {
 
     private static final int REMINDER_HOURS_BEFORE_DEADLINE = 1;
+
     private final RoomRepository roomRepository;
+    private final PlatformRepository platformRepository;
     private final NotificationService notificationService;
     private final Queue<NotificationTask> taskQueue = new PriorityBlockingQueue<>();
     private final AtomicReference<Long> lastCheckedRoomId = new AtomicReference<>();
@@ -83,6 +86,11 @@ public class RoomDeadlineScheduler {
         while (!taskQueue.isEmpty() && !taskQueue.peek().executionTime().isAfter(now)) {
             final NotificationTask task = taskQueue.poll();
             log.info("Processing task: {} for roomId: {}", task.taskType(), task.roomId());
+
+            if (platformRepository.findByRoomId(task.roomId()).isEmpty()) {
+                log.debug("Skipping notification for roomId: {} - no platform connected", task.roomId());
+                continue;
+            }
 
             switch (task.taskType()) {
                 case NotificationTaskType.REMIND -> notificationService.sendReminderNotification(task.roomId());

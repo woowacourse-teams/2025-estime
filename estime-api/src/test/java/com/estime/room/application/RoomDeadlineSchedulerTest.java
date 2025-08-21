@@ -8,8 +8,13 @@ import static org.mockito.Mockito.verify;
 import com.estime.notification.application.NotificationService;
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
+import com.estime.room.domain.platform.Platform;
+import com.estime.room.domain.platform.PlatformNotification;
+import com.estime.room.domain.platform.PlatformRepository;
+import com.estime.room.domain.platform.PlatformType;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,9 @@ class RoomDeadlineSchedulerTest {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private PlatformRepository platformRepository;
+
     @MockitoBean
     private NotificationService notificationService;
 
@@ -38,6 +46,15 @@ class RoomDeadlineSchedulerTest {
         final LocalDateTime deadline = now.plusSeconds(3);
         final Room roomForDeadline = Room.withoutId("Test Room", List.of(), List.of(), deadline);
         roomRepository.save(roomForDeadline);
+        
+        final PlatformNotification notification = PlatformNotification.of(false, true, true);
+        final Platform platform = Platform.withoutId(
+                roomForDeadline.getId(),
+                PlatformType.DISCORD,
+                "test-channel-123",
+                notification
+        );
+        platformRepository.save(platform);
 
         // when
         roomDeadlineScheduler.initialize();
@@ -63,6 +80,15 @@ class RoomDeadlineSchedulerTest {
         final LocalDateTime deadline = now.plusSeconds(3);
         final Room newRoomForDeadline = Room.withoutId("New Test Room", List.of(), List.of(), deadline);
         roomRepository.save(newRoomForDeadline);
+        
+        final PlatformNotification notification = PlatformNotification.of(false, true, true);
+        final Platform platform = Platform.withoutId(
+                newRoomForDeadline.getId(),
+                PlatformType.DISCORD,
+                "test-channel-456",
+                notification
+        );
+        platformRepository.save(platform);
 
         // when
         roomDeadlineScheduler.pollNewRooms();
@@ -81,6 +107,15 @@ class RoomDeadlineSchedulerTest {
         final LocalDateTime deadline = now.plusHours(1).plusSeconds(3); // 1시간 3초 후
         final Room room = Room.withoutId("Test Room", List.of(), List.of(), deadline);
         roomRepository.save(room);
+        
+        final PlatformNotification notification = PlatformNotification.of(false, true, true);
+        final Platform platform = Platform.withoutId(
+                room.getId(),
+                PlatformType.DISCORD,
+                "test-channel-789",
+                notification
+        );
+        platformRepository.save(platform);
 
         // when
         roomDeadlineScheduler.initialize();
@@ -90,5 +125,53 @@ class RoomDeadlineSchedulerTest {
         // then
         verify(notificationService, times(1)).sendReminderNotification(room.getId());
         verify(notificationService, never()).sendDeadlineAlert(room.getId()); // 아직 deadline 안됨
+    }
+
+    @Test
+    @DisplayName("플랫폼과 연결된 방에만 알림을 전송한다")
+    void processTaskQueue_sendsNotificationOnlyToPlatformConnectedRooms() throws InterruptedException {
+        // given
+        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime deadline = now.plusSeconds(3);
+        final Room roomWithPlatform = Room.withoutId("Room with Platform", List.of(), List.of(), deadline);
+        roomRepository.save(roomWithPlatform);
+        
+        final PlatformNotification notification = PlatformNotification.of(false, true, true);
+        final Platform platform = Platform.withoutId(
+                roomWithPlatform.getId(),
+                PlatformType.DISCORD,
+                "test-channel-with-platform",
+                notification
+        );
+        platformRepository.save(platform);
+
+        // when
+        roomDeadlineScheduler.initialize();
+        Thread.sleep(5000); // Wait for deadline to pass
+        roomDeadlineScheduler.processTaskQueue();
+
+        // then
+        verify(notificationService, times(1)).sendDeadlineAlert(roomWithPlatform.getId());
+    }
+
+    @Test
+    @DisplayName("플랫폼과 연결되지 않은 방에는 알림을 전송하지 않는다")
+    void processTaskQueue_skipsNotificationForRoomsWithoutPlatform() throws InterruptedException {
+        // given
+        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime deadline = now.plusSeconds(3);
+        final Room roomWithoutPlatform = Room.withoutId("Room no Platform", List.of(), List.of(), deadline);
+        roomRepository.save(roomWithoutPlatform);
+        
+        // 플랫폼을 등록하지 않음 (연결되지 않은 상태)
+
+        // when
+        roomDeadlineScheduler.initialize();
+        Thread.sleep(5000); // Wait for deadline to pass
+        roomDeadlineScheduler.processTaskQueue();
+
+        // then
+        verify(notificationService, never()).sendDeadlineAlert(roomWithoutPlatform.getId());
+        verify(notificationService, never()).sendReminderNotification(roomWithoutPlatform.getId());
     }
 }
