@@ -19,7 +19,7 @@ INSERT INTO platform (id, room_id, type, channel_id)
     SELECT id,
            room_id,
            platform,
-           IFNULL(channel_id, CONCAT('DUMMY_', id)) AS channel_id
+           CONCAT('DUMMY_', id) AS channel_id
     FROM connected_room
     WHERE platform = 'DISCORD';
 
