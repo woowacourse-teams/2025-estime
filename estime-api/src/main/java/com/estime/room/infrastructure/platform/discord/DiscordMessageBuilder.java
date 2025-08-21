@@ -45,7 +45,8 @@ public class DiscordMessageBuilder {
     public MessageCreateData buildConnectedRoomCreatedMessage(
             final String shortcut,
             final String title,
-            final LocalDateTime deadline) {
+            final LocalDateTime deadline
+    ) {
         final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATED;
         final String formattedDeadline = deadline
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
@@ -64,27 +65,48 @@ public class DiscordMessageBuilder {
                 .build();
     }
 
-    public MessageCreateData buildReminderMessage(final String roomTitle) {
+    public MessageCreateData buildReminderMessage(
+            final String shortcut,
+            final String title,
+            final LocalDateTime deadline
+    ) {
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_REMIND;
+        final String formattedDeadline = deadline
+                .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
+
         final MessageEmbed embed = new EmbedBuilder()
-                .setTitle("⏰ 리마인더")
-                .setDescription(String.format("> '%s' 방의 마감이 1시간 남았습니다! 서둘러 참여해주세요!", roomTitle))
+                .setTitle(platformMessage.getTitleWithEmoji())
+                .setDescription(String.format("""
+                        > **제목 : ** %s
+                        > **마감기한 : ** %s
+                        > 일정 조율 마감이 한 시간 남았어요!
+                        """, title, formattedDeadline))
                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
                 .build();
 
         return new MessageCreateBuilder()
                 .setEmbeds(embed)
+                .setActionRow(Button.link(shortcut, platformMessage.getDescriptionWithEmoji()))
                 .build();
     }
 
-    public MessageCreateData buildDeadlineAlertMessage(final String roomTitle) {
+    public MessageCreateData buildDeadlineAlertMessage(
+            final String shortcut,
+            final String title
+    ) {
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_SOLVED;
+
         final MessageEmbed embed = new EmbedBuilder()
-                .setTitle("⌛️ 마감 알림")
-                .setDescription(String.format("> '%s' 방이 마감되었습니다. 참여해주셔서 감사합니다!", roomTitle))
+                .setTitle(platformMessage.getTitleWithEmoji())
+                .setDescription(String.format("""
+                        > **제목 : ** %s
+                        """, title))
                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
                 .build();
 
         return new MessageCreateBuilder()
                 .setEmbeds(embed)
+                .setActionRow(Button.link(shortcut, platformMessage.getDescriptionWithEmoji()))
                 .build();
     }
 }
