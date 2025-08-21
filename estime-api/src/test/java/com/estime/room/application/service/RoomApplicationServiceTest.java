@@ -106,7 +106,7 @@ class RoomApplicationServiceTest {
                                 TimeSlot.from(LocalTime.of(11, 0)),
                                 TimeSlot.from(LocalTime.of(11, 30))
                         ),
-                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0)))
+                        LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
                 ));
 
         participant1 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user1")));
@@ -121,7 +121,7 @@ class RoomApplicationServiceTest {
                 "title",
                 List.of(DateSlot.from(LocalDate.now())),
                 List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
-                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0))
+                LocalDateTime.of(2026, 1, 1, 0, 0)
         );
 
         // when
@@ -372,7 +372,7 @@ class RoomApplicationServiceTest {
                 "title",
                 List.of(DateSlot.from(LocalDate.now())),
                 List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
-                DateTimeSlot.from(LocalDateTime.of(2026, 1, 1, 0, 0)),
+                LocalDateTime.of(2026, 1, 1, 0, 0),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(false, false, false)

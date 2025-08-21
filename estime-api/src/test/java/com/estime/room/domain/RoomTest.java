@@ -8,7 +8,6 @@ import com.estime.common.exception.domain.DeadlineOverdueException;
 import com.estime.common.exception.domain.InvalidLengthException;
 import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.room.domain.slot.vo.DateSlot;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,13 +21,13 @@ class RoomTest {
     private final LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
     private final DateSlot dateSlot = DateSlot.from(now.toLocalDate().plusDays(1));
     private final TimeSlot timeSlot = TimeSlot.from(LocalTime.of(10, 0));
-    private final DateTimeSlot futureDeadline = DateTimeSlot.from(now.plusDays(1));
-    private final DateTimeSlot pastDeadline = DateTimeSlot.from(now.minusDays(1));
+    private final LocalDateTime futureDeadline = now.plusDays(1);
+    private final LocalDateTime pastDeadline = now.minusDays(1);
 
     @DisplayName("정상적인 값으로 Room 생성 성공")
     @Test
     void createRoom_success() {
-        Room room = Room.withoutId(
+        final Room room = Room.withoutId(
                 "테스트방",
                 List.of(dateSlot),
                 List.of(timeSlot),
@@ -46,7 +45,7 @@ class RoomTest {
     @DisplayName("ensureDeadlineNotPassed - 마감이 지났을 때 예외 발생")
     @Test
     void ensureDeadlineNotPassed_expired_throwException() {
-        Room room = Room.withoutId(
+        final Room room = Room.withoutId(
                 "테스트방",
                 List.of(dateSlot),
                 List.of(timeSlot),
@@ -75,7 +74,7 @@ class RoomTest {
     @DisplayName("ensureDeadlineNotPassed - 아직 마감 전이면 예외 발생 안 함")
     @Test
     void ensureDeadlineNotPassed_notExpired_noException() {
-        Room room = Room.withoutId(
+        final Room room = Room.withoutId(
                 "테스트방",
                 List.of(dateSlot),
                 List.of(timeSlot),

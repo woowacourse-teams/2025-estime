@@ -27,7 +27,8 @@ public class SseSender {
                                 .data(SseResponse.from("ok"))
                 );
             } catch (final IOException e) {
-                throw new RuntimeException("Failed to send SSE message for roomSession " + roomSession + ":" + e.getMessage(), e);
+                throw new RuntimeException(
+                        "Failed to send SSE message for roomSession " + roomSession + ":" + e.getMessage(), e);
             }
         }
     }

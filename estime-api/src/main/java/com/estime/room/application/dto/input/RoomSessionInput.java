@@ -7,7 +7,7 @@ public record RoomSessionInput(
         RoomSession session
 ) {
 
-    public static RoomSessionInput from(Tsid roomSession) {
+    public static RoomSessionInput from(final Tsid roomSession) {
         return new RoomSessionInput(RoomSession.from(roomSession));
     }
 }

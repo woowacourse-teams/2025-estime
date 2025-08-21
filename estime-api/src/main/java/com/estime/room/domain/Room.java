@@ -12,7 +12,6 @@ import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.slot.vo.TimeSlot;
 import com.estime.room.domain.vo.RoomSession;
 import com.estime.room.infrastructure.converter.DateSlotConverter;
-import com.estime.room.infrastructure.converter.DateTimeSlotConverter;
 import com.estime.room.infrastructure.converter.RoomSessionConverter;
 import com.estime.room.infrastructure.converter.TimeSlotConverter;
 import jakarta.persistence.CollectionTable;
@@ -68,14 +67,13 @@ public class Room extends BaseEntity {
     private Set<TimeSlot> availableTimeSlots;
 
     @Column(name = "deadline", nullable = false)
-    @Convert(converter = DateTimeSlotConverter.class)
-    private DateTimeSlot deadline;
+    private LocalDateTime deadline;
 
     public static Room withoutId(
             final String title,
             final List<DateSlot> availableDateSlots,
             final List<TimeSlot> availableTimeSlots,
-            final DateTimeSlot deadline
+            final LocalDateTime deadline
     ) {
         validateNull(title, availableDateSlots, availableTimeSlots, deadline);
         final String trimmedTitle = title.trim();
@@ -94,7 +92,7 @@ public class Room extends BaseEntity {
             final String title,
             final List<DateSlot> availableDateSlots,
             final List<TimeSlot> availableTimeSlots,
-            final DateTimeSlot deadline
+            final LocalDateTime deadline
     ) {
         Validator.builder()
                 .add(Fields.title, title)
@@ -110,7 +108,7 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateDeadline(final DateTimeSlot deadline) {
+    private static void validateDeadline(final LocalDateTime deadline) {
         if (deadline.isBefore(LocalDateTime.now())) {
             throw new PastNotAllowedException(DomainTerm.DEADLINE, deadline);
         }
