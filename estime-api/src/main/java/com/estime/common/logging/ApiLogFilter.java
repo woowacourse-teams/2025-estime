@@ -1,6 +1,5 @@
 package com.estime.common.logging;
 
-
 import static com.estime.common.logging.MdcKey.CLIENT_IP;
 import static com.estime.common.logging.MdcKey.HOST;
 import static com.estime.common.logging.MdcKey.HTTP_METHOD;
