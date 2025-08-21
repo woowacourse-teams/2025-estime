@@ -10,7 +10,7 @@ public class RoomSessionConverter implements AttributeConverter<RoomSession, Str
 
     @Override
     public String convertToDatabaseColumn(final RoomSession session) {
-        return session == null ? null : session.getRoomSession().toString();
+        return session == null ? null : session.getValue().toString();
     }
 
     @Override

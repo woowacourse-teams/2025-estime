@@ -1,0 +1,90 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- local 환경-->
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+        </root>
+    </springProfile>
+
+    <!-- dev 환경 -->
+    <springProfile name="dev">
+        <springProperty name="DISCORD_LOG_WEBHOOK_URL" source="logging.discord.webhook-url"/>
+        <springProperty name="CLOUDWATCH_URL" source="management.metrics.export.cloudwatch.url"/>
+
+        <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
+            <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n</pattern>
+            </layout>
+            <username>🚨DEV ERROR LOGS 🚨</username>
+            <tts>false</tts>
+        </appender>
+
+        <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+            <appender-ref ref="DISCORD"/>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="ASYNC_DISCORD"/>
+            <appender-ref ref="Console"/>
+            <appender-ref ref="File"/>
+        </root>
+    </springProfile>
+
+    <!-- prod 환경 -->
+    <springProfile name="prod">
+        <springProperty name="DISCORD_LOG_WEBHOOK_URL" source="logging.discord.webhook-url"/>
+        <springProperty name="CLOUDWATCH_URL" source="management.metrics.export.cloudwatch.url"/>
+
+        <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
+            <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n</pattern>
+            </layout>
+            <username>🚨PROD ERROR LOGS 🚨</username>
+            <tts>false</tts>
+        </appender>
+
+        <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+            <appender-ref ref="DISCORD"/>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="ASYNC_DISCORD"/>
+            <appender-ref ref="Console"/>
+            <appender-ref ref="File"/>
+        </root>
+    </springProfile>
+
+    <!-- 공통 콘솔 로거 -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 공통 파일 로거 -->
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/estime-api.log</file>
+
+        <encoder>
+            <Pattern>${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+            </Pattern>
+            <charset>utf8</charset>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/app/logs/estime-api.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+</configuration>

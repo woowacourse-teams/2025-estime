@@ -3,6 +3,7 @@ package com.estime.room.infrastructure.participant;
 import com.estime.common.BaseEntity;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.vo.ParticipantName;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,25 +22,25 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     }
 
     @Override
-    public boolean existsByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.existsByRoomIdAndName(roomId, name);
+    public boolean existsByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return jpaRepository.existsByRoomIdAndNameAndActiveTrue(roomId, name);
     }
 
     @Override
     public List<Long> findIdsByRoomId(final Long roomId) {
-        return jpaRepository.findAllByRoomId(roomId).stream()
+        return jpaRepository.findAllByRoomIdAndActiveTrue(roomId).stream()
                 .map(BaseEntity::getId)
                 .toList();
     }
 
     @Override
     public List<Participant> findAllByIdIn(final Set<Long> ids) {
-        return jpaRepository.findByIdIn(ids);
+        return jpaRepository.findByIdInAndActiveTrue(ids);
     }
 
     @Override
-    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.findByRoomIdAndName(roomId, name)
+    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return jpaRepository.findByRoomIdAndNameAndActiveTrue(roomId, name)
                 .map(Participant::getId);
     }
 }

@@ -1,5 +1,14 @@
 package com.estime.common.logging;
 
+
+import static com.estime.common.logging.MdcKey.CLIENT_IP;
+import static com.estime.common.logging.MdcKey.HOST;
+import static com.estime.common.logging.MdcKey.HTTP_METHOD;
+import static com.estime.common.logging.MdcKey.QUERY_STRING;
+import static com.estime.common.logging.MdcKey.REQUEST_URI;
+import static com.estime.common.logging.MdcKey.TRACE_ID;
+import static com.estime.common.logging.MdcKey.USER_AGENT;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +27,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiLogFilter implements Filter {
 
-    private static final String TRACE_ID_KEY = "traceId";
     private static final String REQUEST_ID_HEADER = "X-Request-Id";
 
     @Override
@@ -31,7 +39,7 @@ public class ApiLogFilter implements Filter {
                 .filter(s -> !s.isBlank())
                 .orElseGet(this::generateTraceId);
 
-        MDC.put(TRACE_ID_KEY, traceId);
+        populateMDC(traceId, request);
         response.setHeader(REQUEST_ID_HEADER, traceId);
 
         final long startTime = System.currentTimeMillis();
@@ -72,5 +80,15 @@ public class ApiLogFilter implements Filter {
 
     private String generateTraceId() {
         return UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    private void populateMDC(final String traceId, final HttpServletRequest request) {
+        MDC.put(TRACE_ID.getKey(), traceId);
+        MDC.put(HOST.getKey(), request.getHeader("host"));
+        MDC.put(HTTP_METHOD.getKey(), request.getMethod());
+        MDC.put(REQUEST_URI.getKey(), request.getRequestURI());
+        MDC.put(QUERY_STRING.getKey(), request.getQueryString());
+        MDC.put(CLIENT_IP.getKey(), request.getRemoteAddr());
+        MDC.put(USER_AGENT.getKey(), request.getHeader("User-Agent"));
     }
 }
