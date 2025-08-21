@@ -8,11 +8,19 @@
 
 ### Team Members
 
-| 강산 🏔️ | 리버 💧 | 제프리 🍎 | 플린트 🔥 | 메이토 🍅 | 마빈 🎮 | 해삐 😊 | 호이초이 🤡 |
-|:-------:|:------:|:--------:|:--------:|:--------:|:------:|:------:|:----------:|
-| **BE** | **BE** | **BE** | **BE** | **FE** | **FE** | **FE** | **FE** |
-| <img src="https://github.com/user-attachments/assets/b8222adf-c28e-4686-b7b6-7014db3056f9" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/1362c4d0-4282-4801-9b5a-52cbe5c5d673" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/122d491e-26e5-46d4-88d8-4921c846ba8c" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/509c085d-5935-4949-a470-b5fc18d933b7" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/04e762d7-9e2f-4204-9724-c0db6c25ac42" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/002d6291-3c30-4464-a4da-c464f60b3890" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/ac2c0666-784c-4c31-81b4-482f405da8b8" width="100" height="100" /> | <img src="https://github.com/user-attachments/assets/f6fb0179-f5a3-469d-ab76-8db7a86878bf" width="100" height="100" /> |
-| [@m-a-king](https://github.com/m-a-king) | [@yeonhuu](https://github.com/yeonhuu) | [@AppleMint98](https://github.com/AppleMint98) | [@jhan0121](https://github.com/jhan0121) | [@Db0111](https://github.com/Db0111) | [@spoyodevelop](https://github.com/spoyodevelop) | [@thgml05](https://github.com/thgml05) | [@hoyyChoi](https://github.com/hoyyChoi) |
+## Backend 🔧
+
+| 강산 🏔️ | 리버 💧 | 제프리 🍎 | 플린트 🔥 |
+|:-------:|:------:|:--------:|:--------:|
+| <img src="https://github.com/user-attachments/assets/b8222adf-c28e-4686-b7b6-7014db3056f9" alt="강산" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/1362c4d0-4282-4801-9b5a-52cbe5c5d673" alt="리버" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/122d491e-26e5-46d4-88d8-4921c846ba8c" alt="제프리" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/509c085d-5935-4949-a470-b5fc18d933b7" alt="플린트" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@m-a-king](https://github.com/m-a-king) | [@yeonhuu](https://github.com/yeonhuu) | [@AppleMint98](https://github.com/AppleMint98) | [@jhan0121](https://github.com/jhan0121) |
+
+## Frontend 🎨
+
+| 메이토 🍅 | 마빈 🎮 | 해삐 😊 | 호이초이 🤡 |
+|:--------:|:------:|:------:|:----------:|
+| <img src="https://github.com/user-attachments/assets/04e762d7-9e2f-4204-9724-c0db6c25ac42" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/002d6291-3c30-4464-a4da-c464f60b3890" alt="마빈" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/ac2c0666-784c-4c31-81b4-482f405da8b8" alt="해삐" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/f6fb0179-f5a3-469d-ab76-8db7a86878bf" alt="호이초이" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@Db0111](https://github.com/Db0111) | [@spoyodevelop](https://github.com/spoyodevelop) | [@thgml05](https://github.com/thgml05) | [@hoyyChoi](https://github.com/hoyyChoi) |
 
 ## 🛠️ Tech Stack
 
