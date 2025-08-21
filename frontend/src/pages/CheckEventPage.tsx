@@ -21,9 +21,12 @@ import Modal from '@/components/Modal';
 import CopyLinkModal from '@/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
 import useSSE from '@/hooks/SSE/useSSE';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const CheckEventPage = () => {
   const theme = useTheme();
+  const { addToast } = useToastContext();
+
   const { roomInfo, session } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
@@ -126,6 +129,19 @@ const CheckEventPage = () => {
     handleLoggedIn.setFalse();
   };
 
+  // 로그인 안했을 때, 토스트 띄우기
+  const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isLoggedIn) return;
+
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
+    if (!cell) return;
+
+    addToast({
+      type: 'warning',
+      message: '시간을 등록하려면 "편집하기"를 눌러주세요',
+    });
+  };
+
   useSSE(session, handleError, {
     onVoteChange: async () => {
       console.log('🔄 SSE vote-changed event 확인... fetch중...');
@@ -175,6 +191,7 @@ const CheckEventPage = () => {
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
                       roomStatistics={roomStatistics}
+                      handleBeforeEdit={handleBeforeEdit}
                     />
                   </Flex>
                 </Flex>
