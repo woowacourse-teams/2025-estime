@@ -30,7 +30,7 @@ public class PlatformNotification {
         return switch (type) {
             case PlatformNotificationType.CREATED -> onCreated;
             case PlatformNotificationType.REMIND -> onRemind;
-            case PlatformNotificationType.DEADLINE -> onDeadline;
+            case PlatformNotificationType.SOLVED -> onDeadline;
         };
     }
 }
