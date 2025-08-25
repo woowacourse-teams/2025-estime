@@ -2,6 +2,7 @@ package com.estime.room.application.service;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
+import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
@@ -26,11 +27,12 @@ import com.estime.room.domain.participant.vote.Votes;
 import com.estime.room.domain.platform.Platform;
 import com.estime.room.domain.platform.PlatformNotificationType;
 import com.estime.room.domain.platform.PlatformRepository;
+import com.estime.room.domain.slot.vo.DateSlot;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
-import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.github.f4b6a3.tsid.Tsid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -58,15 +60,15 @@ public class RoomApplicationService {
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        return RoomCreateOutput.from(
-                roomRepository.save(
-                        input.toEntity()));
+        validateAvailableDateSlots(input.availableDateSlots());
+        return RoomCreateOutput.from(roomRepository.save(input.toEntity()));
     }
 
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
-        final Room room = roomRepository.save(
-                input.toRoomCreateInput().toEntity());
+        final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
+        validateAvailableDateSlots(roomCreateInput.availableDateSlots());
+        final Room room = roomRepository.save(roomCreateInput.toEntity());
 
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
@@ -172,6 +174,14 @@ public class RoomApplicationService {
         }
 
         return ParticipantCheckOutput.from(isDuplicateName);
+    }
+
+    private void validateAvailableDateSlots(final List<DateSlot> availableDateSlots) {
+        for (final DateSlot availableDateSlot : availableDateSlots) {
+            if (availableDateSlot.getStartAt().isBefore(LocalDate.now())) {
+                throw new PastNotAllowedException(DomainTerm.DATE_SLOT, availableDateSlot.getStartAt());
+            }
+        }
     }
 
     private Room obtainRoomBySession(final RoomSession session) {

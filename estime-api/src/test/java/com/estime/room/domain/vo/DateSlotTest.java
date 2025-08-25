@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.NullNotAllowedException;
-import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.room.domain.slot.vo.DateSlot;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
@@ -37,18 +35,6 @@ class DateSlotTest {
         assertThatThrownBy(() -> DateSlot.from(nullDate))
                 .isInstanceOf(NullNotAllowedException.class)
                 .hasMessageContaining("cannot be null");
-    }
-
-    @Test
-    @DisplayName("과거 날짜로 DateSlot을 생성하면 예외가 발생한다.")
-    void from_withPastDate() {
-        // given
-        final LocalDate pastDate = LocalDate.now().minusDays(1);
-
-        // when & then
-        assertThatThrownBy(() -> DateSlot.from(pastDate))
-                .isInstanceOf(PastNotAllowedException.class)
-                .hasMessageContaining(DomainTerm.DATE_SLOT + " cannot be past");
     }
 
     @Test
