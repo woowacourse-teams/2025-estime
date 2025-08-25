@@ -88,7 +88,7 @@ class RoomTest {
     @Test
     void validateTitle_exceedMaxLength_throwsException() {
         // given
-        String invalidTitle = "제목이 너무 길어서 예외가 발생하는 경우입니다";
+        final String invalidTitle = "제목이 너무 길어서 예외가 발생하는 경우입니다";
 
         // when & then
         assertThatThrownBy(() -> Room.withoutId(
@@ -104,7 +104,7 @@ class RoomTest {
     @Test
     void validateTitle_exactMaxLength_success() {
         // given
-        String exactLengthTitle = "이십글자제목입니다이십글자";
+        final String exactLengthTitle = "이십글자제목입니다이십글자";
 
         // when & then
         assertThatCode(() -> Room.withoutId(
@@ -119,7 +119,7 @@ class RoomTest {
     @Test
     void validateTitle_blank_throwsException() {
         // given
-        String blankTitle = "   ";
+        final String blankTitle = "   ";
 
         // when & then
         assertThatThrownBy(() -> Room.withoutId(
