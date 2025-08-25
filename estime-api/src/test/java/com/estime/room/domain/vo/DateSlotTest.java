@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class DateSlotTest {
 
-    @Test
     @DisplayName("정적 팩토리 메소드 from으로 DateSlot을 생성한다.")
+    @Test
     void from() {
         // given
         final LocalDate now = LocalDate.now();
@@ -25,8 +25,8 @@ class DateSlotTest {
         assertThat(dateSlot.getStartAt()).isEqualTo(now);
     }
 
-    @Test
     @DisplayName("from 메소드에 null을 전달하면 예외가 발생한다.")
+    @Test
     void from_withNull() {
         // given
         final LocalDate nullDate = null;
@@ -37,8 +37,8 @@ class DateSlotTest {
                 .hasMessageContaining("cannot be null");
     }
 
-    @Test
     @DisplayName("compareTo 메소드로 날짜를 비교한다.")
+    @Test
     void compareTo() {
         // given
         final DateSlot today = DateSlot.from(LocalDate.now());
