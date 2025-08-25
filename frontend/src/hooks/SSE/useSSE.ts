@@ -141,7 +141,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
       document.removeEventListener('visibilitychange', onVisibilityChange);
       deactivate();
     };
-  }, [session, handleError, handler]);
+  }, [session]);
 
   return null;
 }
