@@ -5,79 +5,104 @@ interface Handlers {
   onVoteChange: () => Promise<void>;
 }
 
-// SSE 재연결 관련 상수
 const MAX_RETRY_COUNT = 10;
 const RETRY_INTERVAL = 1000; // 1초
+const REFRESH_INTERVAL = 5 * 60 * 1000; // 5분
 
 const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handlers) => {
   const retryCountRef = useRef(0);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
-  const reconnectIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const connectionFailed = useRef(false);
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const connectionFailedRef = useRef(false);
+  const isActiveRef = useRef(true);
 
   useEffect(() => {
     if (!session) return;
 
-    const connectSSE = () => {
-      // 기존 연결이 있으면 먼저 끊기
+    const clearRetryTimeout = () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
+      }
+    };
+
+    const clearRefreshInterval = () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+        refreshIntervalRef.current = null;
+      }
+    };
+
+    const closeEventSource = () => {
       if (eventSourceRef.current) {
         try {
           eventSourceRef.current.close();
         } catch {
-          // 연결이 이미 닫혔을 경우 오류 무시
+          // 이미 닫혀 있을 수 있음
         }
         eventSourceRef.current = null;
       }
+    };
 
-      const eventSource = new EventSource(
-        `${process.env.API_BASE_URL}api/v1/sse/rooms/${session}/stream`
-      );
-      eventSourceRef.current = eventSource;
+    const scheduleRefresh = () => {
+      clearRefreshInterval();
+      refreshIntervalRef.current = setInterval(() => {
+        if (!isActiveRef.current) return;
+        connectSSE();
+      }, REFRESH_INTERVAL);
+    };
+
+    const connectSSE = () => {
+      if (!isActiveRef.current) return;
+
+      clearRetryTimeout();
+      closeEventSource();
+
+      const url = `${process.env.API_BASE_URL}api/v1/sse/rooms/${session}/stream`;
+      const es = new EventSource(url);
+      eventSourceRef.current = es;
 
       const onConnected = (ev: MessageEvent<string>) => {
         try {
           const data = JSON.parse(ev.data);
-          // 연결 성공시 재시도 카운트 초기화
           retryCountRef.current = 0;
-          connectionFailed.current = false;
-          // 삭제하거나, 유의미한 데이터를 파싱할때까지는 유지
+          connectionFailedRef.current = false;
           console.log('SSE 연결됨:', data);
         } catch (error) {
-          handleError(error, 'SSE 연결 오류');
+          handleError(error, 'SSE 연결 이벤트 파싱 오류');
         }
       };
 
       const onVoteChange = async (ev: MessageEvent<string>) => {
         try {
-          const data = JSON.parse(ev.data);
+          JSON.parse(ev.data);
           await handler.onVoteChange();
-          console.log('투표 변경:', data);
         } catch (error) {
-          handleError(error, 'SSE 연결 오류');
+          handleError(error, 'SSE 핸들러 오류');
         }
       };
 
-      eventSource.addEventListener('connected', onConnected);
-      eventSource.addEventListener('vote-changed', onVoteChange);
+      es.addEventListener('connected', onConnected);
+      es.addEventListener('vote-changed', onVoteChange);
 
-      eventSource.onerror = (e) => {
+      es.onerror = () => {
+        if (!isActiveRef.current) return; // 비활성 상태에서는 재시도 안 함
         if (retryCountRef.current < MAX_RETRY_COUNT) {
           retryCountRef.current += 1;
-          console.error('SSE 연결 오류:', e);
-          console.log(`SSE 재연결 시도 ${retryCountRef.current}/${MAX_RETRY_COUNT}`);
-
+          clearRetryTimeout();
           retryTimeoutRef.current = setTimeout(() => {
             connectSSE();
           }, RETRY_INTERVAL);
-        } else if (!connectionFailed.current) {
-          connectionFailed.current = true;
-          console.error('SSE 최대 재시도 횟수 초과');
+        } else if (!connectionFailedRef.current) {
+          connectionFailedRef.current = true;
           handleError(new Error('SSE 연결 실패'), 'SSE 연결을 복구할 수 없습니다');
         }
       };
 
-      return eventSource;
+      scheduleRefresh();
+
+      return es;
     };
 
     const cleanup = () => {
