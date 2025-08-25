@@ -101,8 +101,6 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
       };
 
       scheduleRefresh();
-
-      return es;
     };
 
     const activate = () => {
