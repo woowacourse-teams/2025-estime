@@ -94,11 +94,18 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
       }, REFRESH_INTERVAL);
     };
 
-    const activate = () => {
-      if (isActiveRef.current) return;
+    const activate = async (refetch: () => Promise<void>) => {
       isActiveRef.current = true;
       retryCountRef.current = 0;
       connectionFailedRef.current = false;
+
+      // 탭을 벗어나 있던 동안 놓친 데이터 동기화
+      try {
+        await refetch();
+      } catch (error) {
+        handleError(error, 'SSE 재연결 시 데이터 동기화 오류');
+      }
+
       connectSSE();
     };
 
@@ -116,7 +123,7 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
 
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        activate();
+        activate(handler.onVoteChange);
       } else {
         deactivate();
       }
@@ -128,5 +135,5 @@ export default function useSSE(session: string, handleError: HandleErrorReturn, 
       document.removeEventListener('visibilitychange', onVisibilityChange);
       deactivate();
     };
-  }, [session]);
+  }, [session, handleError, handler]);
 }
