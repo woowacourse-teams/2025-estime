@@ -21,6 +21,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +79,7 @@ public class Room extends BaseEntity {
         validateNull(title, availableDateSlots, availableTimeSlots, deadline);
         final String trimmedTitle = title.trim();
         validateTitle(trimmedTitle);
+        validateAvailableDateSlots(availableDateSlots);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
@@ -105,6 +107,14 @@ public class Room extends BaseEntity {
     private static void validateTitle(final String trimmedTitle) {
         if (trimmedTitle.isBlank() || trimmedTitle.length() > TITLE_MAX_LENGTH) {
             throw new InvalidLengthException(DomainTerm.ROOM, trimmedTitle);
+        }
+    }
+
+    private static void validateAvailableDateSlots(final List<DateSlot> availableDateSlots) {
+        for (final DateSlot availableDateSlot : availableDateSlots) {
+            if (availableDateSlot.getStartAt().isBefore(LocalDate.now())) {
+                throw new PastNotAllowedException(DomainTerm.DATE_SLOT, availableDateSlot.getStartAt());
+            }
         }
     }
 

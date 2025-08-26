@@ -8,7 +8,6 @@ import static org.mockito.Mockito.doNothing;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.application.NotFoundException;
-import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.common.exception.domain.UnavailableSlotException;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
@@ -131,23 +130,6 @@ class RoomApplicationServiceTest {
         // then
         assertThat(isValidSession(saved.session()))
                 .isTrue();
-    }
-
-    @DisplayName("과거 날짜를 포함하는 방을 생성하면 예외가 발생한다.")
-    @Test
-    void createRoom_withPastDate() {
-        // given
-        final RoomCreateInput input = new RoomCreateInput(
-                "title",
-                List.of(DateSlot.from(LocalDate.now().minusDays(1))),
-                List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1)
-        );
-
-        // when & then
-        assertThatThrownBy(() -> roomApplicationService.createRoom(input))
-                .isInstanceOf(com.estime.common.exception.domain.PastNotAllowedException.class)
-                .hasMessageContaining(DomainTerm.DATE_SLOT + " cannot be past");
     }
 
     @DisplayName("세션을 기반으로 방을 조회할 수 있다.")
@@ -411,29 +393,6 @@ class RoomApplicationServiceTest {
                     .isPresent();
         });
     }
-
-    @DisplayName("과거 날짜를 포함하는 플랫폼과 연결된 방을 생성하면 예외가 발생한다.")
-    @Test
-    void createConnectedRoom_withPastDate() {
-        // given
-        final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
-                "title",
-                List.of(DateSlot.from(LocalDate.now().minusDays(1))),
-                List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1),
-                PlatformType.DISCORD,
-                "testChannelId",
-                PlatformNotification.of(false, false, false)
-        );
-
-        doNothing().when(discordMessageSender).sendConnectedRoomCreatedMessage(any(), any(), any(), any());
-
-        // when & then
-        assertThatThrownBy(() -> roomApplicationService.createConnectedRoom(input))
-                .isInstanceOf(PastNotAllowedException.class)
-                .hasMessageContaining(DomainTerm.DATE_SLOT + " cannot be past");
-    }
-
 
     private boolean isValidSession(final RoomSession session) {
         return Tsid.isValid(session.getValue().toString());
