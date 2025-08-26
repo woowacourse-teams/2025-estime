@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 
 class VotesTest {
 
-    @Test
     @DisplayName("정적 팩토리 메소드 from으로 Votes를 생성한다.")
+    @Test
     void from() {
         // given
         final LocalDateTime now = getValidDateTime();
@@ -35,8 +35,8 @@ class VotesTest {
         });
     }
 
-    @Test
     @DisplayName("from 메소드에 null을 전달하면 예외가 발생한다.")
+    @Test
     void from_withNull() {
         // given
         final List<Vote> nullList = null;
@@ -47,8 +47,8 @@ class VotesTest {
                 .hasMessageContaining("cannot be null");
     }
 
-    @Test
     @DisplayName("remove 메소드로 다른 Votes를 제거(차집합)한다.")
+    @Test
     void subtract() {
         // given
         final LocalDateTime now = getValidDateTime();
@@ -68,8 +68,8 @@ class VotesTest {
         });
     }
 
-    @Test
     @DisplayName("calculateStatistic 메소드로 통계를 계산한다.")
+    @Test
     void calculateStatistic() {
         // given
         final LocalDateTime now = getValidDateTime();
@@ -91,8 +91,8 @@ class VotesTest {
         });
     }
 
-    @Test
     @DisplayName("calculateUniqueStartAts 메소드로 중복 없는 시작 시간을 계산한다.")
+    @Test
     void calculateUniqueStartAts() {
         // given
         final LocalDateTime now = getValidDateTime();
@@ -114,8 +114,8 @@ class VotesTest {
         });
     }
 
-    @Test
     @DisplayName("isEmpty와 isNotEmpty 메소드가 올바르게 동작한다.")
+    @Test
     void isEmpty_and_isNotEmpty() {
         // given
         final Votes emptyVotes = Votes.from(Collections.emptyList());

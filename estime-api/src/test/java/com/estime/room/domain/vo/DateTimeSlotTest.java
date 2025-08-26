@@ -33,8 +33,8 @@ class DateTimeSlotTest {
         assertThat(dateTimeSlot.getStartAt()).isEqualTo(now);
     }
 
-    @Test
     @DisplayName("from 메소드에 null을 전달하면 예외가 발생한다.")
+    @Test
     void from_withNull() {
         // given
         final LocalDateTime nullDateTime = null;
@@ -45,8 +45,8 @@ class DateTimeSlotTest {
                 .hasMessageContaining("cannot be null");
     }
 
-    @Test
     @DisplayName("30분 단위가 아닌 시간으로 DateTimeSlot을 생성하면 예외가 발생한다.")
+    @Test
     void from_withInvalidMinute() {
         // given
         final LocalDateTime invalidDateTime = getValidDateTime().withMinute(15);
@@ -57,8 +57,8 @@ class DateTimeSlotTest {
                 .hasMessageContaining("must be an interval of 30 minutes");
     }
 
-    @Test
     @DisplayName("isBefore 메소드로 시간을 비교한다.")
+    @Test
     void isBefore() {
         // given
         final DateTimeSlot now = DateTimeSlot.from(getValidDateTime().withMinute(0));
@@ -71,8 +71,8 @@ class DateTimeSlotTest {
         });
     }
 
-    @Test
     @DisplayName("compareTo 메소드로 시간을 비교한다.")
+    @Test
     void compareTo() {
         // given
         final DateTimeSlot now = DateTimeSlot.from(getValidDateTime().withMinute(0));

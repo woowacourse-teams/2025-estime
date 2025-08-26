@@ -119,9 +119,9 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(DateSlot.from(LocalDate.now())),
+                List.of(DateSlot.from(LocalDate.now().plusDays(1))),
                 List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
-                LocalDateTime.of(2026, 1, 1, 0, 0)
+                LocalDateTime.now().plusYears(1)
         );
 
         // when
@@ -370,9 +370,9 @@ class RoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                List.of(DateSlot.from(LocalDate.now())),
+                List.of(DateSlot.from(LocalDate.now().plusDays(1))),
                 List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
-                LocalDateTime.of(2026, 1, 1, 0, 0),
+                LocalDateTime.now().plusYears(1),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(false, false, false)
