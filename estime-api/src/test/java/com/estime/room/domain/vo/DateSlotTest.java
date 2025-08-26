@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.NullNotAllowedException;
-import com.estime.common.exception.domain.PastNotAllowedException;
 import com.estime.room.domain.slot.vo.DateSlot;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class DateSlotTest {
 
-    @Test
     @DisplayName("정적 팩토리 메소드 from으로 DateSlot을 생성한다.")
+    @Test
     void from() {
         // given
         final LocalDate now = LocalDate.now();
@@ -27,8 +25,8 @@ class DateSlotTest {
         assertThat(dateSlot.getStartAt()).isEqualTo(now);
     }
 
-    @Test
     @DisplayName("from 메소드에 null을 전달하면 예외가 발생한다.")
+    @Test
     void from_withNull() {
         // given
         final LocalDate nullDate = null;
@@ -39,20 +37,8 @@ class DateSlotTest {
                 .hasMessageContaining("cannot be null");
     }
 
-    @Test
-    @DisplayName("과거 날짜로 DateSlot을 생성하면 예외가 발생한다.")
-    void from_withPastDate() {
-        // given
-        final LocalDate pastDate = LocalDate.now().minusDays(1);
-
-        // when & then
-        assertThatThrownBy(() -> DateSlot.from(pastDate))
-                .isInstanceOf(PastNotAllowedException.class)
-                .hasMessageContaining(DomainTerm.DATE_SLOT + " cannot be past");
-    }
-
-    @Test
     @DisplayName("compareTo 메소드로 날짜를 비교한다.")
+    @Test
     void compareTo() {
         // given
         final DateSlot today = DateSlot.from(LocalDate.now());

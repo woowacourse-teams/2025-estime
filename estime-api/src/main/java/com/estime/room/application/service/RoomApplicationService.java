@@ -28,7 +28,6 @@ import com.estime.room.domain.platform.PlatformNotificationType;
 import com.estime.room.domain.platform.PlatformRepository;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
-import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDateTime;
@@ -58,15 +57,13 @@ public class RoomApplicationService {
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        return RoomCreateOutput.from(
-                roomRepository.save(
-                        input.toEntity()));
+        return RoomCreateOutput.from(roomRepository.save(input.toEntity()));
     }
 
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
-        final Room room = roomRepository.save(
-                input.toRoomCreateInput().toEntity());
+        final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
+        final Room room = roomRepository.save(roomCreateInput.toEntity());
 
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
