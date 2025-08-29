@@ -37,9 +37,30 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
+
+    // QueryDSL
+    implementation "io.github.openfeign.querydsl:querydsl-jpa:7.0"
+    annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:7.0:jpa"
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    testAnnotationProcessor "io.github.openfeign.querydsl:querydsl-apt:7.0:jpa"
+    testAnnotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main")
+        }
+    }
+    test {
+        java {
+            srcDir layout.buildDirectory.dir("generated/sources/annotationProcessor/java/test")
+        }
+    }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
-    workingDir = rootDir // TODO real hard trouble
+    workingDir = rootDir
 }
