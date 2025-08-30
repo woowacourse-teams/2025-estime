@@ -3,7 +3,6 @@ package com.estime.timepreference.presentation.dto;
 import com.estime.timepreference.application.dto.TimePreferenceInput;
 import com.estime.timepreference.domain.category.CategoryType;
 import java.util.List;
-import java.util.Set;
 
 public record TimePreferenceRequest(
         int windowDays,

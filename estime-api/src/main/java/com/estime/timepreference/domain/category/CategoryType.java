@@ -1,6 +1,5 @@
 package com.estime.timepreference.domain.category;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

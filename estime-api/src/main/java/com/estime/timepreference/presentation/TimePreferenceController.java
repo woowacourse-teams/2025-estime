@@ -2,7 +2,6 @@ package com.estime.timepreference.presentation;
 
 import com.estime.common.CustomApiResponse;
 import com.estime.timepreference.application.TimePreferenceApplicationService;
-import com.estime.timepreference.application.dto.TimePreferenceInput;
 import com.estime.timepreference.application.dto.TimePreferencesStatisticOutput;
 import com.estime.timepreference.presentation.dto.TimePreferenceRequest;
 import com.estime.timepreference.presentation.dto.TimePreferenceStatisticResponse;

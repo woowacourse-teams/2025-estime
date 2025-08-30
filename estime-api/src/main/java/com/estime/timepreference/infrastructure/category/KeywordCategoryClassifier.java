@@ -2,11 +2,10 @@ package com.estime.timepreference.infrastructure.category;
 
 import com.estime.timepreference.domain.category.CategoryClassifier;
 import com.estime.timepreference.domain.category.CategoryType;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import java.text.Normalizer;
 import java.util.Locale;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -20,24 +19,17 @@ public class KeywordCategoryClassifier implements CategoryClassifier {
 
         final String title = normalize(rawTitle);
 
-        if (containsWorkKeywords(title))   return CategoryType.WORK;
-        if (containsLeisureKeywords(title)) return CategoryType.LEISURE;
-        if (containsSocialKeywords(title))  return CategoryType.SOCIAL;
+        if (containsWorkKeywords(title)) {
+            return CategoryType.WORK;
+        }
+        if (containsLeisureKeywords(title)) {
+            return CategoryType.LEISURE;
+        }
+        if (containsSocialKeywords(title)) {
+            return CategoryType.SOCIAL;
+        }
 
         return CategoryType.ETC;
-    }
-
-    private static String normalize(final String s) {
-        return Normalizer.normalize(s, Normalizer.Form.NFKC)
-                .toLowerCase(Locale.ROOT)
-                .trim();
-    }
-
-    private static boolean containsAny(final String title, final String... keywords) {
-        for (final String kw : keywords) {
-            if (title.contains(kw)) return true;
-        }
-        return false;
     }
 
     private boolean containsWorkKeywords(final String title) {
@@ -64,5 +56,20 @@ public class KeywordCategoryClassifier implements CategoryClassifier {
         return containsAny(title,
                 "회식", "모임", "파티", "동아리", "친목", "번개"
         );
+    }
+
+    private String normalize(final String s) {
+        return Normalizer.normalize(s, Normalizer.Form.NFKC)
+                .toLowerCase(Locale.ROOT)
+                .trim();
+    }
+
+    private boolean containsAny(final String title, final String... keywords) {
+        for (final String kw : keywords) {
+            if (title.contains(kw)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -82,12 +82,18 @@ class TimePreferenceApplicationServiceTest {
                 deadline
         ));
 
-        workParticipant1 = participantRepository.save(Participant.withoutId(workRoom.getId(), ParticipantName.from("workUser1")));
-        workParticipant2 = participantRepository.save(Participant.withoutId(workRoom.getId(), ParticipantName.from("workUser2")));
-        leisureParticipant1 = participantRepository.save(Participant.withoutId(leisureRoom.getId(), ParticipantName.from("leisureUser1")));
-        leisureParticipant2 = participantRepository.save(Participant.withoutId(leisureRoom.getId(), ParticipantName.from("leisureUser2")));
-        socialParticipant1 = participantRepository.save(Participant.withoutId(socialRoom.getId(), ParticipantName.from("socialUser1")));
-        socialParticipant2 = participantRepository.save(Participant.withoutId(socialRoom.getId(), ParticipantName.from("socialUser2")));
+        workParticipant1 = participantRepository.save(
+                Participant.withoutId(workRoom.getId(), ParticipantName.from("workUser1")));
+        workParticipant2 = participantRepository.save(
+                Participant.withoutId(workRoom.getId(), ParticipantName.from("workUser2")));
+        leisureParticipant1 = participantRepository.save(
+                Participant.withoutId(leisureRoom.getId(), ParticipantName.from("leisureUser1")));
+        leisureParticipant2 = participantRepository.save(
+                Participant.withoutId(leisureRoom.getId(), ParticipantName.from("leisureUser2")));
+        socialParticipant1 = participantRepository.save(
+                Participant.withoutId(socialRoom.getId(), ParticipantName.from("socialUser1")));
+        socialParticipant2 = participantRepository.save(
+                Participant.withoutId(socialRoom.getId(), ParticipantName.from("socialUser2")));
 
         final DateTimeSlot workMorning = DateTimeSlot.from(LocalDateTime.of(testDate, LocalTime.of(10, 0)));
         final DateTimeSlot workAfternoon = DateTimeSlot.from(LocalDateTime.of(testDate, LocalTime.of(14, 0)));
@@ -167,7 +173,7 @@ class TimePreferenceApplicationServiceTest {
 
             if (workOutput != null && workOutput.timePreferences().size() > 1) {
                 final List<TimePreferenceOutput> timePreferences = workOutput.timePreferences();
-                
+
                 assertSoftly(softly -> {
                     for (int i = 0; i < timePreferences.size() - 1; i++) {
                         softly.assertThat(timePreferences.get(i).count())
@@ -208,7 +214,7 @@ class TimePreferenceApplicationServiceTest {
         final Participant additionalParticipant = participantRepository.save(
                 Participant.withoutId(workRoom.getId(), ParticipantName.from("workUser3"))
         );
-        
+
         final DateTimeSlot sameMorningSlot = DateTimeSlot.from(LocalDateTime.of(testDate, LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(additionalParticipant.getId(), sameMorningSlot));
 
@@ -255,7 +261,8 @@ class TimePreferenceApplicationServiceTest {
     void getTopTimePreferences_correctTimeWindow() {
         // given
         final int windowDays = 7;
-        final TimePreferenceInput input = new TimePreferenceInput(windowDays, 5, Set.of(CategoryType.WORK, CategoryType.LEISURE));
+        final TimePreferenceInput input = new TimePreferenceInput(windowDays, 5,
+                Set.of(CategoryType.WORK, CategoryType.LEISURE));
 
         // when
         final TimePreferencesStatisticOutput result = timePreferenceApplicationService.getTopTimePreferences(input);
@@ -263,7 +270,7 @@ class TimePreferenceApplicationServiceTest {
         // then
         final LocalDate expectedStartDate = LocalDate.now().minusDays(windowDays - 1);
         final LocalDate expectedEndDate = LocalDate.now();
-        
+
         assertSoftly(softly -> {
             softly.assertThat(result.startDate()).isEqualTo(expectedStartDate);
             softly.assertThat(result.endDate()).isEqualTo(expectedEndDate);
