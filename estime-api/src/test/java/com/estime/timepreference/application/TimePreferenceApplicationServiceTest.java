@@ -58,7 +58,7 @@ class TimePreferenceApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
-        final LocalDate testDate = LocalDate.now().plusDays(1);
+        final LocalDate testDate = LocalDate.now();
         final LocalDateTime deadline = LocalDateTime.now().plusDays(3);
 
         workRoom = roomRepository.save(Room.withoutId(
@@ -117,17 +117,11 @@ class TimePreferenceApplicationServiceTest {
         // when
         final TimePreferencesStatisticOutput result = timePreferenceApplicationService.getTopTimePreferences(input);
 
-        // then: 미래 데이터는 현재 시점 기준 과거 윈도우에 포함되지 않으므로 결과가 비어있을 수 있음
+        // then
         assertSoftly(softly -> {
             softly.assertThat(result.startDate()).isNotNull();
             softly.assertThat(result.endDate()).isNotNull();
-            // 결과가 있다면 유효한 카테고리여야 함
-            if (!result.timePreferencesOutputs().isEmpty()) {
-                result.timePreferencesOutputs().forEach(output -> {
-                    softly.assertThat(output.category()).isIn(CategoryType.WORK, CategoryType.LEISURE);
-                    softly.assertThat(output.timePreferences()).isNotNull();
-                });
-            }
+            softly.assertThat(result.timePreferencesOutputs()).isNotNull();
         });
     }
 
@@ -142,17 +136,9 @@ class TimePreferenceApplicationServiceTest {
         final TimePreferencesStatisticOutput result = timePreferenceApplicationService.getTopTimePreferences(input);
 
         // then
-        assertSoftly(softly -> {
-            final boolean hasOnlyWorkCategory = result.timePreferencesOutputs().stream()
-                    .allMatch(output -> output.category() == CategoryType.WORK);
-            softly.assertThat(hasOnlyWorkCategory).isTrue();
-
-            if (!result.timePreferencesOutputs().isEmpty()) {
-                final TimePreferencesOutput workOutput = result.timePreferencesOutputs().getFirst();
-                softly.assertThat(workOutput.category()).isEqualTo(CategoryType.WORK);
-                softly.assertThat(workOutput.timePreferences()).isNotEmpty();
-            }
-        });
+        result.timePreferencesOutputs().forEach(
+                output -> assertThat(output.category()).isEqualTo(CategoryType.WORK)
+        );
     }
 
     @DisplayName("투표 수가 많은 순으로 정렬되어 반환한다")
@@ -165,23 +151,19 @@ class TimePreferenceApplicationServiceTest {
         final TimePreferencesStatisticOutput result = timePreferenceApplicationService.getTopTimePreferences(input);
 
         // then
-        if (!result.timePreferencesOutputs().isEmpty()) {
-            final TimePreferencesOutput workOutput = result.timePreferencesOutputs().stream()
-                    .filter(output -> output.category() == CategoryType.WORK)
-                    .findFirst()
-                    .orElse(null);
+        assertThat(result.timePreferencesOutputs()).isNotEmpty();
+        final TimePreferencesOutput workOutput = result.timePreferencesOutputs().stream()
+                .filter(output -> output.category() == CategoryType.WORK)
+                .findFirst()
+                .orElseThrow();
 
-            if (workOutput != null && workOutput.timePreferences().size() > 1) {
-                final List<TimePreferenceOutput> timePreferences = workOutput.timePreferences();
-
-                assertSoftly(softly -> {
-                    for (int i = 0; i < timePreferences.size() - 1; i++) {
-                        softly.assertThat(timePreferences.get(i).count())
-                                .isGreaterThanOrEqualTo(timePreferences.get(i + 1).count());
-                    }
-                });
+        final List<TimePreferenceOutput> timePreferences = workOutput.timePreferences();
+        assertSoftly(softly -> {
+            for (int i = 0; i < timePreferences.size() - 1; i++) {
+                softly.assertThat(timePreferences.get(i).count())
+                        .isGreaterThanOrEqualTo(timePreferences.get(i + 1).count());
             }
-        }
+        });
     }
 
     @DisplayName("topN 제한에 따라 상위 N개만 반환한다")
@@ -194,23 +176,20 @@ class TimePreferenceApplicationServiceTest {
         final TimePreferencesStatisticOutput result = timePreferenceApplicationService.getTopTimePreferences(input);
 
         // then
-        if (!result.timePreferencesOutputs().isEmpty()) {
-            final TimePreferencesOutput workOutput = result.timePreferencesOutputs().stream()
-                    .filter(output -> output.category() == CategoryType.WORK)
-                    .findFirst()
-                    .orElse(null);
+        assertThat(result.timePreferencesOutputs()).isNotEmpty();
+        final TimePreferencesOutput workOutput = result.timePreferencesOutputs().stream()
+                .filter(output -> output.category() == CategoryType.WORK)
+                .findFirst()
+                .orElseThrow();
 
-            if (workOutput != null) {
-                assertThat(workOutput.timePreferences()).hasSizeLessThanOrEqualTo(1);
-            }
-        }
+        assertThat(workOutput.timePreferences()).hasSizeLessThanOrEqualTo(1);
     }
 
     @DisplayName("동일한 시간대의 투표는 합산되어 반환한다")
     @Test
     void getTopTimePreferences_aggregatesSameTimeSlots() {
         // given
-        final LocalDate testDate = LocalDate.now().plusDays(1);
+        final LocalDate testDate = LocalDate.now();
         final Participant additionalParticipant = participantRepository.save(
                 Participant.withoutId(workRoom.getId(), ParticipantName.from("workUser3"))
         );
@@ -224,23 +203,18 @@ class TimePreferenceApplicationServiceTest {
         final TimePreferencesStatisticOutput result = timePreferenceApplicationService.getTopTimePreferences(input);
 
         // then
-        if (!result.timePreferencesOutputs().isEmpty()) {
-            final TimePreferencesOutput workOutput = result.timePreferencesOutputs().stream()
-                    .filter(output -> output.category() == CategoryType.WORK)
-                    .findFirst()
-                    .orElse(null);
+        assertThat(result.timePreferencesOutputs()).isNotEmpty();
+        final TimePreferencesOutput workOutput = result.timePreferencesOutputs().stream()
+                .filter(output -> output.category() == CategoryType.WORK)
+                .findFirst()
+                .orElseThrow();
 
-            if (workOutput != null && !workOutput.timePreferences().isEmpty()) {
-                final TimePreferenceOutput morningSlot = workOutput.timePreferences().stream()
-                        .filter(pref -> pref.time().equals(LocalTime.of(10, 0)))
-                        .findFirst()
-                        .orElse(null);
+        final TimePreferenceOutput morningSlot = workOutput.timePreferences().stream()
+                .filter(pref -> pref.time().equals(LocalTime.of(10, 0)))
+                .findFirst()
+                .orElseThrow();
 
-                if (morningSlot != null) {
-                    assertThat(morningSlot.count()).isEqualTo(3L);
-                }
-            }
-        }
+        assertThat(morningSlot.count()).isEqualTo(3L);
     }
 
     @DisplayName("해당하지 않는 카테고리로 조회하면 빈 결과를 반환한다")
