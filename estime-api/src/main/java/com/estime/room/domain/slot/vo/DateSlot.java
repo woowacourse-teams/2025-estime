@@ -7,11 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
 @EqualsAndHashCode
+@FieldNameConstants
 public class DateSlot implements Comparable<DateSlot> {
 
     private final LocalDate startAt;
@@ -23,7 +25,7 @@ public class DateSlot implements Comparable<DateSlot> {
 
     private static void validateNull(final LocalDate startAt) {
         Validator.builder()
-                .add("startAt", startAt)
+                .add(Fields.startAt, startAt)
                 .validateNull();
     }
 

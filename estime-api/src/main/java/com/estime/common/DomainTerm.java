@@ -14,7 +14,7 @@ public enum DomainTerm {
     VOTE("투표"),
     VOTES("투표들"),
     DEADLINE("마감일"),
-    PLATFORM("플랫폼")
+    PLATFORM("플랫폼"),
     ;
 
     private final String label;

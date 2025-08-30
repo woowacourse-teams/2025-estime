@@ -10,11 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
+@FieldNameConstants(level = AccessLevel.PRIVATE)
 public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
     public static final Duration UNIT = Duration.ofMinutes(30);
@@ -32,7 +34,7 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
     private static void validateNull(final LocalDateTime startAt) {
         Validator.builder()
-                .add("startAt", startAt)
+                .add(Fields.startAt, startAt)
                 .validateNull();
     }
 
