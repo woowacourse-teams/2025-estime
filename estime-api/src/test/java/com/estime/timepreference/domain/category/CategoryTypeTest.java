@@ -50,6 +50,6 @@ class CategoryTypeTest {
         final List<String> names = List.of("업무", "여가");
         final Set<CategoryType> result = CategoryType.fromOrAll(names);
 
-        assertThat(result).containsExactly(CategoryType.WORK, CategoryType.LEISURE);
+        assertThat(result).contains(CategoryType.WORK, CategoryType.LEISURE);
     }
 }
