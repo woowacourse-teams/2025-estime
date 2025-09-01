@@ -59,4 +59,61 @@ class KeywordCategoryClassifierTest {
         assertThat(classifier.classify("MEETING")).isEqualTo(CategoryType.ETC);
         assertThat(classifier.classify("게임")).isEqualTo(CategoryType.LEISURE);
     }
+
+    @DisplayName("영어 대소문자 정규화 테스트")
+    @Test
+    void classify_englishCaseNormalization() {
+        assertThat(classifier.classify("LOL 대회")).isEqualTo(CategoryType.LEISURE);
+        assertThat(classifier.classify("Overwatch 모임")).isEqualTo(CategoryType.LEISURE);
+        assertThat(classifier.classify("PUBG 스쿼드")).isEqualTo(CategoryType.LEISURE);
+    }
+
+    @DisplayName("전각/반각 문자 정규화 테스트")
+    @Test
+    void classify_fullWidthCharacterNormalization() {
+        // 전각 영어 → 반각 영어로 정규화
+        assertThat(classifier.classify("ｌｏｌ 대회")).isEqualTo(CategoryType.LEISURE); // 전각 lol
+        assertThat(classifier.classify("ｇａｍｅ 시간")).isEqualTo(CategoryType.LEISURE); // 전각 game
+        assertThat(classifier.classify("ｐｕｂｇ 플레이")).isEqualTo(CategoryType.LEISURE); // 전각 pubg
+    }
+
+    @DisplayName("호환 문자 정규화 테스트")
+    @Test
+    void classify_compatibilityCharacterNormalization() {
+        // 원 안의 숫자, 괄호 안의 숫자 등 호환 문자
+        assertThat(classifier.classify("①차 회의")).isEqualTo(CategoryType.WORK); // ①(원 안의 1)
+        assertThat(classifier.classify("⑴번째 미팅")).isEqualTo(CategoryType.WORK); // ⑴(괄호 안의 1)
+        assertThat(classifier.classify("②번째 게임")).isEqualTo(CategoryType.LEISURE); // ②(원 안의 2)
+    }
+
+    @DisplayName("다양한 공백 문자 정규화 테스트")
+    @Test
+    void classify_whitespaceNormalization() {
+        // 일반 공백, 탭, 개행, 전각 공백 등
+        assertThat(classifier.classify("\t회의\n")).isEqualTo(CategoryType.WORK);
+        assertThat(classifier.classify("　게임　")).isEqualTo(CategoryType.LEISURE); // 전각 공백(U+3000)
+        assertThat(classifier.classify(" 　\t모임\n　 ")).isEqualTo(CategoryType.SOCIAL); // 혼합 공백
+    }
+
+    @DisplayName("복합 정규화 테스트")
+    @Test
+    void classify_mixedNormalization() {
+        // 여러 정규화가 동시에 적용되는 경우
+        assertThat(classifier.classify("　　①번째　ＬＯＬ　대회　　")).isEqualTo(CategoryType.LEISURE); 
+        // 전각공백 + 원 안의 숫자 + 전각 LOL + 전각공백
+        
+        assertThat(classifier.classify("⑴차　　ＧＡＭＥ　모임")).isEqualTo(CategoryType.LEISURE);
+        // 괄호 안의 숫자 + 전각공백 + 전각 GAME
+    }
+
+    @DisplayName("우선순위 테스트 - 먼저 매칭되는 카테고리가 선택됨")
+    @Test
+    void classify_priority_firstMatchWins() {
+        // WORK 키워드가 먼저 체크되므로 WORK로 분류
+        assertThat(classifier.classify("회의 후 게임하기")).isEqualTo(CategoryType.WORK);
+        assertThat(classifier.classify("스터디 모임 파티")).isEqualTo(CategoryType.WORK);
+        
+        // LEISURE가 SOCIAL보다 먼저 체크되므로 LEISURE로 분류  
+        assertThat(classifier.classify("게임 모임")).isEqualTo(CategoryType.LEISURE);
+    }
 }
