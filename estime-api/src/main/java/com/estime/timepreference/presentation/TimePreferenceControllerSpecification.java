@@ -17,9 +17,9 @@ public interface TimePreferenceControllerSpecification {
     @Operation(summary = "시간 선호도 통계 조회")
     @GetMapping("/statistics")
     CustomApiResponse<TimePreferenceStatisticResponse> getTopTimePreferences(
-            @Parameter(description = "조회 기간 (일)", example = "30")
+            @Parameter(description = "조회 기간 (일, 1-365)", example = "30")
             @RequestParam(defaultValue = "30") int windowDays,
-            @Parameter(description = "상위 N개", example = "3")
+            @Parameter(description = "상위 N개 (1-100)", example = "3")
             @RequestParam(defaultValue = "3") int topN,
             @Parameter(description = "카테고리 필터", example = "[\"업무\", \"여가\", \"모임\", \"기타\"]")
             @RequestParam(required = false) List<String> categories
