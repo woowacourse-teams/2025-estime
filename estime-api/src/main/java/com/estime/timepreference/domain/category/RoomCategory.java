@@ -38,7 +38,7 @@ public class RoomCategory extends BaseEntity {
         return new RoomCategory(roomId, category);
     }
 
-    public boolean contains(final Set<CategoryType> categories) {
+    public boolean isInCategories(final Set<CategoryType> categories) {
         return categories.contains(this.category);
     }
 }

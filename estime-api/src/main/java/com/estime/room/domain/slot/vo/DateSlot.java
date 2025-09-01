@@ -13,7 +13,7 @@ import lombok.experimental.FieldNameConstants;
 @Getter
 @ToString
 @EqualsAndHashCode
-@FieldNameConstants
+@FieldNameConstants(level = AccessLevel.PRIVATE)
 public class DateSlot implements Comparable<DateSlot> {
 
     private final LocalDate startAt;

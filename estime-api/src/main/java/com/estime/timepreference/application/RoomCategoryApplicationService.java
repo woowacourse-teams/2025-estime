@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RoomCategoryService {
+public class RoomCategoryApplicationService {
 
     private final RoomCategoryRepository roomCategoryRepository;
     private final CategoryClassifier categoryClassifier;

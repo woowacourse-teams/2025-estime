@@ -19,19 +19,19 @@ class RoomCategoryTest {
 
     @DisplayName("주어진 카테고리가 포함된 경우 true를 반환한다")
     @Test
-    void contains_includedCategory_returnsTrue() {
+    void isCategoryIn_included_returnsTrueCategories() {
         final RoomCategory roomCategory = RoomCategory.withoutId(1L, CategoryType.WORK);
         final Set<CategoryType> categories = Set.of(CategoryType.WORK, CategoryType.LEISURE);
 
-        assertThat(roomCategory.contains(categories)).isTrue();
+        assertThat(roomCategory.isInCategories(categories)).isTrue();
     }
 
     @DisplayName("주어진 카테고리가 포함되지 않은 경우 false를 반환한다")
     @Test
-    void contains_notIncludedCategory_returnsFalse() {
+    void isCategoryIn_notIncluded_returnsFalseCategories() {
         final RoomCategory roomCategory = RoomCategory.withoutId(1L, CategoryType.WORK);
         final Set<CategoryType> categories = Set.of(CategoryType.LEISURE, CategoryType.SOCIAL);
 
-        assertThat(roomCategory.contains(categories)).isFalse();
+        assertThat(roomCategory.isInCategories(categories)).isFalse();
     }
 }

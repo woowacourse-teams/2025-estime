@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TimePreferenceApplicationService {
 
     private final RoomForTimePreferenceQuery roomForTimePreferenceQuery;
-    private final RoomCategoryService roomCategoryService;
+    private final RoomCategoryApplicationService roomCategoryApplicationService;
 
     @Transactional(readOnly = true)
     public TimePreferencesStatisticOutput getTopTimePreferences(final TimePreferenceInput input) {
@@ -44,10 +44,10 @@ public class TimePreferenceApplicationService {
                         RoomBriefForTimePreference::roomId,
                         RoomBriefForTimePreference::title));
 
-        final List<RoomCategory> roomCategories = roomCategoryService.classifyRooms(titleByRoomId);
+        final List<RoomCategory> roomCategories = roomCategoryApplicationService.classifyRooms(titleByRoomId);
 
         final Map<CategoryType, List<Long>> roomIdsByCategory = roomCategories.stream()
-                .filter(each -> each.contains(input.categories()))
+                .filter(each -> each.isInCategories(input.categories()))
                 .collect(Collectors.groupingBy(
                         RoomCategory::getCategory,
                         Collectors.mapping(
