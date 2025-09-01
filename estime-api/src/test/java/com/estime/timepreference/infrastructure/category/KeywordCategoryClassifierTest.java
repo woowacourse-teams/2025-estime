@@ -99,9 +99,11 @@ class KeywordCategoryClassifierTest {
     @Test
     void classify_mixedNormalization() {
         // 여러 정규화가 동시에 적용되는 경우
+        System.out.println(classifier.classify("　　①번째　ＬＯＬ　대회　　"));
+        System.out.println(classifier.classify("⑴차　　ＧＡＭＥ　모임"));
         assertThat(classifier.classify("　　①번째　ＬＯＬ　대회　　")).isEqualTo(CategoryType.LEISURE); 
         // 전각공백 + 원 안의 숫자 + 전각 LOL + 전각공백
-        
+
         assertThat(classifier.classify("⑴차　　ＧＡＭＥ　모임")).isEqualTo(CategoryType.LEISURE);
         // 괄호 안의 숫자 + 전각공백 + 전각 GAME
     }

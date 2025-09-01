@@ -48,7 +48,8 @@ public class KeywordCategoryClassifier implements CategoryClassifier {
                 "쇼핑",
                 "롤", "리그오브레전드", "lol",
                 "배그", "pubg",
-                "오버워치", "overwatch"
+                "오버워치", "overwatch",
+                "game"
         );
     }
 
