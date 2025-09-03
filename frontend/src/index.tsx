@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import '@/styles/index.css';
 import * as Sentry from '@sentry/react';
-import GTM from '@/utils/common/gtm';
+import GTM from '@/libs/trackers/GTM';
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({

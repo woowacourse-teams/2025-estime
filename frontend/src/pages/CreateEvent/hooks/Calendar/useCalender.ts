@@ -1,0 +1,28 @@
+import { makeMonthMatrix } from '@/pages/CreateEvent/utils/Calendar/makeMonthMatrix';
+import { useCallback, useState } from 'react';
+
+const useCalender = (date: Date) => {
+  const [current, setCurrent] = useState<Date>(date);
+
+  const prevMonth = useCallback(() => {
+    setCurrent((prev: Date) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() - 1);
+      return newDate;
+    });
+  }, []);
+
+  const nextMonth = useCallback(() => {
+    setCurrent((prev: Date) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + 1);
+      return newDate;
+    });
+  }, []);
+
+  const monthMatrix = makeMonthMatrix(current);
+
+  return { current, prevMonth, nextMonth, monthMatrix };
+};
+
+export { useCalender };

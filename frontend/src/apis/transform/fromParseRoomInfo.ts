@@ -1,4 +1,4 @@
-import { RoomInfo } from '@/types/roomInfo';
+import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 import { GetRoomInfoResponseType } from '../room/type';
 
 /**
