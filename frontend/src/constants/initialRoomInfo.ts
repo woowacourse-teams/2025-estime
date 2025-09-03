@@ -1,5 +1,5 @@
-import { RoomInfo } from '@/types/roomInfo';
-import { DateManager } from '@/utils/common/DateManager';
+import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import { DateManager } from '@/shared/utils/common/DateManager';
 
 const { defaultTime, defaultDate } = DateManager.getDefaultDeadline();
 

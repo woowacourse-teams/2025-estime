@@ -1,9 +1,9 @@
-import Layout from '@/components/Layout';
+import Layout from '@/shared/layout';
 import { Route, Routes } from 'react-router';
-import CreateEventPage from '../pages/CreateEventPage';
-import CheckEventPage from '../pages/CheckEventPage';
-import CreditsPage from '@/pages/CreditsPage';
-import Error404Page from '@/pages/404Page';
+import CreateEventPage from '../pages/CreateEvent/CreateEventPage';
+import CheckEventPage from '../pages/CheckEvent/CheckEventPage';
+import CreditsPage from '@/pages/common/CreditsPage';
+import Error404Page from '@/pages/common/Error404Page';
 
 const DesktopRoutes = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   return (

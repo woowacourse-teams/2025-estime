@@ -1,6 +1,6 @@
-import ToastZone from '@/components/Layout/ToastZone';
-import { ToastContext } from '@/contexts/ToastContext';
-import { ToastStateType } from '@/types/toastType';
+import ToastZone from '@/shared/layout/ToastZone';
+import { ToastContext } from '@/shared/contexts/ToastContext';
+import { ToastStateType } from '@/shared/types/toastType';
 import { useCallback, useRef, useState } from 'react';
 
 const MAX_SAME_TOAST_REPEAT = 3;
