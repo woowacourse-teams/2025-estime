@@ -113,9 +113,9 @@ const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handle
       }
 
       // 재연결 인터벌 정리
-      if (reconnectIntervalRef.current) {
-        clearInterval(reconnectIntervalRef.current);
-        reconnectIntervalRef.current = null;
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+        refreshIntervalRef.current = null;
       }
 
       // EventSource 정리
@@ -133,7 +133,7 @@ const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handle
     connectSSE();
 
     // 5분마다 재연결 (기존 연결을 끊고 새로 연결)
-    reconnectIntervalRef.current = setInterval(
+    refreshIntervalRef.current = setInterval(
       () => {
         console.log('SSE 정기 재연결 시도');
         connectSSE();
