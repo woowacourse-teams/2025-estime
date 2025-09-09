@@ -23,6 +23,7 @@ export default {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
+    publicPath: '/', // SPA 중첩 라우팅을 위한 절대 경로 설정
     clean: true, // 빌드 때 dist 폴더 정리
   },
   resolve: {
