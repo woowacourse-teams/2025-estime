@@ -5,6 +5,7 @@ import Button from '@/shared/components/Button';
 import Flex from '@/shared/layout/Flex';
 import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
+import ExpiryNotice from '../ExpiryNotice/ExpiryNotice';
 
 //로딩 구현시 saving을 쓰면 됨.
 type HeaderMode = 'view' | 'edit';
@@ -38,6 +39,7 @@ interface TimeTableHeaderProps extends ComponentProps<'header'> {
   mode?: HeaderMode;
   onToggleEditMode: () => void;
   isLoading?: boolean;
+  isExpired: boolean;
 }
 
 const TimeTableHeader = ({
@@ -45,6 +47,7 @@ const TimeTableHeader = ({
   mode = 'view',
   onToggleEditMode,
   isLoading,
+  isExpired,
   ...props
 }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
@@ -60,12 +63,23 @@ const TimeTableHeader = ({
           {presets.description(name, theme.isMobile)}
         </Text>
       </Flex>
-
-      <Button color="primary" onClick={onToggleEditMode} disabled={isLoading} size="small">
-        <Text variant="button" color="text">
-          {presets.cta}
-        </Text>
-      </Button>
+      <Flex gap="var(--gap-8)">
+        <ExpiryNotice show={isExpired}>
+          <Text variant="body" color="warningText">
+            ⚠️ 마감일이 지났어요. 결과를 확인해주세요!
+          </Text>
+        </ExpiryNotice>
+        <Button
+          color="primary"
+          onClick={onToggleEditMode}
+          disabled={isLoading || isExpired}
+          size="small"
+        >
+          <Text variant="button" color="text">
+            {presets.cta}
+          </Text>
+        </Button>
+      </Flex>
     </S.Container>
   );
 };

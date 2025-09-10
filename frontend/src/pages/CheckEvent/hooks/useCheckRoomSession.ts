@@ -45,11 +45,15 @@ const useCheckRoomSession = () => {
     }
   };
 
+  const deadLineDate = new Date(roomInfo.deadline?.date + 'T' + roomInfo.deadline?.time);
+
+  const isExpired = deadLineDate < new Date();
+
   useEffect(() => {
     fetchSession();
   }, [session]);
 
-  return { roomInfo, session };
+  return { roomInfo, session, isExpired };
 };
 
 export default useCheckRoomSession;

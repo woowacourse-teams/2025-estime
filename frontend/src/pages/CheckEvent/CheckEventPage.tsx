@@ -30,7 +30,7 @@ const CheckEventPage = () => {
   const theme = useTheme();
   const { addToast } = useToastContext();
 
-  const { roomInfo, session } = useCheckRoomSession();
+  const { roomInfo, session, isExpired } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
 
@@ -139,6 +139,8 @@ const CheckEventPage = () => {
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
     if (!cell) return;
 
+    if (isExpired) return;
+
     addToast({
       type: 'warning',
       message: '시간을 등록하려면 "편집하기"를 눌러주세요',
@@ -177,6 +179,7 @@ const CheckEventPage = () => {
                     name={roomInfo.title}
                     mode="view"
                     onToggleEditMode={handleToggleMode}
+                    isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
@@ -212,6 +215,7 @@ const CheckEventPage = () => {
                     name={userName.value}
                     mode="edit"
                     onToggleEditMode={handleToggleMode}
+                    isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
