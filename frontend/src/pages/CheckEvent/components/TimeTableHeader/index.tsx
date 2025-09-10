@@ -80,7 +80,7 @@ const TimeTableHeader = ({
           disabled={isLoading || isExpired}
           size="small"
         >
-          <Text variant="button" color="text">
+          <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
             {presets.cta}
           </Text>
         </Button>
