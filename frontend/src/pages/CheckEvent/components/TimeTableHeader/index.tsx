@@ -8,7 +8,7 @@ import { useTheme } from '@emotion/react';
 import ExpiryNotice from '../ExpiryNotice/ExpiryNotice';
 
 //로딩 구현시 saving을 쓰면 됨.
-type HeaderMode = 'view' | 'edit';
+type HeaderMode = 'register' | 'edit' | 'save';
 
 interface Presets {
   title: string;
@@ -19,12 +19,17 @@ interface Presets {
 }
 
 const HeaderPresets: Record<HeaderMode, Presets> = {
-  view: {
+  register: {
     title: `전체 시간표`,
-    description: () => '현재 시간표를 확인해보세요!',
-    cta: '편집하기',
+    description: () => '시간표를 등록해주세요!',
+    cta: '등록하기',
   },
   edit: {
+    title: `전체 시간표`,
+    description: () => '현재 시간표를 확인해보세요!',
+    cta: '수정하기',
+  },
+  save: {
     title: `나의 시간표`,
     description: (name: string, isMobile?: boolean) =>
       isMobile
@@ -44,7 +49,7 @@ interface TimeTableHeaderProps extends ComponentProps<'header'> {
 
 const TimeTableHeader = ({
   name,
-  mode = 'view',
+  mode = 'register',
   onToggleEditMode,
   isLoading,
   isExpired,
