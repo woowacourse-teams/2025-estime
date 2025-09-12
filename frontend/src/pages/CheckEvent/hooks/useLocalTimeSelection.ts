@@ -1,10 +1,7 @@
 import { useRef, useCallback, useState } from 'react';
 import { useLockBodyScroll } from '../../../shared/hooks/common/useLockBodyScroll';
-
-interface DragSelectOptions {
-  selectedTimes: Set<string>;
-  setSelectedTimes: (times: Set<string>) => void;
-}
+import { useTimeSelectionContext } from '../contexts/TimeSelectionContext';
+import { useStableSelectedTimes } from './useStableSelectedTimes';
 
 const getEventCoords = (event: React.MouseEvent | React.TouchEvent) => {
   if ('touches' in event) {
@@ -20,18 +17,34 @@ const toggleItem = (item: string, set: Set<string>) => {
   else set.add(item);
 };
 
-const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions) => {
+interface UseLocalTimeSelectionOptions {
+  initialSelectedTimes: Set<string>;
+}
+
+const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOptions) => {
+  const { commitSelectedTimes } = useTimeSelectionContext();
+
+  // 로컬 상태로 selectedTimes 관리
+  const [localSelectedTimes, setLocalSelectedTimes] = useState<Set<string>>(
+    () => new Set(initialSelectedTimes)
+  );
+
+  // Set 객체의 참조 안정성 확보
+  const stableSelectedTimes = useStableSelectedTimes(localSelectedTimes);
+
   const draggingRef = useRef(false);
   const startX = useRef(0);
   const startY = useRef(0);
   const [isTouch, setIsTouch] = useState(false);
+  const hoveredRef = useRef<Set<string>>(new Set());
+  const dragModeRef = useRef<'add' | 'remove'>('add');
 
   useLockBodyScroll(isTouch);
 
-  // 좌표 추출 공통 함수
-
-  const hoveredRef = useRef<Set<string>>(new Set());
-  const dragModeRef = useRef<'add' | 'remove'>('add');
+  // initialSelectedTimes가 변경되면 로컬 상태도 업데이트
+  const updateLocalTimes = useCallback((newTimes: Set<string>) => {
+    setLocalSelectedTimes(new Set(newTimes));
+  }, []);
 
   const onStart = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
@@ -43,7 +56,6 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
       startY.current = y;
 
       const isTouchEvent = 'touches' in event;
-
       setIsTouch(isTouchEvent);
 
       const target = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
@@ -52,18 +64,18 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
       if (!time) return;
 
       // 드래그 모드 결정
-      dragModeRef.current = selectedTimes.has(time) ? 'remove' : 'add';
+      dragModeRef.current = localSelectedTimes.has(time) ? 'remove' : 'add';
       if (isTouchEvent) return;
 
       // 첫 셀 처리
-      const updatedSet = new Set(selectedTimes);
+      const updatedSet = new Set(localSelectedTimes);
       if (dragModeRef.current === 'add') updatedSet.add(time);
       else updatedSet.delete(time);
 
       hoveredRef.current.add(time);
-      setSelectedTimes(updatedSet);
+      setLocalSelectedTimes(updatedSet);
     },
-    [selectedTimes, setSelectedTimes]
+    [localSelectedTimes]
   );
 
   const onMove = useCallback(
@@ -76,7 +88,7 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
       const maxX = Math.max(startX.current, endX);
       const maxY = Math.max(startY.current, endY);
 
-      const updatedSet = new Set(selectedTimes);
+      const updatedSet = new Set(localSelectedTimes);
 
       Array.from(document.querySelectorAll('.selectable')).forEach((el) => {
         const time = el.getAttribute('data-time');
@@ -94,24 +106,35 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
         }
       });
 
-      setSelectedTimes(updatedSet);
+      setLocalSelectedTimes(updatedSet);
     },
-    [selectedTimes, setSelectedTimes]
+    [localSelectedTimes]
   );
 
   const onEnd = useCallback(() => {
     if (!draggingRef.current) {
-      const updatedSet = new Set(selectedTimes);
+      const updatedSet = new Set(localSelectedTimes);
       hoveredRef.current.forEach((time) => toggleItem(time, updatedSet));
-      setSelectedTimes(updatedSet);
+      setLocalSelectedTimes(updatedSet);
+      // 드래그가 끝나면 상위로 commit
+      commitSelectedTimes(updatedSet);
+    } else {
+      // 드래그가 끝나면 상위로 commit
+      commitSelectedTimes(localSelectedTimes);
     }
 
     hoveredRef.current.clear();
     draggingRef.current = false;
     setIsTouch(false);
-  }, [selectedTimes, setSelectedTimes]);
+  }, [localSelectedTimes, commitSelectedTimes]);
+
+  const reset = useCallback(() => {
+    draggingRef.current = false;
+  }, []);
 
   return {
+    localSelectedTimes: stableSelectedTimes,
+    updateLocalTimes,
     onMouseDown: onStart,
     onMouseMove: onMove,
     onMouseUp: onEnd,
@@ -119,10 +142,8 @@ const useTimeSelection = ({ selectedTimes, setSelectedTimes }: DragSelectOptions
     onTouchStart: onStart,
     onTouchMove: onMove,
     onTouchEnd: onEnd,
-    reset: () => {
-      draggingRef.current = false;
-    },
+    reset,
   };
 };
 
-export default useTimeSelection;
+export default useLocalTimeSelection;
