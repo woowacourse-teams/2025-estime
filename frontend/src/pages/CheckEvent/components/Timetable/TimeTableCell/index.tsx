@@ -1,30 +1,46 @@
 import * as S from './TimeTableCell.styled';
-import type { Field } from '@/pages/CreateEvent/types/field';
-import { getHeaderCellBackgroundColor } from '@/pages/CheckEvent/utils/getCellColor';
 import { useTheme } from '@emotion/react';
+import { memo, useMemo } from 'react';
 
 interface TimeTableCellProps {
   date: string;
   timeText: string;
-  selectedTimes: Field<Set<string>>;
+  selectedTimes: Set<string>;
 }
-const TimeTableCell = ({ date, timeText, selectedTimes }: TimeTableCellProps) => {
-  const theme = useTheme();
 
-  const backgroundColor = getHeaderCellBackgroundColor({
-    selectedTimes: selectedTimes.value,
-    date,
-    timeText,
-    theme,
-  });
-  return (
-    <S.HeaderCell
-      key={`${date} ${timeText}`}
-      backgroundColor={backgroundColor}
-      className="selectable"
-      data-time={`${date}T${timeText}`}
-    ></S.HeaderCell>
-  );
-};
+const TimeTableCell = memo(
+  ({ date, timeText, selectedTimes }: TimeTableCellProps) => {
+    const theme = useTheme();
+
+    const dateTimeKey = useMemo(() => `${date}T${timeText}`, [date, timeText]);
+    const isSelected = selectedTimes.has(dateTimeKey);
+
+    const backgroundColor = useMemo(() => {
+      return isSelected ? theme.colors.primary : theme.colors.gray10;
+    }, [isSelected, theme.colors.primary, theme.colors.gray10]);
+
+    return (
+      <S.HeaderCell
+        backgroundColor={backgroundColor}
+        className="selectable"
+        data-time={dateTimeKey}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    // 커스텀 비교 함수로 실제 선택 상태 변경만 감지
+    const prevKey = `${prevProps.date}T${prevProps.timeText}`;
+    const nextKey = `${nextProps.date}T${nextProps.timeText}`;
+
+    if (prevKey !== nextKey) return false;
+
+    const prevSelected = prevProps.selectedTimes.has(prevKey);
+    const nextSelected = nextProps.selectedTimes.has(nextKey);
+
+    return prevSelected === nextSelected;
+  }
+);
+
+TimeTableCell.displayName = 'TimeTableCell';
 
 export default TimeTableCell;
