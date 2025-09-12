@@ -10,12 +10,13 @@ export interface TooltipInfo {
 
 const useTooltipBehavior = () => {
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
-  const { position, onEnter, onMobileTap } = useTooltipPosition();
+  const { position, onEnter, onMobileTap, stopTracking } = useTooltipPosition();
   const theme = useTheme();
 
   const closeTooltip = useCallback(() => {
     setTooltipInfo(null);
-  }, []);
+    stopTracking();
+  }, [stopTracking]);
 
   const handleDesktopHover = useCallback(
     (tooltipInfo: TooltipInfo, event: React.PointerEvent) => {

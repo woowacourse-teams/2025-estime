@@ -6,11 +6,15 @@ const useTooltipPosition = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const latestPosRef = useRef({ x: 0, y: 0 });
   const { isMobile } = useTheme();
+  // TODO: ref는 땜빵! 나중에 수정해서 무조건 삭제할것.
+  const isTrackingRef = useRef(false);
 
   useEffect(() => {
     let rafId: number | null = null;
 
     const handlePointerMove = (e: PointerEvent) => {
+      if (!isTrackingRef.current) return;
+
       latestPosRef.current = { x: e.clientX, y: e.clientY };
 
       if (rafId) return;
@@ -34,7 +38,16 @@ const useTooltipPosition = () => {
     };
   }, [isMobile]);
 
+  const startTracking = useCallback(() => {
+    isTrackingRef.current = true;
+  }, []);
+
+  const stopTracking = useCallback(() => {
+    isTrackingRef.current = false;
+  }, []);
+
   const initializePosition = useCallback((e: ReactPointerEvent) => {
+    if (!isTrackingRef.current) return;
     const p = { x: e.clientX, y: e.clientY };
     latestPosRef.current = p;
     setPosition(p);
@@ -42,10 +55,12 @@ const useTooltipPosition = () => {
 
   const onEnter = useCallback(
     (e: ReactPointerEvent) => {
+      startTracking();
       initializePosition(e);
     },
-    [initializePosition]
+    [initializePosition, startTracking]
   );
+
   const onMobileTap = useCallback((element: HTMLElement) => {
     const rect = element.getBoundingClientRect();
 
@@ -61,6 +76,8 @@ const useTooltipPosition = () => {
     position,
     onEnter,
     onMobileTap,
+    startTracking,
+    stopTracking,
   };
 };
 

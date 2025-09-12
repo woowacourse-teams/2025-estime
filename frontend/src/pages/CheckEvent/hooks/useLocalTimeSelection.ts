@@ -22,7 +22,7 @@ interface UseLocalTimeSelectionOptions {
 }
 
 const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOptions) => {
-  const { commitSelectedTimes } = useTimeSelectionContext();
+  const { commitSelectedTimes, updateCurrentSelectedTimes } = useTimeSelectionContext();
 
   // 로컬 상태로 selectedTimes 관리
   const [localSelectedTimes, setLocalSelectedTimes] = useState<Set<string>>(
@@ -42,9 +42,14 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   useLockBodyScroll(isTouch);
 
   // initialSelectedTimes가 변경되면 로컬 상태도 업데이트
-  const updateLocalTimes = useCallback((newTimes: Set<string>) => {
-    setLocalSelectedTimes(new Set(newTimes));
-  }, []);
+  const updateLocalTimes = useCallback(
+    (newTimes: Set<string>) => {
+      const updatedSet = new Set(newTimes);
+      setLocalSelectedTimes(updatedSet);
+      updateCurrentSelectedTimes(updatedSet);
+    },
+    [updateCurrentSelectedTimes]
+  );
 
   const onStart = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
@@ -74,8 +79,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
       hoveredRef.current.add(time);
       setLocalSelectedTimes(updatedSet);
+      updateCurrentSelectedTimes(updatedSet);
     },
-    [localSelectedTimes]
+    [localSelectedTimes, updateCurrentSelectedTimes]
   );
 
   const onMove = useCallback(
@@ -107,8 +113,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       });
 
       setLocalSelectedTimes(updatedSet);
+      updateCurrentSelectedTimes(updatedSet);
     },
-    [localSelectedTimes]
+    [localSelectedTimes, updateCurrentSelectedTimes]
   );
 
   const onEnd = useCallback(() => {
@@ -116,17 +123,17 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       const updatedSet = new Set(localSelectedTimes);
       hoveredRef.current.forEach((time) => toggleItem(time, updatedSet));
       setLocalSelectedTimes(updatedSet);
-      // 드래그가 끝나면 상위로 commit
+      updateCurrentSelectedTimes(updatedSet);
       commitSelectedTimes(updatedSet);
     } else {
-      // 드래그가 끝나면 상위로 commit
+      updateCurrentSelectedTimes(localSelectedTimes);
       commitSelectedTimes(localSelectedTimes);
     }
 
     hoveredRef.current.clear();
     draggingRef.current = false;
     setIsTouch(false);
-  }, [localSelectedTimes, commitSelectedTimes]);
+  }, [localSelectedTimes, commitSelectedTimes, updateCurrentSelectedTimes]);
 
   const reset = useCallback(() => {
     draggingRef.current = false;

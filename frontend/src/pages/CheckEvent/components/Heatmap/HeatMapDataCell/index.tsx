@@ -1,5 +1,6 @@
 import { getHeatMapCellBackgroundColor } from '@/pages/CheckEvent/utils/getCellColor';
 import { useTheme } from '@emotion/react';
+import { memo, useMemo } from 'react';
 import * as S from './HeatMapDataCell.styled';
 import type { DateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 import type { TooltipInfo } from '@/pages/CheckEvent/hooks/useTooltipBehavior';
@@ -23,14 +24,28 @@ const HeatMapDataCell = ({
   const cellInfo = roomStatistics.get(`${date}T${timeText}`);
 
   const weight = cellInfo?.weight ?? 0;
-  const participantList = cellInfo?.participantNames ?? [];
+  const participantList = useMemo(
+    () => cellInfo?.participantNames ?? [],
+    [cellInfo?.participantNames]
+  );
 
-  const backgroundColor = getHeatMapCellBackgroundColor({
-    theme,
-    weight,
-  });
+  const backgroundColor = useMemo(
+    () =>
+      getHeatMapCellBackgroundColor({
+        theme,
+        weight,
+      }),
+    [theme, weight]
+  );
 
-  const tooltipInfo = { date, timeText, participantList: participantList };
+  const tooltipInfo = useMemo(
+    () => ({
+      date,
+      timeText,
+      participantList,
+    }),
+    [date, timeText, participantList]
+  );
 
   return (
     <S.Container
@@ -44,4 +59,4 @@ const HeatMapDataCell = ({
   );
 };
 
-export default HeatMapDataCell;
+export default memo(HeatMapDataCell);

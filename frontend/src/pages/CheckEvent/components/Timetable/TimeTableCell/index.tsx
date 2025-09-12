@@ -28,7 +28,6 @@ const TimeTableCell = memo(
     );
   },
   (prevProps, nextProps) => {
-    // 커스텀 비교 함수로 실제 선택 상태 변경만 감지
     const prevKey = `${prevProps.date}T${prevProps.timeText}`;
     const nextKey = `${nextProps.date}T${nextProps.timeText}`;
 

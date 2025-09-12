@@ -3,6 +3,7 @@ import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailabli
 import { useToastContext } from '@/shared/contexts/ToastContext';
 import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
 import { useRef, useState } from 'react';
+
 import * as Sentry from '@sentry/react';
 
 const initialUserAvailability = {
@@ -29,12 +30,6 @@ export const useUserAvailability = ({
     set: (userName: string) => setUserAvailability((prev) => ({ ...prev, userName })),
   };
 
-  const selectedTimes = {
-    value: userAvailability.selectedTimes,
-    set: (selectedTimes: Set<string>) =>
-      setUserAvailability((prev) => ({ ...prev, selectedTimes })),
-  };
-
   const userAvailabilitySubmit = async () => {
     if (isUserSubmitLoading.current) {
       addToast({
@@ -46,7 +41,11 @@ export const useUserAvailability = ({
 
     isUserSubmitLoading.current = true;
     try {
-      const payload = toCreateUserAvailability(userAvailability);
+      const payload = toCreateUserAvailability({
+        ...userAvailability,
+        selectedTimes: new Set(userAvailability.selectedTimes),
+      });
+
       await updateUserAvailableTime(session, payload);
       addToast({
         type: 'success',
@@ -86,7 +85,10 @@ export const useUserAvailability = ({
       userName.set(name);
       if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
         const selectedTimesResponse = new Set(dateTimeSlotsResponse);
-        selectedTimes.set(selectedTimesResponse);
+        setUserAvailability({
+          userName: name,
+          selectedTimes: selectedTimesResponse,
+        });
       }
     } catch (err) {
       const e = err as Error;
@@ -102,7 +104,11 @@ export const useUserAvailability = ({
     }
   };
 
-  return { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime };
+  return {
+    userAvailability,
+    userAvailabilitySubmit,
+    fetchUserAvailableTime,
+  };
 };
 
 export default useUserAvailability;
