@@ -3,7 +3,7 @@ import Timetable from '@/pages/CheckEvent/components/Timetable';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, RefObject } from 'react';
 import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
 import Heatmap from '@/pages/CheckEvent/components/Heatmap';
 import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
@@ -24,8 +24,22 @@ import useUserLogin from './hooks/useUserLogin';
 import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
-import { TimeSelectionProvider } from '@/pages/CheckEvent/contexts/TimeSelectionContext';
+import {
+  TimeSelectionProvider,
+  useTimeSelectionContext,
+} from '@/pages/CheckEvent/contexts/TimeSelectionContext';
 import * as S from './CheckEventPage.styled';
+
+// 컨텍스트를 ref에 설정하는 헬퍼 컴포넌트
+const TimeSelectionContextSetter = ({
+  contextRef,
+}: {
+  contextRef: RefObject<ReturnType<typeof useTimeSelectionContext> | null>;
+}) => {
+  const context = useTimeSelectionContext();
+  contextRef.current = context;
+  return null;
+};
 
 const CheckEventPage = () => {
   const theme = useTheme();
@@ -39,11 +53,10 @@ const CheckEventPage = () => {
     session,
   });
 
-  const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
-    useUserAvailability({
-      name,
-      session,
-    });
+  const { userAvailability, userAvailabilitySubmit, fetchUserAvailableTime } = useUserAvailability({
+    name,
+    session,
+  });
 
   const { roomStatistics, fetchRoomStatistics } = useHeatmapStatistics({
     session,
@@ -69,8 +82,17 @@ const CheckEventPage = () => {
     availableDates: roomInfo.availableDateSlots,
   });
 
+  // 현재 선택된 시간에 접근하는 함수를 만들기 위한 ref
+  const timeSelectionContextRef = useRef<ReturnType<typeof useTimeSelectionContext> | null>(null);
+
   const switchToViewMode = useCallback(async () => {
     try {
+      // 버튼 클릭 시 현재 선택된 시간을 가져와서 commit
+      if (timeSelectionContextRef.current) {
+        const currentTimes = timeSelectionContextRef.current.getCurrentSelectedTimes();
+        userAvailability.selectedTimes = currentTimes;
+      }
+
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       setMode('view');
@@ -78,7 +100,14 @@ const CheckEventPage = () => {
     } catch (error) {
       handleError(error, 'switchToViewMode');
     }
-  }, [userAvailabilitySubmit, fetchRoomStatistics, session, pageReset, handleError]);
+  }, [
+    userAvailabilitySubmit,
+    fetchRoomStatistics,
+    session,
+    pageReset,
+    handleError,
+    userAvailability,
+  ]);
 
   const switchToEditMode = useCallback(async () => {
     if (isLoggedIn) {
@@ -164,14 +193,6 @@ const CheckEventPage = () => {
     [isLoggedIn, addToast]
   );
 
-  // TimeSelection commit 핸들러
-  const handleTimeSelectionCommit = useCallback(
-    (newSelectedTimes: Set<string>) => {
-      selectedTimes.set(newSelectedTimes);
-    },
-    [selectedTimes]
-  );
-
   useSSE(session, handleError, {
     onVoteChange: async () => {
       console.log('🔄 SSE vote-changed event 확인... fetch중...');
@@ -179,6 +200,13 @@ const CheckEventPage = () => {
       console.log('✅ fetch 완료!');
     },
   });
+
+  const handleTimeSelectionCommit = useCallback(
+    (newSelectedTimes: Set<string>) => {
+      userAvailability.selectedTimes = newSelectedTimes;
+    },
+    [userAvailability]
+  );
 
   return (
     <>
@@ -237,7 +265,7 @@ const CheckEventPage = () => {
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
-                    name={userName.value}
+                    name={userAvailability.userName}
                     mode="edit"
                     onToggleEditMode={handleToggleMode}
                   />
@@ -256,11 +284,12 @@ const CheckEventPage = () => {
                       </Flex>
                     )}
                     <TimeSelectionProvider onCommit={handleTimeSelectionCommit}>
+                      <TimeSelectionContextSetter contextRef={timeSelectionContextRef} />
                       <Timetable
                         timeColumnRef={timeColumnRef}
                         dateTimeSlots={roomInfo.availableTimeSlots}
                         availableDates={currentPageDates}
-                        initialSelectedTimes={selectedTimes.value}
+                        initialSelectedTimes={userAvailability.selectedTimes}
                       />
                     </TimeSelectionProvider>
                   </Flex>
