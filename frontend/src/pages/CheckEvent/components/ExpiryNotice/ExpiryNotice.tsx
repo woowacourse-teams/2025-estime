@@ -6,7 +6,6 @@ interface ExpiryNoticeProps {
 }
 
 const ExpiryNotice = ({ show, children, ...props }: ExpiryNoticeProps) => {
-  console.log(show);
   return (
     <S.Container show={show} {...props}>
       {children}
