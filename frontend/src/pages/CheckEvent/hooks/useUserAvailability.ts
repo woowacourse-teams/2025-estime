@@ -25,11 +25,6 @@ export const useUserAvailability = ({
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
-  const userName = {
-    value: userAvailability.userName,
-    set: (userName: string) => setUserAvailability((prev) => ({ ...prev, userName })),
-  };
-
   const userAvailabilitySubmit = async () => {
     if (isUserSubmitLoading.current) {
       addToast({
@@ -41,11 +36,7 @@ export const useUserAvailability = ({
 
     isUserSubmitLoading.current = true;
     try {
-      const payload = toCreateUserAvailability({
-        ...userAvailability,
-        selectedTimes: new Set(userAvailability.selectedTimes),
-      });
-
+      const payload = toCreateUserAvailability(userAvailability);
       await updateUserAvailableTime(session, payload);
       addToast({
         type: 'success',
@@ -82,13 +73,16 @@ export const useUserAvailability = ({
     try {
       const userAvailableTimeInfo = await getUserAvailableTime(session, name);
       const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-      userName.set(name);
+      setUserAvailability((prev) => ({
+        ...prev,
+        userName: name,
+      }));
       if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
         const selectedTimesResponse = new Set(dateTimeSlotsResponse);
-        setUserAvailability({
-          userName: name,
+        setUserAvailability((prev) => ({
+          ...prev,
           selectedTimes: selectedTimesResponse,
-        });
+        }));
       }
     } catch (err) {
       const e = err as Error;

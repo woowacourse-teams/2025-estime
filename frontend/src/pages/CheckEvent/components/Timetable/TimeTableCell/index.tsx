@@ -8,36 +8,33 @@ interface TimeTableCellProps {
   selectedTimes: Set<string>;
 }
 
-const TimeTableCell = memo(
-  ({ date, timeText, selectedTimes }: TimeTableCellProps) => {
-    const theme = useTheme();
+const TimeTableCell = ({ date, timeText, selectedTimes }: TimeTableCellProps) => {
+  const theme = useTheme();
 
-    const dateTimeKey = `${date}T${timeText}`;
-    const isSelected = selectedTimes.has(dateTimeKey);
+  const dateTimeKey = `${date}T${timeText}`;
+  const isSelected = selectedTimes.has(dateTimeKey);
 
-    const backgroundColor = isSelected ? theme.colors.primary : theme.colors.gray10;
+  const backgroundColor = isSelected ? theme.colors.primary : theme.colors.gray10;
 
-    return (
-      <S.HeaderCell
-        backgroundColor={backgroundColor}
-        className="selectable"
-        data-time={dateTimeKey}
-      />
-    );
-  },
-  (prevProps, nextProps) => {
-    const prevKey = `${prevProps.date}T${prevProps.timeText}`;
-    const nextKey = `${nextProps.date}T${nextProps.timeText}`;
+  return (
+    <S.HeaderCell
+      backgroundColor={backgroundColor}
+      className="selectable"
+      data-time={dateTimeKey}
+    />
+  );
+};
 
-    if (prevKey !== nextKey) return false;
+const areEqual = (prevProps: TimeTableCellProps, nextProps: TimeTableCellProps) => {
+  const prevKey = `${prevProps.date}T${prevProps.timeText}`;
+  const nextKey = `${nextProps.date}T${nextProps.timeText}`;
 
-    const prevSelected = prevProps.selectedTimes.has(prevKey);
-    const nextSelected = nextProps.selectedTimes.has(nextKey);
+  if (prevKey !== nextKey) return false;
 
-    return prevSelected === nextSelected;
-  }
-);
+  const prevSelected = prevProps.selectedTimes.has(prevKey);
+  const nextSelected = nextProps.selectedTimes.has(nextKey);
 
-TimeTableCell.displayName = 'TimeTableCell';
+  return prevSelected === nextSelected;
+};
 
-export default TimeTableCell;
+export default memo(TimeTableCell, areEqual);
