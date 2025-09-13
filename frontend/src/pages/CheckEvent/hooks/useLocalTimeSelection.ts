@@ -30,7 +30,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     updateCurrentSelectedTimes(updatedSet);
   }, [initialSelectedTimes, updateCurrentSelectedTimes]);
 
-  const onStart = useCallback(
+  const onPointerDown = useCallback(
     (event: React.PointerEvent) => {
       draggingRef.current = true;
       hoveredRef.current.clear();
@@ -58,7 +58,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     [localSelectedTimes, updateCurrentSelectedTimes]
   );
 
-  const onMove = useCallback(
+  const onPointerMove = useCallback(
     (event: React.PointerEvent) => {
       if (!draggingRef.current) return;
 
@@ -89,7 +89,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     [localSelectedTimes, updateCurrentSelectedTimes]
   );
 
-  const onEnd = useCallback(() => {
+  const onPointerUp = useCallback(() => {
     updateCurrentSelectedTimes(localSelectedTimes);
     hoveredRef.current.clear();
     draggingRef.current = false;
@@ -102,10 +102,11 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
   return {
     localSelectedTimes,
-    onPointerDown: onStart,
-    onPointerMove: onMove,
-    onPointerUp: onEnd,
-    onPointerLeave: onEnd,
+    pointerHandlers: {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+    },
     reset,
   };
 };
