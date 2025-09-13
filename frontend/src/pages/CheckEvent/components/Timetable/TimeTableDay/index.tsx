@@ -8,7 +8,7 @@ interface TimeTableDayProps {
   date: string;
 }
 
-const TimeTableDay = memo(({ date }: TimeTableDayProps) => {
+const TimeTableDay = ({ date }: TimeTableDayProps) => {
   return (
     <S.Container>
       <Text variant="body" color="text">
@@ -19,8 +19,6 @@ const TimeTableDay = memo(({ date }: TimeTableDayProps) => {
       </Text>
     </S.Container>
   );
-});
+};
 
-TimeTableDay.displayName = 'TimeTableDay';
-
-export default TimeTableDay;
+export default memo(TimeTableDay);
