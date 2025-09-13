@@ -1,7 +1,6 @@
-import Wrapper from '@/shared/layout/Wrapper';
 import TimeTableDay from '../TimeTableDay';
 import TimeTableCell from '../TimeTableCell';
-import { memo } from 'react';
+import Wrapper from '@/shared/layout/Wrapper';
 
 interface TimeTableColumnProps {
   date: string;
@@ -11,6 +10,7 @@ interface TimeTableColumnProps {
 
 const TimeTableColumn = ({ date, dateTimeSlots, selectedTimes }: TimeTableColumnProps) => {
   return (
+    //TODO: 메모이제이션 추가 할수 있으면 고민 해볼것.
     <Wrapper center={false} maxWidth="100%">
       <TimeTableDay date={date} />
       {dateTimeSlots.map((dateTimeSlot) => (
@@ -25,4 +25,4 @@ const TimeTableColumn = ({ date, dateTimeSlots, selectedTimes }: TimeTableColumn
   );
 };
 
-export default memo(TimeTableColumn);
+export default TimeTableColumn;
