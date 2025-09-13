@@ -1,6 +1,6 @@
 import * as S from './TimeTableCell.styled';
 import { useTheme } from '@emotion/react';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 interface TimeTableCellProps {
   date: string;
@@ -12,12 +12,10 @@ const TimeTableCell = memo(
   ({ date, timeText, selectedTimes }: TimeTableCellProps) => {
     const theme = useTheme();
 
-    const dateTimeKey = useMemo(() => `${date}T${timeText}`, [date, timeText]);
+    const dateTimeKey = `${date}T${timeText}`;
     const isSelected = selectedTimes.has(dateTimeKey);
 
-    const backgroundColor = useMemo(() => {
-      return isSelected ? theme.colors.primary : theme.colors.gray10;
-    }, [isSelected, theme.colors.primary, theme.colors.gray10]);
+    const backgroundColor = isSelected ? theme.colors.primary : theme.colors.gray10;
 
     return (
       <S.HeaderCell
