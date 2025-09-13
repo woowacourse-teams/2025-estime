@@ -1,7 +1,6 @@
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import { useLockBodyScroll } from '../../../shared/hooks/common/useLockBodyScroll';
 import { useTimeSelectionContext } from '../contexts/TimeSelectionContext';
-import { useStableSelectedTimes } from './useStableSelectedTimes';
 
 const getEventCoords = (event: React.MouseEvent | React.TouchEvent) => {
   if ('touches' in event) {
@@ -22,15 +21,12 @@ interface UseLocalTimeSelectionOptions {
 }
 
 const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOptions) => {
-  const { commitSelectedTimes, updateCurrentSelectedTimes } = useTimeSelectionContext();
+  const { updateCurrentSelectedTimes } = useTimeSelectionContext();
 
   // 로컬 상태로 selectedTimes 관리
   const [localSelectedTimes, setLocalSelectedTimes] = useState<Set<string>>(
     () => new Set(initialSelectedTimes)
   );
-
-  // Set 객체의 참조 안정성 확보
-  const stableSelectedTimes = useStableSelectedTimes(localSelectedTimes);
 
   const draggingRef = useRef(false);
   const startX = useRef(0);
@@ -41,15 +37,12 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
   useLockBodyScroll(isTouch);
 
-  // initialSelectedTimes가 변경되면 로컬 상태도 업데이트
-  const updateLocalTimes = useCallback(
-    (newTimes: Set<string>) => {
-      const updatedSet = new Set(newTimes);
-      setLocalSelectedTimes(updatedSet);
-      updateCurrentSelectedTimes(updatedSet);
-    },
-    [updateCurrentSelectedTimes]
-  );
+  // initialSelectedTimes가 변경되면 로컬 상태와 컨텍스트 동기화
+  useEffect(() => {
+    const updatedSet = new Set(initialSelectedTimes);
+    setLocalSelectedTimes(updatedSet);
+    updateCurrentSelectedTimes(updatedSet);
+  }, [initialSelectedTimes, updateCurrentSelectedTimes]);
 
   const onStart = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
@@ -124,24 +117,21 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       hoveredRef.current.forEach((time) => toggleItem(time, updatedSet));
       setLocalSelectedTimes(updatedSet);
       updateCurrentSelectedTimes(updatedSet);
-      commitSelectedTimes(updatedSet);
     } else {
       updateCurrentSelectedTimes(localSelectedTimes);
-      commitSelectedTimes(localSelectedTimes);
     }
 
     hoveredRef.current.clear();
     draggingRef.current = false;
     setIsTouch(false);
-  }, [localSelectedTimes, commitSelectedTimes, updateCurrentSelectedTimes]);
+  }, [localSelectedTimes, updateCurrentSelectedTimes]);
 
   const reset = useCallback(() => {
     draggingRef.current = false;
   }, []);
 
   return {
-    localSelectedTimes: stableSelectedTimes,
-    updateLocalTimes,
+    localSelectedTimes,
     onMouseDown: onStart,
     onMouseMove: onMove,
     onMouseUp: onEnd,
