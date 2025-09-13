@@ -2,7 +2,7 @@ import * as S from './Timetable.styled';
 import TimeTableColumn from './TimeTableColumn';
 import TimeSlotColumn from './TimeSlotColumn';
 import useLocalTimeSelection from '@/pages/CheckEvent/hooks/useLocalTimeSelection';
-import { RefObject, useMemo, useEffect } from 'react';
+import { RefObject, useMemo } from 'react';
 
 interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -19,7 +19,6 @@ const Timetable = ({
 }: TimetableProps) => {
   const {
     localSelectedTimes,
-    updateLocalTimes,
     onMouseDown,
     onMouseMove,
     onMouseUp,
@@ -30,10 +29,6 @@ const Timetable = ({
   } = useLocalTimeSelection({
     initialSelectedTimes,
   });
-
-  useEffect(() => {
-    updateLocalTimes(initialSelectedTimes);
-  }, [initialSelectedTimes, updateLocalTimes]);
 
   const availableDatesArray = useMemo(() => [...availableDates], [availableDates]);
 
