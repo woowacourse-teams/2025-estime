@@ -59,9 +59,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       else updatedSet.delete(time);
 
       hoveredRef.current.add(time);
-      syncSelectedTimes(updatedSet);
+      setLocalSelectedTimes(updatedSet);
     },
-    [localSelectedTimes, syncSelectedTimes]
+    [localSelectedTimes]
   );
 
   const onPointerMove = useCallback(
@@ -88,9 +88,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
           hoveredRef.current.add(time);
         }
       });
-      syncSelectedTimes(updatedSet);
+      setLocalSelectedTimes(updatedSet);
     },
-    [localSelectedTimes, syncSelectedTimes]
+    [localSelectedTimes]
   );
 
   const onPointerUp = useCallback(() => {
