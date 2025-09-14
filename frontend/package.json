@@ -15,6 +15,9 @@
     "build-storybook": "storybook build",
     "clean": "rm -rf node_modules && npm install"
   },
+  "sideEffects": [
+    "*.css"
+  ],
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
