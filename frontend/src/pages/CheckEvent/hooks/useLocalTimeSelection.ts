@@ -14,6 +14,14 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     () => new Set(initialSelectedTimes)
   );
 
+  const syncSelectedTimes = useCallback(
+    (newSelectedTimes: Set<string>) => {
+      setLocalSelectedTimes(new Set(newSelectedTimes));
+      updateCurrentSelectedTimes(new Set(newSelectedTimes));
+    },
+    [updateCurrentSelectedTimes]
+  );
+
   const draggingRef = useRef(false);
   const startX = useRef(0);
   const startY = useRef(0);
@@ -26,9 +34,8 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   // initialSelectedTimes가 변경되면 로컬 상태와 컨텍스트 동기화
   useEffect(() => {
     const updatedSet = new Set(initialSelectedTimes);
-    setLocalSelectedTimes(updatedSet);
-    updateCurrentSelectedTimes(updatedSet);
-  }, [initialSelectedTimes, updateCurrentSelectedTimes]);
+    syncSelectedTimes(updatedSet);
+  }, [initialSelectedTimes, syncSelectedTimes]);
 
   const onPointerDown = useCallback(
     (event: React.PointerEvent) => {
@@ -52,10 +59,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       else updatedSet.delete(time);
 
       hoveredRef.current.add(time);
-      setLocalSelectedTimes(updatedSet);
-      updateCurrentSelectedTimes(updatedSet);
+      syncSelectedTimes(updatedSet);
     },
-    [localSelectedTimes, updateCurrentSelectedTimes]
+    [localSelectedTimes, syncSelectedTimes]
   );
 
   const onPointerMove = useCallback(
@@ -82,11 +88,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
           hoveredRef.current.add(time);
         }
       });
-
-      setLocalSelectedTimes(updatedSet);
-      updateCurrentSelectedTimes(updatedSet);
+      syncSelectedTimes(updatedSet);
     },
-    [localSelectedTimes, updateCurrentSelectedTimes]
+    [localSelectedTimes, syncSelectedTimes]
   );
 
   const onPointerUp = useCallback(() => {
