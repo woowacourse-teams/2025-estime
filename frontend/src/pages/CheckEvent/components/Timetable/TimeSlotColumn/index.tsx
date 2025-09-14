@@ -7,7 +7,7 @@ interface TimeSlotColumnProps {
   dateTimeSlots: string[];
 }
 
-const TimeSlotColumn = memo(({ timeColumnRef, dateTimeSlots }: TimeSlotColumnProps) => {
+const TimeSlotColumn = ({ timeColumnRef, dateTimeSlots }: TimeSlotColumnProps) => {
   return (
     <S.TimeSlotColumn ref={timeColumnRef}>
       {dateTimeSlots.map((dateTimeSlot) => (
@@ -23,8 +23,6 @@ const TimeSlotColumn = memo(({ timeColumnRef, dateTimeSlots }: TimeSlotColumnPro
       ))}
     </S.TimeSlotColumn>
   );
-});
+};
 
-TimeSlotColumn.displayName = 'TimeSlotColumn';
-
-export default TimeSlotColumn;
+export default memo(TimeSlotColumn);
