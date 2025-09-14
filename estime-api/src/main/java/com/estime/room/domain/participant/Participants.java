@@ -25,6 +25,10 @@ public class Participants {
                 .validateNull();
     }
 
+    public List<Participant> getValues() {
+        return List.copyOf(values);
+    }
+
     public int getSize() {
         return values.size();
     }

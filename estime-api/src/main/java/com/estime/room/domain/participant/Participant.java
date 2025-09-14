@@ -37,8 +37,28 @@ public class Participant extends BaseEntity {
         return new Participant(roomId, name);
     }
 
+    static Participant withId(
+            final Long id,
+            final Long roomId,
+            final ParticipantName name
+    ) {
+        validateNull(id, roomId, name);
+        final Participant participant = new Participant(roomId, name);
+        participant.id = id;
+        return participant;
+    }
+
+
     private static void validateNull(final Long roomId, final ParticipantName name) {
         Validator.builder()
+                .add(Fields.roomId, roomId)
+                .add(Fields.name, name)
+                .validateNull();
+    }
+
+    private static void validateNull(final Long id, final Long roomId, final ParticipantName name) {
+        Validator.builder()
+                .add(BaseEntity.Fields.id, id)
                 .add(Fields.roomId, roomId)
                 .add(Fields.name, name)
                 .validateNull();
