@@ -2,7 +2,6 @@ import { merge } from 'webpack-merge';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import common from './webpack.common.js';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
-import CompressionPlugin from 'compression-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 export default merge(common, {
@@ -28,7 +27,6 @@ export default merge(common, {
         filesToDeleteAfterUpload: '**/*.js.map',
       },
     }),
-    new CompressionPlugin({ algorithm: 'gzip' }),
   ],
   optimization: {
     minimize: true,
