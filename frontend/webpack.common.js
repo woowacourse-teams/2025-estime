@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 import dotenv from 'dotenv';
 import webpack from 'webpack';
 import { fileURLToPath } from 'url';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 import getBuildMeta from './build/utils/buildMeta.js';
 import InjectVersionConsolePlugin from './build/plugins/InjectVersionConsolePlugin.js';
@@ -58,10 +57,6 @@ export default {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-      favicon: './src/assets/images/logo.svg',
-    }),
     new ForkTsCheckerPlugin(),
     new InjectVersionConsolePlugin({
       version: pkg.version,
