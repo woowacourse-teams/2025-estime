@@ -2,23 +2,18 @@ import { getHeatMapCellBackgroundColor } from '@/pages/CheckEvent/utils/getCellC
 import { useTheme } from '@emotion/react';
 import * as S from './HeatMapDataCell.styled';
 import type { DateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
-import type { TooltipInfo } from '@/pages/CheckEvent/hooks/useTooltipBehavior';
+import { FormatManager } from '@/shared/utils/common/FormatManager';
+import Flex from '@/shared/layout/Flex';
+import Text from '@/shared/components/Text';
+import IPerson from '@/assets/icons/IPerson';
 
 interface HeatMapDataCellProps {
   date: string;
   timeText: string;
   roomStatistics: Map<string, DateCellInfo>;
-  onDesktopHover: (tooltipInfo: TooltipInfo, event: React.PointerEvent<HTMLDivElement>) => void;
-  onMobileTap: (tooltipInfo: TooltipInfo, element: HTMLDivElement) => void;
 }
 
-const HeatMapDataCell = ({
-  date,
-  timeText,
-  roomStatistics,
-  onDesktopHover,
-  onMobileTap,
-}: HeatMapDataCellProps) => {
+const HeatMapDataCell = ({ date, timeText, roomStatistics }: HeatMapDataCellProps) => {
   const theme = useTheme();
   const cellInfo = roomStatistics.get(`${date}T${timeText}`);
 
@@ -30,17 +25,39 @@ const HeatMapDataCell = ({
     weight,
   });
 
-  const tooltipInfo = { date, timeText, participantList: participantList };
+  const { currentTime, nextTime } = FormatManager.formatAvailableTimeRange(date, timeText);
+  const hasParticipants = participantList.length > 0;
 
   return (
-    <S.Container
-      data-heatmap-cell
-      backgroundColor={backgroundColor}
-      onMouseOver={(e: React.PointerEvent<HTMLDivElement>) => onDesktopHover(tooltipInfo, e)}
-      onPointerDown={(e: React.PointerEvent<HTMLDivElement>) =>
-        onMobileTap(tooltipInfo, e.target as HTMLDivElement)
-      }
-    ></S.Container>
+    <S.Container data-heatmap-cell backgroundColor={backgroundColor} hasTooltip={hasParticipants}>
+      {hasParticipants && (
+        <S.Tooltip>
+          <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
+            <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
+              <Text variant="caption" color="text">
+                {currentTime}
+              </Text>
+              <Text variant="caption" color="text">
+                ~
+              </Text>
+              <Text variant="caption" color="text">
+                {nextTime}
+              </Text>
+            </Flex>
+            <S.ParticipantGrid participants={participantList.length}>
+              {participantList.map((participant) => (
+                <S.Person key={participant}>
+                  <IPerson />
+                  <Text variant="caption" color="text">
+                    {participant}
+                  </Text>
+                </S.Person>
+              ))}
+            </S.ParticipantGrid>
+          </Flex>
+        </S.Tooltip>
+      )}
+    </S.Container>
   );
 };
 
