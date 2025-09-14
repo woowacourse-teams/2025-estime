@@ -13,6 +13,13 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+
+    annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
@@ -21,9 +28,6 @@ dependencies {
 
     implementation("net.dv8tion:JDA:5.6.1")
     implementation "org.apache.commons:commons-collections4:4.4" // for jda
-
-    implementation 'com.slack.api:slack-api-client:1.45.3'
-    implementation 'org.json:json:20240303' // for JSONObject
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 
@@ -42,4 +46,18 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
     workingDir = rootDir // TODO real hard trouble
+}
+
+def generatedDir = layout.buildDirectory.dir('generated/querydsl')
+
+sourceSets {
+    main.java.srcDirs += files(generatedDir)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(generatedDir)
+}
+
+clean.doLast {
+    delete generatedDir
 }

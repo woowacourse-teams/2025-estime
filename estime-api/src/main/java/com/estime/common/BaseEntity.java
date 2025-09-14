@@ -10,11 +10,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import org.hibernate.annotations.SQLRestriction;
 
 @FieldNameConstants
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 @Getter
+@SQLRestriction("active = true")
 public abstract class BaseEntity {
 
     @Id

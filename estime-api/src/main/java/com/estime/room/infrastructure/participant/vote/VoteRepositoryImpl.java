@@ -1,8 +1,10 @@
 package com.estime.room.infrastructure.participant.vote;
 
+import com.estime.room.domain.participant.vote.QVote;
 import com.estime.room.domain.participant.vote.Vote;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 public class VoteRepositoryImpl implements VoteRepository {
 
     private final VoteJpaRepository jpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Vote save(final Vote vote) {
@@ -25,17 +28,34 @@ public class VoteRepositoryImpl implements VoteRepository {
 
     @Override
     public Votes findAllByParticipantIds(final List<Long> participantIds) {
+        final QVote vote = QVote.vote;
+
         return Votes.from(
-                jpaRepository.findAllById_ParticipantIdIn(participantIds));
+                queryFactory.selectFrom(vote)
+                        .where(vote.id.participantId.in(participantIds))
+                        .fetch()
+        );
     }
 
     @Override
     public void deleteAllInBatch(final Votes votes) {
-        jpaRepository.deleteAllInBatch(votes.getElements());
+        final QVote vote = QVote.vote;
+
+        queryFactory.delete(vote)
+                .where(vote.id.in(votes.getElements().stream()
+                        .map(Vote::getId)
+                        .toList()))
+                .execute();
     }
 
     @Override
     public Votes findAllByParticipantId(final Long participantId) {
-        return Votes.from(jpaRepository.findAllById_ParticipantId(participantId));
+        final QVote vote = QVote.vote;
+
+        return Votes.from(
+                queryFactory.selectFrom(vote)
+                        .where(vote.id.participantId.eq(participantId))
+                        .fetch()
+        );
     }
 }
