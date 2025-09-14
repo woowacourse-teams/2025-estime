@@ -6,6 +6,7 @@ import ErrorPage from '@/pages/common/ErrorPage';
 import ToastProvider from '@/providers/ToastProvider';
 import Footer from './Footer';
 import { useTheme } from '@emotion/react';
+import { Suspense } from 'react';
 
 const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   const { isMobile } = useTheme();
@@ -16,7 +17,9 @@ const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
       <ToastProvider>
         <ErrorBoundary fallback={<ErrorPage />}>
           <S.Container>
-            <Outlet />
+            <Suspense fallback={<span>...loading</span>}>
+              <Outlet />
+            </Suspense>
           </S.Container>
         </ErrorBoundary>
       </ToastProvider>

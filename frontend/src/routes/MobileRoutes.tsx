@@ -1,9 +1,13 @@
 import Layout from '@/shared/layout';
 import { Route, Routes } from 'react-router';
-import CheckEventPage from '../pages/CheckEvent/CheckEventPage';
-import MobileCreateEventPage from '@/pages/CreateEvent/Mobile/MobileCreateEventPage';
-import CreditsPage from '@/pages/common/CreditsPage';
-import Error404Page from '@/pages/common/Error404Page';
+import { lazy } from 'react';
+
+const CheckEventPage = lazy(() => import('../pages/CheckEvent/CheckEventPage'));
+const MobileCreateEventPage = lazy(
+  () => import('@/pages/CreateEvent/Mobile/MobileCreateEventPage')
+);
+const CreditsPage = lazy(() => import('@/pages/common/CreditsPage'));
+const Error404Page = lazy(() => import('@/pages/common/Error404Page'));
 
 const MobileRoutes = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   return (
