@@ -4,6 +4,7 @@ import com.estime.common.CustomApiResponse;
 import com.estime.room.application.dto.input.RoomSessionInput;
 import com.estime.room.application.dto.input.VotesFindInput;
 import com.estime.room.application.dto.input.VotesOutput;
+import com.estime.room.application.dto.output.DateTimeSlotRecommendOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomOutput;
@@ -13,6 +14,7 @@ import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.room.presentation.dto.response.ConnectedRoomCreateResponse;
+import com.estime.room.presentation.dto.response.DateTimeSlotRecommendResponse;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
@@ -62,6 +64,15 @@ public class RoomController implements RoomControllerSpecification {
         final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(
                 RoomSessionInput.from(roomSession));
         return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
+    }
+
+    @Override
+    public CustomApiResponse<DateTimeSlotRecommendResponse> getDateTimeSlotRecommendBySession(
+            @PathVariable("session") final Tsid roomSession
+    ) {
+        final DateTimeSlotRecommendOutput output = roomApplicationService.calculateRecommend(
+                RoomSessionInput.from(roomSession));
+        return CustomApiResponse.ok(DateTimeSlotRecommendResponse.from(output));
     }
 
     @Override

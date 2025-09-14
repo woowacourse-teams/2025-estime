@@ -11,6 +11,8 @@ import com.estime.room.application.dto.input.VotesFindInput;
 import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.application.dto.output.ConnectedRoomCreateOutput;
+import com.estime.room.application.dto.output.DateTimeSlotRecommendOutput;
+import com.estime.room.application.dto.output.DateTimeSlotRecommendOutput.DateTimeRecommendsOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipantsOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
@@ -32,6 +34,7 @@ import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +50,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @RequiredArgsConstructor
 @Slf4j
 public class RoomApplicationService {
+
+    private static final int MAX_RECOMMEND_COUNT = 3;
 
     private final SseService sseService;
     private final RoomRepository roomRepository;
@@ -116,7 +121,40 @@ public class RoomApplicationService {
                                                 .map(idToName::get)
                                                 .toList())
                         ).toList());
+    }
 
+    @Transactional(readOnly = true)
+    public DateTimeSlotRecommendOutput calculateRecommend(final RoomSessionInput input) {
+        final Long roomId = obtainRoomIdBySession(input.session());
+
+        final List<Long> participantIds = participantRepository.findIdsByRoomId(roomId);
+
+        final Votes votes = voteRepository.findAllByParticipantIds(participantIds);
+
+        final Map<DateTimeSlot, Set<Long>> dateTimeSlotParticipants = votes.calculateStatistic();
+
+        final Set<Long> participantsIds = dateTimeSlotParticipants.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+
+        final Map<Long, ParticipantName> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
+                .collect(Collectors.toMap(Participant::getId, Participant::getName));
+
+        return new DateTimeSlotRecommendOutput(
+                dateTimeSlotParticipants.keySet().stream()
+                        .map(dateTimeSlot ->
+                                new DateTimeRecommendsOutput(
+                                        dateTimeSlot,
+                                        dateTimeSlotParticipants.get(dateTimeSlot).stream()
+                                                .map(idToName::get)
+                                                .toList())
+                        )
+                        .sorted(Comparator
+                                .comparingInt((DateTimeRecommendsOutput output) -> output.participantNames().size())
+                                .reversed()
+                                .thenComparing(DateTimeRecommendsOutput::dateTimeSlot))
+                        .limit(MAX_RECOMMEND_COUNT)
+                        .toList());
     }
 
     @Transactional(readOnly = true)

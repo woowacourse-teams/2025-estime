@@ -6,6 +6,7 @@ import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
 import com.estime.room.presentation.dto.response.ConnectedRoomCreateResponse;
+import com.estime.room.presentation.dto.response.DateTimeSlotRecommendResponse;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
@@ -48,6 +49,12 @@ public interface RoomControllerSpecification {
     @Operation(summary = "일시 기준, 참여자 투표 통계 조회")
     @GetMapping("/{session}/statistics/date-time-slots")
     CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
+            @PathVariable("session") Tsid roomSession
+    );
+
+    @Operation(summary = "일시 기준, 참여자 투표 순위(Top 3) 조회")
+    @GetMapping("/{session}/recommendations/date-time-slots")
+    CustomApiResponse<DateTimeSlotRecommendResponse> getDateTimeSlotRecommendBySession(
             @PathVariable("session") Tsid roomSession
     );
 

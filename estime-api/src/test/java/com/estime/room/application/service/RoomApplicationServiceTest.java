@@ -17,6 +17,7 @@ import com.estime.room.application.dto.input.VotesFindInput;
 import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.application.dto.output.ConnectedRoomCreateOutput;
+import com.estime.room.application.dto.output.DateTimeSlotRecommendOutput;
 import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
@@ -189,6 +190,37 @@ class RoomApplicationServiceTest {
             softly.assertThat(result.statistic().getFirst().dateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(result.statistic().getFirst().participantNames())
                     .containsExactlyInAnyOrder(ParticipantName.from("user1"), ParticipantName.from("user2"));
+        });
+    }
+
+    @DisplayName("투표 순위를 계산한다. (1순위: 투표수 내림차순, 2순위: 시간 오름차순)")
+    @Test
+    void calculateVoteRecommend() {
+        // given
+        final LocalDate targetDate = LocalDate.now().plusDays(1);
+        final DateTimeSlot slotTime1000 = DateTimeSlot.from(LocalDateTime.of(targetDate, LocalTime.of(10, 0)));
+        final DateTimeSlot slotTime1030 = DateTimeSlot.from(LocalDateTime.of(targetDate, LocalTime.of(10, 30)));
+        final DateTimeSlot slotTime1100 = DateTimeSlot.from(LocalDateTime.of(targetDate, LocalTime.of(11, 0)));
+
+        voteRepository.save(Vote.of(participant1.getId(), slotTime1030));
+        voteRepository.save(Vote.of(participant2.getId(), slotTime1030));
+        voteRepository.save(Vote.of(participant2.getId(), slotTime1000));
+        voteRepository.save(Vote.of(participant1.getId(), slotTime1100));
+
+        // when
+        final DateTimeSlotRecommendOutput result = roomApplicationService.calculateRecommend(
+                RoomSessionInput.from(room.getSession().getValue()));
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(result.recommends()).hasSize(3);
+
+            softly.assertThat(result.recommends().getFirst().dateTimeSlot()).isEqualTo(slotTime1030);
+            softly.assertThat(result.recommends().getFirst().participantNames())
+                    .containsExactlyInAnyOrder(ParticipantName.from("user1"), ParticipantName.from("user2"));
+
+            softly.assertThat(result.recommends().get(1).dateTimeSlot()).isEqualTo(slotTime1000);
+            softly.assertThat(result.recommends().get(2).dateTimeSlot()).isEqualTo(slotTime1100);
         });
     }
 
