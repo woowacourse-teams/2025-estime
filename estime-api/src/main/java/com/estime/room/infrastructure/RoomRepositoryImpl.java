@@ -18,6 +18,8 @@ public class RoomRepositoryImpl implements RoomRepository {
     private final RoomJpaRepository roomJpaRepository;
     private final JPAQueryFactory queryFactory;
 
+    private static final QRoom room = QRoom.room;
+
     @Override
     public Room save(final Room room) {
         return roomJpaRepository.save(room);
@@ -25,8 +27,6 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public Optional<Room> findBySession(final RoomSession session) {
-        final QRoom room = QRoom.room;
-
         return Optional.ofNullable(
                 queryFactory.selectFrom(room)
                         .where(room.session.eq(session))
@@ -36,8 +36,6 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public Optional<Long> findIdBySession(final RoomSession session) {
-        final QRoom room = QRoom.room;
-
         return Optional.ofNullable(
                 queryFactory.select(room.id)
                         .from(room)
@@ -48,8 +46,6 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public Optional<Room> findById(final Long id) {
-        final QRoom room = QRoom.room;
-
         return Optional.ofNullable(
                 queryFactory.selectFrom(room)
                         .where(room.id.eq(id))
@@ -59,8 +55,6 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public List<Room> findAllByIdGreaterThanOrderByIdAsc(final Long id) {
-        final QRoom room = QRoom.room;
-
         return queryFactory.selectFrom(room)
                 .where(room.id.gt(id))
                 .orderBy(room.id.asc())
@@ -69,8 +63,6 @@ public class RoomRepositoryImpl implements RoomRepository {
 
     @Override
     public List<Room> findAllByDeadlineAfter(final LocalDateTime criterion) {
-        final QRoom room = QRoom.room;
-
         return queryFactory.selectFrom(room)
                 .where(room.deadline.after(criterion))
                 .fetch();

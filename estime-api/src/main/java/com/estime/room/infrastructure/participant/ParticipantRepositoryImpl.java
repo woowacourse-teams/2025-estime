@@ -18,6 +18,8 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     private final ParticipantJpaRepository jpaRepository;
     private final JPAQueryFactory queryFactory;
 
+    private static final QParticipant participant = QParticipant.participant;
+
     @Override
     public Participant save(final Participant participant) {
         return jpaRepository.save(participant);
@@ -25,8 +27,6 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public boolean existsByRoomIdAndName(final Long roomId, final ParticipantName name) {
-        final QParticipant participant = QParticipant.participant;
-
         return queryFactory.selectFrom(participant)
                 .where(participant.roomId.eq(roomId)
                         .and(participant.name.eq(name)))
@@ -35,8 +35,6 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public List<Long> findIdsByRoomId(final Long roomId) {
-        final QParticipant participant = QParticipant.participant;
-
         return queryFactory.select(participant.id)
                 .from(participant)
                 .where(participant.roomId.eq(roomId))
@@ -45,8 +43,6 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public List<Participant> findAllByIdIn(final Set<Long> ids) {
-        final QParticipant participant = QParticipant.participant;
-
         return queryFactory.selectFrom(participant)
                 .where(participant.id.in(ids))
                 .fetch();
@@ -54,8 +50,6 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public Optional<Long> findIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
-        final QParticipant participant = QParticipant.participant;
-
         return Optional.ofNullable(
                 queryFactory.select(participant.id)
                         .from(participant)

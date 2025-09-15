@@ -15,6 +15,8 @@ public class PlatformRepositoryImpl implements PlatformRepository {
     private final PlatformJpaRepository jpaRepository;
     private final JPAQueryFactory queryFactory;
 
+    private static final QPlatform platform = QPlatform.platform;
+
     @Override
     public Platform save(final Platform platform) {
         return jpaRepository.save(platform);
@@ -22,8 +24,6 @@ public class PlatformRepositoryImpl implements PlatformRepository {
 
     @Override
     public Optional<Platform> findByRoomId(final Long roomId) {
-        final QPlatform platform = QPlatform.platform;
-
         return Optional.ofNullable(
                 queryFactory.selectFrom(platform)
                         .where(platform.roomId.eq(roomId))

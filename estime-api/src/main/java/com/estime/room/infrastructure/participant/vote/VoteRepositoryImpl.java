@@ -16,6 +16,8 @@ public class VoteRepositoryImpl implements VoteRepository {
     private final VoteJpaRepository jpaRepository;
     private final JPAQueryFactory queryFactory;
 
+    private static final QVote vote = QVote.vote;
+
     @Override
     public Vote save(final Vote vote) {
         return jpaRepository.save(vote);
@@ -28,8 +30,6 @@ public class VoteRepositoryImpl implements VoteRepository {
 
     @Override
     public Votes findAllByParticipantIds(final List<Long> participantIds) {
-        final QVote vote = QVote.vote;
-
         return Votes.from(
                 queryFactory.selectFrom(vote)
                         .where(vote.id.participantId.in(participantIds))
@@ -39,8 +39,6 @@ public class VoteRepositoryImpl implements VoteRepository {
 
     @Override
     public void deleteAllInBatch(final Votes votes) {
-        final QVote vote = QVote.vote;
-
         queryFactory.delete(vote)
                 .where(vote.id.in(votes.getElements().stream()
                         .map(Vote::getId)
@@ -50,8 +48,6 @@ public class VoteRepositoryImpl implements VoteRepository {
 
     @Override
     public Votes findAllByParticipantId(final Long participantId) {
-        final QVote vote = QVote.vote;
-
         return Votes.from(
                 queryFactory.selectFrom(vote)
                         .where(vote.id.participantId.eq(participantId))
