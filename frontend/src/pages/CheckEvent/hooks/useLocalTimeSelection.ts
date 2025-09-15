@@ -28,6 +28,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   const [isTouch, setIsTouch] = useState(false);
   const hoveredRef = useRef<Set<string>>(new Set());
   const dragModeRef = useRef<'add' | 'remove'>('add');
+  const lastMoveTime = useRef<number>(0);
 
   useLockBodyScroll(isTouch);
 
@@ -68,6 +69,13 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     (event: React.PointerEvent) => {
       if (!draggingRef.current) return;
 
+      const now = performance.now();
+
+      const throttleMs = 11.1; // 약 90fps
+
+      if (now - lastMoveTime.current < throttleMs) return;
+      lastMoveTime.current = now;
+
       const minX = Math.min(startX.current, event.clientX);
       const minY = Math.min(startY.current, event.clientY);
       const maxX = Math.max(startX.current, event.clientX);
@@ -98,6 +106,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     hoveredRef.current.clear();
     draggingRef.current = false;
     setIsTouch(false);
+    lastMoveTime.current = 0;
   }, [localSelectedTimes, updateCurrentSelectedTimes]);
 
   const reset = useCallback(() => {
