@@ -39,6 +39,12 @@ public class Votes {
         return new Votes(removed);
     }
 
+    public List<VoteId> getVoteIds() {
+        return getElements().stream()
+                .map(Vote::getId)
+                .toList();
+    }
+
     public Map<DateTimeSlot, Set<Long>> calculateStatistic() {
         final Map<DateTimeSlot, Set<Long>> statistic = new HashMap<>();
         for (final Vote element : elements) {

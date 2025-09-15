@@ -40,9 +40,7 @@ public class VoteRepositoryImpl implements VoteRepository {
     @Override
     public void deleteAllInBatch(final Votes votes) {
         queryFactory.delete(vote)
-                .where(vote.id.in(votes.getElements().stream()
-                        .map(Vote::getId)
-                        .toList()))
+                .where(vote.id.in(votes.getVoteIds()))
                 .execute();
     }
 
