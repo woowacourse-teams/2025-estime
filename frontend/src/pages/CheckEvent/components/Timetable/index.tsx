@@ -17,14 +17,19 @@ const Timetable = ({
   availableDates,
   initialSelectedTimes,
 }: TimetableProps) => {
-  const { localSelectedTimes, pointerHandlers } = useLocalTimeSelection({
+  const { localSelectedTimes, onPointerDown, onPointerMove, onPointerUp } = useLocalTimeSelection({
     initialSelectedTimes,
   });
 
   const availableDatesArray = useMemo(() => [...availableDates], [availableDates]);
 
   return (
-    <S.TimetableContent {...pointerHandlers}>
+    <S.TimetableContent
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerLeave={onPointerUp}
+    >
       <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
       {availableDatesArray.map((date) => (
         <TimeTableColumn
