@@ -5,6 +5,8 @@ import CreateEventPage from '@/pages/CreateEvent/CreateEventPage';
 import MobileCreateEventPage from '@/pages/CreateEvent/Mobile/MobileCreateEventPage';
 import RootElement from '@/RootElement';
 
+const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(navigator.userAgent);
+
 const appRoutes = [
   {
     path: '/',
@@ -13,13 +15,7 @@ const appRoutes = [
     children: [
       {
         index: true,
-        element: (() => {
-          const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(
-            navigator.userAgent
-          );
-
-          return isMobile ? <MobileCreateEventPage /> : <CreateEventPage />;
-        })(),
+        element: isMobile ? <MobileCreateEventPage /> : <CreateEventPage />,
       },
       { path: 'check', element: <CheckEventPage /> },
       { path: 'credits', element: <CreditsPage /> },
