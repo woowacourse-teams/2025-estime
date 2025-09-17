@@ -82,21 +82,18 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   };
 
   const handleDragStart = useCallback((event: React.PointerEvent) => {
-    // 터치 여부만 먼저 기록
     setIsTouch(event.pointerType === 'touch');
 
-    // 드래그 대상/경계 캐싱
     cacheDragHitboxes();
 
-    const bounds = containerBoundingRectRef.current; // 기존 containerRect
+    const bounds = containerBoundingRectRef.current;
     if (!bounds) return;
 
     // 클릭한 요소에서 가장 가까운 셀 찾기
     const targetCell = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
-    const cellKey = targetCell?.dataset.time; // 기존 getAttribute('data-time')
+    const cellKey = targetCell?.dataset.time;
     if (!cellKey) return;
 
-    // 여기서부터 실제 드래그 시작(앞에서 return 나가면 안 걸리도록)
     isDraggingRef.current = true;
 
     // 컨테이너 기준 시작 좌표 보정
