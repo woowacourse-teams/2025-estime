@@ -29,9 +29,9 @@ public class SseSender {
                                 .data(SseResponse.from("ok"))
                 );
             } catch (final IOException e) {
-                log.debug("Failed to send SSE message, connection likely closed for roomSession {}: {}", roomSession,
-                        e.getMessage());
-                emitter.completeWithError(e);
+                log.debug("Failed to send SSE message, connection likely closed for roomSession {}: {}",
+                        roomSession, e.getMessage());
+                emitter.complete();
             }
         }
     }
