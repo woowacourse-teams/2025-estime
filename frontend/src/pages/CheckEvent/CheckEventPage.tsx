@@ -13,7 +13,6 @@ import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
 import useSSE from '@/pages/CheckEvent/hooks/useSSE';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
@@ -25,10 +24,10 @@ import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
+import toastStore from '@/shared/store/toastStore';
 
 const CheckEventPage = () => {
   const theme = useTheme();
-  const { addToast } = useToastContext();
 
   const { roomInfo, session } = useCheckRoomSession();
 
@@ -139,7 +138,7 @@ const CheckEventPage = () => {
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
     if (!cell) return;
 
-    addToast({
+    toastStore.addToast({
       type: 'warning',
       message: '시간을 등록하려면 "편집하기"를 눌러주세요',
     });

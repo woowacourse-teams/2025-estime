@@ -1,14 +1,12 @@
+import toastStore from '@/shared/store/toastStore';
 import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 
 export type HandleErrorReturn = (error: unknown, context: string) => void;
 
 const useHandleError = () => {
-  const { addToast } = useToastContext();
-
   return (error: unknown, context: string) => {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    addToast({
+    toastStore.addToast({
       type: 'error',
       message: errorMessage,
     });

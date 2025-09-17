@@ -5,20 +5,19 @@ import CopyLinkButton from '../../../../shared/components/Button/CopyLinkButton'
 import { useState } from 'react';
 import Text from '../../../../shared/components/Text';
 import Wrapper from '../../../../shared/layout/Wrapper';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import KakaoShareButton from '@/shared/components/Button/KakaoShareButton';
+import toastStore from '@/shared/store/toastStore';
 export interface CopyLinkModalProps {
   sessionId: string;
 }
 export const CopyLinkModal = ({ sessionId }: CopyLinkModalProps) => {
   const [isCopied, setIsCopied] = useState(false);
-  const { addToast } = useToastContext();
   const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link);
     setIsCopied(true);
-    addToast({
+    toastStore.addToast({
       type: 'success',
       message: '링크가 복사되었습니다!',
     });

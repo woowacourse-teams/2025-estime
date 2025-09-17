@@ -8,16 +8,15 @@ import { useNavigate } from 'react-router';
 import useCreateRoom from '@/pages/CreateEvent/hooks/useCreateRoom';
 import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
 import { useRef, useState } from 'react';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import Modal from '@/shared/components/Modal';
 import NotificationModal from '@/pages/CreateEvent/components/NotificationModal';
 import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
+import toastStore from '@/shared/store/toastStore';
 
 const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
   const showValidation = useRef(false);
   const navigate = useNavigate();
-  const { addToast } = useToastContext();
   const {
     platformType,
     title,
@@ -33,7 +32,7 @@ const CreateEventPage = () => {
 
   const handleValidation = () => {
     if (!isCalendarReady && !isBasicReady) {
-      addToast({
+      toastStore.addToast({
         type: 'warning',
         message: '날짜와 약속 정보를 입력해주세요.',
       });
@@ -42,7 +41,7 @@ const CreateEventPage = () => {
       return false;
     }
     if (!isCalendarReady) {
-      addToast({
+      toastStore.addToast({
         type: 'warning',
         message: '날짜를 선택해주세요.',
       });
@@ -51,7 +50,7 @@ const CreateEventPage = () => {
       return false;
     }
     if (!isBasicReady) {
-      addToast({
+      toastStore.addToast({
         type: 'warning',
         message: '약속 정보를 입력해주세요.',
       });
@@ -63,7 +62,7 @@ const CreateEventPage = () => {
   };
 
   const onSubmitSuccess = (session: string) => {
-    addToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
+    toastStore.addToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
     navigate(`/check?id=${session}`, { replace: true });
   };
 
