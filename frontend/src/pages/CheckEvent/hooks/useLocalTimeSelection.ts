@@ -163,7 +163,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
     const finalSelectedTimes = new Set(currentWorkingSetRef.current);
 
-    setLocalSelectedTimes(finalSelectedTimes);
+    triggerRenderUpdate();
     updateCurrentSelectedTimes(finalSelectedTimes);
   }, [updateCurrentSelectedTimes, resetDragState]);
 
