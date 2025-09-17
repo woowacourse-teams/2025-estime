@@ -7,8 +7,7 @@ interface UseLocalTimeSelectionOptions {
 }
 
 type TimeSnapPoint = {
-  time: string; // data-time
-
+  dateTime: string;
   left: number;
   right: number;
   top: number;
@@ -65,12 +64,13 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     containerBoundingRectRef.current = containerRect;
 
     const snapPoints: TimeSnapPoint[] = [];
+
     container.querySelectorAll<HTMLElement>('.selectable').forEach((selectableElement) => {
-      const timeValue = selectableElement.getAttribute('data-time');
-      if (!timeValue) return;
+      const dateTime = selectableElement.getAttribute('data-time');
+      if (!dateTime) return;
       const elementRect = selectableElement.getBoundingClientRect();
       snapPoints.push({
-        time: timeValue,
+        dateTime,
         left: elementRect.left - containerRect.left,
         right: elementRect.right - containerRect.left,
         top: elementRect.top - containerRect.top,
@@ -135,14 +135,14 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       if (!isInSelectionArea) continue;
 
       if (selectionModeRef.current === 'add') {
-        if (!currentWorkingSetRef.current.has(snapPoint.time)) {
+        if (!currentWorkingSetRef.current.has(snapPoint.dateTime)) {
           hasChanges = true;
-          currentWorkingSetRef.current.add(snapPoint.time);
+          currentWorkingSetRef.current.add(snapPoint.dateTime);
         }
       } else {
-        if (currentWorkingSetRef.current.has(snapPoint.time)) {
+        if (currentWorkingSetRef.current.has(snapPoint.dateTime)) {
           hasChanges = true;
-          currentWorkingSetRef.current.delete(snapPoint.time);
+          currentWorkingSetRef.current.delete(snapPoint.dateTime);
         }
       }
     }
