@@ -27,7 +27,6 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   const currentWorkingSetRef = useRef<Set<string>>(new Set(initialSelectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isDraggingRef = useRef(false);
   const [isTouch, setIsTouch] = useState(false);
 
   const dragStartX = useRef(0);
@@ -52,7 +51,6 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   useLockBodyScroll(isTouch);
 
   useEffect(() => {
-    if (isDraggingRef.current) return;
     const nextSelectedTimes = new Set(initialSelectedTimes);
     currentWorkingSetRef.current = new Set(nextSelectedTimes);
     setLocalSelectedTimes(nextSelectedTimes);
@@ -94,8 +92,6 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     const cellKey = targetCell?.dataset.time;
     if (!cellKey) return;
 
-    isDraggingRef.current = true;
-
     // 컨테이너 기준 시작 좌표 보정
     const startX = event.clientX - bounds.left;
     const startY = event.clientY - bounds.top;
@@ -116,8 +112,6 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   }, []);
 
   const handleDragMove = useCallback((event: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
-
     const bounds = containerBoundingRectRef.current;
     if (!bounds) return;
 
@@ -161,15 +155,12 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   }, []);
 
   const resetDragState = useCallback(() => {
-    isDraggingRef.current = false;
     dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
     setIsTouch(false);
   }, []);
 
   const handleDragEnd = useCallback(() => {
-    if (!isDraggingRef.current) return;
-
     resetDragState();
 
     const finalSelectedTimes = new Set(currentWorkingSetRef.current);
