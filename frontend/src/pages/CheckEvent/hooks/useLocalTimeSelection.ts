@@ -32,7 +32,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const selectionModeRef = useRef<'add' | 'remove'>('add');
-
+  const isDraggingRef = useRef(false);
   // 스냅샷
   const containerBoundingRectRef = useRef<DOMRectReadOnly | null>(null);
   const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
@@ -91,7 +91,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     const targetCell = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
     const cellKey = targetCell?.dataset.time;
     if (!cellKey) return;
-
+    isDraggingRef.current = true;
     // 컨테이너 기준 시작 좌표 보정
     const startX = event.clientX - bounds.left;
     const startY = event.clientY - bounds.top;
@@ -112,6 +112,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   }, []);
 
   const handleDragMove = useCallback((event: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
     const bounds = containerBoundingRectRef.current;
     if (!bounds) return;
 
@@ -161,14 +162,20 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   }, []);
 
   const handleDragEnd = useCallback(() => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
     resetDragState();
-
     const finalSelectedTimes = new Set(currentWorkingSetRef.current);
 
     triggerRenderUpdate();
     updateCurrentSelectedTimes(finalSelectedTimes);
   }, [updateCurrentSelectedTimes, resetDragState]);
 
+  const handleDragLeave = useCallback(() => {
+    if (isDraggingRef.current) return;
+
+    resetDragState();
+  }, [resetDragState]);
   return {
     containerRef,
     localSelectedTimes,
@@ -176,7 +183,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       onPointerDown: handleDragStart,
       onPointerMove: handleDragMove,
       onPointerUp: handleDragEnd,
-      onPointerLeave: handleDragEnd,
+      onPointerLeave: handleDragLeave,
     },
   };
 };
