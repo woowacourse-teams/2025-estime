@@ -54,7 +54,8 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     const nextSelectedTimes = new Set(initialSelectedTimes);
     currentWorkingSetRef.current = new Set(nextSelectedTimes);
     setLocalSelectedTimes(nextSelectedTimes);
-  }, [initialSelectedTimes]);
+    updateCurrentSelectedTimes(nextSelectedTimes);
+  }, [initialSelectedTimes, updateCurrentSelectedTimes]);
 
   const cacheDragHitboxes = () => {
     const container = containerRef.current;
