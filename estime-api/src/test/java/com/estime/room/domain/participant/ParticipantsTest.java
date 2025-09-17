@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class ParticipantsTest {
 
@@ -81,10 +82,10 @@ class ParticipantsTest {
     @Test
     void getIdToName() {
         // given
-        ParticipantName name1 = ParticipantName.from("test1");
-        ParticipantName name2 = ParticipantName.from("test2");
-        Participant participant1 = Participant.withId(101L, 1L, name1);
-        Participant participant2 = Participant.withId(102L, 1L, name2);
+        String name1 = "test1";
+        String name2 = "test2";
+        Participant participant1 = createParticipant(101L, 1L, name1);
+        Participant participant2 = createParticipant(102L, 1L, name2);
         Participants participants = Participants.from(List.of(participant1, participant2));
 
         // when
@@ -93,8 +94,14 @@ class ParticipantsTest {
         // then
         assertSoftly(softly -> {
             softly.assertThat(map).hasSize(2);
-            softly.assertThat(map.get(101L)).isEqualTo(name1);
-            softly.assertThat(map.get(102L)).isEqualTo(name2);
+            softly.assertThat(map.get(101L).getValue()).isEqualTo(name1);
+            softly.assertThat(map.get(102L).getValue()).isEqualTo(name2);
         });
+    }
+
+    private Participant createParticipant(Long id, Long roomId, String name) {
+        Participant participant = Participant.withoutId(roomId, ParticipantName.from(name));
+        ReflectionTestUtils.setField(participant, "id", id);
+        return participant;
     }
 }
