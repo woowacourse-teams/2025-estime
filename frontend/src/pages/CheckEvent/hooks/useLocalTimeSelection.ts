@@ -82,31 +82,38 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   };
 
   const handleDragStart = useCallback((event: React.PointerEvent) => {
-    isDraggingRef.current = true;
+    // 터치 여부만 먼저 기록
     setIsTouch(event.pointerType === 'touch');
+
+    // 드래그 대상/경계 캐싱
     cacheDragHitboxes();
 
-    const containerRect = containerBoundingRectRef.current;
-    if (!containerRect) return;
-    // 컨네이터가 없으면 동작하지 않습니다.
+    const bounds = containerBoundingRectRef.current; // 기존 containerRect
+    if (!bounds) return;
 
-    // 이 부분에서 컨테이너 만큼 x,y 좌표를 보정합니다.
-    dragStartX.current = event.clientX - containerRect.left;
-    dragStartY.current = event.clientY - containerRect.top;
+    // 클릭한 요소에서 가장 가까운 셀 찾기
+    const targetCell = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
+    const cellKey = targetCell?.dataset.time; // 기존 getAttribute('data-time')
+    if (!cellKey) return;
 
-    // 1.요소 조회
-    const targetElement = (event.target as HTMLElement).closest(
-      '.selectable'
-    ) as HTMLElement | null;
-    const targetTimeValue = targetElement?.getAttribute('data-time');
-    if (!targetTimeValue) return;
+    // 여기서부터 실제 드래그 시작(앞에서 return 나가면 안 걸리도록)
+    isDraggingRef.current = true;
 
-    // 2.드래그 모드 변경
-    selectionModeRef.current = currentWorkingSetRef.current.has(targetTimeValue) ? 'remove' : 'add';
+    // 컨테이너 기준 시작 좌표 보정
+    const startX = event.clientX - bounds.left;
+    const startY = event.clientY - bounds.top;
+    dragStartX.current = startX;
+    dragStartY.current = startY;
 
-    // 3.현재 요소 토글
-    if (selectionModeRef.current === 'add') currentWorkingSetRef.current.add(targetTimeValue);
-    else currentWorkingSetRef.current.delete(targetTimeValue);
+    // 드래그 의도(add/remove) 결정
+    selectionModeRef.current = currentWorkingSetRef.current.has(cellKey) ? 'remove' : 'add';
+
+    // 첫 셀 즉시 반영
+    if (selectionModeRef.current === 'add') {
+      currentWorkingSetRef.current.add(cellKey);
+    } else {
+      currentWorkingSetRef.current.delete(cellKey);
+    }
 
     triggerRenderUpdate();
   }, []);
@@ -114,40 +121,46 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   const handleDragMove = useCallback((event: React.PointerEvent) => {
     if (!isDraggingRef.current) return;
 
-    const containerRect = containerBoundingRectRef.current;
-    if (!containerRect) return;
+    const bounds = containerBoundingRectRef.current;
+    if (!bounds) return;
 
-    const currentX = event.clientX - containerRect.left;
-    const currentY = event.clientY - containerRect.top;
+    // 포인터의 컨테이너 기준 좌표
+    const pointerX = event.clientX - bounds.left;
+    const pointerY = event.clientY - bounds.top;
 
-    const selectionAreaMinX = Math.min(dragStartX.current, currentX);
-    const selectionAreaMinY = Math.min(dragStartY.current, currentY);
-    const selectionAreaMaxX = Math.max(dragStartX.current, currentX);
-    const selectionAreaMaxY = Math.max(dragStartY.current, currentY);
+    // 현재 드래그 선택 사각형
+    const selectionRect = {
+      left: Math.min(dragStartX.current, pointerX),
+      top: Math.min(dragStartY.current, pointerY),
+      right: Math.max(dragStartX.current, pointerX),
+      bottom: Math.max(dragStartY.current, pointerY),
+    };
 
-    let hasChanges = false;
+    let didChange = false;
 
-    for (const hitbox of dragHitboxesRef.current) {
-      const isInSelectionArea =
-        hitbox.left < selectionAreaMaxX &&
-        hitbox.right > selectionAreaMinX &&
-        hitbox.top < selectionAreaMaxY &&
-        hitbox.bottom > selectionAreaMinY;
-      if (!isInSelectionArea) continue;
+    for (const cell of dragHitboxesRef.current) {
+      const overlaps =
+        cell.left < selectionRect.right &&
+        cell.right > selectionRect.left &&
+        cell.top < selectionRect.bottom &&
+        cell.bottom > selectionRect.top;
+
+      if (!overlaps) continue;
 
       if (selectionModeRef.current === 'add') {
-        if (!currentWorkingSetRef.current.has(hitbox.key)) {
-          hasChanges = true;
-          currentWorkingSetRef.current.add(hitbox.key);
+        if (!currentWorkingSetRef.current.has(cell.key)) {
+          currentWorkingSetRef.current.add(cell.key);
+          didChange = true;
         }
       } else {
-        if (currentWorkingSetRef.current.has(hitbox.key)) {
-          hasChanges = true;
-          currentWorkingSetRef.current.delete(hitbox.key);
+        if (currentWorkingSetRef.current.has(cell.key)) {
+          currentWorkingSetRef.current.delete(cell.key);
+          didChange = true;
         }
       }
     }
-    if (hasChanges) triggerRenderUpdate();
+
+    if (didChange) triggerRenderUpdate();
   }, []);
 
   const resetDragState = useCallback(() => {
