@@ -6,8 +6,9 @@ interface UseLocalTimeSelectionOptions {
   initialSelectedTimes: Set<string>;
 }
 
-type TimeSnapPoint = {
-  dateTime: string;
+type TimeCellHitbox = {
+  key: string; // data-time
+
   left: number;
   right: number;
   top: number;
@@ -35,7 +36,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
   // 스냅샷
   const containerBoundingRectRef = useRef<DOMRectReadOnly | null>(null);
-  const timeSnapPointsRef = useRef<TimeSnapPoint[]>([]);
+  const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
 
   // 배치(rAF)
   const renderAnimationFrameId = useRef<number | null>(null);
@@ -57,33 +58,33 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     setLocalSelectedTimes(nextSelectedTimes);
   }, [initialSelectedTimes]);
 
-  const measureTimeTableContainer = () => {
+  const cacheDragHitboxes = () => {
     const container = containerRef.current;
     if (!container) return;
     const containerRect = container.getBoundingClientRect();
     containerBoundingRectRef.current = containerRect;
 
-    const snapPoints: TimeSnapPoint[] = [];
-
+    const hitboxes: TimeCellHitbox[] = [];
+    // 모든 selectable 요소를 순회하며
     container.querySelectorAll<HTMLElement>('.selectable').forEach((selectableElement) => {
       const dateTime = selectableElement.getAttribute('data-time');
       if (!dateTime) return;
       const elementRect = selectableElement.getBoundingClientRect();
-      snapPoints.push({
-        dateTime,
+      hitboxes.push({
+        key: dateTime,
         left: elementRect.left - containerRect.left,
         right: elementRect.right - containerRect.left,
         top: elementRect.top - containerRect.top,
         bottom: elementRect.bottom - containerRect.top,
       });
     });
-    timeSnapPointsRef.current = snapPoints;
+    dragHitboxesRef.current = hitboxes;
   };
 
   const handleDragStart = useCallback((event: React.PointerEvent) => {
     isDraggingRef.current = true;
     setIsTouch(event.pointerType === 'touch');
-    measureTimeTableContainer();
+    cacheDragHitboxes();
 
     const containerRect = containerBoundingRectRef.current;
     if (!containerRect) return;
@@ -126,23 +127,23 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
     let hasChanges = false;
 
-    for (const snapPoint of timeSnapPointsRef.current) {
+    for (const hitbox of dragHitboxesRef.current) {
       const isInSelectionArea =
-        snapPoint.left < selectionAreaMaxX &&
-        snapPoint.right > selectionAreaMinX &&
-        snapPoint.top < selectionAreaMaxY &&
-        snapPoint.bottom > selectionAreaMinY;
+        hitbox.left < selectionAreaMaxX &&
+        hitbox.right > selectionAreaMinX &&
+        hitbox.top < selectionAreaMaxY &&
+        hitbox.bottom > selectionAreaMinY;
       if (!isInSelectionArea) continue;
 
       if (selectionModeRef.current === 'add') {
-        if (!currentWorkingSetRef.current.has(snapPoint.dateTime)) {
+        if (!currentWorkingSetRef.current.has(hitbox.key)) {
           hasChanges = true;
-          currentWorkingSetRef.current.add(snapPoint.dateTime);
+          currentWorkingSetRef.current.add(hitbox.key);
         }
       } else {
-        if (currentWorkingSetRef.current.has(snapPoint.dateTime)) {
+        if (currentWorkingSetRef.current.has(hitbox.key)) {
           hasChanges = true;
-          currentWorkingSetRef.current.delete(snapPoint.dateTime);
+          currentWorkingSetRef.current.delete(hitbox.key);
         }
       }
     }
@@ -151,7 +152,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
   const resetDragState = useCallback(() => {
     isDraggingRef.current = false;
-    timeSnapPointsRef.current = [];
+    dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
     setIsTouch(false);
   }, []);
