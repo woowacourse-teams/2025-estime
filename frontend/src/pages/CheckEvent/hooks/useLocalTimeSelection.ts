@@ -173,8 +173,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   }, [updateCurrentSelectedTimes, resetDragState]);
 
   const handleDragLeave = useCallback(() => {
-    if (isDraggingRef.current) return;
-
+    isDraggingRef.current = false;
     resetDragState();
   }, [resetDragState]);
   return {
