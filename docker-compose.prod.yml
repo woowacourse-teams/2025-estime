@@ -16,9 +16,6 @@ services:
     container_name: alloy
     env_file:
       - ./estime-api/.env.prod
-    depends_on:
-      api:
-        condition: service_healthy
     volumes:
       - ./estime-api/alloy/config.river:/etc/alloy/config-prod.river
       - app-logs:/app/logs
