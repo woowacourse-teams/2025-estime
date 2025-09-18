@@ -3,10 +3,10 @@ import { readFileSync } from 'fs';
 import dotenv from 'dotenv';
 import webpack from 'webpack';
 import { fileURLToPath } from 'url';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 import getBuildMeta from './build/utils/buildMeta.js';
 import InjectVersionConsolePlugin from './build/plugins/InjectVersionConsolePlugin.js';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +23,7 @@ export default {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
+    publicPath: '/', // SPA 중첩 라우팅을 위한 절대 경로 설정
     clean: true, // 빌드 때 dist 폴더 정리
   },
   resolve: {
