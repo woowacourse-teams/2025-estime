@@ -53,7 +53,7 @@ services:
     volumes:
       - ./dev/loki-dev-config.yml:/etc/loki/config.yml:ro
       - loki-dev-data:/loki
-    command: "-config.file=/etc/loki/config.yml"
+    command: ["-config.file", "/etc/loki/config.yml"]
     networks:
       - monitor-net
     restart: unless-stopped
@@ -66,7 +66,18 @@ services:
     volumes:
       - ./prod/loki-prod-config.yml:/etc/loki/config.yml:ro
       - loki-prod-data:/loki
-    command: "-config.file=/etc/loki/config.yml"
+    command: ["-config.file", "/etc/loki/config.yml"]
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  nginx-monitor:
+    image: nginx:latest
+    container_name: nginx-monitor
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
       - monitor-net
     restart: unless-stopped
