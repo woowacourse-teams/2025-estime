@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import appRoutes from './routes';
 import * as Sentry from '@sentry/react';
+import '@/styles/index.css';
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
