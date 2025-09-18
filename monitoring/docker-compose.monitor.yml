@@ -15,29 +15,57 @@ services:
       - monitor-net
     restart: unless-stopped
 
-  prometheus:
+  prometheus-dev:
     image: prom/prometheus:v3.5.0
-    container_name: prometheus
+    container_name: prometheus-dev
     ports:
-      - "9090:9090"
+      - "9091:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./targets.json:/etc/prometheus/targets.json
-      - prometheus-data:/prometheus
+      - ./prometheus-dev.yml:/etc/prometheus/prometheus.yml
+      - ./targets-dev.json:/etc/prometheus/targets-dev.json
+      - prometheus-dev-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
       - monitor-net
     restart: unless-stopped
 
-  loki:
+  prometheus-prod:
+    image: prom/prometheus:v3.5.0
+    container_name: prometheus-prod
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus-prod.yml:/etc/prometheus/prometheus.yml
+      - ./targets-prod.json:/etc/prometheus/targets-prod.json
+      - prometheus-prod-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  loki-dev:
     image: grafana/loki:3.5.0
-    container_name: loki
+    container_name: loki-dev
+    ports:
+      - "3101:3100"
+    volumes:
+      - ./loki-dev-config.yml:/etc/loki/config.yml:ro
+      - loki-dev-data:/loki
+    command: "-config.file=/etc/loki/config.yml"
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  loki-prod:
+    image: grafana/loki:3.5.0
+    container_name: loki-prod
     ports:
       - "3100:3100"
     volumes:
-      - ./loki-config.yml:/etc/loki/config.yml:ro
-      - loki-data:/loki
+      - ./loki-prod-config.yml:/etc/loki/config.yml:ro
+      - loki-prod-data:/loki
     command: "-config.file=/etc/loki/config.yml"
     networks:
       - monitor-net
@@ -45,5 +73,7 @@ services:
 
 volumes:
   grafana-data:
-  prometheus-data:
-  loki-data:
+  prometheus-dev-data:
+  prometheus-prod-data:
+  loki-dev-data:
+  loki-prod-data:

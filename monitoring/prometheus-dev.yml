@@ -1,0 +1,15 @@
+scrape_configs:
+  - job_name: "prometheus-dev"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "estime-api-dev"
+    scrape_interval: 15s
+    metrics_path: '/actuator/prometheus'
+    file_sd_configs:
+      - files:
+        - /etc/prometheus/targets-dev.json
+
+  - job_name: "loki-dev"
+    static_configs:
+      - targets: ["loki-dev:3100"]
