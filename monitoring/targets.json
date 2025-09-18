@@ -1,0 +1,14 @@
+[
+  {
+    "targets": [ "10.0.0.50" ],
+    "labels": {
+      "env": "dev"
+    }
+  },
+  {
+    "targets": [ "10.0.0.84" ],
+    "labels": {
+      "env": "prod"
+    }
+  }
+]

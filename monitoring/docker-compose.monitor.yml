@@ -1,0 +1,49 @@
+networks:
+  monitor-net:
+
+services:
+  grafana:
+    image: grafana/grafana:12.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.monitor
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./targets.json:/etc/prometheus/targets.json
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:3.5.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    command: "-config.file=/etc/loki/config.yml"
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+volumes:
+  grafana-data:
+  prometheus-data:
+  loki-data:
