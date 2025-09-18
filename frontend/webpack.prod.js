@@ -3,6 +3,8 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import common from './webpack.common.js';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import InjectGTMPlugin from './build/plugins/InjectGTMPlugin.js';
 
 export default merge(common, {
   mode: 'production',
@@ -16,6 +18,13 @@ export default merge(common, {
     ],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      favicon: './src/assets/images/logo.svg',
+    }),
+    new InjectGTMPlugin({
+      gtmId: 'GTM-5G2XCWPL',
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
