@@ -5,7 +5,7 @@ import Button from '@/shared/components/Button';
 import Flex from '@/shared/layout/Flex';
 import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
-import ExpiryNotice from '../ExpiryNotice/ExpiryNotice';
+import Notice from '@/shared/components/Notice';
 
 //로딩 구현시 saving을 쓰면 됨.
 type HeaderMode = 'register' | 'edit' | 'save';
@@ -69,11 +69,11 @@ const TimeTableHeader = ({
         </Text>
       </Flex>
       <Flex gap="var(--gap-8)">
-        <ExpiryNotice show={isExpired}>
+        <Notice type="warning" show={isExpired}>
           <Text variant="body" color="warningText">
             ⚠️ 마감일이 지났어요. 결과를 확인해주세요!
           </Text>
-        </ExpiryNotice>
+        </Notice>
         <Button
           color="primary"
           onClick={onToggleEditMode}

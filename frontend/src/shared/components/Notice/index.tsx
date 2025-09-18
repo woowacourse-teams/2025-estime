@@ -1,11 +1,12 @@
-import * as S from './ExpiryNotice.styled';
+import * as S from './Notice.styled';
 
 interface ExpiryNoticeProps {
   show: boolean;
+  type: 'info' | 'warning' | 'error';
   children: React.ReactNode;
 }
 
-const ExpiryNotice = ({ show, children, ...props }: ExpiryNoticeProps) => {
+const Notice = ({ show, children, ...props }: ExpiryNoticeProps) => {
   return (
     <S.Container show={show} {...props}>
       {children}
@@ -13,4 +14,4 @@ const ExpiryNotice = ({ show, children, ...props }: ExpiryNoticeProps) => {
   );
 };
 
-export default ExpiryNotice;
+export default Notice;
