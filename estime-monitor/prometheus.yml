@@ -8,3 +8,16 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ "host.docker.internal:8080" ]
+
+      - job_name: "estime-api"
+        scrape_interval: 15s
+        metrics_path: '/actuator/prometheus'
+
+        static_configs:
+          - targets: [ "DEV_API_SERVER_IP:8080" ]
+            labels:
+              env: 'dev'
+
+          - targets: [ "PROD_API_SERVER_IP:8080" ]
+            labels:
+              env: 'prod'
