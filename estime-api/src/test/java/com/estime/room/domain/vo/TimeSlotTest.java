@@ -30,8 +30,8 @@ class TimeSlotTest {
         assertThat(timeSlot.getStartAt()).isEqualTo(time);
     }
 
-    @Test
     @DisplayName("from 메소드에 null을 전달하면 예외가 발생한다.")
+    @Test
     void from_withNull() {
         // given
         final LocalTime nullTime = null;
@@ -42,8 +42,8 @@ class TimeSlotTest {
                 .hasMessageContaining("cannot be null");
     }
 
-    @Test
     @DisplayName("초 또는 나노초가 0이 아닌 시간으로 TimeSlot을 생성하면 예외가 발생한다.")
+    @Test
     void from_withSeconds() {
         // given
         final LocalTime invalidTime = LocalTime.of(10, 0, 1);
@@ -54,8 +54,8 @@ class TimeSlotTest {
                 .hasMessageContaining("seconds and nanoseconds must be 0 for");
     }
 
-    @Test
     @DisplayName("30분 단위가 아닌 시간으로 TimeSlot을 생성하면 예외가 발생한다.")
+    @Test
     void from_withInvalidMinute() {
         // given
         final LocalTime invalidTime = LocalTime.of(10, 15);
@@ -66,8 +66,8 @@ class TimeSlotTest {
                 .hasMessageContaining("must be an interval of 30 minutes");
     }
 
-    @Test
     @DisplayName("compareTo 메소드로 시간을 비교한다.")
+    @Test
     void compareTo() {
         // given
         final TimeSlot ten = TimeSlot.from(LocalTime.of(10, 0));

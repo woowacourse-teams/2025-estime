@@ -1,8 +1,10 @@
 package com.estime.room.infrastructure.participant;
 
-import com.estime.common.BaseEntity;
 import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.QParticipant;
+import com.estime.room.domain.participant.vo.ParticipantName;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Repository;
 public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     private final ParticipantJpaRepository jpaRepository;
+    private final JPAQueryFactory queryFactory;
+
+    private static final QParticipant participant = QParticipant.participant;
 
     @Override
     public Participant save(final Participant participant) {
@@ -21,25 +26,36 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     }
 
     @Override
-    public boolean existsByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.existsByRoomIdAndName(roomId, name);
+    public boolean existsByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return queryFactory.selectFrom(participant)
+                .where(participant.roomId.eq(roomId)
+                        .and(participant.name.eq(name)))
+                .fetchOne() != null;
     }
 
     @Override
     public List<Long> findIdsByRoomId(final Long roomId) {
-        return jpaRepository.findAllByRoomId(roomId).stream()
-                .map(BaseEntity::getId)
-                .toList();
+        return queryFactory.select(participant.id)
+                .from(participant)
+                .where(participant.roomId.eq(roomId))
+                .fetch();
     }
 
     @Override
     public List<Participant> findAllByIdIn(final Set<Long> ids) {
-        return jpaRepository.findByIdIn(ids);
+        return queryFactory.selectFrom(participant)
+                .where(participant.id.in(ids))
+                .fetch();
     }
 
     @Override
-    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final String name) {
-        return jpaRepository.findByRoomIdAndName(roomId, name)
-                .map(Participant::getId);
+    public Optional<Long> findIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return Optional.ofNullable(
+                queryFactory.select(participant.id)
+                        .from(participant)
+                        .where(participant.roomId.eq(roomId)
+                                .and(participant.name.eq(name)))
+                        .fetchOne()
+        );
     }
 }

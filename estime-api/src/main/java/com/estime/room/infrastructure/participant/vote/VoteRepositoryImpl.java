@@ -1,8 +1,10 @@
 package com.estime.room.infrastructure.participant.vote;
 
+import com.estime.room.domain.participant.vote.QVote;
 import com.estime.room.domain.participant.vote.Vote;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,9 @@ import org.springframework.stereotype.Repository;
 public class VoteRepositoryImpl implements VoteRepository {
 
     private final VoteJpaRepository jpaRepository;
+    private final JPAQueryFactory queryFactory;
+
+    private static final QVote vote = QVote.vote;
 
     @Override
     public Vote save(final Vote vote) {
@@ -26,16 +31,25 @@ public class VoteRepositoryImpl implements VoteRepository {
     @Override
     public Votes findAllByParticipantIds(final List<Long> participantIds) {
         return Votes.from(
-                jpaRepository.findAllById_ParticipantIdIn(participantIds));
+                queryFactory.selectFrom(vote)
+                        .where(vote.id.participantId.in(participantIds))
+                        .fetch()
+        );
     }
 
     @Override
     public void deleteAllInBatch(final Votes votes) {
-        jpaRepository.deleteAllInBatch(votes.getElements());
+        queryFactory.delete(vote)
+                .where(vote.id.in(votes.getVoteIds()))
+                .execute();
     }
 
     @Override
     public Votes findAllByParticipantId(final Long participantId) {
-        return Votes.from(jpaRepository.findAllById_ParticipantId(participantId));
+        return Votes.from(
+                queryFactory.selectFrom(vote)
+                        .where(vote.id.participantId.eq(participantId))
+                        .fetch()
+        );
     }
 }

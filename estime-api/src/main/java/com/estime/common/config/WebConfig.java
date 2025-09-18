@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@EnableConfigurationProperties(WebConfigProperties.class)
+@EnableConfigurationProperties(ClientOriginProperties.class)
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final WebConfigProperties properties;
+    private final ClientOriginProperties properties;
 
     @Override
     public void addCorsMappings(final CorsRegistry registry) {

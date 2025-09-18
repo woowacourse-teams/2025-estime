@@ -12,7 +12,7 @@ public class TsidConverter implements Converter<String, Tsid> {
     public Tsid convert(final String source) {
         try {
             return Tsid.from(source);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new InternalLogOnlyException("Invalid TSID format", source);
         }
     }

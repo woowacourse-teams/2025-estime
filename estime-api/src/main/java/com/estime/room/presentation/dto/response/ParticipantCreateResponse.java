@@ -8,6 +8,6 @@ public record ParticipantCreateResponse(
         String participantName
 ) {
     public static ParticipantCreateResponse from(final ParticipantCreateOutput output) {
-        return new ParticipantCreateResponse(output.name());
+        return new ParticipantCreateResponse(output.name().getValue());
     }
 }

@@ -1,9 +1,11 @@
 package com.estime.room.presentation;
 
 import com.estime.common.CustomApiResponse;
+import com.estime.room.presentation.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantCreateRequest;
 import com.estime.room.presentation.dto.request.ParticipantVotesUpdateRequest;
 import com.estime.room.presentation.dto.request.RoomCreateRequest;
+import com.estime.room.presentation.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.presentation.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.presentation.dto.response.ParticipantCheckResponse;
 import com.estime.room.presentation.dto.response.ParticipantVotesResponse;
@@ -27,8 +29,14 @@ public interface RoomControllerSpecification {
 
     @Operation(summary = "룸 생성")
     @PostMapping
-    CustomApiResponse<RoomCreateResponse> create(
+    CustomApiResponse<RoomCreateResponse> createRoom(
             @RequestBody RoomCreateRequest request
+    );
+
+    @Operation(summary = "커넥티드 룸 생성")
+    @PostMapping("/connected")
+    CustomApiResponse<ConnectedRoomCreateResponse> createConnectedRoom(
+            @RequestBody ConnectedRoomCreateRequest request
     );
 
     @Operation(summary = "룸 상세 정보 조회")

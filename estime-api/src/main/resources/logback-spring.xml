@@ -5,7 +5,7 @@
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="Console"/>
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="file"/>
         </root>
     </springProfile>
 
@@ -17,10 +17,7 @@
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace
-                    Id]%n%mdc{traceId}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod}
-                    %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n
-                </pattern>
+                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n</pattern>
             </layout>
             <username>🚨DEV ERROR LOGS 🚨</username>
             <tts>false</tts>
@@ -36,7 +33,7 @@
         <root level="INFO">
             <appender-ref ref="ASYNC_DISCORD"/>
             <appender-ref ref="Console"/>
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="File"/>
         </root>
     </springProfile>
 
@@ -48,11 +45,7 @@
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace
-                    Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n###
-                    [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n###
-                    [CloudWatch]%n ${CLOUDWATCH_URL}%n
-                </pattern>
+                <pattern>### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n### [CloudWatch]%n ${CLOUDWATCH_URL}%n</pattern>
             </layout>
             <username>🚨PROD ERROR LOGS 🚨</username>
             <tts>false</tts>
@@ -68,7 +61,7 @@
         <root level="INFO">
             <appender-ref ref="ASYNC_DISCORD"/>
             <appender-ref ref="Console"/>
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="File"/>
         </root>
     </springProfile>
 
@@ -80,13 +73,12 @@
         </encoder>
     </appender>
 
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 공통 파일 로거 -->
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/app/logs/estime-api.log</file>
 
         <encoder>
-            <Pattern>${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}
-                ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} :
-                %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+            <Pattern>${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
             </Pattern>
             <charset>utf8</charset>
         </encoder>

@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jdk-alpine
 
-RUN apk add --no-cache curl
+ENV TZ=Asia/Seoul
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} /app.jar
 

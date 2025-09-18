@@ -1,5 +1,6 @@
 package com.estime.common;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,16 +10,21 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import org.hibernate.annotations.SQLRestriction;
 
 @FieldNameConstants
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 @Getter
+@SQLRestriction("active = true")
 public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
+
+    @Column(name = "active", nullable = false)
+    protected boolean active = true;
 
     // 프록시 객체도 같은 타입 계열로 간주
     @Override
