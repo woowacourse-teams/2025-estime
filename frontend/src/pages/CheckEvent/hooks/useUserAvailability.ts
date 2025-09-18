@@ -1,10 +1,11 @@
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { useToastContext } from '@/shared/contexts/ToastContext';
-import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
+
 import { useRef, useState } from 'react';
 
 import * as Sentry from '@sentry/react';
+import { UserAvailability } from '../types/userAvailability';
 
 const initialUserAvailability = {
   userName: '앙부일구',
@@ -25,7 +26,7 @@ export const useUserAvailability = ({
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
-  const userAvailabilitySubmit = async () => {
+  const userAvailabilitySubmit = async (userAvailability: UserAvailability) => {
     if (isUserSubmitLoading.current) {
       addToast({
         type: 'warning',
@@ -36,7 +37,8 @@ export const useUserAvailability = ({
 
     isUserSubmitLoading.current = true;
     try {
-      const payload = toCreateUserAvailability(userAvailability);
+      const dataToSubmit = userAvailability;
+      const payload = toCreateUserAvailability(dataToSubmit);
       await updateUserAvailableTime(session, payload);
       addToast({
         type: 'success',

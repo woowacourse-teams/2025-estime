@@ -42,12 +42,7 @@ const CheckEventPageContent = () => {
     session,
   });
 
-  const {
-    userAvailability,
-    userAvailabilitySubmit,
-    fetchUserAvailableTime,
-    handlerUserAvailability,
-  } = useUserAvailability({
+  const { userAvailability, userAvailabilitySubmit, fetchUserAvailableTime } = useUserAvailability({
     name,
     session,
   });
@@ -79,12 +74,10 @@ const CheckEventPageContent = () => {
   const switchToViewMode = useCallback(async () => {
     try {
       const currentTimes = getCurrentSelectedTimes();
-      if (!currentTimes) return;
       const updatedUserAvailability = {
         ...userAvailability,
         selectedTimes: currentTimes,
       };
-      handlerUserAvailability(updatedUserAvailability);
       await userAvailabilitySubmit(updatedUserAvailability);
       await fetchRoomStatistics(session);
       setMode('view');
@@ -95,7 +88,6 @@ const CheckEventPageContent = () => {
   }, [
     getCurrentSelectedTimes,
     userAvailability,
-    handlerUserAvailability,
     userAvailabilitySubmit,
     fetchRoomStatistics,
     session,
