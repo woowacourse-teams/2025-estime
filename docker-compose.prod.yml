@@ -17,7 +17,7 @@ services:
     env_file:
       - ./estime-api/.env.prod
     volumes:
-      - ./estime-api/alloy/config.river:/etc/alloy/config-prod.river
+      - ./estime-api/alloy/config-prod.river:/etc/alloy/config-prod.river
       - app-logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-prod.river"

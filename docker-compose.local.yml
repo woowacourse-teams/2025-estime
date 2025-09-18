@@ -21,7 +21,7 @@ services:
     env_file:
       - ./estime-api/.env.local
     volumes:
-      - ./estime-api/alloy/config.river:/etc/alloy/config-local.river
+      - ./estime-api/alloy/config-local.river:/etc/alloy/config-local.river
       - app-logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-local.river"
