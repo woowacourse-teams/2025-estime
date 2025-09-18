@@ -7,6 +7,7 @@ import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 import getBuildMeta from './build/utils/buildMeta.js';
 import InjectVersionConsolePlugin from './build/plugins/InjectVersionConsolePlugin.js';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,18 +59,24 @@ export default {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'public/assets/images/thumbnail.jpg', to: 'thumbnail.jpg' }],
+    }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
       favicon: './src/assets/images/logo.svg',
+      meta: {
+        'og:image': `${process.env.DOMAIN_URL}/thumbnail.jpg`,
+      },
     }),
     new ForkTsCheckerPlugin(),
     new InjectVersionConsolePlugin({
       version: pkg.version,
       commit: COMMIT_HASH,
       builtAt: BUILD_TIME,
-    }),
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
     }),
   ],
 };

@@ -1,5 +1,4 @@
 import { merge } from 'webpack-merge';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import common from './webpack.common.js';
 
 export default merge(common, {
@@ -15,12 +14,7 @@ export default merge(common, {
     ],
   },
 
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-      favicon: './src/assets/images/logo.svg',
-    }),
-  ],
+  plugins: [],
 
   devServer: {
     static: ['./dist', './public'],
