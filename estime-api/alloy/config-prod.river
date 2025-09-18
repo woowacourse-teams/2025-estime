@@ -1,6 +1,6 @@
 loki.write "prod" {
     endpoint {
-        url = "http://" + env("LOKI_URL") + ":3100/loki/api/v1/push"
+        url = "http://" + env("LOKI_URL") + /loki/api/v1/push"
     }
 }
 

@@ -1,6 +1,6 @@
 loki.write "dev" {
     endpoint {
-        url = "http://" + env("LOKI_URL") + ":3101/loki/api/v1/push"
+        url = "http://" + env("LOKI_URL") + /loki/api/v1/push"
     }
 }
 
