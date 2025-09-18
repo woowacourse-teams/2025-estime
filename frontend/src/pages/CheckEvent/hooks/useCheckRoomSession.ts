@@ -7,6 +7,7 @@ import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 import * as Sentry from '@sentry/react';
 // import { useToastContext } from '@/contexts/ToastContext';
 import { useNavigate } from 'react-router';
+import { DateManager } from '@/shared/utils/common/DateManager';
 
 const useCheckRoomSession = () => {
   // const { addToast } = useToastContext();
@@ -45,9 +46,7 @@ const useCheckRoomSession = () => {
     }
   };
 
-  const deadLineDate = new Date(roomInfo.deadline?.date + 'T' + roomInfo.deadline?.time);
-
-  const isExpired = deadLineDate < new Date();
+  const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
   useEffect(() => {
     fetchSession();
