@@ -21,8 +21,8 @@ services:
     ports:
       - "9091:9090"
     volumes:
-      - ./prometheus-dev.yml:/etc/prometheus/prometheus.yml
-      - ./targets-dev.json:/etc/prometheus/targets-dev.json
+      - ./dev/prometheus-dev.yml:/etc/prometheus/prometheus.yml
+      - ./dev/targets-dev.json:/etc/prometheus/targets-dev.json
       - prometheus-dev-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -36,8 +36,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus-prod.yml:/etc/prometheus/prometheus.yml
-      - ./targets-prod.json:/etc/prometheus/targets-prod.json
+      - ./prod/prometheus-prod.yml:/etc/prometheus/prometheus.yml
+      - ./prod/targets-prod.json:/etc/prometheus/targets-prod.json
       - prometheus-prod-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -51,7 +51,7 @@ services:
     ports:
       - "3101:3100"
     volumes:
-      - ./loki-dev-config.yml:/etc/loki/config.yml:ro
+      - ./dev/loki-dev-config.yml:/etc/loki/config.yml:ro
       - loki-dev-data:/loki
     command: "-config.file=/etc/loki/config.yml"
     networks:
@@ -64,7 +64,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./loki-prod-config.yml:/etc/loki/config.yml:ro
+      - ./prod/loki-prod-config.yml:/etc/loki/config.yml:ro
       - loki-prod-data:/loki
     command: "-config.file=/etc/loki/config.yml"
     networks:
