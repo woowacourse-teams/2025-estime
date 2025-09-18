@@ -15,5 +15,22 @@ services:
       timeout: 5s
       retries: 5
 
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    env_file:
+      - ./estime-api/.env.local
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - ./estime-api/alloy/config.river:/etc/alloy/config-local.river
+      - app-logs:/app/logs
+      - alloy-data:/var/lib/alloy
+    command: "run /etc/alloy/config-local.river"
+    restart: unless-stopped
+
 volumes:
   db_data:
+  app-logs:
+  alloy-data:

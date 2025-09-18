@@ -1,0 +1,24 @@
+loki.write "dev" {
+    endpoint {
+        url = "http://" + env("LOKI_URL") + ":3101/loki/api/v1/push"
+    }
+}
+
+loki.source.file "estime_api_logs" {
+    targets = [{ "__path__" = "/app/logs/estime-api.log" }]
+
+    forward_to = [loki.relabel.add_api_labels.receiver]
+}
+
+loki.relabel "add_api_labels" {
+    forward_to = [loki.write.dev.receiver]
+
+    rule {
+        target_label = "job"
+        replacement = "estime-api-dev"
+    }
+    rule {
+        target_label = "app"
+        replacement = "estime-api-dev"
+    }
+}
