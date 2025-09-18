@@ -20,7 +20,7 @@ services:
       - "9090:9090"
     volumes:
       - ./local/prometheus-local.yml:/etc/prometheus/prometheus.yml
-      - ./targets-local.json:/etc/prometheus/targets.json
+      - ./local/targets-local.json:/etc/prometheus/targets.json
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -34,7 +34,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./loki-local.yml:/etc/loki/config.yml:ro
+      - ./local/loki-local.yml:/etc/loki/config.yml:ro
       - loki-data:/loki
     command: "-config.file=/etc/loki/config.yml"
     networks:
