@@ -16,6 +16,11 @@ fi
 read -p "MySQL 포트를 입력하세요 (기본값: 3306): " DB_PORT_INPUT
 DB_PORT="${DB_PORT_INPUT:-3306}" # 입력이 없으면 3306을 기본값으로 사용
 
+if [ "$DB_PORT" -lt 1 ] || [ "$DB_PORT" -gt 65535 ]; then
+    echo "🚨 오류: 포트 번호는 1에서 65535 사이여야 합니다."
+    exit 1
+fi
+
 DB_USER="root"
 DB_NAME="estimedb"
 COMBINED_SQL_FILE="all_in_one.sql"
