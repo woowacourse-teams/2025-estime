@@ -18,11 +18,10 @@ services:
       - ./estime-api/.env.dev
     volumes:
       - ./estime-api/alloy/config-dev.river:/etc/alloy/config-dev.river
-      - app-logs:/app/logs
+      - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-dev.river"
     restart: unless-stopped
 
 volumes:
-  app-logs:
   alloy-data:
