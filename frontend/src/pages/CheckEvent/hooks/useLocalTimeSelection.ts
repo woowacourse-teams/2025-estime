@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
 import { useLockBodyScroll } from '../../../shared/hooks/common/useLockBodyScroll';
 import { useTimeSelectionContext } from '../contexts/TimeSelectionContext';
 
@@ -176,15 +176,21 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     isDraggingRef.current = false;
     resetDragState();
   }, [resetDragState]);
-  return {
-    containerRef,
-    localSelectedTimes,
-    pointerHandlers: {
+
+  const pointerHandlers = useMemo(
+    () => ({
       onPointerDown: handleDragStart,
       onPointerMove: handleDragMove,
       onPointerUp: handleDragEnd,
       onPointerLeave: handleDragLeave,
-    },
+    }),
+    [handleDragEnd, handleDragLeave, handleDragMove, handleDragStart]
+  );
+
+  return {
+    containerRef,
+    localSelectedTimes,
+    pointerHandlers,
   };
 };
 
