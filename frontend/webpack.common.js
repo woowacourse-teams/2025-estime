@@ -46,6 +46,7 @@ export default {
               '@babel/preset-typescript',
               ['@babel/preset-react', { runtime: 'automatic' }],
             ],
+            plugins: ['@emotion'],
           },
         },
       },

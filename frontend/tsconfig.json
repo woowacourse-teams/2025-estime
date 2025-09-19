@@ -36,6 +36,7 @@
 
     // React 17+의 새 JSX 변환 방식 사용
     "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
 
     // 절대 경로 import에 기준이 될 루트
     "baseUrl": ".",
