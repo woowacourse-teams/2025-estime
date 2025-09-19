@@ -71,7 +71,7 @@ const CheckEventPageContent = () => {
     availableDates: roomInfo.availableDateSlots,
   });
   const { getCurrentSelectedTimes } = useTimeSelectionContext();
-  const switchToViewMode = useCallback(async () => {
+  const switchToViewMode = async () => {
     try {
       const currentTimes = getCurrentSelectedTimes();
       const updatedUserAvailability = {
@@ -85,17 +85,9 @@ const CheckEventPageContent = () => {
     } catch (error) {
       handleError(error, 'switchToViewMode');
     }
-  }, [
-    getCurrentSelectedTimes,
-    userAvailability,
-    userAvailabilitySubmit,
-    fetchRoomStatistics,
-    session,
-    pageReset,
-    handleError,
-  ]);
+  };
 
-  const switchToEditMode = useCallback(async () => {
+  const switchToEditMode = async () => {
     if (isLoggedIn) {
       await fetchUserAvailableTime();
       setMode('edit');
@@ -103,17 +95,17 @@ const CheckEventPageContent = () => {
     } else {
       modalHelpers.login.open();
     }
-  }, [isLoggedIn, fetchUserAvailableTime, pageReset, modalHelpers.login]);
+  };
 
-  const handleToggleMode = useCallback(async () => {
+  const handleToggleMode = async () => {
     if (mode === 'edit') {
       await switchToViewMode();
     } else {
       switchToEditMode();
     }
-  }, [mode, switchToViewMode, switchToEditMode]);
+  };
 
-  const handleLoginSuccess = useCallback(async () => {
+  const handleLoginSuccess = async () => {
     try {
       const isDuplicated = await handleLogin();
       if (isDuplicated) {
@@ -128,17 +120,9 @@ const CheckEventPageContent = () => {
     } catch (error) {
       handleError(error, 'handleLoginSuccess');
     }
-  }, [
-    handleLogin,
-    modalHelpers.entryConfirm,
-    modalHelpers.login,
-    fetchUserAvailableTime,
-    handleLoggedIn,
-    pageReset,
-    handleError,
-  ]);
+  };
 
-  const handleContinueWithDuplicated = useCallback(async () => {
+  const handleContinueWithDuplicated = async () => {
     try {
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
@@ -149,43 +133,33 @@ const CheckEventPageContent = () => {
     } catch (error) {
       handleError(error, 'handleContinueWithDuplicated');
     }
-  }, [
-    modalHelpers.entryConfirm,
-    modalHelpers.login,
-    fetchUserAvailableTime,
-    handleLoggedIn,
-    pageReset,
-    handleError,
-  ]);
+  };
 
-  const handleDuplicatedCancel = useCallback(() => {
+  const handleDuplicatedCancel = () => {
     modalHelpers.entryConfirm.close();
     handleLoggedIn.setFalse();
-  }, [modalHelpers.entryConfirm, handleLoggedIn]);
+  };
 
   // 로그인 안했을 때, 토스트 띄우기
-  const handleBeforeEdit = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      if (isLoggedIn) return;
+  const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isLoggedIn) return;
 
-      const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
-      if (!cell) return;
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
+    if (!cell) return;
 
-      addToast({
-        type: 'warning',
-        message: '시간을 등록하려면 "편집하기"를 눌러주세요',
-      });
-    },
-    [isLoggedIn, addToast]
-  );
+    addToast({
+      type: 'warning',
+      message: '시간을 등록하려면 "편집하기"를 눌러주세요',
+    });
+  };
 
-  useSSE(session, handleError, {
-    onVoteChange: async () => {
-      console.log('🔄 SSE vote-changed event 확인... fetch중...');
-      await fetchRoomStatistics(session);
-      console.log('✅ fetch 완료!');
-    },
-  });
+  const onVoteChange = useCallback(async () => {
+    console.log('🔄 SSE vote-changed event 확인... fetch중...');
+    await fetchRoomStatistics(session);
+    console.log('✅ fetch 완료!');
+  }, [fetchRoomStatistics, session]);
+
+  useSSE(session, handleError, { onVoteChange });
 
   return (
     <>
