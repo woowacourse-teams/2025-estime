@@ -35,6 +35,7 @@ jobs:
       URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
       URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
       URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
+      LOKI_URL: localhost:3100
 
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
