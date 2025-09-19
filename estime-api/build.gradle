@@ -36,8 +36,9 @@ dependencies {
     implementation 'com.github.f4b6a3:tsid-creator:5.2.6' // for Tsid generation
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // for monitoring
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
+    implementation "io.micrometer:micrometer-registry-prometheus"
+//    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
+//    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
