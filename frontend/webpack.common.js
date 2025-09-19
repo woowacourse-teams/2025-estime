@@ -23,7 +23,8 @@ export default {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].js',
+    filename: 'js/[name].[contenthash:8].js',
+    chunkFilename: 'js/[name].[contenthash:8].chunk.js',
     publicPath: '/', // SPA 중첩 라우팅을 위한 절대 경로 설정
     clean: true, // 빌드 때 dist 폴더 정리
   },
@@ -46,6 +47,7 @@ export default {
               '@babel/preset-typescript',
               ['@babel/preset-react', { runtime: 'automatic' }],
             ],
+            plugins: ['@emotion'],
           },
         },
       },

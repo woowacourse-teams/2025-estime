@@ -1,11 +1,15 @@
-import CheckEventPage from '@/pages/CheckEvent/CheckEventPage';
-import CreditsPage from '@/pages/common/CreditsPage';
-import Error404Page from '@/pages/common/Error404Page';
-import CreateEventPage from '@/pages/CreateEvent/CreateEventPage';
-import MobileCreateEventPage from '@/pages/CreateEvent/Mobile/MobileCreateEventPage';
 import RootElement from '@/RootElement';
+import { lazy } from 'react';
 
 const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(navigator.userAgent);
+
+const MobileCreateEventPage = lazy(
+  () => import('@/pages/CreateEvent/Mobile/MobileCreateEventPage')
+);
+const CreateEventPage = lazy(() => import('@/pages/CreateEvent/CreateEventPage'));
+const CheckEventPage = lazy(() => import('../pages/CheckEvent/CheckEventPage'));
+const CreditsPage = lazy(() => import('@/pages/common/CreditsPage'));
+const Error404Page = lazy(() => import('@/pages/common/Error404Page'));
 
 const appRoutes = [
   {
