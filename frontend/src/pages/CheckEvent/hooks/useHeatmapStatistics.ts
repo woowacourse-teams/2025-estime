@@ -1,7 +1,7 @@
 import { getRoomStatistics } from '@/apis/room/room';
 import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/shared/contexts/ToastContext';
 
@@ -21,52 +21,57 @@ const useHeatmapStatistics = ({
 
   const [roomStatistics, setRoomStatistics] = useState<Map<string, DateCellInfo>>(new Map());
   const dummyMinValue = 0;
-  const formatRoomStatistics = (
-    statistics: GetRoomStatisticsResponseType
-  ): Map<string, DateCellInfo> => {
-    const { statistic, participantCount } = statistics;
-    const roomStatistics = new Map<string, DateCellInfo>();
-    if (statistic.length === 0 || !participantCount) {
+
+  const formatRoomStatistics = useCallback(
+    (statistics: GetRoomStatisticsResponseType): Map<string, DateCellInfo> => {
+      const { statistic, participantCount } = statistics;
+      const roomStatistics = new Map<string, DateCellInfo>();
+      if (statistic.length === 0 || !participantCount) {
+        return roomStatistics;
+      }
+
+      statistic.map((stat) =>
+        roomStatistics.set(stat.dateTimeSlot, {
+          weight: weightCalculateStrategy(
+            stat.participantNames.length,
+            dummyMinValue,
+            participantCount
+          ),
+          participantNames: stat.participantNames,
+        })
+      );
       return roomStatistics;
-    }
+    },
+    [dummyMinValue, weightCalculateStrategy]
+  );
 
-    statistic.map((stat) =>
-      roomStatistics.set(stat.dateTimeSlot, {
-        weight: weightCalculateStrategy(
-          stat.participantNames.length,
-          dummyMinValue,
-          participantCount
-        ),
-        participantNames: stat.participantNames,
-      })
-    );
-    return roomStatistics;
-  };
-
-  const fetchRoomStatistics = async (sessionId: string) => {
-    if (!sessionId) return;
-    try {
-      const res = await getRoomStatistics(sessionId);
-      const result = formatRoomStatistics(res);
-      setRoomStatistics(result);
-    } catch (err) {
-      const e = err as Error;
-      console.error(e);
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    }
-  };
+  const fetchRoomStatistics = useCallback(
+    async (sessionId: string) => {
+      if (!sessionId) return;
+      try {
+        const res = await getRoomStatistics(sessionId);
+        const result = formatRoomStatistics(res);
+        setRoomStatistics(result);
+      } catch (err) {
+        const e = err as Error;
+        console.error(e);
+        addToast({
+          type: 'error',
+          message: e.message,
+        });
+        Sentry.captureException(err, {
+          level: 'error',
+        });
+      }
+    },
+    [addToast, formatRoomStatistics]
+  );
 
   useEffect(() => {
     if (session) {
       fetchRoomStatistics(session);
     }
-  }, [session]);
+  }, [fetchRoomStatistics, session]);
 
   return { roomStatistics, fetchRoomStatistics };
 };

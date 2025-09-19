@@ -25,7 +25,7 @@ const BasicSettings = ({ title, time, deadline, isValid, shouldShake }: BasicSet
 
   const deadlineHourOptions = useMemo(() => {
     return TimeManager.filterHourOptions(deadline.value);
-  }, [deadline.value.date, deadline.value.time]);
+  }, [deadline.value]);
 
   const {
     timeRange,

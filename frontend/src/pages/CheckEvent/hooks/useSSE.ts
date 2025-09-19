@@ -117,7 +117,7 @@ const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handle
     );
 
     return cleanup;
-  }, [session]);
+  }, [session, handleError, handler]);
 };
 
 export default useSSE;

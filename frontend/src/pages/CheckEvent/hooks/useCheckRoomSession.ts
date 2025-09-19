@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
 import { getRoomInfo } from '@/apis/room/room';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
@@ -17,7 +17,7 @@ const useCheckRoomSession = () => {
     RoomInfo & { roomSession: string; availableTimeSlots: string[] }
   >(initialCheckRoomInfo);
 
-  const fetchSession = async () => {
+  const fetchSession = useCallback(async () => {
     if (!session) return;
 
     try {
@@ -43,11 +43,11 @@ const useCheckRoomSession = () => {
       navigate('/404', { replace: true });
       return;
     }
-  };
+  }, [session, navigate]);
 
   useEffect(() => {
     fetchSession();
-  }, [session]);
+  }, [fetchSession]);
 
   return { roomInfo, session };
 };
