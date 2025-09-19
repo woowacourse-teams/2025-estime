@@ -18,12 +18,3 @@ spring:
 logging:
   discord:
     webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
-
-management:
-  metrics:
-    export:
-      cloudwatch:
-        enabled: true
-        namespace: "EC2/estime-api/prod"
-        region: ap-northeast-2
-        url: ${CLOUDWATCH_URL}
