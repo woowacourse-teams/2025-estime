@@ -25,7 +25,7 @@ import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
-import useAnimationEnd from './hooks/useTransitionEnd';
+import useAnimationEnd from './hooks/useAnimationEnd';
 
 const CheckEventPage = () => {
   const theme = useTheme();
