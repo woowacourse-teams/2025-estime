@@ -25,22 +25,20 @@ const useHeatmapStatistics = ({
   const formatRoomStatistics = useCallback(
     (statistics: GetRoomStatisticsResponseType): Map<string, DateCellInfo> => {
       const { statistic, participantCount } = statistics;
-      const roomStatistics = new Map<string, DateCellInfo>();
-      if (statistic.length === 0 || !participantCount) {
-        return roomStatistics;
-      }
+      const result = new Map<string, DateCellInfo>();
+      if (statistic.length === 0 || !participantCount) return result;
 
-      statistic.map((stat) =>
-        roomStatistics.set(stat.dateTimeSlot, {
+      for (const stat of statistic) {
+        result.set(stat.dateTimeSlot, {
           weight: weightCalculateStrategy(
             stat.participantNames.length,
             dummyMinValue,
             participantCount
           ),
           participantNames: stat.participantNames,
-        })
-      );
-      return roomStatistics;
+        });
+      }
+      return result;
     },
     [dummyMinValue, weightCalculateStrategy]
   );
