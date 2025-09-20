@@ -25,6 +25,7 @@ import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
+import useAnimationEnd from './hooks/useTransitionEnd';
 
 const CheckEventPage = () => {
   const theme = useTheme();
@@ -63,6 +64,7 @@ const CheckEventPage = () => {
     isRoomSessionExist,
   });
 
+  const { isAnimating, ref: flipCardRef, startAnimation: startFlip } = useAnimationEnd();
 
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
@@ -91,6 +93,7 @@ const CheckEventPage = () => {
 
   const handleToggleMode = async () => {
     if (mode === 'edit') {
+      startFlip();
       await switchToViewMode();
     } else {
       switchToEditMode();
@@ -184,7 +187,7 @@ const CheckEventPage = () => {
             roomSession={roomInfo.roomSession}
             openCopyModal={modalHelpers.copyLink.open}
           />
-          <S.FlipCard isFlipped={mode !== 'view'}>
+          <S.FlipCard isFlipped={mode !== 'view'} ref={flipCardRef}>
             {/* view 모드 */}
             <S.FrontFace isFlipped={mode !== 'view'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
