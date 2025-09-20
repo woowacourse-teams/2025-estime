@@ -231,7 +231,7 @@ const CheckEventPage = () => {
                     name={userName.value}
                     mode="edit"
                     onToggleEditMode={handleToggleMode}
-                    isLoading={isUserAvailabilityLoading}
+                    isLoading={isUserAvailabilityLoading || isAnimating}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
