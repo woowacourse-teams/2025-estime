@@ -63,7 +63,7 @@ const TimeTableHeader = ({
 
       <Button color="primary" onClick={onToggleEditMode} disabled={isLoading} size="small">
         <Text variant="button" color="text">
-          {presets.cta}
+          {isLoading ? '저장 중...' : presets.cta}
         </Text>
       </Button>
     </S.Container>

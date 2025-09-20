@@ -30,24 +30,39 @@ const CheckEventPage = () => {
   const theme = useTheme();
   const { addToast } = useToastContext();
 
-  const { roomInfo, session } = useCheckRoomSession();
+  const { roomInfo, session, isRoomSessionExist } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
 
-  const { handleLogin, userData, handleUserData, name, isLoggedIn, handleLoggedIn } = useUserLogin({
+  const {
+    handleLogin,
+    userData,
+    handleUserData,
+    name,
+    isLoggedIn,
+    handleLoggedIn,
+    isUserLoginLoading,
+  } = useUserLogin({
     session,
   });
 
-  const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
-    useUserAvailability({
-      name,
-      session,
-    });
+  const {
+    userName,
+    selectedTimes,
+    userAvailabilitySubmit,
+    fetchUserAvailableTime,
+    isUserAvailabilityLoading,
+  } = useUserAvailability({
+    name,
+    session,
+  });
 
   const { roomStatistics, fetchRoomStatistics } = useHeatmapStatistics({
     session,
     weightCalculateStrategy,
+    isRoomSessionExist,
   });
+
 
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
@@ -152,6 +167,7 @@ const CheckEventPage = () => {
       console.log('✅ fetch 완료!');
     },
   });
+
   return (
     <>
       <Wrapper
@@ -212,6 +228,7 @@ const CheckEventPage = () => {
                     name={userName.value}
                     mode="edit"
                     onToggleEditMode={handleToggleMode}
+                    isLoading={isUserAvailabilityLoading}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
@@ -246,6 +263,7 @@ const CheckEventPage = () => {
         handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
+        isUserLoginLoading={isUserLoginLoading || isUserAvailabilityLoading}
       />
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
