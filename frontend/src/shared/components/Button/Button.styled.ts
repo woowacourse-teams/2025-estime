@@ -22,19 +22,24 @@ export const Container = styled.button<{
   }};
   height: 3rem;
   border-radius: var(--radius-4);
-  border: 1px solid ${({ theme, color }) => theme.colors[color]};
+  border: 1px solid
+    ${({ theme, color, disabled }) => (disabled ? theme.colors.gray20 : theme.colors[color])};
 
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: var(--gap-3);
-  background-color: ${({ theme, selected, color }) =>
-    selected ? theme.colors[color] : theme.colors.background};
+  background-color: ${({ theme, selected, color, disabled }) => {
+    if (disabled) return theme.colors.gray20;
+    if (selected) return theme.colors[color];
+    return theme.colors.background;
+  }};
 
   &:hover {
-    ${({ selected, color, theme }) =>
+    ${({ selected, color, theme, disabled }) =>
       !selected &&
+      !disabled &&
       `background-color: ${color === 'primary' ? theme.colors.plum30 : theme.colors.gray10};
       `}
   }
