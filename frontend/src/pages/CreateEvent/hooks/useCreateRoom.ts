@@ -2,11 +2,10 @@ import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialCreateRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
-import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
+import useFetch from '@/shared/hooks/common/useFetch';
 
 interface checkedNotification {
   created: boolean;
@@ -15,8 +14,7 @@ interface checkedNotification {
 }
 
 export const useCreateRoom = () => {
-  const { addToast } = useToastContext();
-  const submittingRef = useRef(false);
+  const { isLoading, runFetch } = useFetch();
 
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { time: { startTime: string; endTime: string } }
@@ -75,33 +73,26 @@ export const useCreateRoom = () => {
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
   const roomInfoSubmit = async () => {
-    if (submittingRef.current) return;
-    submittingRef.current = true;
-    try {
-      const payload = toCreateRoomInfo(roomInfo);
-      if (platformType && channelId) {
-        const response = await createChannelRoom({
-          ...payload,
-          platformType: platformType as 'DISCORD' | 'SLACK',
-          channelId,
-          notification: checkedNotification,
-        });
-        return response.session;
-      }
-      const response = await createRoom(payload);
-      return response.session;
-    } catch (err) {
-      const e = err as Error;
-      addToast({
-        type: 'error',
-        message: e.message,
+    const payload = toCreateRoomInfo(roomInfo);
+    if (platformType && channelId) {
+      const response = await runFetch({
+        context: 'roomInfoSubmit',
+        requestFn: () =>
+          createChannelRoom({
+            ...payload,
+            platformType: platformType as 'DISCORD' | 'SLACK',
+            channelId,
+            notification: checkedNotification,
+          }),
       });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    } finally {
-      submittingRef.current = false;
+      return response?.session;
     }
+
+    const response = await runFetch({
+      context: 'roomInfoSubmit',
+      requestFn: () => createRoom(payload),
+    });
+    return response?.session;
   };
 
   return {
@@ -114,6 +105,7 @@ export const useCreateRoom = () => {
     isCalendarReady,
     isBasicReady,
     roomInfoSubmit,
+    isCreateRoomLoading: isLoading,
   };
 };
 

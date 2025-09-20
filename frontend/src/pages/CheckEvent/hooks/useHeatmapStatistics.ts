@@ -2,8 +2,7 @@ import { getRoomStatistics } from '@/apis/room/room';
 import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { useEffect, useState } from 'react';
-import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/shared/contexts/ToastContext';
+import useFetch from '@/shared/hooks/common/useFetch';
 
 export interface DateCellInfo {
   weight: number;
@@ -13,11 +12,13 @@ export interface DateCellInfo {
 const useHeatmapStatistics = ({
   session,
   weightCalculateStrategy,
+  isRoomSessionExist,
 }: {
   session: string;
   weightCalculateStrategy: WeightCalculateStrategy;
+  isRoomSessionExist: boolean;
 }) => {
-  const { addToast } = useToastContext();
+  const { runFetch } = useFetch();
 
   const [roomStatistics, setRoomStatistics] = useState<Map<string, DateCellInfo>>(new Map());
   const dummyMinValue = 0;
@@ -44,29 +45,23 @@ const useHeatmapStatistics = ({
   };
 
   const fetchRoomStatistics = async (sessionId: string) => {
-    if (!sessionId) return;
-    try {
-      const res = await getRoomStatistics(sessionId);
-      const result = formatRoomStatistics(res);
-      setRoomStatistics(result);
-    } catch (err) {
-      const e = err as Error;
-      console.error(e);
-      addToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    }
+    if (!sessionId || !isRoomSessionExist) return;
+
+    const response = await runFetch({
+      context: 'fetchRoomStatistics',
+      requestFn: () => getRoomStatistics(sessionId),
+    });
+
+    if (response === undefined) return;
+    const result = formatRoomStatistics(response);
+    setRoomStatistics(result);
   };
 
   useEffect(() => {
     if (session) {
       fetchRoomStatistics(session);
     }
-  }, [session]);
+  }, [session, isRoomSessionExist]);
 
   return { roomStatistics, fetchRoomStatistics };
 };
