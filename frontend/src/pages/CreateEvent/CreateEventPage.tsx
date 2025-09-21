@@ -15,6 +15,7 @@ import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
 
 const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
+  const [isRouting, setIsRouting] = useState(false);
   const showValidation = useRef(false);
   const navigate = useNavigate();
   const { addToast } = useToastContext();
@@ -71,6 +72,7 @@ const CreateEventPage = () => {
   //  실제 제출
   const submitAndNavigate = async () => {
     const session = await roomInfoSubmit();
+    setIsRouting(true);
     if (session) onSubmitSuccess(session);
   };
 
@@ -124,10 +126,10 @@ const CreateEventPage = () => {
                 size="small"
                 onClick={handleCreateRoom}
                 data-ga-id="create-event-button"
-                disabled={isCreateRoomLoading}
+                disabled={isCreateRoomLoading || isRouting}
               >
                 <Text variant="button" color="background">
-                  {isCreateRoomLoading ? '생성 중...' : '방 만들기'}
+                  {isCreateRoomLoading || isRouting ? '생성 중...' : '방 만들기'}
                 </Text>
               </Button>
             </Flex>
