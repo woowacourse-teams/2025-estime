@@ -15,7 +15,10 @@ import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
 
 const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
-  const [isRouting, setIsRouting] = useState(false);
+
+  const isRoutingRef = useRef(false);
+  let isRouting = isRoutingRef.current;
+
   const showValidation = useRef(false);
   const navigate = useNavigate();
   const { addToast } = useToastContext();
@@ -72,7 +75,7 @@ const CreateEventPage = () => {
   //  실제 제출
   const submitAndNavigate = async () => {
     const session = await roomInfoSubmit();
-    setIsRouting(true);
+    isRoutingRef.current = true;
     if (session) onSubmitSuccess(session);
   };
 
