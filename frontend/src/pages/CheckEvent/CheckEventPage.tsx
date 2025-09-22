@@ -4,7 +4,7 @@ import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHe
 import { useState } from 'react';
 import { EntryConfirmModal } from '@/pages/CheckEvent/components/EntryConfirmModal';
 
-import useHandleError from '@/shared/hooks/common/useCreateError';
+import useHandleError from '@/shared/hooks/common/useHandleError';
 import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
 
@@ -16,9 +16,9 @@ import * as S from './CheckEventPage.styled';
 import AvailabilityDisplay from './components/AvailabilityDisplay/AvailabilityDisplay';
 import HeatmapDisplay from './components/HeatmapDisplay/HeatmapDisplay';
 import { useToastContext } from '@/shared/contexts/ToastContext';
-import { useTimeSelectionContext } from './contexts/TimeSelectionContext';
+import { TimeSelectionProvider, useTimeSelectionContext } from './contexts/TimeSelectionContext';
 
-const CheckEventPage = () => {
+const CheckEventPageContent = () => {
   const { addToast } = useToastContext();
 
   const { modalHelpers } = useModalControl();
@@ -158,6 +158,14 @@ const CheckEventPage = () => {
         <CopyLinkModal sessionId={session} />
       </Modal>
     </>
+  );
+};
+
+const CheckEventPage = () => {
+  return (
+    <TimeSelectionProvider>
+      <CheckEventPageContent />
+    </TimeSelectionProvider>
   );
 };
 

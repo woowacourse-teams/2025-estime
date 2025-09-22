@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { HandleErrorReturn } from '../../../shared/hooks/common/useCreateError';
+import type { HandleErrorReturn } from '../../../shared/hooks/common/useHandleError';
 
 interface Handlers {
   onVoteChange: () => Promise<void>;

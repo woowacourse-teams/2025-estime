@@ -13,6 +13,7 @@ import useHeatmapStatistics from '../../hooks/useHeatmapStatistics';
 import { weightCalculateStrategy } from '../../utils/getWeight';
 import { useCallback, useMemo } from 'react';
 import useSSE from '../../hooks/useSSE';
+import useHandleError from '@/shared/hooks/common/useHandleError';
 
 interface HeatmapDisplayProps {
   mode: 'view' | 'edit';
@@ -29,6 +30,7 @@ const HeatmapDisplay = ({
   session,
 }: HeatmapDisplayProps) => {
   const theme = useTheme();
+  const handleError = useHandleError();
   const { refs, pagination, currentPageDates } = useTimeTablePagination({
     availableDates: roomInfo.availableDateSlots,
   });
@@ -91,6 +93,3 @@ const HeatmapDisplay = ({
 };
 
 export default HeatmapDisplay;
-function handleError(error: unknown, context: string): void {
-  throw new Error('Function not implemented.');
-}
