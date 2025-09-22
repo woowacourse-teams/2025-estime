@@ -5,8 +5,6 @@ on:
     branches:
       - fe/dev
       - fe/prod
-    paths:
-      - "frontend/**"
 
 permissions:
   contents: read
