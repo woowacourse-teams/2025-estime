@@ -1,8 +1,9 @@
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { useToastContext } from '@/shared/contexts/ToastContext';
-import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
-import { useRef, useState } from 'react';
+
+import { useRef, useState, useCallback, useEffect } from 'react';
+
 import * as Sentry from '@sentry/react';
 
 const initialUserAvailability = {
@@ -17,6 +18,10 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
+  useEffect(() => {
+    setUserAvailability({ userName: name, selectedTimes: new Set<string>() });
+  }, [name]);
+
   const { addToast } = useToastContext();
   const isUserSubmitLoading = useRef(false);
   const isFetchUserAvailableTimeLoading = useRef(false);

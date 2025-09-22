@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 // import { useColumnsPerPage } from './useColumnPerPage';
 import usePagination from '../../../shared/hooks/Pagination/usePagination';
 
@@ -41,17 +41,30 @@ const useTimeTablePagination = ({ availableDates }: TimeTablePaginationProps) =>
 
   const currentPageDates = new Set(Array.from(availableDates).slice(startIndex, endIndex));
 
+  const pagination = useMemo(
+    () => ({
+      totalPages,
+      page,
+      canPagePrev,
+      canPageNext,
+      handlePageNext: pageNext,
+      handlePagePrev: pagePrev,
+      pageReset,
+    }),
+    [totalPages, page, canPagePrev, canPageNext, pageNext, pagePrev, pageReset]
+  );
+  const refs = useMemo(
+    () => ({
+      timeTableContainerRef,
+      timeColumnRef,
+    }),
+    []
+  );
+
   return {
-    totalPages,
-    page,
-    timeTableContainerRef,
-    timeColumnRef,
+    refs,
+    pagination,
     currentPageDates,
-    handlePageNext: pageNext,
-    handlePagePrev: pagePrev,
-    canPagePrev,
-    canPageNext,
-    pageReset,
   };
 };
 
