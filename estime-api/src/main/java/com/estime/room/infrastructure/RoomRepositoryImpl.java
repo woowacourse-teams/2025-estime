@@ -25,6 +25,7 @@ public class RoomRepositoryImpl implements RoomRepository {
         return roomJpaRepository.save(room);
     }
 
+    @Override
     public Optional<Room> findBySession(final RoomSession session) {
         return Optional.ofNullable(
                 queryFactory.selectFrom(room)
