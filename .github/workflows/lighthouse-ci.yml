@@ -41,7 +41,7 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           lhci autorun \
-            --collect.staticDistDir=./build \
+            --collect.staticDistDir=./dist \
             --collect.numberOfRuns=1 \
             --upload.target=filesystem \
             --upload.outputDir=./lhci_reports || echo "Lighthouse CI failed"
