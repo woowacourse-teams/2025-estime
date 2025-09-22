@@ -1,38 +1,42 @@
 package com.estime.common.sse.application;
 
-import com.estime.common.sse.domain.SseEmitters;
+import com.estime.common.sse.domain.SseConnection;
+import com.estime.common.sse.domain.SseConnectionManager;
 import com.estime.common.sse.presentation.dto.SseResponse;
-import com.github.f4b6a3.tsid.Tsid;
-import com.github.f4b6a3.tsid.TsidCreator;
-import java.io.IOException;
-import java.util.List;
+import com.estime.room.domain.vo.RoomSession;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class SseSender {
 
-    private final SseEmitters sseEmitters;
+    private final SseConnectionManager sseConnectionManager;
 
-    public void broadcast(final Tsid roomSession, final String message) {
-        final List<SseEmitter> emitters = sseEmitters.findAllByRoomSession(roomSession);
-        for (final SseEmitter emitter : emitters) {
-            try {
-                emitter.send(
-                        SseEmitter.event()
-                                .name(message)
-                                .id(TsidCreator.getTsid().toString())
-                                .data(SseResponse.from("ok"))
-                );
-            } catch (final IOException e) {
-                log.debug("Failed to send SSE message, connection likely closed for roomSession {}: {}",
-                        roomSession, e.getMessage());
-                emitter.complete();
-            }
-        }
+    public void send(
+            final SseConnection connection,
+            final String message
+    ) {
+        connection.send(buildSseEvent(message), sseConnectionManager::delete);
+    }
+
+    public void broadcast(
+            final RoomSession session,
+            final String message
+    ) {
+        sseConnectionManager.findAll(session)
+                .forEach(connection -> send(connection, message));
+    }
+
+    private SseEventBuilder buildSseEvent(final String message) {
+        return SseEmitter.event()
+                .name(message)
+                .id(UUID.randomUUID().toString())
+                .data(SseResponse.from("ok"));
     }
 }
