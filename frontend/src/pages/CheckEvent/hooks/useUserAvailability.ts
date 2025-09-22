@@ -27,7 +27,7 @@ export const useUserAvailability = ({
     useState<UserAvailability>(initialUserAvailability);
 
   const userAvailabilitySubmit = useCallback(
-    async (userAvailability: UserAvailability) => {
+    async (updatedUserAvailability: UserAvailability) => {
       if (isUserSubmitLoading.current) {
         addToast({
           type: 'warning',
@@ -38,8 +38,7 @@ export const useUserAvailability = ({
 
       isUserSubmitLoading.current = true;
       try {
-        const dataToSubmit = userAvailability;
-        const payload = toCreateUserAvailability(dataToSubmit);
+        const payload = toCreateUserAvailability(updatedUserAvailability);
         await updateUserAvailableTime(session, payload);
         addToast({
           type: 'success',
