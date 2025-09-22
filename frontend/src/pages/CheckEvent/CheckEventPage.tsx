@@ -1,53 +1,34 @@
 import LoginModal from '@/pages/CheckEvent/components/LoginModal';
-import Timetable from '@/pages/CheckEvent/components/Timetable';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
-import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
 import { useState } from 'react';
-import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
-import Heatmap from '@/pages/CheckEvent/components/Heatmap';
-import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { EntryConfirmModal } from '@/pages/CheckEvent/components/EntryConfirmModal';
+
 import useHandleError from '@/shared/hooks/common/useCreateError';
 import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
-import { useTheme } from '@emotion/react';
-import useSSE from '@/pages/CheckEvent/hooks/useSSE';
-import { useToastContext } from '@/shared/contexts/ToastContext';
-import PageArrowButton from '@/shared/components/Button/PageArrowButton';
-import IChevronLeft from '@/assets/icons/IChevronLeft';
-import IChevronRight from '@/assets/icons/IChevronRight';
-import Text from '@/shared/components/Text';
-import useHeatmapStatistics from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
+
 import useModalControl from '@/shared/hooks/Modal/useModalControl';
 import useUserLogin from './hooks/useUserLogin';
-import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
+import AvailabilityDisplay from './components/AvailabilityDisplay/AvailabilityDisplay';
+import HeatmapDisplay from './components/HeatmapDisplay/HeatmapDisplay';
+import { useToastContext } from '@/shared/contexts/ToastContext';
+import { useTimeSelectionContext } from './contexts/TimeSelectionContext';
 
 const CheckEventPage = () => {
-  const theme = useTheme();
   const { addToast } = useToastContext();
 
-  const { roomInfo, session } = useCheckRoomSession();
-
   const { modalHelpers } = useModalControl();
+
+  const { roomInfo, session } = useCheckRoomSession();
 
   const { handleLogin, userData, handleUserData, name, isLoggedIn, handleLoggedIn } = useUserLogin({
     session,
   });
-
-  const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
-    useUserAvailability({
-      name,
-      session,
-    });
-
-  const { roomStatistics, fetchRoomStatistics } = useHeatmapStatistics({
-    session,
-    weightCalculateStrategy,
-  });
+  const { getFetchUserAvailableTime } = useTimeSelectionContext();
 
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
@@ -55,10 +36,8 @@ const CheckEventPage = () => {
 
   const switchToViewMode = async () => {
     try {
-      await userAvailabilitySubmit();
-      await fetchRoomStatistics(session);
+      await getFetchUserAvailableTime();
       setMode('view');
-      pageReset();
     } catch (error) {
       handleError(error, 'switchToViewMode');
     }
@@ -66,9 +45,7 @@ const CheckEventPage = () => {
 
   const switchToEditMode = async () => {
     if (isLoggedIn) {
-      await fetchUserAvailableTime();
       setMode('edit');
-      pageReset();
     } else {
       modalHelpers.login.open();
     }
@@ -89,11 +66,9 @@ const CheckEventPage = () => {
         modalHelpers.entryConfirm.open();
         return;
       }
-      await fetchUserAvailableTime();
       modalHelpers.login.close();
       handleLoggedIn.setTrue();
       setMode('edit');
-      pageReset();
     } catch (error) {
       handleError(error, 'handleLoginSuccess');
     }
@@ -101,31 +76,15 @@ const CheckEventPage = () => {
 
   const handleContinueWithDuplicated = async () => {
     try {
+      await getFetchUserAvailableTime();
       modalHelpers.entryConfirm.close();
       modalHelpers.login.close();
-      await fetchUserAvailableTime();
       handleLoggedIn.setTrue();
       setMode('edit');
-      pageReset();
     } catch (error) {
       handleError(error, 'handleContinueWithDuplicated');
     }
   };
-
-  const {
-    totalPages,
-    page,
-    timeTableContainerRef,
-    timeColumnRef,
-    currentPageDates,
-    canPagePrev,
-    canPageNext,
-    handlePagePrev,
-    handlePageNext,
-    pageReset,
-  } = useTimeTablePagination({
-    availableDates: roomInfo.availableDateSlots,
-  });
 
   const handleDuplicatedCancel = () => {
     modalHelpers.entryConfirm.close();
@@ -145,13 +104,6 @@ const CheckEventPage = () => {
     });
   };
 
-  useSSE(session, handleError, {
-    onVoteChange: async () => {
-      console.log('🔄 SSE vote-changed event 확인... fetch중...');
-      await fetchRoomStatistics(session);
-      console.log('✅ fetch 완료!');
-    },
-  });
   return (
     <>
       <Wrapper
@@ -169,74 +121,20 @@ const CheckEventPage = () => {
             openCopyModal={modalHelpers.copyLink.open}
           />
           <S.FlipCard isFlipped={mode !== 'view'}>
-            {/* view 모드 */}
-            <S.FrontFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer ref={timeTableContainerRef}>
-                <Flex direction="column" gap="var(--gap-8)">
-                  <TimeTableHeader
-                    name={roomInfo.title}
-                    mode="view"
-                    onToggleEditMode={handleToggleMode}
-                  />
-                  <Flex direction="column" gap="var(--gap-4)">
-                    {theme.isMobile && (
-                      <Flex gap="var(--gap-3)" justify="flex-end" align="center">
-                        <PageArrowButton onClick={handlePagePrev} disabled={!canPagePrev}>
-                          <IChevronLeft width={20} height={20} />
-                        </PageArrowButton>
-                        <Text variant="h4">
-                          {page} / {totalPages}
-                        </Text>
-                        <PageArrowButton onClick={handlePageNext} disabled={!canPageNext}>
-                          <IChevronRight width={20} height={20} />
-                        </PageArrowButton>
-                      </Flex>
-                    )}
-                    <Heatmap
-                      timeColumnRef={timeColumnRef}
-                      dateTimeSlots={roomInfo.availableTimeSlots}
-                      availableDates={currentPageDates}
-                      roomStatistics={roomStatistics}
-                      handleBeforeEdit={handleBeforeEdit}
-                    />
-                  </Flex>
-                </Flex>
-              </S.TimeTableContainer>
-            </S.FrontFace>
-
-            {/* edit 모드 */}
-            <S.BackFace isFlipped={mode !== 'view'}>
-              <S.TimeTableContainer ref={timeTableContainerRef}>
-                <Flex direction="column" gap="var(--gap-8)">
-                  <TimeTableHeader
-                    name={userName.value}
-                    mode="edit"
-                    onToggleEditMode={handleToggleMode}
-                  />
-                  <Flex direction="column" gap="var(--gap-4)">
-                    {theme.isMobile && (
-                      <Flex gap="var(--gap-3)" justify="flex-end" align="center">
-                        <PageArrowButton onClick={handlePagePrev} disabled={!canPagePrev}>
-                          <IChevronLeft width={20} height={20} />
-                        </PageArrowButton>
-                        <Text variant="h4">
-                          {page} / {totalPages}
-                        </Text>
-                        <PageArrowButton onClick={handlePageNext} disabled={!canPageNext}>
-                          <IChevronRight width={20} height={20} />
-                        </PageArrowButton>
-                      </Flex>
-                    )}
-                    <Timetable
-                      timeColumnRef={timeColumnRef}
-                      dateTimeSlots={roomInfo.availableTimeSlots}
-                      availableDates={currentPageDates}
-                      selectedTimes={selectedTimes}
-                    />
-                  </Flex>
-                </Flex>
-              </S.TimeTableContainer>
-            </S.BackFace>
+            <HeatmapDisplay
+              mode={mode}
+              roomInfo={roomInfo}
+              handleToggleMode={handleToggleMode}
+              handleBeforeEdit={handleBeforeEdit}
+              session={session}
+            />
+            <AvailabilityDisplay
+              name={name}
+              mode={mode}
+              roomInfo={roomInfo}
+              handleToggleMode={handleToggleMode}
+              session={session}
+            />
           </S.FlipCard>
         </Flex>
       </Wrapper>
