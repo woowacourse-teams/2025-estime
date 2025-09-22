@@ -1,7 +1,6 @@
 package com.estime.common.sse.application;
 
 import com.estime.common.sse.domain.SseConnection;
-import com.estime.common.sse.domain.SseConnectionManager;
 import com.estime.common.sse.presentation.dto.SseResponse;
 import com.estime.room.domain.vo.RoomSession;
 import java.util.UUID;

@@ -1,5 +1,6 @@
-package com.estime.common.sse.domain;
+package com.estime.common.sse.application;
 
+import com.estime.common.sse.domain.SseConnection;
 import com.estime.room.domain.vo.RoomSession;
 import java.util.List;
 import java.util.Map;
