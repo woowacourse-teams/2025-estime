@@ -53,7 +53,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const results = JSON.parse(fs.readFileSync("./lhci_reports/manifest.json"));
+            const results = JSON.parse(fs.readFileSync("./frontend/lhci_reports/manifest.json"));
             const result = results[0]; // ✅ 첫 번째 결과만 사용
 
             const details = JSON.parse(fs.readFileSync(result.jsonPath));
