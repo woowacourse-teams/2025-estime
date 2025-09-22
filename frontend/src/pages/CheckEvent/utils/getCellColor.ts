@@ -1,28 +1,9 @@
 import { Theme } from '../../../styles/theme';
 
-interface GetHeaderCellBackgroundColorParams {
-  selectedTimes: Set<string>;
-  date: string;
-  timeText: string;
-  theme: Theme;
-}
 interface GetHeatMapCellBackgroundColorParams {
   theme: Theme;
   weight: number;
 }
-
-export const getHeaderCellBackgroundColor = ({
-  selectedTimes,
-  date,
-  timeText,
-  theme,
-}: GetHeaderCellBackgroundColorParams) => {
-  if (selectedTimes.has(`${date}T${timeText}`)) {
-    return theme.colors.primary;
-  }
-
-  return theme.colors.gray10;
-};
 
 export const getHeatMapCellBackgroundColor = ({
   theme,
