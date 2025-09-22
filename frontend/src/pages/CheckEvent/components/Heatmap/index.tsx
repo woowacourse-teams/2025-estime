@@ -16,7 +16,7 @@ interface HeatmapProps {
   dateTimeSlots: string[];
   availableDates: Set<string>;
   roomStatistics: Map<string, DateCellInfo>;
-  handleBeforeEdit?: (e: React.PointerEvent<HTMLDivElement>) => void;
+  handleBeforeEdit: (e: React.PointerEvent<HTMLDivElement>) => void;
 }
 const Heatmap = ({
   timeColumnRef,

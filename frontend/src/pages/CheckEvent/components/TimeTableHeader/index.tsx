@@ -38,6 +38,7 @@ interface TimeTableHeaderProps extends ComponentProps<'header'> {
   mode?: HeaderMode;
   onToggleEditMode: () => void;
   isLoading?: boolean;
+  handleBeforeToggle: () => void;
 }
 
 const TimeTableHeader = ({
@@ -45,10 +46,16 @@ const TimeTableHeader = ({
   mode = 'view',
   onToggleEditMode,
   isLoading,
+  handleBeforeToggle,
   ...props
 }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
   const theme = useTheme();
+
+  const handleToggleEditMode = () => {
+    handleBeforeToggle();
+    onToggleEditMode();
+  };
 
   return (
     <S.Container {...props}>
@@ -61,7 +68,7 @@ const TimeTableHeader = ({
         </Text>
       </Flex>
 
-      <Button color="primary" onClick={onToggleEditMode} disabled={isLoading} size="small">
+      <Button color="primary" onClick={handleToggleEditMode} disabled={isLoading} size="small">
         <Text variant="button" color="text">
           {presets.cta}
         </Text>
