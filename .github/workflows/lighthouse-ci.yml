@@ -67,7 +67,7 @@ jobs:
             const comment = [
               `## ⚡️ Lighthouse Report`,
               `| Category | Score |`,
-              `| --- | --- | --- |`,
+              `| --- | --- |`,
               `| ${icon(summary.performance)} Performance (성능) | ${summary.performance} |`,
               `| ${icon(summary.accessibility)} Accessibility (접근성) | ${summary.accessibility} |`,
               `| ${icon(summary['best-practices'])} Best Practices (모범 사례) | ${summary['best-practices']} |`,
@@ -77,7 +77,7 @@ jobs:
             const detail = [
               `### 📊 Performance Details (성능 세부 지표)`,
               `| Metric (지표)) | Value |`,
-              `| --- | --- | --- |`,
+              `| --- | --- |`,
               `| ${icon(audits["first-contentful-paint"].score*100)} First Contentful Paint (최초 콘텐츠 표시) | ${audits["first-contentful-paint"].displayValue} |`,
               `| ${icon(audits["largest-contentful-paint"].score*100)} Largest Contentful Paint (최대 콘텐츠 표시) | ${audits["largest-contentful-paint"].displayValue} |`,
               `| ${icon(audits["total-blocking-time"].score*100)} Total Blocking Time (총 차단 시간) | ${audits["total-blocking-time"].displayValue} |`,
