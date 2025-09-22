@@ -76,18 +76,9 @@ export const useUserAvailability = ({
     isFetchUserAvailableTimeLoading.current = true;
     try {
       const userAvailableTimeInfo = await getUserAvailableTime(session, name);
-      const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-      setUserAvailability((prev) => ({
-        ...prev,
-        userName: name,
-      }));
-      if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
-        const selectedTimesResponse = new Set(dateTimeSlotsResponse);
-        setUserAvailability((prev) => ({
-          ...prev,
-          selectedTimes: selectedTimesResponse,
-        }));
-      }
+      if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
+      const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
+      setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
     } catch (err) {
       const e = err as Error;
       addToast({
