@@ -2,12 +2,12 @@ import Flex from '@/shared/layout/Flex';
 import * as S from './Tooltip.styled';
 import Text from '@/shared/components/Text';
 import IPerson from '@/assets/icons/IPerson';
-import { useTooltipData } from '../../hooks/useTooltipData';
 import { createPortal } from 'react-dom';
 import { useRoomStatisticsContext } from '../../provider/RoomStatisticsProvider';
 import { memo } from 'react';
 import { getHeatMapCellBackgroundColor } from '../../utils/getCellColor';
 import { useTheme } from '@emotion/react';
+import getCellInfo from '../../utils/getCellInfo';
 
 interface TooltipProps {
   currentCellId: string;
@@ -33,10 +33,10 @@ ParticipantItem.displayName = 'ParticipantItem';
 const Tooltip = ({ currentCellId, position, visible }: TooltipProps) => {
   const theme = useTheme();
   const { roomStatistics } = useRoomStatisticsContext();
-  const { currentTime, nextTime, participantList } = useTooltipData({
+  const { currentTime, nextTime, participantList } = getCellInfo(
     currentCellId,
     roomStatistics,
-  });
+  );
 
   if (!participantList || participantList.length === 0) {
     return null;
