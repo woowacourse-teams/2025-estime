@@ -6,7 +6,6 @@ import { useState } from 'react';
 import Calendar from '.';
 import { LIGHT_THEME } from '@/styles/theme';
 import { useDateSelection } from '@/pages/CreateEvent/hooks/Calendar/useDateSelection';
-import ToastProvider from '@/providers/ToastProvider';
 
 function CalendarStoryBridge({ Story, args }: { Story: any; args: any }) {
   const today = new Date();
@@ -40,9 +39,7 @@ const meta = {
   decorators: [
     (Story, context) => (
       <ThemeProvider theme={LIGHT_THEME}>
-        <ToastProvider>
-          <CalendarStoryBridge Story={Story} args={context.args} />
-        </ToastProvider>
+        <CalendarStoryBridge Story={Story} args={context.args} />
       </ThemeProvider>
     ),
   ],

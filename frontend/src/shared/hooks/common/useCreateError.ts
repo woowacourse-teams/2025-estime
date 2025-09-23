@@ -1,10 +1,14 @@
+import { showToast } from '@/shared/store/toastStore';
 import * as Sentry from '@sentry/react';
 import { useToastContext } from '@/shared/contexts/ToastContext';
 import { useCallback } from 'react';
 
+
+
 export type HandleErrorReturn = (error: unknown, context: string) => void;
 
 const useHandleError = () => {
+
   const { addToast } = useToastContext();
 
   return useCallback(
