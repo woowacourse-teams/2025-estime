@@ -51,7 +51,7 @@ const useHeatmapStatistics = ({
       } catch (err) {
         const e = err as Error;
         console.error(e);
-        addToast({
+        showToast({
           type: 'error',
           message: e.message,
         });
@@ -60,11 +60,8 @@ const useHeatmapStatistics = ({
         });
       }
     },
-    [addToast, formatRoomStatistics]
+    [formatRoomStatistics]
   );
-
-  
-
 
   useEffect(() => {
     if (session) {
