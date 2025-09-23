@@ -33,7 +33,7 @@ const useEventDelegation = () => {
       setIsVisible(true);
       updateTooltipPosition(e.clientX, e.clientY);
     },
-    [isMobile]
+    [isMobile, updateTooltipPosition]
   );
 
   const handlePointerOut = useCallback(() => {
@@ -51,7 +51,7 @@ const useEventDelegation = () => {
         throttleRef.current = null;
       });
     },
-    [isMobile]
+    [isMobile, updateTooltipPosition]
   );
 
   const handlePointerDown = useCallback(
@@ -84,7 +84,7 @@ const useEventDelegation = () => {
       };
       window.addEventListener('pointerdown', close);
     },
-    [isMobile, isVisible, currentCellId]
+    [isMobile, isVisible, currentCellId, updateTooltipPosition]
   );
   useEffect(() => {
     const container = containerRef.current;
