@@ -7,14 +7,10 @@ function getGridTemplateColumns(participants: number) {
   return 'repeat(3, minmax(0, 1fr))';
 }
 
-export const Tooltip = styled.div<{ x: number; y: number; visible: boolean }>`
-  /* position: absolute;
-  bottom: 100%;
-  left: 50%; */
+export const Tooltip = styled.div<{ visible: boolean }>`
   position: fixed;
-  top: ${({ y }) => y - 20}px;
-  left: ${({ x }) => x}px;
-  transform: translate(-50%, calc(-100% - 10px));
+  top: 0;
+  left: 0;
   margin-bottom: 8px;
   padding: var(--padding-6) var(--padding-8);
   border-radius: 8px;

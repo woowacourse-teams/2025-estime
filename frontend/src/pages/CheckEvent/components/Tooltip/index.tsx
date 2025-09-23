@@ -4,14 +4,14 @@ import Text from '@/shared/components/Text';
 import IPerson from '@/assets/icons/IPerson';
 import { createPortal } from 'react-dom';
 import { useRoomStatisticsContext } from '../../provider/RoomStatisticsProvider';
-import { memo } from 'react';
+import { RefObject, memo } from 'react';
 import { getHeatMapCellBackgroundColor } from '../../utils/getCellColor';
 import { useTheme } from '@emotion/react';
 import getCellInfo from '../../utils/getCellInfo';
 
 interface TooltipProps {
   currentCellId: string;
-  position: { x: number; y: number };
+  tooltipRef: RefObject<HTMLDivElement | null>;
   visible: boolean;
 }
 
@@ -30,13 +30,10 @@ const ParticipantItem = memo(({ participantList }: { participantList: string[] }
 
 ParticipantItem.displayName = 'ParticipantItem';
 
-const Tooltip = ({ currentCellId, position, visible }: TooltipProps) => {
+const Tooltip = ({ currentCellId, tooltipRef, visible }: TooltipProps) => {
   const theme = useTheme();
   const { roomStatistics } = useRoomStatisticsContext();
-  const { currentTime, nextTime, participantList } = getCellInfo(
-    currentCellId,
-    roomStatistics,
-  );
+  const { currentTime, nextTime, participantList } = getCellInfo(currentCellId, roomStatistics);
 
   if (!participantList || participantList.length === 0) {
     return null;
@@ -52,7 +49,7 @@ const Tooltip = ({ currentCellId, position, visible }: TooltipProps) => {
   });
 
   return createPortal(
-    <S.Tooltip x={position.x} y={position.y} visible={visible}>
+    <S.Tooltip ref={tooltipRef} visible={visible}>
       <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
         <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
           <S.Wrapper borderColor={borderColor}>

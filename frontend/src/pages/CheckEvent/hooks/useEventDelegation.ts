@@ -2,52 +2,64 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const useEventDelegation = () => {
   const [currentCellId, setCurrentCellId] = useState<string | null>(null);
-  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  // const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const throttleRef = useRef<number | null>(null);
 
-  const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+  const isMobile = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+
+  const updateTooltipPosition = useCallback((x: number, y: number) => {
+    if (tooltipRef.current) {
+      tooltipRef.current.style.left = `${x}px`;
+      tooltipRef.current.style.top = `${y - 20}px`;
+      tooltipRef.current.style.transform = 'translate(-50%, -100%)';
+    }
+  }, []);
 
   const handlePointerOver = useCallback(
     (e: PointerEvent) => {
-      if (isTouchDevice) return; // 모바일 무시
+      if (isMobile) return; // 모바일 무시
 
-      const target = e.target as HTMLElement;
+      const target = (e.target as HTMLElement).closest('[data-cell-id]') as HTMLElement | null;
+      if (!target) return;
       const cellId = target.dataset.cellId;
       if (!cellId) return;
 
       setCurrentCellId(cellId);
       setIsVisible(true);
-      setPosition({ x: e.clientX, y: e.clientY });
+      updateTooltipPosition(e.clientX, e.clientY);
     },
-    [isTouchDevice]
+    [isMobile]
   );
 
   const handlePointerOut = useCallback(() => {
-    if (isTouchDevice) return;
+    if (isMobile) return;
     setIsVisible(false);
-  }, [isTouchDevice]);
+  }, [isMobile]);
 
   const handlePointerMove = useCallback(
     (e: PointerEvent) => {
-      if (isTouchDevice) return;
+      if (isMobile) return;
       if (throttleRef.current) return;
 
       throttleRef.current = window.requestAnimationFrame(() => {
-        setPosition({ x: e.clientX, y: e.clientY });
+        updateTooltipPosition(e.clientX, e.clientY);
         throttleRef.current = null;
       });
     },
-    [isTouchDevice]
+    [isMobile]
   );
 
   const handlePointerDown = useCallback(
     (e: PointerEvent) => {
-      if (!isTouchDevice) return; // 데스크탑 무시
+      if (!isMobile) return; // 데스크탑 무시
 
-      const target = e.target as HTMLElement;
+      const target = (e.target as HTMLElement).closest('[data-cell-id]') as HTMLElement | null;
+      if (!target) return;
       const cellId = target.dataset.cellId;
       if (!cellId) return;
 
@@ -59,7 +71,7 @@ const useEventDelegation = () => {
 
       setCurrentCellId(cellId);
       setIsVisible(true);
-      setPosition({ x: e.clientX, y: e.clientY });
+      updateTooltipPosition(e.clientX, e.clientY);
 
       // 바깥 클릭하면 닫기
       const close = (event: PointerEvent) => {
@@ -72,7 +84,7 @@ const useEventDelegation = () => {
       };
       window.addEventListener('pointerdown', close);
     },
-    [isTouchDevice, isVisible, currentCellId]
+    [isMobile, isVisible, currentCellId]
   );
   useEffect(() => {
     const container = containerRef.current;
@@ -97,9 +109,9 @@ const useEventDelegation = () => {
 
   return {
     currentCellId,
-    position,
     isVisible,
     containerRef,
+    tooltipRef,
   };
 };
 
