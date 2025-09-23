@@ -1,4 +1,4 @@
-import { lazy, useState, Suspense } from 'react';
+import { lazy, useState } from 'react';
 import { DARK_THEME, LIGHT_THEME } from './styles/theme';
 import { ThemeProvider } from '@emotion/react';
 import Layout from './shared/layout';
@@ -22,12 +22,9 @@ const RootElement = () => {
   return (
     <ThemeProvider theme={themeWithMobile}>
       <ToastProvider>
-        <Suspense fallback={<span>...loading</span>}>
-          <ErrorBoundary fallback={<ErrorPage />}>
-            {/* layout 내부에 outlet이 있으므로, routing될 페이지들(routes/index.tsx)이 들어간다. */}
-            <Layout isDark={isDark} toggleTheme={toggleTheme} />
-          </ErrorBoundary>
-        </Suspense>
+        <ErrorBoundary fallback={<ErrorPage />}>
+          <Layout isDark={isDark} toggleTheme={toggleTheme} />
+        </ErrorBoundary>
       </ToastProvider>
     </ThemeProvider>
   );
