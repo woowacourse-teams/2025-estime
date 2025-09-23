@@ -8,47 +8,92 @@ const useEventDelegation = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const throttleRef = useRef<number | null>(null);
 
-  const handleMouseOver = useCallback((e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    const cellId = target.dataset.cellId;
-    if (!cellId) return;
+  const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
 
-    setCurrentCellId(cellId);
-    setIsVisible(true);
-    setPosition({ x: e.clientX, y: e.clientY });
-  }, []);
+  const handlePointerOver = useCallback(
+    (e: PointerEvent) => {
+      if (isTouchDevice) return; // 모바일 무시
 
-  const handleMouseOut = useCallback(() => {
-    setIsVisible(false);
-  }, []);
+      const target = e.target as HTMLElement;
+      const cellId = target.dataset.cellId;
+      if (!cellId) return;
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (throttleRef.current) return;
-
-    throttleRef.current = window.setTimeout(() => {
+      setCurrentCellId(cellId);
+      setIsVisible(true);
       setPosition({ x: e.clientX, y: e.clientY });
-      throttleRef.current = null;
-    }, 16); // 약 60fps
-  }, []);
+    },
+    [isTouchDevice]
+  );
 
+  const handlePointerOut = useCallback(() => {
+    if (isTouchDevice) return;
+    setIsVisible(false);
+  }, [isTouchDevice]);
+
+  const handlePointerMove = useCallback(
+    (e: PointerEvent) => {
+      if (isTouchDevice) return;
+      if (throttleRef.current) return;
+
+      throttleRef.current = window.setTimeout(() => {
+        setPosition({ x: e.clientX, y: e.clientY });
+        throttleRef.current = null;
+      }, 16);
+    },
+    [isTouchDevice]
+  );
+
+  const handlePointerDown = useCallback(
+    (e: PointerEvent) => {
+      if (!isTouchDevice) return; // 데스크탑 무시
+
+      const target = e.target as HTMLElement;
+      const cellId = target.dataset.cellId;
+      if (!cellId) return;
+
+      if (isVisible && currentCellId === cellId) {
+        setIsVisible(false);
+        setCurrentCellId(null);
+        return;
+      }
+
+      setCurrentCellId(cellId);
+      setIsVisible(true);
+      setPosition({ x: e.clientX, y: e.clientY });
+
+      // 바깥 클릭하면 닫기
+      const close = (ev: PointerEvent) => {
+        const el = containerRef.current;
+        if (el && !el.contains(ev.target as Node)) {
+          setIsVisible(false);
+          setCurrentCellId(null);
+          window.removeEventListener('pointerdown', close);
+        }
+      };
+      window.addEventListener('pointerdown', close);
+    },
+    [isTouchDevice, isVisible, currentCellId]
+  );
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener('mouseover', handleMouseOver);
-    container.addEventListener('mouseout', handleMouseOut);
-    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('pointerover', handlePointerOver);
+    container.addEventListener('pointerout', handlePointerOut);
+    container.addEventListener('pointermove', handlePointerMove);
+    container.addEventListener('pointerdown', handlePointerDown);
 
     return () => {
-      container.removeEventListener('mouseover', handleMouseOver);
-      container.removeEventListener('mouseout', handleMouseOut);
-      container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('pointerover', handlePointerOver);
+      container.removeEventListener('pointerout', handlePointerOut);
+      container.removeEventListener('pointermove', handlePointerMove);
+      container.removeEventListener('pointerdown', handlePointerDown);
 
       if (throttleRef.current) {
         clearTimeout(throttleRef.current);
       }
     };
-  }, [handleMouseOver, handleMouseMove, handleMouseOut]);
+  }, [handlePointerOver, handlePointerMove, handlePointerOut, handlePointerDown]);
 
   return {
     currentCellId,
