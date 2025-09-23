@@ -13,19 +13,15 @@ const TOAST_TITLE = {
 export type ToastPhase = 'idle' | 'visible' | 'hidden';
 
 interface ToastProps {
-  id: string;
   type: ToastType;
   message: string;
-  onClose: (id: string) => void;
 }
 
 export const ToastThemeContext = createContext<ToastType>('warning');
 export const useToastTheme = () => useContext(ToastThemeContext);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Toast = ({ id, type, message, onClose }: ToastProps) => {
+const Toast = ({ type, message }: ToastProps) => {
   const [phase, setPhase] = useState<ToastPhase>('idle');
-  // console.log(id, onClose);
   useEffect(() => {
     const showTimer = setTimeout(() => setPhase('visible'), 30);
     const fadeOutTimer = setTimeout(() => setPhase('hidden'), 1500);
