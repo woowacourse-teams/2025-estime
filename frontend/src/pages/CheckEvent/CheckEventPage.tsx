@@ -12,7 +12,6 @@ import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
 import useSSE from '@/pages/CheckEvent/hooks/useSSE';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
@@ -32,10 +31,10 @@ interface CheckEventContentProps {
   session: string;
   isExpired: boolean;
 }
+import { showToast } from '@/shared/store/toastStore';
 
 const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentProps) => {
   const theme = useTheme();
-  const { addToast } = useToastContext();
 
   const { modalHelpers } = useModalControl();
 
@@ -149,7 +148,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
 
     if (isExpired) return;
 
-    addToast({
+    showToast({
       type: 'warning',
       message: '시간을 등록하려면 "편집하기"를 눌러주세요',
     });

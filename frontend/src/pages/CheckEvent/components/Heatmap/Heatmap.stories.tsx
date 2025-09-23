@@ -2,7 +2,6 @@ import { Meta, StoryObj } from '@storybook/react-webpack5';
 import Heatmap from '.';
 import type { DateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 import { getSimpleWeight } from '@/pages/CheckEvent/utils/getWeight';
-import ToastProvider from '@/providers/ToastProvider';
 import { useRef, useEffect } from 'react';
 import {
   RoomStatisticsProvider,
