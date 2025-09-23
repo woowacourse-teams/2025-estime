@@ -9,17 +9,19 @@ export const LIGHT_THEME = {
 
     primary: '#8052E1',
     secondary: '#E2A86A',
+
     plum30: '#E6DAF3',
     plum40: '#DBD1E6',
     plum50: '#A87EFF',
+
     orange30: '#FFC64C',
     orange40: '#FFAE00',
+
     red40: '#EF4444',
     green30: '#27874D',
+
     kakao: '#FEE500',
     kakaoLabel: '#191919',
-
-    recommendedGold: '#FFC64C',
 
     successBackground: '#D6F0E0',
     successBorder: '#C0E7D0',
@@ -82,17 +84,19 @@ export const DARK_THEME = {
 
     primary: '#9E75EF',
     secondary: '#F9C287',
+
     plum30: '#A793BD',
     plum40: '#5D4E84',
     plum50: '#684BA5',
+
     orange30: '#FFC64C',
     orange40: '#FFAE00',
+
     red40: '#7F1E1D',
     green30: '#27874D',
+
     kakao: '#FEE500',
     kakaoLabel: '#191919',
-
-    recommendedGold: '#FFAE00',
 
     successBackground: '#D6F0E0',
     successBorder: '#C0E7D0',

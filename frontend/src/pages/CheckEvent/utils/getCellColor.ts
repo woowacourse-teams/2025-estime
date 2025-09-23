@@ -28,9 +28,7 @@ export const getHeaderCellBackgroundColor = ({
 export const getHeatMapCellBackgroundColor = ({
   theme,
   weight,
-  isRecommended,
 }: GetHeatMapCellBackgroundColorParams) => {
-  if (isRecommended) return theme.colors.recommendedGold;
   if (weight > 0) return hexToRgba(theme.colors.primary, weight);
   return theme.colors.gray10;
 };

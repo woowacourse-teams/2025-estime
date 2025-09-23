@@ -26,12 +26,13 @@ export const Container = styled.div<{
     isRecommended &&
     css`
       background: linear-gradient(
-        135deg,
-        #ffc64c 0%,
-        #ffd170 25%,
-        #ffc64c 50%,
-        #ffba3d 75%,
-        #ffc64c 100%
+        90deg,
+        #8052e1 0%,
+        #9058e8 25%,
+        #9c64f2 45%,
+        /* 핑크빛 보라 */ #8a56e6 65%,
+        #7a4dd9 85%,
+        #8052e1 100%
       );
       &::after {
         inset: -1px;
