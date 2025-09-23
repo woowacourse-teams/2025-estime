@@ -31,8 +31,12 @@ public class SseConnectionManager {
 
     public void delete(final RoomSession session, final SseConnection connection) {
         final Map<UUID, SseConnection> connections = connectionFinder.get(session);
-        if (connections != null) {
-            connections.remove(connection.getId());
+        if (connections == null) {
+            return;
+        }
+        connections.remove(connection.getId());
+        if (connections.isEmpty()) {
+            connectionFinder.remove(session);
         }
     }
 }
