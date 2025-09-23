@@ -70,6 +70,12 @@ export const ParticipantGrid = styled.div<{ participants: number }>`
   justify-content: center;
 `;
 
+export const Wrapper = styled.div<{ borderColor: string }>`
+  padding: var(--padding-3);
+  border-radius: var(--radius-3);
+  border: 2px solid ${({ borderColor }) => borderColor};
+`;
+
 export const Person = styled.div`
   display: flex;
   align-items: center;

@@ -6,7 +6,6 @@ import { useTooltipData } from '../../hooks/useTooltipData';
 import { createPortal } from 'react-dom';
 import { useRoomStatisticsContext } from '../../provider/RoomStatisticsProvider';
 import { memo } from 'react';
-import Wrapper from '@/shared/layout/Wrapper';
 import { getHeatMapCellBackgroundColor } from '../../utils/getCellColor';
 import { useTheme } from '@emotion/react';
 
@@ -47,7 +46,7 @@ const Tooltip = ({ currentCellId, position, visible }: TooltipProps) => {
 
   const weight = cellInfo?.weight ?? 0;
 
-  const backgroundColor = getHeatMapCellBackgroundColor({
+  const borderColor = getHeatMapCellBackgroundColor({
     theme,
     weight,
   });
@@ -56,15 +55,11 @@ const Tooltip = ({ currentCellId, position, visible }: TooltipProps) => {
     <S.Tooltip x={position.x} y={position.y} visible={visible}>
       <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
         <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
-          <Wrapper
-            backgroundColor={backgroundColor}
-            padding="var(--padding-3)"
-            borderRadius="var(--radius-3)"
-          >
+          <S.Wrapper borderColor={borderColor}>
             <Text variant="caption" color="text">
-              {currentTime} ~{nextTime}
+              {currentTime} ~ {nextTime}
             </Text>
-          </Wrapper>
+          </S.Wrapper>
         </Flex>
         <ParticipantItem participantList={participantList} />
       </Flex>
