@@ -3,7 +3,7 @@ import Text from '@/shared/components/Text';
 import * as S from './Heatmap.styled';
 
 import HeatMapDataCell from './HeatMapDataCell';
-import type { DateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
+import type { HeatmapDateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
 import { RefObject } from 'react';
 import TableTooltip from '../TableTooltip';
@@ -15,7 +15,7 @@ interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
-  roomStatistics: Map<string, DateCellInfo>;
+  roomStatistics: Map<string, HeatmapDateCellInfo>;
   handleBeforeEdit?: (e: React.PointerEvent<HTMLDivElement>) => void;
 }
 const Heatmap = ({

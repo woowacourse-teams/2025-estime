@@ -19,6 +19,8 @@ export const LIGHT_THEME = {
     kakao: '#FEE500',
     kakaoLabel: '#191919',
 
+    recommendedGold: '#FFC64C',
+
     successBackground: '#D6F0E0',
     successBorder: '#C0E7D0',
     successText: '#0D6832',
@@ -89,6 +91,8 @@ export const DARK_THEME = {
     green30: '#27874D',
     kakao: '#FEE500',
     kakaoLabel: '#191919',
+
+    recommendedGold: '#FFAE00',
 
     successBackground: '#D6F0E0',
     successBorder: '#C0E7D0',

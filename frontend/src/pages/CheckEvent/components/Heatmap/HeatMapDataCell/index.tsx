@@ -1,13 +1,13 @@
 import { getHeatMapCellBackgroundColor } from '@/pages/CheckEvent/utils/getCellColor';
 import { useTheme } from '@emotion/react';
 import * as S from './HeatMapDataCell.styled';
-import type { DateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
+import type { HeatmapDateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 import type { TooltipInfo } from '@/pages/CheckEvent/hooks/useTooltipBehavior';
 
 interface HeatMapDataCellProps {
   date: string;
   timeText: string;
-  roomStatistics: Map<string, DateCellInfo>;
+  roomStatistics: Map<string, HeatmapDateCellInfo>;
   onDesktopHover: (tooltipInfo: TooltipInfo, event: React.PointerEvent<HTMLDivElement>) => void;
   onMobileTap: (tooltipInfo: TooltipInfo, element: HTMLDivElement) => void;
 }
@@ -24,10 +24,12 @@ const HeatMapDataCell = ({
 
   const weight = cellInfo?.weight ?? 0;
   const participantList = cellInfo?.participantNames ?? [];
+  const isRecommended = cellInfo?.isRecommended ?? false;
 
   const backgroundColor = getHeatMapCellBackgroundColor({
     theme,
     weight,
+    isRecommended,
   });
 
   const tooltipInfo = { date, timeText, participantList: participantList };

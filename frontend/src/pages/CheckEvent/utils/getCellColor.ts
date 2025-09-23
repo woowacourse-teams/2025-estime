@@ -9,6 +9,7 @@ interface GetHeaderCellBackgroundColorParams {
 interface GetHeatMapCellBackgroundColorParams {
   theme: Theme;
   weight: number;
+  isRecommended: boolean;
 }
 
 export const getHeaderCellBackgroundColor = ({
@@ -27,7 +28,9 @@ export const getHeaderCellBackgroundColor = ({
 export const getHeatMapCellBackgroundColor = ({
   theme,
   weight,
+  isRecommended,
 }: GetHeatMapCellBackgroundColorParams) => {
+  if (isRecommended) return theme.colors.recommendedGold;
   if (weight > 0) return hexToRgba(theme.colors.primary, weight);
   return theme.colors.gray10;
 };
