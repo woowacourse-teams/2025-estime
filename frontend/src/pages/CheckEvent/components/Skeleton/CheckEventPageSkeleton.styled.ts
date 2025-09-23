@@ -1,4 +1,3 @@
-import { shimmerStyle } from '@/shared/components/Skeleton/Shimmer.styled';
 import styled from '@emotion/styled';
 
 export const TimeTableContainer = styled.div`
@@ -23,10 +22,4 @@ export const TimeTableHeaderContainer = styled.div`
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.background};
   padding-bottom: ${({ theme }) => (theme.isMobile ? 0 : 'var(--padding-8)')};
-`;
-
-export const HeatmapContainer = styled.div`
-  width: 100%;
-  height: 60rem;
-  ${shimmerStyle};
 `;
