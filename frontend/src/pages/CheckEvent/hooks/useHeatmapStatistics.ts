@@ -3,7 +3,7 @@ import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import toastStore from '@/shared/store/toastStore';
+import { showToast } from '@/shared/store/toastStore';
 
 export interface DateCellInfo {
   weight: number;
@@ -50,7 +50,7 @@ const useHeatmapStatistics = ({
     } catch (err) {
       const e = err as Error;
       console.error(e);
-      toastStore.addToast({
+      showToast({
         type: 'error',
         message: e.message,
       });

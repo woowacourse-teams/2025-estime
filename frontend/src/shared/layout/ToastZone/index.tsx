@@ -1,7 +1,7 @@
 import * as S from './ToastZone.styled';
 import Toast from '@/shared/components/Toast';
+import { toastStore } from '@/shared/store/toastStore';
 import { useSyncExternalStore } from 'react';
-import toastStore from '@/shared/store/toastStore';
 
 const ToastZone = () => {
   const toasts = useSyncExternalStore(toastStore.subscribe, toastStore.getSnapshot);

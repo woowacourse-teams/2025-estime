@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { DateManager } from '@/shared/utils/common/DateManager';
-import toastStore from '@/shared/store/toastStore';
+import { showToast } from '@/shared/store/toastStore';
 
 interface SimpleDragSelectionOptions {
   selectedDates: Set<string>;
@@ -37,7 +37,7 @@ export const useDateSelection = ({
         return;
       }
       if (DateManager.isPast(date, today)) {
-        toastStore.addToast({
+        showToast({
           type: 'warning',
           message: '과거 날짜는 선택할 수 없습니다.',
         });
@@ -47,7 +47,7 @@ export const useDateSelection = ({
         DateManager.hasReachedMaxSelection(newSelectedDates) &&
         !newSelectedDates.has(dateString)
       ) {
-        toastStore.addToast({
+        showToast({
           type: 'warning',
           message: '최대 7개의 날짜를 선택할 수 있습니다.',
         });

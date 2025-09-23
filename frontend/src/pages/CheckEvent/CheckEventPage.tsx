@@ -24,7 +24,7 @@ import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
-import toastStore from '@/shared/store/toastStore';
+import { showToast } from '@/shared/store/toastStore';
 
 const CheckEventPage = () => {
   const theme = useTheme();
@@ -138,7 +138,7 @@ const CheckEventPage = () => {
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
     if (!cell) return;
 
-    toastStore.addToast({
+    showToast({
       type: 'warning',
       message: '시간을 등록하려면 "편집하기"를 눌러주세요',
     });

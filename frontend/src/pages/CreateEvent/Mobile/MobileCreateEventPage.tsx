@@ -15,7 +15,7 @@ import BasicSettings from '@/pages/CreateEvent/components/BasicSettings';
 import useFunnelWithHistory from '@/shared/hooks/Funnel/useFunnelWithHistory';
 import Modal from '@/shared/components/Modal';
 import NotificationModal from '@/pages/CreateEvent/components/NotificationModal';
-import toastStore from '@/shared/store/toastStore';
+import { showToast } from '@/shared/store/toastStore';
 
 const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
 
@@ -44,7 +44,7 @@ const MobileCreateEventPage = () => {
   const handleNextStep = async (type: 'calendar' | 'rest') => {
     if (type === 'calendar') {
       if (!isCalendarReady) {
-        toastStore.addToast({ type: 'warning', message: '날짜를 선택해주세요.' });
+        showToast({ type: 'warning', message: '날짜를 선택해주세요.' });
         showValidation.current.calendar = true;
         handleShouldShake();
         return; // 유효하지 않으면 종료
@@ -55,7 +55,7 @@ const MobileCreateEventPage = () => {
 
     if (type === 'rest') {
       if (!isBasicReady) {
-        toastStore.addToast({ type: 'warning', message: '약속 정보를 입력해주세요.' });
+        showToast({ type: 'warning', message: '약속 정보를 입력해주세요.' });
         showValidation.current.rest = true;
         handleShouldShake();
         return;
@@ -66,7 +66,7 @@ const MobileCreateEventPage = () => {
   };
 
   const onSubmitSuccess = (session: string) => {
-    toastStore.addToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
+    showToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
     navigate(`/check?id=${session}`, { replace: true });
   };
 

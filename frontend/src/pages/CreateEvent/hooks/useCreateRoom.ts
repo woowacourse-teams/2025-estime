@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
 import * as Sentry from '@sentry/react';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
-import toastStore from '@/shared/store/toastStore';
+import { showToast } from '@/shared/store/toastStore';
 
 interface checkedNotification {
   created: boolean;
@@ -91,7 +91,7 @@ export const useCreateRoom = () => {
       return response.session;
     } catch (err) {
       const e = err as Error;
-      toastStore.addToast({
+      showToast({
         type: 'error',
         message: e.message,
       });
