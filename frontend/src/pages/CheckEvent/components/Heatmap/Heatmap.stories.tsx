@@ -28,11 +28,9 @@ const meta: Meta<typeof Heatmap> = {
   },
   decorators: [
     (Story) => (
-      <ToastProvider>
-        <RoomStatisticsProvider>
-          <Story />
-        </RoomStatisticsProvider>
-      </ToastProvider>
+      <RoomStatisticsProvider>
+        <Story />
+      </RoomStatisticsProvider>
     ),
   ],
 };
