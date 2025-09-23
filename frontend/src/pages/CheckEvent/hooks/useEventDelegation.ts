@@ -35,10 +35,10 @@ const useEventDelegation = () => {
       if (isTouchDevice) return;
       if (throttleRef.current) return;
 
-      throttleRef.current = window.setTimeout(() => {
+      throttleRef.current = window.requestAnimationFrame(() => {
         setPosition({ x: e.clientX, y: e.clientY });
         throttleRef.current = null;
-      }, 16);
+      });
     },
     [isTouchDevice]
   );
@@ -62,9 +62,9 @@ const useEventDelegation = () => {
       setPosition({ x: e.clientX, y: e.clientY });
 
       // 바깥 클릭하면 닫기
-      const close = (ev: PointerEvent) => {
+      const close = (event: PointerEvent) => {
         const el = containerRef.current;
-        if (el && !el.contains(ev.target as Node)) {
+        if (el && !el.contains(event.target as Node)) {
           setIsVisible(false);
           setCurrentCellId(null);
           window.removeEventListener('pointerdown', close);
