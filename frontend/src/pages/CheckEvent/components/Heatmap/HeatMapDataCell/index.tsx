@@ -38,6 +38,7 @@ const HeatMapDataCell = ({
     <S.Container
       data-heatmap-cell
       backgroundColor={backgroundColor}
+      isRecommended={isRecommended}
       onMouseOver={(e: React.PointerEvent<HTMLDivElement>) => onDesktopHover(tooltipInfo, e)}
       onPointerDown={(e: React.PointerEvent<HTMLDivElement>) =>
         onMobileTap(tooltipInfo, e.target as HTMLDivElement)
