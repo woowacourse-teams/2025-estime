@@ -30,6 +30,7 @@ export const LogoWrapper = styled.div`
 
   &::before {
     content: '방 만들기 페이지 이동';
+    font-size: ${({ theme }) => theme.typography.body.fontSize};
     position: absolute;
     top: 50%;
     left: calc(100% + 10px); /* 본문과 로고 사이 간격 */
