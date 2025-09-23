@@ -30,7 +30,7 @@ const CheckEventPage = () => {
   const theme = useTheme();
   const { addToast } = useToastContext();
 
-  const { roomInfo, session } = useCheckRoomSession();
+  const { roomInfo, session, isExpired } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
 
@@ -49,7 +49,7 @@ const CheckEventPage = () => {
     weightCalculateStrategy,
   });
 
-  const [mode, setMode] = useState<'view' | 'edit'>('view');
+  const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
 
   const handleError = useHandleError();
 
@@ -57,7 +57,8 @@ const CheckEventPage = () => {
     try {
       await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
-      setMode('view');
+      // save 모드에서 저장하기를 누르면 edit 모드로 전환
+      setMode('edit');
       pageReset();
     } catch (error) {
       handleError(error, 'switchToViewMode');
@@ -67,7 +68,8 @@ const CheckEventPage = () => {
   const switchToEditMode = async () => {
     if (isLoggedIn) {
       await fetchUserAvailableTime();
-      setMode('edit');
+      // register에서 등록하기를 누르거나, edit에서 수정하기를 누르면 save 모드로 전환
+      setMode('save');
       pageReset();
     } else {
       modalHelpers.login.open();
@@ -75,9 +77,11 @@ const CheckEventPage = () => {
   };
 
   const handleToggleMode = async () => {
-    if (mode === 'edit') {
+    if (mode === 'save') {
+      // save 모드에서 "저장하기" 버튼을 누르면 view 모드(edit)로 전환
       await switchToViewMode();
     } else {
+      // register 모드에서 "등록하기" 또는 edit 모드에서 "수정하기"를 누르면 edit 모드(save)로 전환
       switchToEditMode();
     }
   };
@@ -92,7 +96,7 @@ const CheckEventPage = () => {
       await fetchUserAvailableTime();
       modalHelpers.login.close();
       handleLoggedIn.setTrue();
-      setMode('edit');
+      setMode('save');
       pageReset();
     } catch (error) {
       handleError(error, 'handleLoginSuccess');
@@ -105,7 +109,7 @@ const CheckEventPage = () => {
       modalHelpers.login.close();
       await fetchUserAvailableTime();
       handleLoggedIn.setTrue();
-      setMode('edit');
+      setMode('save');
       pageReset();
     } catch (error) {
       handleError(error, 'handleContinueWithDuplicated');
@@ -139,6 +143,8 @@ const CheckEventPage = () => {
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
     if (!cell) return;
 
+    if (isExpired) return;
+
     addToast({
       type: 'warning',
       message: '시간을 등록하려면 "편집하기"를 눌러주세요',
@@ -168,15 +174,16 @@ const CheckEventPage = () => {
             roomSession={roomInfo.roomSession}
             openCopyModal={modalHelpers.copyLink.open}
           />
-          <S.FlipCard isFlipped={mode !== 'view'}>
+          <S.FlipCard isFlipped={mode === 'save'}>
             {/* view 모드 */}
-            <S.FrontFace isFlipped={mode !== 'view'}>
+            <S.FrontFace isFlipped={mode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
-                    mode="view"
+                    mode={mode}
                     onToggleEditMode={handleToggleMode}
+                    isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
@@ -205,13 +212,14 @@ const CheckEventPage = () => {
             </S.FrontFace>
 
             {/* edit 모드 */}
-            <S.BackFace isFlipped={mode !== 'view'}>
+            <S.BackFace isFlipped={mode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={userName.value}
-                    mode="edit"
+                    mode={mode}
                     onToggleEditMode={handleToggleMode}
+                    isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
