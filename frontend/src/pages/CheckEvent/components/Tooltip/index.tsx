@@ -1,0 +1,76 @@
+import Flex from '@/shared/layout/Flex';
+import * as S from './Tooltip.styled';
+import Text from '@/shared/components/Text';
+import IPerson from '@/assets/icons/IPerson';
+import { useTooltipData } from '../../hooks/useTooltipData';
+import { createPortal } from 'react-dom';
+import { useRoomStatisticsContext } from '../../provider/RoomStatisticsProvider';
+import { memo } from 'react';
+import Wrapper from '@/shared/layout/Wrapper';
+import { getHeatMapCellBackgroundColor } from '../../utils/getCellColor';
+import { useTheme } from '@emotion/react';
+
+interface TooltipProps {
+  currentCellId: string;
+  position: { x: number; y: number };
+  visible: boolean;
+}
+
+const ParticipantItem = memo(({ participantList }: { participantList: string[] }) => (
+  <S.ParticipantGrid participants={participantList.length}>
+    {participantList.map((participant) => (
+      <S.Person key={participant}>
+        <IPerson />
+        <Text variant="caption" color="text">
+          {participant}
+        </Text>
+      </S.Person>
+    ))}
+  </S.ParticipantGrid>
+));
+
+ParticipantItem.displayName = 'ParticipantItem';
+
+const Tooltip = ({ currentCellId, position, visible }: TooltipProps) => {
+  const theme = useTheme();
+  const { roomStatistics } = useRoomStatisticsContext();
+  const { currentTime, nextTime, participantList } = useTooltipData({
+    currentCellId,
+    roomStatistics,
+  });
+
+  if (!participantList || participantList.length === 0) {
+    return null;
+  }
+
+  const cellInfo = roomStatistics.get(currentCellId);
+
+  const weight = cellInfo?.weight ?? 0;
+
+  const backgroundColor = getHeatMapCellBackgroundColor({
+    theme,
+    weight,
+  });
+
+  return createPortal(
+    <S.Tooltip x={position.x} y={position.y} visible={visible}>
+      <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
+        <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
+          <Wrapper
+            backgroundColor={backgroundColor}
+            padding="var(--padding-3)"
+            borderRadius="var(--radius-3)"
+          >
+            <Text variant="caption" color="text">
+              {currentTime} ~{nextTime}
+            </Text>
+          </Wrapper>
+        </Flex>
+        <ParticipantItem participantList={participantList} />
+      </Flex>
+    </S.Tooltip>,
+    document.body
+  );
+};
+
+export default Tooltip;
