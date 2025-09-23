@@ -25,13 +25,13 @@ import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
 import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
+import { showToast } from '@/shared/store/toastStore';
 
 interface CheckEventContentProps {
   roomInfo: ReturnType<typeof useCheckRoomSession>['roomInfo'];
   session: string;
   isExpired: boolean;
 }
-import { showToast } from '@/shared/store/toastStore';
 
 const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentProps) => {
   const theme = useTheme();
