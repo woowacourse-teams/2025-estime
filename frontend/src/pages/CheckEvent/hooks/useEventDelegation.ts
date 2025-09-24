@@ -2,10 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const useEventDelegation = () => {
   const [currentCellId, setCurrentCellId] = useState<string | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
   const throttleRef = useRef<number | null>(null);
 
@@ -19,7 +17,7 @@ const useEventDelegation = () => {
 
   const handlePointerOver = useCallback(
     (e: PointerEvent) => {
-      if (isMobile) return; // 모바일 무시
+      if (isMobile) return;
 
       const target = (e.target as HTMLElement).closest('[data-cell-id]') as HTMLElement | null;
       if (!target) return;
@@ -27,7 +25,6 @@ const useEventDelegation = () => {
       if (!cellId) return;
 
       setCurrentCellId(cellId);
-      setIsVisible(true);
       updateTooltipPosition(e.clientX, e.clientY);
     },
     [isMobile, updateTooltipPosition]
@@ -35,7 +32,7 @@ const useEventDelegation = () => {
 
   const handlePointerOut = useCallback(() => {
     if (isMobile) return;
-    setIsVisible(false);
+    setCurrentCellId(null);
   }, [isMobile]);
 
   const handlePointerMove = useCallback(
@@ -60,28 +57,25 @@ const useEventDelegation = () => {
       const cellId = target.dataset.cellId;
       if (!cellId) return;
 
-      if (isVisible && currentCellId === cellId) {
-        setIsVisible(false);
+      if (currentCellId === cellId) {
         setCurrentCellId(null);
         return;
       }
 
       setCurrentCellId(cellId);
-      setIsVisible(true);
       updateTooltipPosition(e.clientX, e.clientY);
 
       // 바깥 클릭하면 닫기
       const close = (event: PointerEvent) => {
         const el = containerRef.current;
         if (el && !el.contains(event.target as Node)) {
-          setIsVisible(false);
           setCurrentCellId(null);
           window.removeEventListener('pointerdown', close);
         }
       };
       window.addEventListener('pointerdown', close);
     },
-    [isMobile, isVisible, currentCellId, updateTooltipPosition]
+    [isMobile, currentCellId, updateTooltipPosition]
   );
   useEffect(() => {
     const container = containerRef.current;
@@ -106,7 +100,6 @@ const useEventDelegation = () => {
 
   return {
     currentCellId,
-    isVisible,
     containerRef,
     tooltipRef,
   };

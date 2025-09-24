@@ -20,7 +20,7 @@ const Heatmap = ({
   availableDates,
   handleBeforeEdit,
 }: HeatmapProps) => {
-  const { currentCellId, isVisible, containerRef, tooltipRef } = useEventDelegation();
+  const { currentCellId, containerRef, tooltipRef } = useEventDelegation();
 
   // 시간 라벨 불필요한 리렌더링 방지를 위해 분리
   const timeSlotNodes = useMemo(
@@ -53,9 +53,7 @@ const Heatmap = ({
         ))}
       </S.HeatMapContent>
 
-      {currentCellId && (
-        <Tooltip currentCellId={currentCellId} tooltipRef={tooltipRef} visible={isVisible} />
-      )}
+      {currentCellId && <Tooltip currentCellId={currentCellId} tooltipRef={tooltipRef} />}
     </>
   );
 };

@@ -12,7 +12,6 @@ import getCellInfo from '../../utils/getCellInfo';
 interface TooltipProps {
   currentCellId: string;
   tooltipRef: RefObject<HTMLDivElement | null>;
-  visible: boolean;
 }
 
 const ParticipantItem = memo(({ participantList }: { participantList: string[] }) => (
@@ -30,7 +29,7 @@ const ParticipantItem = memo(({ participantList }: { participantList: string[] }
 
 ParticipantItem.displayName = 'ParticipantItem';
 
-const Tooltip = ({ currentCellId, tooltipRef, visible }: TooltipProps) => {
+const Tooltip = ({ currentCellId, tooltipRef }: TooltipProps) => {
   const theme = useTheme();
   const { roomStatistics } = useRoomStatisticsContext();
   const { currentTime, nextTime, participantList } = getCellInfo(currentCellId, roomStatistics);
@@ -40,7 +39,7 @@ const Tooltip = ({ currentCellId, tooltipRef, visible }: TooltipProps) => {
   }
 
   const cellInfo = roomStatistics.get(currentCellId);
-
+  const visible = cellInfo ? true : false;
   const weight = cellInfo?.weight ?? 0;
 
   const borderColor = getHeatMapCellBackgroundColor({
