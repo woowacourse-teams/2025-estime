@@ -3,6 +3,7 @@ import { Theme } from '../../../styles/theme';
 interface GetHeatMapCellBackgroundColorParams {
   theme: Theme;
   weight: number;
+  isRecommended: boolean;
 }
 
 export const getHeatMapCellBackgroundColor = ({

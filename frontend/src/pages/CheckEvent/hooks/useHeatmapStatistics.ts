@@ -1,13 +1,16 @@
 import { getRoomStatistics } from '@/apis/room/room';
-import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
+import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { useEffect, useState, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { showToast } from '@/shared/store/toastStore';
 
-export interface DateCellInfo {
+interface DateCellInfo {
   weight: number;
   participantNames: string[];
+}
+export interface HeatmapDateCellInfo extends DateCellInfo {
+  isRecommended: boolean;
 }
 
 const useHeatmapStatistics = ({
@@ -17,28 +20,58 @@ const useHeatmapStatistics = ({
   session: string;
   weightCalculateStrategy: WeightCalculateStrategy;
 }) => {
-  const [roomStatistics, setRoomStatistics] = useState<Map<string, DateCellInfo>>(new Map());
-  const dummyMinValue = 0;
 
-  const formatRoomStatistics = useCallback(
-    (statistics: GetRoomStatisticsResponseType): Map<string, DateCellInfo> => {
-      const { statistic, participantCount } = statistics;
-      const result = new Map<string, DateCellInfo>();
-      if (statistic.length === 0 || !participantCount) return result;
+  const [roomStatistics, setRoomStatistics] = useState<Map<string, HeatmapDateCellInfo>>(new Map());
 
+  const getWeightStatistics = useCallback(
+    (statistic: StatisticItem[], participantCount: number) => {
+      const dummyMinValue = 0;
+      const weightStatistics = new Map<string, DateCellInfo>();
+      let maxWeight = -Infinity;
+      if (statistic.length === 0 || !participantCount) {
+        return { maxWeight: 0, weightStatistics };
+      }
       for (const stat of statistic) {
-        result.set(stat.dateTimeSlot, {
-          weight: weightCalculateStrategy(
-            stat.participantNames.length,
-            dummyMinValue,
-            participantCount
-          ),
-          participantNames: stat.participantNames,
+        const { participantNames } = stat;
+        const weight = weightCalculateStrategy(
+          participantNames.length,
+          dummyMinValue,
+          participantCount
+        );
+        maxWeight = Math.max(maxWeight, weight);
+        weightStatistics.set(stat.dateTimeSlot, {
+          participantNames,
+          weight,
         });
       }
-      return result;
+      return { maxWeight, weightStatistics };
     },
-    [dummyMinValue, weightCalculateStrategy]
+    [weightCalculateStrategy]
+  );
+  const formatRoomStatistics = useCallback(
+    (statistics: GetRoomStatisticsResponseType): Map<string, HeatmapDateCellInfo> => {
+      const { statistic, participantCount } = statistics;
+
+      const formattedRoomStatistics = new Map<string, HeatmapDateCellInfo>();
+      if (statistic.length === 0 || !participantCount) {
+        return formattedRoomStatistics;
+      }
+
+      const { maxWeight, weightStatistics } = getWeightStatistics(statistic, participantCount);
+
+      for (const [key, value] of weightStatistics) {
+        const dateTimeSlot = key;
+        const { weight, participantNames } = value;
+
+        formattedRoomStatistics.set(dateTimeSlot, {
+          weight,
+          participantNames,
+          isRecommended: weight === maxWeight,
+        });
+      }
+      return formattedRoomStatistics;
+    },
+    [getWeightStatistics]
   );
 
   const fetchRoomStatistics = useCallback(

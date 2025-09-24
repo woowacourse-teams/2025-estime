@@ -1,5 +1,9 @@
 import RootElement from '@/RootElement';
-import { lazy } from 'react';
+import LoadingSpinner from '@/shared/components/Spinner';
+import { lazy, Suspense } from 'react';
+import CreateEventPageSkeleton from '@/pages/CreateEvent/components/Skeleton';
+import CheckEventPageSkeleton from '@/pages/CheckEvent/components/Skeleton';
+import CreditsPageSkeleton from '@/pages/common/CreditsPageSkeleton';
 
 const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(navigator.userAgent);
 
@@ -19,10 +23,32 @@ const appRoutes = [
     children: [
       {
         index: true,
-        element: isMobile ? <MobileCreateEventPage /> : <CreateEventPage />,
+        element: isMobile ? (
+          <Suspense fallback={<LoadingSpinner />}>
+            <MobileCreateEventPage />
+          </Suspense>
+        ) : (
+          <Suspense fallback={<CreateEventPageSkeleton />}>
+            <CreateEventPage />
+          </Suspense>
+        ),
       },
-      { path: 'check', element: <CheckEventPage /> },
-      { path: 'credits', element: <CreditsPage /> },
+      {
+        path: 'check',
+        element: (
+          <Suspense fallback={<CheckEventPageSkeleton />}>
+            <CheckEventPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'credits',
+        element: (
+          <Suspense fallback={<CreditsPageSkeleton />}>
+            <CreditsPage />
+          </Suspense>
+        ),
+      },
       { path: '*', element: <Error404Page /> },
     ],
   },
