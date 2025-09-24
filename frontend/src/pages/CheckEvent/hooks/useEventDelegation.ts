@@ -14,9 +14,7 @@ const useEventDelegation = () => {
 
   const updateTooltipPosition = useCallback((x: number, y: number) => {
     if (tooltipRef.current) {
-      tooltipRef.current.style.left = `${x}px`;
-      tooltipRef.current.style.top = `${y - 20}px`;
-      tooltipRef.current.style.transform = 'translate(-50%, -100%)';
+      tooltipRef.current.style.transform = `translate(${x - 70}px, ${y - 140}px)`;
     }
   }, []);
 
