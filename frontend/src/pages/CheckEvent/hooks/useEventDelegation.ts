@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const useEventDelegation = () => {
   const [currentCellId, setCurrentCellId] = useState<string | null>(null);
-  // const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
 
   const tooltipRef = useRef<HTMLDivElement | null>(null);
