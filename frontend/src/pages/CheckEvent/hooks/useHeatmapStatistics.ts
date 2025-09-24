@@ -1,7 +1,7 @@
 import { getRoomStatistics } from '@/apis/room/room';
-import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
+import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { showToast } from '@/shared/store/toastStore';
 import { useRoomStatisticsContext } from '../provider/RoomStatisticsProvider';
@@ -9,6 +9,9 @@ import { useRoomStatisticsContext } from '../provider/RoomStatisticsProvider';
 export interface DateCellInfo {
   weight: number;
   participantNames: string[];
+}
+export interface HeatmapDateCellInfo extends DateCellInfo {
+  isRecommended: boolean;
 }
 
 const useHeatmapStatistics = ({
@@ -20,53 +23,84 @@ const useHeatmapStatistics = ({
 }) => {
   const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
-  const dummyMinValue = 0;
-  const formatRoomStatistics = (
-    statistics: GetRoomStatisticsResponseType
-  ): Map<string, DateCellInfo> => {
-    const { statistic, participantCount } = statistics;
-    const roomStatistics = new Map<string, DateCellInfo>();
-    if (statistic.length === 0 || !participantCount) {
-      return roomStatistics;
-    }
-
-    statistic.map((stat) =>
-      roomStatistics.set(stat.dateTimeSlot, {
-        weight: weightCalculateStrategy(
-          stat.participantNames.length,
+  const getWeightStatistics = useCallback(
+    (statistic: StatisticItem[], participantCount: number) => {
+      const dummyMinValue = 0;
+      const weightStatistics = new Map<string, DateCellInfo>();
+      let maxWeight = -Infinity;
+      if (statistic.length === 0 || !participantCount) {
+        return { maxWeight: 0, weightStatistics };
+      }
+      for (const stat of statistic) {
+        const { participantNames } = stat;
+        const weight = weightCalculateStrategy(
+          participantNames.length,
           dummyMinValue,
           participantCount
-        ),
-        participantNames: stat.participantNames,
-      })
-    );
-    return roomStatistics;
-  };
+        );
+        maxWeight = Math.max(maxWeight, weight);
+        weightStatistics.set(stat.dateTimeSlot, {
+          participantNames,
+          weight,
+        });
+      }
+      return { maxWeight, weightStatistics };
+    },
+    [weightCalculateStrategy]
+  );
+  const formatRoomStatistics = useCallback(
+    (statistics: GetRoomStatisticsResponseType): Map<string, HeatmapDateCellInfo> => {
+      const { statistic, participantCount } = statistics;
 
-  const fetchRoomStatistics = async (sessionId: string) => {
-    if (!sessionId) return;
-    try {
-      const res = await getRoomStatistics(sessionId);
-      const result = formatRoomStatistics(res);
-      setRoomStatistics(result);
-    } catch (err) {
-      const e = err as Error;
-      console.error(e);
-      showToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    }
-  };
+      const formattedRoomStatistics = new Map<string, HeatmapDateCellInfo>();
+      if (statistic.length === 0 || !participantCount) {
+        return formattedRoomStatistics;
+      }
+
+      const { maxWeight, weightStatistics } = getWeightStatistics(statistic, participantCount);
+
+      for (const [key, value] of weightStatistics) {
+        const dateTimeSlot = key;
+        const { weight, participantNames } = value;
+
+        formattedRoomStatistics.set(dateTimeSlot, {
+          weight,
+          participantNames,
+          isRecommended: weight === maxWeight,
+        });
+      }
+      return formattedRoomStatistics;
+    },
+    [getWeightStatistics]
+  );
+
+  const fetchRoomStatistics = useCallback(
+    async (sessionId: string) => {
+      if (!sessionId) return;
+      try {
+        const res = await getRoomStatistics(sessionId);
+        const result = formatRoomStatistics(res);
+        setRoomStatistics(result);
+      } catch (err) {
+        const e = err as Error;
+        console.error(e);
+        showToast({
+          type: 'error',
+          message: e.message,
+        });
+        Sentry.captureException(err, {
+          level: 'error',
+        });
+      }
+    },
+    [formatRoomStatistics]
+  );
 
   useEffect(() => {
     if (session) {
       fetchRoomStatistics(session);
     }
-  }, [session]);
+  }, [fetchRoomStatistics, session]);
 
   return { roomStatistics, fetchRoomStatistics };
 };

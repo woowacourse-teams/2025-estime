@@ -1,10 +1,10 @@
 import Text from '@/shared/components/Text';
-import * as S from '@/pages/common/CreditsPage.styled';
 import { credits } from '@/constants/credits';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import Button from '@/shared/components/Button';
 import GithubLogo from '@/assets/icons/GithubLogo';
+import * as S from './CreditsPage.styled';
 
 const CreditsPage = () => {
   const handleClick = () => {

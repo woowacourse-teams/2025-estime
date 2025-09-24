@@ -1,15 +1,15 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import type { DateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
+import type { HeatmapDateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 
 interface RoomStatisticsContextProps {
-  roomStatistics: Map<string, DateCellInfo>;
-  setRoomStatistics: React.Dispatch<React.SetStateAction<Map<string, DateCellInfo>>>;
+  roomStatistics: Map<string, HeatmapDateCellInfo>;
+  setRoomStatistics: React.Dispatch<React.SetStateAction<Map<string, HeatmapDateCellInfo>>>;
 }
 
 const RoomStatisticsContext = createContext<RoomStatisticsContextProps | undefined>(undefined);
 
 export const RoomStatisticsProvider = ({ children }: { children: ReactNode }) => {
-  const [roomStatistics, setRoomStatistics] = useState<Map<string, DateCellInfo>>(new Map());
+  const [roomStatistics, setRoomStatistics] = useState<Map<string, HeatmapDateCellInfo>>(new Map());
 
   return (
     <RoomStatisticsContext.Provider value={{ roomStatistics, setRoomStatistics }}>

@@ -5,8 +5,6 @@ import IPerson from '@/assets/icons/IPerson';
 import { createPortal } from 'react-dom';
 import { useRoomStatisticsContext } from '../../provider/RoomStatisticsProvider';
 import { RefObject, memo } from 'react';
-import { getHeatMapCellBackgroundColor } from '../../utils/getCellColor';
-import { useTheme } from '@emotion/react';
 import getCellInfo from '../../utils/getCellInfo';
 
 interface TooltipProps {
@@ -30,7 +28,6 @@ const ParticipantItem = memo(({ participantList }: { participantList: string[] }
 ParticipantItem.displayName = 'ParticipantItem';
 
 const Tooltip = ({ currentCellId, tooltipRef }: TooltipProps) => {
-  const theme = useTheme();
   const { roomStatistics } = useRoomStatisticsContext();
   const { currentTime, nextTime, participantList } = getCellInfo(currentCellId, roomStatistics);
 
@@ -42,16 +39,11 @@ const Tooltip = ({ currentCellId, tooltipRef }: TooltipProps) => {
   const visible = cellInfo ? true : false;
   const weight = cellInfo?.weight ?? 0;
 
-  const borderColor = getHeatMapCellBackgroundColor({
-    theme,
-    weight,
-  });
-
   return createPortal(
     <S.Tooltip ref={tooltipRef} visible={visible}>
       <Flex direction="column" gap="var(--gap-6)" align="center" justify="center">
         <Flex direction="column" gap="var(--gap-2)" align="center" justify="center">
-          <S.Wrapper borderColor={borderColor}>
+          <S.Wrapper weight={weight}>
             <Text variant="caption" color="text">
               {currentTime} ~ {nextTime}
             </Text>

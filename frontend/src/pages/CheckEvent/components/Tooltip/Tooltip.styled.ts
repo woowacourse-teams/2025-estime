@@ -1,5 +1,6 @@
 import { zIndex } from '@/constants/styles';
 import styled from '@emotion/styled';
+import { hexToRgba } from '../../utils/getCellColor';
 
 function getGridTemplateColumns(participants: number) {
   if (participants <= 4) return 'minmax(0, 1fr)';
@@ -66,10 +67,12 @@ export const ParticipantGrid = styled.div<{ participants: number }>`
   justify-content: center;
 `;
 
-export const Wrapper = styled.div<{ borderColor: string }>`
+export const Wrapper = styled.div<{ weight: number }>`
   padding: var(--padding-3);
   border-radius: var(--radius-3);
-  border: 2px solid ${({ borderColor }) => borderColor};
+  border: 2px solid
+    ${({ weight, theme }) =>
+      weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
 `;
 
 export const Person = styled.div`
