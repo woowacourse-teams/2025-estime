@@ -3,7 +3,7 @@ import LoadingSpinner from '@/shared/components/LoadingSpinner';
 import { lazy, Suspense } from 'react';
 import CreateEventPageSkeleton from '@/pages/CreateEvent/components/Skeleton';
 import CheckEventPageSkeleton from '@/pages/CheckEvent/components/Skeleton';
-import CreditsPageSkeleton from '@/pages/common/CreditPage/Skeleton';
+import CreditsPageSkeleton from '@/pages/common/CreditsPageSkeleton';
 
 const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(navigator.userAgent);
 
@@ -12,7 +12,7 @@ const MobileCreateEventPage = lazy(
 );
 const CreateEventPage = lazy(() => import('@/pages/CreateEvent/CreateEventPage'));
 const CheckEventPage = lazy(() => import('../pages/CheckEvent/CheckEventPage'));
-const CreditsPage = lazy(() => import('@/pages/common/CreditPage'));
+const CreditsPage = lazy(() => import('@/pages/common/CreditsPage'));
 const Error404Page = lazy(() => import('@/pages/common/Error404Page'));
 
 const appRoutes = [
