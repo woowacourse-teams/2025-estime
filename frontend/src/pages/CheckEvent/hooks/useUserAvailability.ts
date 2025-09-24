@@ -1,9 +1,9 @@
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
 import { useRef, useState } from 'react';
 import * as Sentry from '@sentry/react';
+import { showToast } from '@/shared/store/toastStore';
 
 const initialUserAvailability = {
   userName: '앙부일구',
@@ -17,7 +17,6 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
-  const { addToast } = useToastContext();
   const isUserSubmitLoading = useRef(false);
   const isFetchUserAvailableTimeLoading = useRef(false);
 
@@ -37,7 +36,7 @@ export const useUserAvailability = ({
 
   const userAvailabilitySubmit = async () => {
     if (isUserSubmitLoading.current) {
-      addToast({
+      showToast({
         type: 'warning',
         message: '시간표를 불러오는 중입니다. 잠시만 기다려주세요.',
       });
@@ -48,13 +47,13 @@ export const useUserAvailability = ({
     try {
       const payload = toCreateUserAvailability(userAvailability);
       await updateUserAvailableTime(session, payload);
-      addToast({
+      showToast({
         type: 'success',
         message: '시간표 저장이 완료되었습니다!',
       });
     } catch (err) {
       const e = err as Error;
-      addToast({
+      showToast({
         type: 'error',
         message: e.message,
       });
@@ -72,7 +71,7 @@ export const useUserAvailability = ({
       return;
     }
     if (isFetchUserAvailableTimeLoading.current) {
-      addToast({
+      showToast({
         type: 'warning',
         message: '시간표를 불러오는 중입니다. 잠시만 기다려주세요.',
       });
@@ -90,7 +89,7 @@ export const useUserAvailability = ({
       }
     } catch (err) {
       const e = err as Error;
-      addToast({
+      showToast({
         type: 'error',
         message: e.message,
       });
