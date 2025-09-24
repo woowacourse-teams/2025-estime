@@ -5,21 +5,15 @@ import Wrapper from '@/shared/layout/Wrapper';
 interface TimeTableColumnProps {
   date: string;
   dateTimeSlots: string[];
-  selectedTimes: Set<string>;
 }
 
-const TimeTableColumn = ({ date, dateTimeSlots, selectedTimes }: TimeTableColumnProps) => {
+const TimeTableColumn = ({ date, dateTimeSlots }: TimeTableColumnProps) => {
   return (
     //TODO: 메모이제이션 추가 할수 있으면 고민 해볼것.
     <Wrapper center={false} maxWidth="100%">
       <TimeTableDay date={date} />
       {dateTimeSlots.map((dateTimeSlot) => (
-        <TimeTableCell
-          key={`${date}T${dateTimeSlot}`}
-          date={date}
-          timeText={dateTimeSlot}
-          selectedTimes={selectedTimes}
-        />
+        <TimeTableCell key={`${date}T${dateTimeSlot}`} date={date} timeText={dateTimeSlot} />
       ))}
     </Wrapper>
   );

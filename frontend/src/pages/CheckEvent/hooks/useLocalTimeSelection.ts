@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
+import { useRef, useCallback, useEffect, useMemo } from 'react';
 import { useLockBodyScroll } from '../../../shared/hooks/common/useLockBodyScroll';
 import { useTimeSelectionContext } from '../contexts/TimeSelectionContext';
 
@@ -18,11 +18,6 @@ type TimeCellHitbox = {
 const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOptions) => {
   const { updateCurrentSelectedTimes } = useTimeSelectionContext();
 
-  // 렌더 트리거용(부모·자식 렌더는 이 값으로만 결정)
-  const [localSelectedTimes, setLocalSelectedTimes] = useState<Set<string>>(
-    () => new Set(initialSelectedTimes)
-  );
-
   // 임계영역에 접근하기 위한 ref
   const currentWorkingSetRef = useRef<Set<string>>(new Set(initialSelectedTimes));
 
@@ -40,11 +35,35 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   // 배치(rAF)
   const renderAnimationFrameId = useRef<number | null>(null);
 
-  const triggerRenderUpdate = () => {
+  const updateCellClasses = (isInitializing = false) => {
     if (renderAnimationFrameId.current != null) return;
     renderAnimationFrameId.current = requestAnimationFrame(() => {
       renderAnimationFrameId.current = null;
-      setLocalSelectedTimes(new Set(currentWorkingSetRef.current));
+
+      const container = containerRef.current;
+      if (!container) return;
+
+      // 모든 heat-map-cell 요소의 클래스를 업데이트
+      container.querySelectorAll<HTMLElement>('.heat-map-cell').forEach((cell) => {
+        const dateTime = cell.getAttribute('data-time');
+        if (!dateTime) return;
+
+        const isSelected = currentWorkingSetRef.current.has(dateTime);
+
+        // fetch 후 초기화가 필요한 경우 (서버 데이터로 초기값 설정 시)
+        if (isInitializing) {
+          // 기존 selected 클래스를 완전히 제거하고 새로운 상태로 초기화
+          cell.classList.remove('selected');
+          if (isSelected) {
+            cell.classList.add('selected');
+          }
+        } else {
+          // isSelected가 true면 → 'selected' 클래스 추가
+          // isSelected가 false면 → 'selected' 클래스 제거
+
+          cell.classList.toggle('selected', isSelected);
+        }
+      });
     });
   };
 
@@ -53,8 +72,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   useEffect(() => {
     const nextSelectedTimes = new Set(initialSelectedTimes);
     currentWorkingSetRef.current = new Set(nextSelectedTimes);
-    setLocalSelectedTimes(nextSelectedTimes);
+    // 필요... 한가? 없어도 되는데 버그 방지.
     updateCurrentSelectedTimes(nextSelectedTimes);
+    updateCellClasses(true);
   }, [initialSelectedTimes, updateCurrentSelectedTimes]);
 
   const cacheDragHitboxes = () => {
@@ -111,7 +131,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       currentWorkingSetRef.current.delete(cellKey);
     }
 
-    triggerRenderUpdate();
+    updateCellClasses();
   }, []);
 
   const handleDragMove = useCallback((event: React.PointerEvent) => {
@@ -155,7 +175,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       }
     }
 
-    if (didChange) triggerRenderUpdate();
+    if (didChange) updateCellClasses();
   }, []);
 
   const resetDragState = useCallback(() => {
@@ -170,7 +190,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     resetDragState();
     const finalSelectedTimes = new Set(currentWorkingSetRef.current);
 
-    triggerRenderUpdate();
+    updateCellClasses();
     updateCurrentSelectedTimes(finalSelectedTimes);
   }, [updateCurrentSelectedTimes, resetDragState]);
 
@@ -191,7 +211,6 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
   return {
     containerRef,
-    localSelectedTimes,
     pointerHandlers,
   };
 };

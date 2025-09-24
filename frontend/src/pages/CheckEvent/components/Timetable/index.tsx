@@ -2,7 +2,7 @@ import * as S from './Timetable.styled';
 import TimeTableColumn from './TimeTableColumn';
 import TimeSlotColumn from './TimeSlotColumn';
 import useLocalTimeSelection from '@/pages/CheckEvent/hooks/useLocalTimeSelection';
-import { RefObject, useMemo } from 'react';
+import { RefObject } from 'react';
 
 interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -17,22 +17,15 @@ const Timetable = ({
   availableDates,
   initialSelectedTimes,
 }: TimetableProps) => {
-  const { containerRef, localSelectedTimes, pointerHandlers } = useLocalTimeSelection({
+  const { containerRef, pointerHandlers } = useLocalTimeSelection({
     initialSelectedTimes,
   });
-
-  const availableDatesArray = useMemo(() => [...availableDates], [availableDates]);
 
   return (
     <S.TimetableContent ref={containerRef} {...pointerHandlers}>
       <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
-      {availableDatesArray.map((date) => (
-        <TimeTableColumn
-          key={date}
-          date={date}
-          dateTimeSlots={dateTimeSlots}
-          selectedTimes={localSelectedTimes}
-        />
+      {[...availableDates].map((date) => (
+        <TimeTableColumn key={date} date={date} dateTimeSlots={dateTimeSlots} />
       ))}
     </S.TimetableContent>
   );
