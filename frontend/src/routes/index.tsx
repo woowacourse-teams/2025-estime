@@ -1,5 +1,5 @@
 import RootElement from '@/RootElement';
-import LoadingSpinner from '@/shared/components/LoadingSpinner';
+import LoadingSpinner from '@/shared/components/Spinner';
 import { lazy, Suspense } from 'react';
 import CreateEventPageSkeleton from '@/pages/CreateEvent/components/Skeleton';
 import CheckEventPageSkeleton from '@/pages/CheckEvent/components/Skeleton';
