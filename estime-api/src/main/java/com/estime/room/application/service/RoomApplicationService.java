@@ -29,7 +29,6 @@ import com.estime.room.domain.platform.PlatformRepository;
 import com.estime.room.domain.slot.vo.DateTimeSlot;
 import com.estime.room.domain.vo.RoomSession;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
-import com.github.f4b6a3.tsid.Tsid;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -141,12 +140,12 @@ public class RoomApplicationService {
         voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
 
-        final Tsid roomSession = input.session().getValue();
+        final RoomSession roomSession = room.getSession();
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
                 try {
-                    sseService.sendSseByRoomSession(roomSession, "vote-changed");
+                    sseService.sendMessageByRoomSession(roomSession, "vote-changed");
                 } catch (final Exception e) {
                     log.warn("Failed to send SSE [vote-changed] after commit. roomSession={}", roomSession, e);
                 }
