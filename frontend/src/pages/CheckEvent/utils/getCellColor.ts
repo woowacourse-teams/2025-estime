@@ -9,6 +9,7 @@ interface GetHeaderCellBackgroundColorParams {
 interface GetHeatMapCellBackgroundColorParams {
   theme: Theme;
   weight: number;
+  isRecommended: boolean;
 }
 
 export const getHeaderCellBackgroundColor = ({
