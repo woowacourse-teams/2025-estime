@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div<{
   backgroundColor?: string;
-  hasTooltip?: boolean;
 }>`
   position: relative;
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
