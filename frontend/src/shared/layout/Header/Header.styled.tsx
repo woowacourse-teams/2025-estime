@@ -23,10 +23,8 @@ export const Wrapper = styled.div`
 `;
 
 export const LogoWrapper = styled.div`
-  position: relative;
   width: 6.25rem;
   height: 2rem;
-  transition: all 0.3s ease;
 
   &:hover {
     cursor: pointer;

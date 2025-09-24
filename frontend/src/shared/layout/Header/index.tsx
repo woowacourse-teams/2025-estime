@@ -9,7 +9,7 @@ const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
   const platformType = useExtractQueryParams('platformType') as 'DISCORD' | 'SLACK';
 
   const handleClick = () => {
-    window.open('https://estime.today', '_blank');
+    window.open(process.env.DOMAIN_URL, '_blank');
   };
 
   return (
