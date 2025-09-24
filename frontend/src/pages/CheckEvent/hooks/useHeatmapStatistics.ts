@@ -3,7 +3,7 @@ import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/t
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { useEffect, useState, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
-import { useToastContext } from '@/shared/contexts/ToastContext';
+import { showToast } from '@/shared/store/toastStore';
 
 interface DateCellInfo {
   weight: number;
@@ -20,8 +20,6 @@ const useHeatmapStatistics = ({
   session: string;
   weightCalculateStrategy: WeightCalculateStrategy;
 }) => {
-  const { addToast } = useToastContext();
-
   const [roomStatistics, setRoomStatistics] = useState<Map<string, HeatmapDateCellInfo>>(new Map());
 
   const getWeightStatistics = useCallback(
@@ -85,7 +83,7 @@ const useHeatmapStatistics = ({
       } catch (err) {
         const e = err as Error;
         console.error(e);
-        addToast({
+        showToast({
           type: 'error',
           message: e.message,
         });
@@ -94,7 +92,7 @@ const useHeatmapStatistics = ({
         });
       }
     },
-    [addToast, formatRoomStatistics]
+    [formatRoomStatistics]
   );
 
   useEffect(() => {

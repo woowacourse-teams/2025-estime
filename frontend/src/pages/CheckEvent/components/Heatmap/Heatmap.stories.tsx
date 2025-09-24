@@ -2,7 +2,6 @@ import { Meta, StoryObj } from '@storybook/react-webpack5';
 import Heatmap from '.';
 import type { HeatmapDateCellInfo } from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 import { getSimpleWeight } from '@/pages/CheckEvent/utils/getWeight';
-import ToastProvider from '@/providers/ToastProvider';
 
 const meta: Meta<typeof Heatmap> = {
   title: 'Components/Heatmap',
@@ -22,13 +21,7 @@ const meta: Meta<typeof Heatmap> = {
       description: '방 통계 데이터',
     },
   },
-  decorators: [
-    (Story) => (
-      <ToastProvider>
-        <Story />
-      </ToastProvider>
-    ),
-  ],
+  decorators: [(Story) => <Story />],
 };
 
 export default meta;
