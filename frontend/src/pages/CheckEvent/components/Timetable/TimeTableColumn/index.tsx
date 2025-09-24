@@ -9,7 +9,6 @@ interface TimeTableColumnProps {
 
 const TimeTableColumn = ({ date, dateTimeSlots }: TimeTableColumnProps) => {
   return (
-    //TODO: 메모이제이션 추가 할수 있으면 고민 해볼것.
     <Wrapper center={false} maxWidth="100%">
       <TimeTableDay date={date} />
       {dateTimeSlots.map((dateTimeSlot) => (
