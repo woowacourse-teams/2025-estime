@@ -6,6 +6,7 @@ import java.util.List;
 
 public record DateTimeSlotStatisticOutput(
         int participantCount,
+        List<ParticipantName> participants,
         List<DateTimeParticipantsOutput> statistic
 ) {
 
