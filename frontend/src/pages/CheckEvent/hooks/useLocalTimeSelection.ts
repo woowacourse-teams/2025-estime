@@ -64,8 +64,8 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     containerBoundingRectRef.current = containerRect;
 
     const hitboxes: TimeCellHitbox[] = [];
-    // 모든 selectable 요소를 순회하며
-    container.querySelectorAll<HTMLElement>('.selectable').forEach((selectableElement) => {
+    // 모든 heat-map-cell 요소를 순회하며
+    container.querySelectorAll<HTMLElement>('.heat-map-cell').forEach((selectableElement) => {
       const dateTime = selectableElement.getAttribute('data-time');
       if (!dateTime) return;
       const elementRect = selectableElement.getBoundingClientRect();
@@ -89,7 +89,9 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     if (!bounds) return;
 
     // 클릭한 요소에서 가장 가까운 셀 찾기
-    const targetCell = (event.target as HTMLElement).closest('.selectable') as HTMLElement | null;
+    const targetCell = (event.target as HTMLElement).closest(
+      '.heat-map-cell'
+    ) as HTMLElement | null;
     const cellKey = targetCell?.dataset.time;
     if (!cellKey) return;
     isDraggingRef.current = true;

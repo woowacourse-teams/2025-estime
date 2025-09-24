@@ -19,7 +19,7 @@ const TimeTableCell = ({ date, timeText, selectedTimes }: TimeTableCellProps) =>
   return (
     <S.HeaderCell
       backgroundColor={backgroundColor}
-      className="selectable"
+      className="heat-map-cell"
       data-time={dateTimeKey}
     />
   );
