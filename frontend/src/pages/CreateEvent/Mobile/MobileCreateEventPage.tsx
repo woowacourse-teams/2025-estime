@@ -121,7 +121,6 @@ const MobileCreateEventPage = () => {
         </Funnel.Step>
 
         <Funnel.Step name="캘린더 선택 화면">
-          {' '}
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <CalendarSettings
               availableDateSlots={availableDateSlots}
