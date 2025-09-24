@@ -3,7 +3,7 @@ import Timetable from '@/pages/CheckEvent/components/Timetable';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
 import Heatmap from '@/pages/CheckEvent/components/Heatmap';
 import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
@@ -164,9 +164,7 @@ const CheckEventPageContent = () => {
     console.log('✅ fetch 완료!');
   }, [fetchRoomStatistics, session]);
 
-  const handlers = useMemo(() => ({ onVoteChange }), [onVoteChange]);
-
-  useSSE(session, handleError, handlers);
+  useSSE(session, handleError, onVoteChange);
 
   return (
     <>

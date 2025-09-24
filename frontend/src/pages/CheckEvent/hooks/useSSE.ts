@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
 import type { HandleErrorReturn } from '../../../shared/hooks/common/useCreateError';
 
-interface Handlers {
-  onVoteChange: () => Promise<void>;
-}
-
 // SSE 재연결 관련 상수
 const MAX_RETRY_COUNT = 10;
 const RETRY_INTERVAL = 1000; // 1초
 
-const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handlers) => {
+const useSSE = (
+  session: string,
+  handleError: HandleErrorReturn,
+  onVoteChange: () => Promise<void>
+) => {
   const retryCountRef = useRef(0);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -35,7 +35,7 @@ const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handle
       );
       eventSourceRef.current = eventSource;
 
-      const onConnected = (ev: MessageEvent<string>) => {
+      const handleConnected = (ev: MessageEvent<string>) => {
         try {
           const data = JSON.parse(ev.data);
           // 연결 성공시 재시도 카운트 초기화
@@ -48,18 +48,18 @@ const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handle
         }
       };
 
-      const onVoteChange = async (ev: MessageEvent<string>) => {
+      const handleVoteChange = async (ev: MessageEvent<string>) => {
         try {
           const data = JSON.parse(ev.data);
-          await handler.onVoteChange();
+          onVoteChange();
           console.log('투표 변경:', data);
         } catch (error) {
           handleError(error, 'SSE 연결 오류');
         }
       };
 
-      eventSource.addEventListener('connected', onConnected);
-      eventSource.addEventListener('vote-changed', onVoteChange);
+      eventSource.addEventListener('connected', handleConnected);
+      eventSource.addEventListener('vote-changed', handleVoteChange);
 
       eventSource.onerror = (e) => {
         if (retryCountRef.current < MAX_RETRY_COUNT) {
@@ -117,7 +117,7 @@ const useSSE = (session: string, handleError: HandleErrorReturn, handler: Handle
     );
 
     return cleanup;
-  }, [session, handleError, handler]);
+  }, [session, handleError, onVoteChange]);
 };
 
 export default useSSE;
