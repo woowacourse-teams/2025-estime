@@ -227,7 +227,7 @@ const CheckEventPageContent = () => {
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={userAvailability.userName}
-                    mode="edit"
+                    mode="save"
                     onToggleEditMode={handleToggleMode}
                     isExpired={isExpired}
                   />
