@@ -18,8 +18,8 @@ import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
 import com.estime.room.domain.Room;
 import com.estime.room.domain.RoomRepository;
-import com.estime.room.domain.participant.Participant;
 import com.estime.room.domain.participant.ParticipantRepository;
+import com.estime.room.domain.participant.Participants;
 import com.estime.room.domain.participant.vo.ParticipantName;
 import com.estime.room.domain.participant.vote.VoteRepository;
 import com.estime.room.domain.participant.vote.Votes;
@@ -102,11 +102,14 @@ public class RoomApplicationService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        final Map<Long, ParticipantName> idToName = participantRepository.findAllByIdIn(participantsIds).stream()
-                .collect(Collectors.toMap(Participant::getId, Participant::getName));
+        // TODO: participantRepository 에서 Participants를 return 하도록 변경 논의 필요
+        final Participants participants = Participants.from(participantRepository.findAllByIdIn(participantsIds));
+
+        final Map<Long, ParticipantName> idToName = participants.getIdToName();
 
         return new DateTimeSlotStatisticOutput(
-                participantIds.size(),
+                participants.getSize(),
+                participants.getAllNames(),
                 dateTimeSlotParticipants.keySet().stream()
                         .map(dateTimeSlot ->
                                 new DateTimeParticipantsOutput(
@@ -115,7 +118,6 @@ public class RoomApplicationService {
                                                 .map(idToName::get)
                                                 .toList())
                         ).toList());
-
     }
 
     @Transactional(readOnly = true)
