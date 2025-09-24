@@ -27,7 +27,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   const currentWorkingSetRef = useRef<Set<string>>(new Set(initialSelectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isTouch, setIsTouch] = useState(false);
+  const isTouch = useRef(false);
 
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
@@ -48,7 +48,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     });
   };
 
-  useLockBodyScroll(isTouch);
+  useLockBodyScroll(isTouch.current);
 
   useEffect(() => {
     const nextSelectedTimes = new Set(initialSelectedTimes);
@@ -81,7 +81,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   };
 
   const handleDragStart = useCallback((event: React.PointerEvent) => {
-    setIsTouch(event.pointerType === 'touch');
+    if (event.pointerType === 'touch') isTouch.current = true;
 
     cacheDragHitboxes();
 
@@ -159,7 +159,7 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
   const resetDragState = useCallback(() => {
     dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
-    setIsTouch(false);
+    isTouch.current = false;
   }, []);
 
   const handleDragEnd = useCallback(() => {
