@@ -7,12 +7,17 @@ import IEstimeLogo from '@/assets/icons/IEstimeLogo';
 
 const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => void }) => {
   const platformType = useExtractQueryParams('platformType') as 'DISCORD' | 'SLACK';
+
+  const handleClick = () => {
+    window.open(process.env.DOMAIN_URL, '_blank');
+  };
+
   return (
     <S.Container>
       <S.Content>
         <S.Wrapper>
           <Text variant="h2" color="primary">
-            <S.LogoWrapper>
+            <S.LogoWrapper onClick={handleClick}>
               <IEstimeLogo />
             </S.LogoWrapper>
           </Text>

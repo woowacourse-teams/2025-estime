@@ -1,6 +1,5 @@
 import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import Timetable from '@/pages/CheckEvent/components/Timetable';
-import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
 import { useState, useCallback } from 'react';
@@ -28,12 +27,18 @@ import {
   useTimeSelectionContext,
 } from '@/pages/CheckEvent/contexts/TimeSelectionContext';
 import * as S from './CheckEventPage.styled';
+import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
+import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import { showToast } from '@/shared/store/toastStore';
 
-const CheckEventPageContent = () => {
-  const theme = useTheme();
+interface CheckEventContentProps {
+  roomInfo: ReturnType<typeof useCheckRoomSession>['roomInfo'];
+  session: string;
+  isExpired: boolean;
+}
 
-  const { roomInfo, session, isExpired } = useCheckRoomSession();
+const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentProps) => {
+  const theme = useTheme();
 
   const { modalHelpers } = useModalControl();
 
@@ -46,13 +51,12 @@ const CheckEventPageContent = () => {
     session,
   });
 
-  const { roomStatistics, fetchRoomStatistics } = useHeatmapStatistics({
+  const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
     weightCalculateStrategy,
   });
 
   const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
-
   const handleError = useHandleError();
 
   const {
@@ -158,13 +162,13 @@ const CheckEventPageContent = () => {
     });
   };
 
-  const onVoteChange = useCallback(async () => {
-    console.log('🔄 SSE vote-changed event 확인... fetch중...');
-    await fetchRoomStatistics(session);
-    console.log('✅ fetch 완료!');
-  }, [fetchRoomStatistics, session]);
-
-  useSSE(session, handleError, onVoteChange);
+  useSSE(session, handleError, {
+    onVoteChange: async () => {
+      console.log('🔄 SSE vote-changed event 확인... fetch중...');
+      await fetchRoomStatistics(session);
+      console.log('✅ fetch 완료!');
+    },
+  });
 
   return (
     <>
@@ -211,7 +215,6 @@ const CheckEventPageContent = () => {
                       timeColumnRef={timeColumnRef}
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
-                      roomStatistics={roomStatistics}
                       handleBeforeEdit={handleBeforeEdit}
                     />
                   </Flex>
@@ -256,6 +259,7 @@ const CheckEventPageContent = () => {
           </S.FlipCard>
         </Flex>
       </Wrapper>
+
       <LoginModal
         isLoginModalOpen={modalHelpers.login.isOpen}
         handleCloseLoginModal={modalHelpers.login.close}
@@ -280,10 +284,12 @@ const CheckEventPageContent = () => {
 };
 
 const CheckEventPage = () => {
+  const { roomInfo, session, isExpired } = useCheckRoomSession();
+
   return (
-    <TimeSelectionProvider>
-      <CheckEventPageContent />
-    </TimeSelectionProvider>
+    <RoomStatisticsProvider>
+      <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
+    </RoomStatisticsProvider>
   );
 };
 

@@ -1,16 +1,21 @@
 import { Theme } from '../../../styles/theme';
 
-interface GetHeatMapCellBackgroundColorParams {
+interface GetHeaderCellBackgroundColorParams {
+  selectedTimes: Set<string>;
+  date: string;
+  timeText: string;
   theme: Theme;
-  weight: number;
-  isRecommended: boolean;
 }
-
-export const getHeatMapCellBackgroundColor = ({
+export const getHeaderCellBackgroundColor = ({
+  selectedTimes,
+  date,
+  timeText,
   theme,
-  weight,
-}: GetHeatMapCellBackgroundColorParams) => {
-  if (weight > 0) return hexToRgba(theme.colors.primary, weight);
+}: GetHeaderCellBackgroundColorParams) => {
+  if (selectedTimes.has(`${date}T${timeText}`)) {
+    return theme.colors.primary;
+  }
+
   return theme.colors.gray10;
 };
 
@@ -18,7 +23,7 @@ export const getHeatMapCellBackgroundColor = ({
 // 16진수 문자열을 정수로 변환할 때는 16을 사용합니다.
 // hexToRgba 함수는 16진수 색상 문자열을 rgba 형식으로 변환합니다.
 // https://stackoverflow.com/a/28056903
-function hexToRgba(hex: string, alpha: number) {
+export function hexToRgba(hex: string, alpha: number) {
   var r = parseInt(hex.slice(1, 3), 16),
     g = parseInt(hex.slice(3, 5), 16),
     b = parseInt(hex.slice(5, 7), 16);

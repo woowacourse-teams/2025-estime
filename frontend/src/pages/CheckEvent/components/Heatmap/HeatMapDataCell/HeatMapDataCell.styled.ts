@@ -1,3 +1,4 @@
+import { hexToRgba } from '@/pages/CheckEvent/utils/getCellColor';
 import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 
@@ -7,7 +8,7 @@ const shimmerSweep = keyframes`
 `;
 
 export const Container = styled.div<{
-  backgroundColor?: string;
+  weight: number;
   isRecommended?: boolean;
 }>`
   position: relative;
@@ -20,7 +21,8 @@ export const Container = styled.div<{
   touch-action: manipulation;
   overflow: hidden;
 
-  background-color: ${({ backgroundColor }) => backgroundColor};
+  background-color: ${({ weight, theme }) =>
+    weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
 
   ${({ isRecommended }) =>
     isRecommended &&
