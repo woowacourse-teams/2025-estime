@@ -6,6 +6,7 @@ import com.estime.common.exception.domain.DomainException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Set;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,15 +37,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     public CustomApiResponse<Void> handleIOException(final IOException e, final HttpServletRequest request) {
-        // SSE 관련 예외 패턴들
-        final Set<String> sseErrorPatterns = Set.of(
-                "연결은 사용자의 호스트 시스템의 소프트웨어의 의해 중단",
-                "Broken pipe",
-                "Connection reset by peer"
+        // SSE 관련 예외 패턴들 (대소문자 무시)
+        final Set<Pattern> sseErrorPatterns = Set.of(
+                Pattern.compile("broken pipe", Pattern.CASE_INSENSITIVE)
         );
 
         final String message = e.getMessage();
-        if (message != null && sseErrorPatterns.stream().anyMatch(message::contains)) {
+        if (message != null && sseErrorPatterns.stream().anyMatch(pattern ->
+                pattern.matcher(message).find())) {
             log.debug("SSE client disconnected: {}", message);
             return null;
         }
