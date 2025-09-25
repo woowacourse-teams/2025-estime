@@ -1,6 +1,6 @@
 package com.estime.common.sse.application;
 
-import com.github.f4b6a3.tsid.Tsid;
+import com.estime.room.domain.vo.RoomSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ public class SseService {
 
     private final SseSender sseSender;
 
-    public void sendSseByRoomSession(final Tsid roomSession, final String message) {
-        sseSender.broadcast(roomSession, message);
+    public void sendMessageByRoomSession(final RoomSession session, final String message) {
+        sseSender.broadcast(session, message);
     }
 }
