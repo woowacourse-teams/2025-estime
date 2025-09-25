@@ -18,7 +18,6 @@ export const Tooltip = styled.div<{ visible: boolean }>`
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   background-color: ${({ theme }) => theme.colors.gray10};
   z-index: ${zIndex.tooltip};
-  pointer-events: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   max-width: 300px;
   width: max-content;
@@ -54,6 +53,10 @@ export const Tooltip = styled.div<{ visible: boolean }>`
     border-right: 10px solid transparent;
     border-top: 10px solid ${({ theme }) => theme.colors.gray10};
     z-index: 2;
+  }
+
+  @media (hover: none) {
+    pointer-events: auto;
   }
 `;
 
