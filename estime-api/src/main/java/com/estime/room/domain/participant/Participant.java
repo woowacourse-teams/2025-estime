@@ -7,6 +7,8 @@ import com.estime.room.domain.participant.vo.ParticipantName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +22,9 @@ import lombok.experimental.FieldNameConstants;
 @Getter
 @ToString
 @FieldNameConstants
+@Table(indexes = {
+        @Index(name = "idx_participant_room_id", columnList = "room_id")
+})
 public class Participant extends BaseEntity {
 
     @Column(name = "room_id", nullable = false)
