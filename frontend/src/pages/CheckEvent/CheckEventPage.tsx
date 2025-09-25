@@ -2,7 +2,7 @@ import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import Timetable from '@/pages/CheckEvent/components/Timetable';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
 import Heatmap from '@/pages/CheckEvent/components/Heatmap';
 import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
@@ -22,6 +22,10 @@ import useUserLogin from './hooks/useUserLogin';
 import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
+import {
+  TimeSelectionProvider,
+  useTimeSelectionContext,
+} from '@/pages/CheckEvent/contexts/TimeSelectionContext';
 import * as S from './CheckEventPage.styled';
 import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
@@ -42,11 +46,10 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
     session,
   });
 
-  const { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime } =
-    useUserAvailability({
-      name,
-      session,
-    });
+  const { userAvailability, userAvailabilitySubmit, fetchUserAvailableTime } = useUserAvailability({
+    name,
+    session,
+  });
 
   const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
@@ -56,9 +59,29 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
   const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
   const handleError = useHandleError();
 
+  const {
+    totalPages,
+    page,
+    timeTableContainerRef,
+    timeColumnRef,
+    currentPageDates,
+    canPagePrev,
+    canPageNext,
+    handlePagePrev,
+    handlePageNext,
+    pageReset,
+  } = useTimeTablePagination({
+    availableDates: roomInfo.availableDateSlots,
+  });
+  const { getCurrentSelectedTimes } = useTimeSelectionContext();
   const switchToViewMode = async () => {
     try {
-      await userAvailabilitySubmit();
+      const currentTimes = getCurrentSelectedTimes();
+      const updatedUserAvailability = {
+        ...userAvailability,
+        selectedTimes: currentTimes,
+      };
+      await userAvailabilitySubmit(updatedUserAvailability);
       await fetchRoomStatistics(session);
       // save 모드에서 저장하기를 누르면 edit 모드로 전환
       setMode('edit');
@@ -119,21 +142,6 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
     }
   };
 
-  const {
-    totalPages,
-    page,
-    timeTableContainerRef,
-    timeColumnRef,
-    currentPageDates,
-    canPagePrev,
-    canPageNext,
-    handlePagePrev,
-    handlePageNext,
-    pageReset,
-  } = useTimeTablePagination({
-    availableDates: roomInfo.availableDateSlots,
-  });
-
   const handleDuplicatedCancel = () => {
     modalHelpers.entryConfirm.close();
     handleLoggedIn.setFalse();
@@ -154,14 +162,13 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
     });
   };
 
-  useSSE(session, handleError, {
-    onVoteChange: async () => {
-      console.log('🔄 SSE vote-changed event 확인... fetch중...');
-      await fetchRoomStatistics(session);
-      console.log('✅ fetch 완료!');
-    },
-  });
+  const onVoteChange = useCallback(async () => {
+    console.log('🔄 SSE vote-changed event 확인... fetch중...');
+    await fetchRoomStatistics(session);
+    console.log('✅ fetch 완료!');
+  }, [fetchRoomStatistics, session]);
 
+  useSSE(session, handleError, onVoteChange);
   return (
     <>
       <Wrapper
@@ -219,8 +226,8 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
-                    name={userName.value}
-                    mode={mode}
+                    name={userAvailability.userName}
+                    mode="save"
                     onToggleEditMode={handleToggleMode}
                     isExpired={isExpired}
                   />
@@ -242,7 +249,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
                       timeColumnRef={timeColumnRef}
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
-                      selectedTimes={selectedTimes}
+                      initialSelectedTimes={userAvailability.selectedTimes}
                     />
                   </Flex>
                 </Flex>
@@ -279,9 +286,11 @@ const CheckEventPage = () => {
   const { roomInfo, session, isExpired } = useCheckRoomSession();
 
   return (
-    <RoomStatisticsProvider>
-      <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
-    </RoomStatisticsProvider>
+    <TimeSelectionProvider>
+      <RoomStatisticsProvider>
+        <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
+      </RoomStatisticsProvider>
+    </TimeSelectionProvider>
   );
 };
 
