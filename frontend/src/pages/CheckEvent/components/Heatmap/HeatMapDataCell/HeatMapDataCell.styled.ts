@@ -20,22 +20,23 @@ export const Container = styled.div<{
   user-select: none;
   touch-action: manipulation;
   overflow: hidden;
-
+  transition: background-color 0.25s ease-in-out;
   background-color: ${({ weight, theme }) =>
     weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
 
-  ${({ isRecommended }) =>
+  ${({ isRecommended, weight, theme }) =>
     isRecommended &&
     css`
-      background: linear-gradient(
+      background-image: linear-gradient(
         90deg,
         #8052e1 0%,
         #9058e8 25%,
         #9c64f2 45%,
-        /* 핑크빛 보라 */ #8a56e6 65%,
+        #8a56e6 65%,
         #7a4dd9 85%,
         #8052e1 100%
       );
+      background-color: ${weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10}};
       &::after {
         inset: -1px;
         content: '';
