@@ -1,0 +1,37 @@
+import Flex from '../../../../shared/layout/Flex';
+import IClock from '@/assets/icons/IClock';
+import Text from '@/shared/components/Text';
+import { useTheme } from '@emotion/react';
+import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import ShareButton from '../../../../shared/components/Button/ShareButton';
+
+type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
+  roomSession: string;
+  openCopyModal: () => void;
+};
+
+const CheckEventPageHeader = ({ deadline, title, openCopyModal }: CheckEventPageHeaderProps) => {
+  const theme = useTheme();
+
+  return (
+    <Flex gap="var(--gap-5)" justify="space-between" direction="column">
+      <Flex gap="var(--gap-6)" align="center">
+        <Text variant="h1" color="primary">
+          {title}
+        </Text>
+        <ShareButton onClick={openCopyModal} />
+      </Flex>
+      <Flex gap="var(--gap-6)" justify="flex-start" align="center">
+        <Flex justify="space-between" align="center" gap="var(--gap-3)">
+          <IClock color={theme.colors.text} />
+
+          <Text variant="h4" color="text">
+            마감일 : {deadline ? `${deadline.date} ${deadline.time}` : '설정되지 않음'}
+          </Text>
+        </Flex>
+      </Flex>
+    </Flex>
+  );
+};
+
+export default CheckEventPageHeader;

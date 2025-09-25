@@ -14,6 +14,8 @@ export default merge(common, {
     ],
   },
 
+  plugins: [],
+
   devServer: {
     static: ['./dist', './public'],
     hot: true,
