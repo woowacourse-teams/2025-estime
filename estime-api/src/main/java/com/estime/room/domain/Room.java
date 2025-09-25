@@ -20,7 +20,9 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +40,10 @@ import lombok.experimental.FieldNameConstants;
 @Getter
 @ToString
 @FieldNameConstants(level = AccessLevel.PRIVATE)
+@Table(indexes = {
+        @Index(name = "idx_room_session", columnList = "session"),
+        @Index(name = "idx_room_deadline", columnList = "deadline")
+})
 public class Room extends BaseEntity {
 
     private static final int TITLE_MAX_LENGTH = 20;
