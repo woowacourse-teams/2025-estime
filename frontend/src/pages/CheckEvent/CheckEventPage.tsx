@@ -2,7 +2,7 @@ import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import Timetable from '@/pages/CheckEvent/components/Timetable';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
 import Heatmap from '@/pages/CheckEvent/components/Heatmap';
 import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
@@ -162,14 +162,13 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
     });
   };
 
-  useSSE(session, handleError, {
-    onVoteChange: async () => {
-      console.log('🔄 SSE vote-changed event 확인... fetch중...');
-      await fetchRoomStatistics(session);
-      console.log('✅ fetch 완료!');
-    },
-  });
+  const onVoteChange = useCallback(async () => {
+    console.log('🔄 SSE vote-changed event 확인... fetch중...');
+    await fetchRoomStatistics(session);
+    console.log('✅ fetch 완료!');
+  }, [fetchRoomStatistics, session]);
 
+  useSSE(session, handleError, onVoteChange);
   return (
     <>
       <Wrapper
@@ -287,9 +286,11 @@ const CheckEventPage = () => {
   const { roomInfo, session, isExpired } = useCheckRoomSession();
 
   return (
-    <RoomStatisticsProvider>
-      <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
-    </RoomStatisticsProvider>
+    <TimeSelectionProvider>
+      <RoomStatisticsProvider>
+        <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
+      </RoomStatisticsProvider>
+    </TimeSelectionProvider>
   );
 };
 
