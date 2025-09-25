@@ -1,5 +1,4 @@
-import { css } from '@emotion/react';
-import { Theme } from '@emotion/react/dist/declarations/src';
+import { Theme, css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const dayCellRadius = 36;
