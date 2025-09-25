@@ -196,8 +196,10 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
 
   const handleDragLeave = useCallback(() => {
     isDraggingRef.current = false;
+    const finalSelectedTimes = new Set(currentWorkingSetRef.current);
+    updateCurrentSelectedTimes(finalSelectedTimes);
     resetDragState();
-  }, [resetDragState]);
+  }, [resetDragState, updateCurrentSelectedTimes]);
 
   const pointerHandlers = useMemo(
     () => ({
