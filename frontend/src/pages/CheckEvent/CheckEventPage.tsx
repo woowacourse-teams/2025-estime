@@ -151,7 +151,8 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
   const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isLoggedIn) return;
 
-    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
+
     if (!cell) return;
 
     if (isExpired) return;
