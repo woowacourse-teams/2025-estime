@@ -1,3 +1,22 @@
+## 1.3.0 (2025-09-25)
+
+* fix: og 이미지 제작 (#558) ([b4a1bba](https://github.com/woowacourse-teams/2025-estime/commit/b4a1bba)), closes [#558](https://github.com/woowacourse-teams/2025-estime/issues/558)
+* fix: Theme import 경로 수정 (#588) ([f5be03d](https://github.com/woowacourse-teams/2025-estime/commit/f5be03d)), closes [#588](https://github.com/woowacourse-teams/2025-estime/issues/588)
+* chore: checkEventpage 잡일들(마감기한, 편집하기 버튼 리펙터링) (#525) ([5ca68e2](https://github.com/woowacourse-teams/2025-estime/commit/5ca68e2)), closes [#525](https://github.com/woowacourse-teams/2025-estime/issues/525)
+* chore: createeventpage 잡일들. (#579) ([2dafbbb](https://github.com/woowacourse-teams/2025-estime/commit/2dafbbb)), closes [#579](https://github.com/woowacourse-teams/2025-estime/issues/579)
+* refactor: font 최적화 작업 (#576) ([e54d440](https://github.com/woowacourse-teams/2025-estime/commit/e54d440)), closes [#576](https://github.com/woowacourse-teams/2025-estime/issues/576)
+* refactor: FSD 폴더 구조 변경 (#518) ([83366f8](https://github.com/woowacourse-teams/2025-estime/commit/83366f8)), closes [#518](https://github.com/woowacourse-teams/2025-estime/issues/518)
+* refactor: Tooltip 리팩토링 (#539) ([a47e69c](https://github.com/woowacourse-teams/2025-estime/commit/a47e69c)), closes [#539](https://github.com/woowacourse-teams/2025-estime/issues/539)
+* feat: fallbackUI 추가 (#582) ([ef38883](https://github.com/woowacourse-teams/2025-estime/commit/ef38883)), closes [#582](https://github.com/woowacourse-teams/2025-estime/issues/582)
+* feat: lighthouse 정보 pr comment에 달기 (CI 자동화) (#571) ([4487749](https://github.com/woowacourse-teams/2025-estime/commit/4487749)), closes [#571](https://github.com/woowacourse-teams/2025-estime/issues/571)
+* feat: 가장 많이 투표한 시간대를 구현 (#581) ([0c79656](https://github.com/woowacourse-teams/2025-estime/commit/0c79656)), closes [#581](https://github.com/woowacourse-teams/2025-estime/issues/581)
+* toast 상태 ->  외부 스토어로 관리 (#552) ([af1bff0](https://github.com/woowacourse-teams/2025-estime/commit/af1bff0)), closes [#552](https://github.com/woowacourse-teams/2025-estime/issues/552)
+* 기본적인 메타 데이터를 작성 (#520) ([64c255c](https://github.com/woowacourse-teams/2025-estime/commit/64c255c)), closes [#520](https://github.com/woowacourse-teams/2025-estime/issues/520)
+* 라우팅 구조 개편 (#549) ([ae84300](https://github.com/woowacourse-teams/2025-estime/commit/ae84300)), closes [#549](https://github.com/woowacourse-teams/2025-estime/issues/549)
+* 성능 최적화 - codeSplitting (#540) ([7cff0b7](https://github.com/woowacourse-teams/2025-estime/commit/7cff0b7)), closes [#540](https://github.com/woowacourse-teams/2025-estime/issues/540)
+
+
+
 ## 1.2.0 (2025-08-21)
 
 * feat: 히트맵 sse 도입 (#465) ([08a5f78](https://github.com/woowacourse-teams/2025-estime/commit/08a5f78)), closes [#465](https://github.com/woowacourse-teams/2025-estime/issues/465)
