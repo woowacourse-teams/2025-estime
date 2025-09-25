@@ -2,6 +2,7 @@ import Flex from '@/shared/layout/Flex';
 import Text from '@/shared/components/Text';
 import * as S from './TimeTableDay.styled';
 import { DateManager } from '@/shared/utils/common/DateManager';
+import { memo } from 'react';
 
 interface TimeTableDayProps {
   date: string;
@@ -20,4 +21,4 @@ const TimeTableDay = ({ date }: TimeTableDayProps) => {
   );
 };
 
-export default TimeTableDay;
+export default memo(TimeTableDay);

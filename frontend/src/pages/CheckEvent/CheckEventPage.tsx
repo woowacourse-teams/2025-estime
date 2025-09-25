@@ -1,6 +1,5 @@
 import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import Timetable from '@/pages/CheckEvent/components/Timetable';
-import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
 import { useState } from 'react';
@@ -24,12 +23,18 @@ import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import * as S from './CheckEventPage.styled';
+import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
+import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import { showToast } from '@/shared/store/toastStore';
 
-const CheckEventPage = () => {
-  const theme = useTheme();
+interface CheckEventContentProps {
+  roomInfo: ReturnType<typeof useCheckRoomSession>['roomInfo'];
+  session: string;
+  isExpired: boolean;
+}
 
-  const { roomInfo, session, isExpired } = useCheckRoomSession();
+const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentProps) => {
+  const theme = useTheme();
 
   const { modalHelpers } = useModalControl();
 
@@ -43,13 +48,12 @@ const CheckEventPage = () => {
       session,
     });
 
-  const { roomStatistics, fetchRoomStatistics } = useHeatmapStatistics({
+  const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
     weightCalculateStrategy,
   });
 
   const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
-
   const handleError = useHandleError();
 
   const switchToViewMode = async () => {
@@ -157,6 +161,7 @@ const CheckEventPage = () => {
       console.log('✅ fetch 완료!');
     },
   });
+
   return (
     <>
       <Wrapper
@@ -202,7 +207,6 @@ const CheckEventPage = () => {
                       timeColumnRef={timeColumnRef}
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
-                      roomStatistics={roomStatistics}
                       handleBeforeEdit={handleBeforeEdit}
                     />
                   </Flex>
@@ -247,6 +251,7 @@ const CheckEventPage = () => {
           </S.FlipCard>
         </Flex>
       </Wrapper>
+
       <LoginModal
         isLoginModalOpen={modalHelpers.login.isOpen}
         handleCloseLoginModal={modalHelpers.login.close}
@@ -267,6 +272,16 @@ const CheckEventPage = () => {
         <CopyLinkModal sessionId={session} />
       </Modal>
     </>
+  );
+};
+
+const CheckEventPage = () => {
+  const { roomInfo, session, isExpired } = useCheckRoomSession();
+
+  return (
+    <RoomStatisticsProvider>
+      <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
+    </RoomStatisticsProvider>
   );
 };
 

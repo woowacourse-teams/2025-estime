@@ -1,11 +1,12 @@
 import { getRoomStatistics } from '@/apis/room/room';
 import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { showToast } from '@/shared/store/toastStore';
+import { useRoomStatisticsContext } from '../provider/RoomStatisticsProvider';
 
-interface DateCellInfo {
+export interface DateCellInfo {
   weight: number;
   participantNames: string[];
 }
@@ -20,7 +21,7 @@ const useHeatmapStatistics = ({
   session: string;
   weightCalculateStrategy: WeightCalculateStrategy;
 }) => {
-  const [roomStatistics, setRoomStatistics] = useState<Map<string, HeatmapDateCellInfo>>(new Map());
+  const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
   const getWeightStatistics = useCallback(
     (statistic: StatisticItem[], participantCount: number) => {
