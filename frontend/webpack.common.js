@@ -70,8 +70,8 @@ export default {
     new HtmlWebpackPlugin({
       template: './public/index.html',
       favicon: './src/assets/images/logo.svg',
-      meta: {
-        'og:image': `${process.env.DOMAIN_URL}/thumbnail.jpg`,
+      templateParameters: {
+        DOMAIN_URL: process.env.DOMAIN_URL,
       },
     }),
     new ForkTsCheckerPlugin(),

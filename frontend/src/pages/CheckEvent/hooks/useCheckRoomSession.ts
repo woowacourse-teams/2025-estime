@@ -32,11 +32,13 @@ const useCheckRoomSession = () => {
     }
   }, [session, navigate]);
 
+
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
   useEffect(() => {
     fetchSession();
   }, [session, fetchSession]);
+
 
   return { roomInfo, session, isExpired };
 };

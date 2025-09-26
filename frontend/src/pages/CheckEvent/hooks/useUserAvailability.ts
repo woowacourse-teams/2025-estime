@@ -1,7 +1,7 @@
+import { useRef, useState, useCallback } from 'react';
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
-import { useRef, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { showToast } from '@/shared/store/toastStore';
 
@@ -23,49 +23,41 @@ export const useUserAvailability = ({
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
-  const userName = {
-    value: userAvailability.userName,
-    set: (userName: string) => setUserAvailability((prev) => ({ ...prev, userName })),
-  };
+  const userAvailabilitySubmit = useCallback(
+    async (updatedUserAvailability: UserAvailability) => {
+      if (isUserSubmitLoading.current) {
+        showToast({
+          type: 'warning',
+          message: '시간표를 불러오는 중입니다. 잠시만 기다려주세요.',
+        });
+        return;
+      }
 
-  const selectedTimes = {
-    value: userAvailability.selectedTimes,
-    set: (selectedTimes: Set<string>) =>
-      setUserAvailability((prev) => ({ ...prev, selectedTimes })),
-  };
+      isUserSubmitLoading.current = true;
+      try {
+        const payload = toCreateUserAvailability(updatedUserAvailability);
+        await updateUserAvailableTime(session, payload);
+        showToast({
+          type: 'success',
+          message: '시간표 저장이 완료되었습니다!',
+        });
+      } catch (err) {
+        const e = err as Error;
+        showToast({
+          type: 'error',
+          message: e.message,
+        });
+        Sentry.captureException(err, {
+          level: 'error',
+        });
+      } finally {
+        isUserSubmitLoading.current = false;
+      }
+    },
+    [session]
+  );
 
-  const userAvailabilitySubmit = async () => {
-    if (isUserSubmitLoading.current) {
-      showToast({
-        type: 'warning',
-        message: '시간표를 불러오는 중입니다. 잠시만 기다려주세요.',
-      });
-      return;
-    }
-
-    isUserSubmitLoading.current = true;
-    try {
-      const payload = toCreateUserAvailability(userAvailability);
-      await updateUserAvailableTime(session, payload);
-      showToast({
-        type: 'success',
-        message: '시간표 저장이 완료되었습니다!',
-      });
-    } catch (err) {
-      const e = err as Error;
-      showToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    } finally {
-      isUserSubmitLoading.current = false;
-    }
-  };
-
-  const fetchUserAvailableTime = async () => {
+  const fetchUserAvailableTime = useCallback(async () => {
     if (!session) {
       alert('세션이 없습니다. 다시 시도해주세요.');
       return;
@@ -81,12 +73,9 @@ export const useUserAvailability = ({
     isFetchUserAvailableTimeLoading.current = true;
     try {
       const userAvailableTimeInfo = await getUserAvailableTime(session, name);
-      const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-      userName.set(name);
-      if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
-        const selectedTimesResponse = new Set(dateTimeSlotsResponse);
-        selectedTimes.set(selectedTimesResponse);
-      }
+      if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
+      const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
+      setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
     } catch (err) {
       const e = err as Error;
       showToast({
@@ -99,9 +88,13 @@ export const useUserAvailability = ({
     } finally {
       isFetchUserAvailableTimeLoading.current = false;
     }
-  };
+  }, [name, session]);
 
-  return { userName, selectedTimes, userAvailabilitySubmit, fetchUserAvailableTime };
+  return {
+    userAvailability,
+    userAvailabilitySubmit,
+    fetchUserAvailableTime,
+  };
 };
 
 export default useUserAvailability;
