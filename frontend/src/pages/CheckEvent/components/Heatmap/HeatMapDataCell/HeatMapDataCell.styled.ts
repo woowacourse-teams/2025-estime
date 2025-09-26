@@ -2,7 +2,7 @@ import { hexToRgba } from '@/pages/CheckEvent/utils/getCellColor';
 import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-const sweep = keyframes`
+const shimmerSweep = keyframes`
   from { transform: translate3d(-120%, 0, 0); }
   to   { transform: translate3d(400%, 0, 0); }
 `;
@@ -62,7 +62,7 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
     );
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
-    animation: ${sweep} 2.2s linear infinite;
+    animation: ${shimmerSweep} 2.2s linear infinite;
     will-change: transform;
     z-index: 1;
     filter: blur(18px);
