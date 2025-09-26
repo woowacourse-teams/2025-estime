@@ -52,20 +52,22 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
     position: absolute;
     top: 0;
     left: -30%;
-    width: 30%;
+    width: 40%;
     height: 100%;
     background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0.05) 30%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.05) 70%,
       rgba(255, 255, 255, 0) 100%
     );
+
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
-    animation: ${shimmerSweep} 2.2s linear infinite;
+    animation: ${shimmerSweep} 1.8s linear infinite;
     will-change: transform;
     z-index: 1;
-    filter: blur(18px);
   }
 
   ${({ isRecommended }) =>
