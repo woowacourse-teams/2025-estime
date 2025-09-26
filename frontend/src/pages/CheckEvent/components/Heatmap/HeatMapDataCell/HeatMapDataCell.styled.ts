@@ -66,7 +66,6 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
     animation: ${shimmerSweep} 1.8s linear infinite;
-    will-change: transform;
     z-index: 1;
   }
 
