@@ -60,13 +60,12 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
       rgba(255, 255, 255, 0.65) 50%,
       rgba(255, 255, 255, 0) 100%
     );
-
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
     animation: ${sweep} 2.2s linear infinite;
     will-change: transform;
     z-index: 1;
-    filter: blur(4px);
+    filter: blur(18px);
   }
 
   ${({ isRecommended }) =>
