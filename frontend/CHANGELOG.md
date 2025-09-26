@@ -1,3 +1,13 @@
+## <small>1.3.1 (2025-09-26)</small>
+
+* fix: handleDragLeave에서 상태갱신 안하는것 수정 (#593) ([2afe96b](https://github.com/woowacourse-teams/2025-estime/commit/2afe96b)), closes [#593](https://github.com/woowacourse-teams/2025-estime/issues/593)
+* fix: 잘못된 폰트 문법 수정 (#607) ([64976d2](https://github.com/woowacourse-teams/2025-estime/commit/64976d2)), closes [#607](https://github.com/woowacourse-teams/2025-estime/issues/607)
+* hotfix: og:image name 속성 변경 (property로) (#605) ([cc6bd67](https://github.com/woowacourse-teams/2025-estime/commit/cc6bd67)), closes [#605](https://github.com/woowacourse-teams/2025-estime/issues/605)
+* refactor: 타임테이블 성능 개선 리펙토링(2안) (#583) ([b9c9ace](https://github.com/woowacourse-teams/2025-estime/commit/b9c9ace)), closes [#583](https://github.com/woowacourse-teams/2025-estime/issues/583)
+* refactor: 프레탄디드 렌더 블로킹 수정 (#595) ([11f1b5f](https://github.com/woowacourse-teams/2025-estime/commit/11f1b5f)), closes [#595](https://github.com/woowacourse-teams/2025-estime/issues/595)
+
+
+
 ## 1.3.0 (2025-09-25)
 
 * fix: og 이미지 제작 (#558) ([b4a1bba](https://github.com/woowacourse-teams/2025-estime/commit/b4a1bba)), closes [#558](https://github.com/woowacourse-teams/2025-estime/issues/558)
