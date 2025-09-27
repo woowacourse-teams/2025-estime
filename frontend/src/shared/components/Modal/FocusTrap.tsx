@@ -1,90 +1,93 @@
-import React, { useLayoutEffect, useRef, useCallback } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 
-const FocusTrap = ({ children }: { children: React.ReactNode }) => {
-  const modalRef = useRef<HTMLElement | null>(null);
+function FocusTrap({ children }: { children: React.ReactNode }) {
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  // https://allyjs.io/data-tables/focusable.html
+  // https://html.spec.whatwg.org/multipage/interaction.html#focusable-area
+  // HTML 스펙 기준으로 포커스 가능한 요소를 찾는 함수
 
   const getFocusableElements = useCallback((element: HTMLElement) => {
-    return Array.from(
-      element.querySelectorAll<HTMLElement>(
-        'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])'
-      )
+    const focusableSelectors = [
+      'a[href]',
+      'area[href]',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      'button:not([disabled])',
+      'iframe',
+      'object',
+      'embed',
+      '[contenteditable]',
+      '[tabindex]:not([tabindex="-1"])',
+    ];
+
+    const focusableElements = Array.from(
+      element.querySelectorAll<HTMLElement>(focusableSelectors.join(','))
     ).filter((el) => {
-      const style = window.getComputedStyle(el);
-      return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
+      // aria-hidden이나 hidden 속성이 있는 요소 제외
+      return (
+        !el.getAttribute('aria-hidden') &&
+        !el.getAttribute('aria-disabled') &&
+        !el.getAttribute('disabled') &&
+        !el.getAttribute('readonly') &&
+        !el.hasAttribute('hidden') &&
+        el.style.display !== 'none' &&
+        el.style.visibility !== 'hidden'
+      );
     });
+
+    return focusableElements;
   }, []);
 
   useLayoutEffect(() => {
-    const modalEl = modalRef.current;
-    if (!modalEl) return;
+    const element = modalRef.current;
+    if (!element) return;
 
-    const prevActive = document.activeElement as HTMLElement | null;
+    const focusableElements = getFocusableElements(element);
+    if (focusableElements.length === 0) return;
 
-    const focusableElements = getFocusableElements(modalEl);
-    const first = focusableElements[0];
-    const preferred = modalEl.querySelector<HTMLElement>('[data-autofocus], [autofocus]');
-    if (focusableElements.length === 0) {
-      modalEl.setAttribute('tabindex', '-1');
-      modalEl.focus();
+    // data-preferred-focus 속성이 있는 요소를 우선적으로 focus
+    const preferredElement = element.querySelector<HTMLElement>('[data-preferred-focus]');
+    const firstElement = focusableElements[0];
+
+    if (preferredElement) {
+      preferredElement.focus();
     } else {
-      if (preferred) {
-        preferred.focus();
-      } else {
-        first?.focus();
-      }
+      firstElement.focus();
     }
 
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        // 포커스가 변경될 수 있는 focusable 요소들을 매번 다시 계산
+        const currentFocusableElements = getFocusableElements(element);
+        const currentFirst = currentFocusableElements[0];
+        const currentLast = currentFocusableElements[currentFocusableElements.length - 1];
 
-      const currentFocusableElements = getFocusableElements(modalEl);
-      const currentFirst = currentFocusableElements[0];
-      const currentLast = currentFocusableElements[currentFocusableElements.length - 1];
-
-      if (e.shiftKey) {
-        if (document.activeElement === currentFirst || document.activeElement === modalEl) {
-          e.preventDefault();
-          currentLast?.focus();
-        }
-      } else {
-        if (document.activeElement === currentLast) {
-          e.preventDefault();
-          currentFirst?.focus();
+        if (event.shiftKey) {
+          // Shift + Tab: 첫 번째 요소에서 마지막 요소로
+          if (document.activeElement === currentFirst || document.activeElement === element) {
+            event.preventDefault();
+            currentLast.focus();
+          }
+        } else {
+          // Tab: 마지막 요소에서 첫 번째 요소로
+          if (document.activeElement === currentLast) {
+            event.preventDefault();
+            currentFirst.focus();
+          }
         }
       }
     };
 
-    modalEl.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      modalEl.removeEventListener('keydown', onKeyDown);
-      prevActive?.focus();
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [getFocusableElements]);
 
-  const setRef = useCallback((element: HTMLElement | null) => {
-    modalRef.current = element;
-  }, []);
-
-  if (React.isValidElement(children)) {
-    const element = children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const originalRef = (element as any).ref;
-
-    return React.cloneElement(element, {
-      ref: (node: HTMLElement | null) => {
-        setRef(node);
-
-        if (typeof originalRef === 'function') {
-          originalRef(node);
-        } else if (originalRef && typeof originalRef === 'object') {
-          originalRef.current = node;
-        }
-      },
-    });
-  }
-
-  return children;
-};
+  return <div ref={modalRef}>{children}</div>;
+}
 
 export default FocusTrap;

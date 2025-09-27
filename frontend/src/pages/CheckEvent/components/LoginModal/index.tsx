@@ -46,7 +46,7 @@ export const LoginModal = ({
                     maxLength={12}
                     autoFocus={true}
                     ref={inputRef}
-                    data-autofocus
+                    data-preferred-focus
                     value={userData.name}
                     onChange={(e) => handleUserData({ ...userData, name: e.target.value.trim() })}
                     onPaste={(e) => {
