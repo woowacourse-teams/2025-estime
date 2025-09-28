@@ -11,10 +11,10 @@ function FocusTrap({ children }: { children: React.ReactNode }) {
     const focusableSelectors = [
       'a[href]',
       'area[href]',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
-      'button:not([disabled])',
+      'input',
+      'select',
+      'textarea',
+      'button',
       'iframe',
       'object',
       'embed',
@@ -27,10 +27,10 @@ function FocusTrap({ children }: { children: React.ReactNode }) {
     ).filter((el) => {
       // aria-hidden이나 hidden 속성이 있는 요소 제외
       return (
-        !el.getAttribute('aria-hidden') &&
-        !el.getAttribute('aria-disabled') &&
-        !el.getAttribute('disabled') &&
-        !el.getAttribute('readonly') &&
+        el.getAttribute('aria-hidden') !== 'true' &&
+        el.getAttribute('aria-disabled') !== 'true' &&
+        !el.hasAttribute('disabled') &&
+        !el.hasAttribute('readonly') &&
         !el.hasAttribute('hidden') &&
         el.style.display !== 'none' &&
         el.style.visibility !== 'hidden'
