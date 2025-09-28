@@ -66,7 +66,7 @@ function FocusTrap({ children }: { children: React.ReactNode }) {
 
         if (event.shiftKey) {
           // Shift + Tab: 첫 번째 요소에서 마지막 요소로
-          if (document.activeElement === currentFirst || document.activeElement === element) {
+          if (document.activeElement === currentFirst) {
             event.preventDefault();
             currentLast.focus();
           }
