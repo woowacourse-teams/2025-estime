@@ -1,7 +1,7 @@
 package com.estime.room.application.dto.output;
 
-import com.estime.room.domain.Room;
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.Room;
+import com.estime.room.RoomSession;
 
 public record RoomCreateOutput(
         RoomSession session

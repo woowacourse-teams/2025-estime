@@ -1,7 +1,7 @@
 package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.room.domain.platform.PlatformMessage;
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.platform.PlatformMessage;
+import com.estime.room.RoomSession;
 import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;

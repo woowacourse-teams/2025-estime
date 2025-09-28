@@ -5,12 +5,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.estime.notification.application.NotificationService;
-import com.estime.room.domain.Room;
-import com.estime.room.domain.RoomRepository;
-import com.estime.room.domain.platform.Platform;
-import com.estime.room.domain.platform.PlatformNotification;
-import com.estime.room.domain.platform.PlatformRepository;
-import com.estime.room.domain.platform.PlatformType;
+import com.estime.room.Room;
+import com.estime.room.application.port.RoomRepository;
+import com.estime.room.platform.Platform;
+import com.estime.room.platform.PlatformNotification;
+import com.estime.platform.application.port.PlatformRepository;
+import com.estime.room.platform.PlatformType;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

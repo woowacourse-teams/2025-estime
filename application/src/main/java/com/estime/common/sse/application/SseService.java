@@ -1,6 +1,6 @@
 package com.estime.common.sse.application;
 
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.RoomSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

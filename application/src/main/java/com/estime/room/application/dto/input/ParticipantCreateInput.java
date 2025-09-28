@@ -1,8 +1,8 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.room.domain.participant.Participant;
-import com.estime.room.domain.participant.vo.ParticipantName;
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.participant.Participant;
+import com.estime.room.participant.ParticipantName;
+import com.estime.room.RoomSession;
 
 public record ParticipantCreateInput(
         RoomSession session,

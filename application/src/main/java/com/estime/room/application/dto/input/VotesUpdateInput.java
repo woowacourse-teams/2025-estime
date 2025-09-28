@@ -1,9 +1,9 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.room.domain.participant.vo.ParticipantName;
-import com.estime.room.domain.participant.vote.Vote;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.participant.ParticipantName;
+import com.estime.room.participant.vote.Vote;
+import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.RoomSession;
 import java.util.List;
 
 public record VotesUpdateInput(

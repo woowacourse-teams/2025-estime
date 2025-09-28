@@ -1,8 +1,8 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.room.domain.participant.vo.ParticipantName;
-import com.estime.room.domain.participant.vote.Vote;
-import com.estime.room.domain.participant.vote.Votes;
+import com.estime.room.participant.ParticipantName;
+import com.estime.room.participant.vote.Vote;
+import com.estime.room.participant.vote.Votes;
 import java.util.List;
 
 public record VotesOutput(

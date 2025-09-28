@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.common.exception.domain.NullNotAllowedException;
-import com.estime.room.domain.participant.vo.ParticipantName;
+import com.estime.room.participant.Participant;
+import com.estime.room.participant.Participants;
+import com.estime.room.participant.ParticipantName;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;

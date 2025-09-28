@@ -6,7 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.common.exception.domain.NullNotAllowedException;
 import com.estime.common.exception.domain.SlotNotDivideException;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
+import com.estime.room.timeslot.DateTimeSlot;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

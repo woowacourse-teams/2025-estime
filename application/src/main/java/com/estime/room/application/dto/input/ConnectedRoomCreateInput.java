@@ -1,9 +1,9 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.room.domain.platform.PlatformNotification;
-import com.estime.room.domain.platform.PlatformType;
-import com.estime.room.domain.slot.vo.DateSlot;
-import com.estime.room.domain.slot.vo.TimeSlot;
+import com.estime.room.platform.PlatformNotification;
+import com.estime.room.platform.PlatformType;
+import com.estime.room.timeslot.DateSlot;
+import com.estime.room.timeslot.TimeSlot;
 import java.time.LocalDateTime;
 import java.util.List;
 

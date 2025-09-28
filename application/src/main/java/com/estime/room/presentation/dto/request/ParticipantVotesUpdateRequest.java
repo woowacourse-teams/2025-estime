@@ -1,9 +1,9 @@
 package com.estime.room.presentation.dto.request;
 
 import com.estime.room.application.dto.input.VotesUpdateInput;
-import com.estime.room.domain.participant.vo.ParticipantName;
-import com.estime.room.domain.slot.vo.DateTimeSlot;
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.participant.ParticipantName;
+import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.RoomSession;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.f4b6a3.tsid.Tsid;
 import io.swagger.v3.oas.annotations.media.Schema;

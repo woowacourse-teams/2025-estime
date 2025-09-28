@@ -1,6 +1,6 @@
 package com.estime.common.sse.domain;
 
-import com.estime.room.domain.vo.RoomSession;
+import com.estime.room.RoomSession;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.UUID;

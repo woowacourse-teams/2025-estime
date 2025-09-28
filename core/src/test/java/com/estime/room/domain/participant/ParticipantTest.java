@@ -5,7 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.estime.common.DomainTerm;
 import com.estime.common.exception.domain.InvalidLengthException;
-import com.estime.room.domain.participant.vo.ParticipantName;
+import com.estime.room.participant.Participant;
+import com.estime.room.participant.ParticipantName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
