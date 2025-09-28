@@ -2,6 +2,7 @@ import { useCallback, useLayoutEffect, useRef } from 'react';
 
 function FocusTrap({ children }: { children: React.ReactNode }) {
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const focusableElementsRef = useRef<HTMLElement[]>([]);
 
   // https://allyjs.io/data-tables/focusable.html
   // https://html.spec.whatwg.org/multipage/interaction.html#focusable-area
@@ -40,16 +41,25 @@ function FocusTrap({ children }: { children: React.ReactNode }) {
     return focusableElements;
   }, []);
 
+  const updateFocusableElements = useCallback(
+    (element: HTMLElement) => {
+      focusableElementsRef.current = getFocusableElements(element);
+    },
+    [getFocusableElements]
+  );
+
   useLayoutEffect(() => {
     const element = modalRef.current;
     if (!element) return;
 
-    const focusableElements = getFocusableElements(element);
-    if (focusableElements.length === 0) return;
+    // 초기 focusable 요소 설정
+    updateFocusableElements(element);
+
+    if (focusableElementsRef.current.length === 0) return;
 
     // data-preferred-focus 속성이 있는 요소를 우선적으로 focus
     const preferredElement = element.querySelector<HTMLElement>('[data-preferred-focus]');
-    const firstElement = focusableElements[0];
+    const firstElement = focusableElementsRef.current[0];
 
     if (preferredElement) {
       preferredElement.focus();
@@ -57,10 +67,51 @@ function FocusTrap({ children }: { children: React.ReactNode }) {
       firstElement.focus();
     }
 
+    // MutationObserver로 DOM 변경 감지
+    const observer = new MutationObserver((mutations) => {
+      // 관련된 변경사항이 있을 때만 업데이트
+      const shouldUpdate = mutations.some((mutation) => {
+        // 속성 변경 중 포커스에 영향을 줄 수 있는 것들
+        if (mutation.type === 'attributes') {
+          const attr = mutation.attributeName;
+          return (
+            attr === 'disabled' ||
+            attr === 'readonly' ||
+            attr === 'hidden' ||
+            attr === 'aria-hidden' ||
+            attr === 'aria-disabled' ||
+            attr === 'tabindex' ||
+            attr === 'style'
+          );
+        }
+        return false;
+      });
+
+      if (shouldUpdate) {
+        updateFocusableElements(element);
+      }
+    });
+
+    observer.observe(element, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: [
+        'disabled',
+        'readonly',
+        'hidden',
+        'aria-hidden',
+        'aria-disabled',
+        'tabindex',
+        'style',
+      ],
+    });
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Tab') {
-        // 포커스가 변경될 수 있는 focusable 요소들을 매번 다시 계산
-        const currentFocusableElements = getFocusableElements(element);
+        const currentFocusableElements = focusableElementsRef.current;
+        if (currentFocusableElements.length === 0) return;
+
         const currentFirst = currentFocusableElements[0];
         const currentLast = currentFocusableElements[currentFocusableElements.length - 1];
 
@@ -83,9 +134,10 @@ function FocusTrap({ children }: { children: React.ReactNode }) {
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      observer.disconnect();
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [getFocusableElements]);
+  }, [getFocusableElements, updateFocusableElements]);
 
   return <div ref={modalRef}>{children}</div>;
 }
