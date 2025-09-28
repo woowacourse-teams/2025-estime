@@ -13,10 +13,9 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class VoteRepositoryImpl implements VoteRepository {
 
+    private static final QVote vote = QVote.vote;
     private final VoteJpaRepository jpaRepository;
     private final JPAQueryFactory queryFactory;
-
-    private static final QVote vote = QVote.vote;
 
     @Override
     public Vote save(final Vote vote) {

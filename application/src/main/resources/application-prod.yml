@@ -4,7 +4,7 @@ spring:
       on-profile: prod
     import:
       - application-common.yml
-      - optional:file:estime-api/.env.prod[.properties]
+      - optional:file:application/.env.prod[.properties]
 
   jpa:
     hibernate:

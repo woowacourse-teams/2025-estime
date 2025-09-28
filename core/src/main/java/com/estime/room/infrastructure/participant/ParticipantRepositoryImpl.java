@@ -15,10 +15,9 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class ParticipantRepositoryImpl implements ParticipantRepository {
 
+    private static final QParticipant participant = QParticipant.participant;
     private final ParticipantJpaRepository jpaRepository;
     private final JPAQueryFactory queryFactory;
-
-    private static final QParticipant participant = QParticipant.participant;
 
     @Override
     public Participant save(final Participant participant) {

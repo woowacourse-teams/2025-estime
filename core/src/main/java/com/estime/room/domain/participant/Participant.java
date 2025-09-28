@@ -2,8 +2,8 @@ package com.estime.room.domain.participant;
 
 import com.estime.common.BaseEntity;
 import com.estime.common.util.Validator;
-import com.estime.room.domain.participant.infrastructure.converter.ParticipantNameConverter;
 import com.estime.room.domain.participant.vo.ParticipantName;
+import com.estime.room.infrastructure.converter.ParticipantNameConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

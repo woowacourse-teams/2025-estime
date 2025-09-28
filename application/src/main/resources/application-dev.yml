@@ -1,10 +1,10 @@
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: dev
     import:
       - application-common.yml
-      - optional:file:estime-api/.env.local[.properties]
+      - optional:file:application/.env.dev[.properties]
 
   jpa:
     show-sql: true
@@ -22,3 +22,16 @@ spring:
 springdoc:
   swagger-ui:
     path: /docs
+
+logging:
+  discord:
+    webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
+
+management:
+  metrics:
+    export:
+      cloudwatch:
+        enabled: true
+        namespace: "EC2/estime-api/dev"
+        region: ap-northeast-2
+        url: ${CLOUDWATCH_URL}

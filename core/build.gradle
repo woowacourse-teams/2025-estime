@@ -1,5 +1,6 @@
 plugins {
-    id 'org.springframework.boot'
+    id 'java'
+    id 'io.spring.dependency-management'
 }
 
 group = 'com.estime'
@@ -10,9 +11,14 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
 
@@ -23,29 +29,19 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation("net.dv8tion:JDA:5.6.1")
-    implementation "org.apache.commons:commons-collections4:4.4" // for jda
-
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
-
-    // TODO: DiscordAppender 직접 구현
-    implementation 'com.github.napstr:logback-discord-appender:1.0.0' // for Discord Logs
     implementation 'com.github.f4b6a3:tsid-creator:5.2.6' // for Tsid generation
-
-    implementation 'org.springframework.boot:spring-boot-starter-actuator' // for monitoring
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
-    workingDir = rootDir // TODO real hard trouble
+    workingDir = rootDir
 }
 
 def generatedDir = layout.buildDirectory.dir('generated/querydsl')

@@ -1,4 +1,4 @@
-package com.estime.room.domain.participant.infrastructure.converter;
+package com.estime.room.infrastructure.converter;
 
 import com.estime.room.domain.participant.vo.ParticipantName;
 import jakarta.persistence.AttributeConverter;

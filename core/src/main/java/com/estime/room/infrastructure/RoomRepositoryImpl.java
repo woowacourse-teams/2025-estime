@@ -15,10 +15,9 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepository {
 
+    private static final QRoom room = QRoom.room;
     private final RoomJpaRepository roomJpaRepository;
     private final JPAQueryFactory queryFactory;
-
-    private static final QRoom room = QRoom.room;
 
     @Override
     public Room save(final Room room) {

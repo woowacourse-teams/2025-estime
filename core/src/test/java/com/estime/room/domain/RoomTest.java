@@ -93,10 +93,10 @@ class RoomTest {
     @Test
     void validateDeadline_futureDeadline_noException() {
         assertThatCode(() -> Room.withoutId(
-                        "테스트방",
-                        List.of(dateSlot),
-                        List.of(timeSlot),
-                        futureDeadline
+                "테스트방",
+                List.of(dateSlot),
+                List.of(timeSlot),
+                futureDeadline
         )).doesNotThrowAnyException();
     }
 
@@ -104,10 +104,10 @@ class RoomTest {
     @Test
     void validateDeadline_pastDeadline_throwsException() {
         assertThatThrownBy(() -> Room.withoutId(
-                        "테스트방",
-                        List.of(dateSlot),
-                        List.of(timeSlot),
-                        pastDeadline
+                "테스트방",
+                List.of(dateSlot),
+                List.of(timeSlot),
+                pastDeadline
         )).isInstanceOf(PastNotAllowedException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }

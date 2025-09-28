@@ -12,10 +12,9 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class PlatformRepositoryImpl implements PlatformRepository {
 
+    private static final QPlatform platform = QPlatform.platform;
     private final PlatformJpaRepository jpaRepository;
     private final JPAQueryFactory queryFactory;
-
-    private static final QPlatform platform = QPlatform.platform;
 
     @Override
     public Platform save(final Platform platform) {

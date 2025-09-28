@@ -6,9 +6,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class EstimeApiApplication {
+public class EstimeApplication {
 
     public static void main(final String[] args) {
-        SpringApplication.run(EstimeApiApplication.class, args);
+        SpringApplication.run(EstimeApplication.class, args);
     }
 }
