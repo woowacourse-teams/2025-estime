@@ -1,4 +1,4 @@
-package com.estime.common.exception.domain;
+package com.estime.common.exception;
 
 public class NullNotAllowedException extends DomainException {
 

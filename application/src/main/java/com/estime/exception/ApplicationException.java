@@ -1,4 +1,4 @@
-package com.estime.common.exception.application;
+package com.estime.exception;
 
 import com.estime.common.exception.BaseException;
 

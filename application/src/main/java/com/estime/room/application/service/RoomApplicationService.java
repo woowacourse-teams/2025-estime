@@ -1,7 +1,7 @@
 package com.estime.room.application.service;
 
 import com.estime.common.DomainTerm;
-import com.estime.common.exception.application.NotFoundException;
+import com.estime.exception.NotFoundException;
 import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;

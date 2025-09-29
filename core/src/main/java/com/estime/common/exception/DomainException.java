@@ -1,6 +1,4 @@
-package com.estime.common.exception.domain;
-
-import com.estime.common.exception.BaseException;
+package com.estime.common.exception;
 
 public abstract class DomainException extends BaseException {
 

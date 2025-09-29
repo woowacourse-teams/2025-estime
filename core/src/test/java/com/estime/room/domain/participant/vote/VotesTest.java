@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.common.exception.domain.NullNotAllowedException;
+import com.estime.common.exception.NullNotAllowedException;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.timeslot.DateTimeSlot;

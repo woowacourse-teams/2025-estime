@@ -1,7 +1,7 @@
 package com.estime.room.participant;
 
 import com.estime.common.DomainTerm;
-import com.estime.common.exception.domain.InvalidLengthException;
+import com.estime.common.exception.InvalidLengthException;
 import com.estime.common.util.Validator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

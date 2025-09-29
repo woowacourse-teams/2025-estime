@@ -1,7 +1,7 @@
 package com.estime.notification.application;
 
 import com.estime.common.DomainTerm;
-import com.estime.common.exception.application.NotFoundException;
+import com.estime.exception.NotFoundException;
 import com.estime.room.Room;
 import com.estime.room.application.port.RoomRepository;
 import com.estime.room.platform.Platform;

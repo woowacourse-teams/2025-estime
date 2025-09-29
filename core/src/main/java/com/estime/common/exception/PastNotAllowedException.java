@@ -1,7 +1,7 @@
-package com.estime.common.exception.domain;
+package com.estime.common.exception;
 
 import com.estime.common.DomainTerm;
-import com.estime.common.exception.util.ExceptionMessageFormatter;
+import com.estime.common.util.ExceptionMessageFormatter;
 
 public class PastNotAllowedException extends DomainException {
 

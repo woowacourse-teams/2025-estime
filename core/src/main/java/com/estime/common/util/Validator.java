@@ -1,6 +1,6 @@
 package com.estime.common.util;
 
-import com.estime.common.exception.domain.NullNotAllowedException;
+import com.estime.common.exception.NullNotAllowedException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;

@@ -2,10 +2,10 @@ package com.estime.room;
 
 import com.estime.common.BaseEntity;
 import com.estime.common.DomainTerm;
-import com.estime.common.exception.domain.DeadlineOverdueException;
-import com.estime.common.exception.domain.InvalidLengthException;
-import com.estime.common.exception.domain.PastNotAllowedException;
-import com.estime.common.exception.domain.UnavailableSlotException;
+import com.estime.common.exception.DeadlineOverdueException;
+import com.estime.common.exception.InvalidLengthException;
+import com.estime.common.exception.PastNotAllowedException;
+import com.estime.common.exception.UnavailableSlotException;
 import com.estime.common.util.Validator;
 import com.estime.room.timeslot.DateSlot;
 import com.estime.room.timeslot.DateTimeSlot;

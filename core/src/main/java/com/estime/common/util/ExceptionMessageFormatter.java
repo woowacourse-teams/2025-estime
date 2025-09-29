@@ -1,4 +1,4 @@
-package com.estime.common.exception.util;
+package com.estime.common.util;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package com.estime.room.infrastructure.converter;
 
-import com.estime.common.exception.application.InternalLogOnlyException;
+import com.estime.exception.InternalLogOnlyException;
 import com.github.f4b6a3.tsid.Tsid;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
