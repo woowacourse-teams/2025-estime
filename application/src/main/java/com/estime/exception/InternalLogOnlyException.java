@@ -1,6 +1,5 @@
 package com.estime.exception;
 
-
 import com.estime.shared.exception.ExceptionMessageFormatter;
 
 public class InternalLogOnlyException extends ApplicationException {
