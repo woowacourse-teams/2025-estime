@@ -1,4 +1,4 @@
-package com.estime.common.converter;
+package com.estime.converter;
 
 import com.estime.room.timeslot.TimeSlot;
 import jakarta.persistence.AttributeConverter;

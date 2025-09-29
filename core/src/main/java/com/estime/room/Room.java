@@ -10,13 +10,8 @@ import com.estime.common.util.Validator;
 import com.estime.room.timeslot.DateSlot;
 import com.estime.room.timeslot.DateTimeSlot;
 import com.estime.room.timeslot.TimeSlot;
-import com.estime.room.RoomSession;
-import com.estime.common.converter.DateSlotConverter;
-import com.estime.common.converter.RoomSessionConverter;
-import com.estime.common.converter.TimeSlotConverter;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -49,7 +44,6 @@ public class Room extends BaseEntity {
     private static final int TITLE_MAX_LENGTH = 20;
 
     @Column(name = "session", nullable = false)
-    @Convert(converter = RoomSessionConverter.class)
     private RoomSession session;
 
     @Column(name = "title", nullable = false)
@@ -61,7 +55,6 @@ public class Room extends BaseEntity {
             joinColumns = @JoinColumn(name = "room_id")
     )
     @Column(name = "start_at", nullable = false)
-    @Convert(converter = DateSlotConverter.class)
     private Set<DateSlot> availableDateSlots;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -70,7 +63,6 @@ public class Room extends BaseEntity {
             joinColumns = @JoinColumn(name = "room_id")
     )
     @Column(name = "start_at", nullable = false)
-    @Convert(converter = TimeSlotConverter.class)
     private Set<TimeSlot> availableTimeSlots;
 
     @Column(name = "deadline", nullable = false)

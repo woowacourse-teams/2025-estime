@@ -1,4 +1,4 @@
-package com.estime.common.converter;
+package com.estime.converter;
 
 import com.estime.room.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;

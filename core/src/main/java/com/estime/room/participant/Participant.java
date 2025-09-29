@@ -2,10 +2,7 @@ package com.estime.room.participant;
 
 import com.estime.common.BaseEntity;
 import com.estime.common.util.Validator;
-import com.estime.room.participant.ParticipantName;
-import com.estime.common.converter.ParticipantNameConverter;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
@@ -31,7 +28,6 @@ public class Participant extends BaseEntity {
     private Long roomId;
 
     @Column(name = "name", nullable = false)
-    @Convert(converter = ParticipantNameConverter.class)
     private ParticipantName name;
 
     public static Participant withoutId(
