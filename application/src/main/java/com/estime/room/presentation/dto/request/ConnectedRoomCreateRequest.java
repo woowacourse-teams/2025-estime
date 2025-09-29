@@ -1,10 +1,10 @@
 package com.estime.room.presentation.dto.request;
 
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
-import com.estime.domain.room.platform.PlatformNotification;
-import com.estime.domain.room.platform.PlatformType;
-import com.estime.domain.room.timeslot.DateSlot;
-import com.estime.domain.room.timeslot.TimeSlot;
+import com.estime.room.platform.PlatformNotification;
+import com.estime.room.platform.PlatformType;
+import com.estime.room.timeslot.DateSlot;
+import com.estime.room.timeslot.TimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;

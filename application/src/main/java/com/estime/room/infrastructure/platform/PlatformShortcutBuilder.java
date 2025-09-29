@@ -1,8 +1,8 @@
 package com.estime.room.infrastructure.platform;
 
 import com.estime.common.config.ClientOriginProperties;
-import com.estime.domain.room.platform.PlatformType;
-import com.estime.domain.room.RoomSession;
+import com.estime.room.platform.PlatformType;
+import com.estime.room.RoomSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;

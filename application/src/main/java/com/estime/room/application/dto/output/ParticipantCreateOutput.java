@@ -1,7 +1,7 @@
 package com.estime.room.application.dto.output;
 
-import com.estime.domain.room.participant.Participant;
-import com.estime.domain.room.participant.ParticipantName;
+import com.estime.room.participant.Participant;
+import com.estime.room.participant.ParticipantName;
 
 public record ParticipantCreateOutput(
         ParticipantName name

@@ -1,7 +1,7 @@
 package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.domain.room.platform.PlatformMessage;
-import com.estime.domain.room.platform.PlatformMessageStyle;
+import com.estime.room.platform.PlatformMessage;
+import com.estime.room.platform.PlatformMessageStyle;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;

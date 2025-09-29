@@ -1,7 +1,7 @@
 package com.estime.room.presentation.dto.response;
 
 import com.estime.room.application.dto.input.VotesOutput;
-import com.estime.domain.room.participant.vote.Vote;
+import com.estime.room.participant.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;

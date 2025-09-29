@@ -1,8 +1,8 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.domain.room.Room;
-import com.estime.domain.room.timeslot.DateSlot;
-import com.estime.domain.room.timeslot.TimeSlot;
+import com.estime.room.Room;
+import com.estime.room.timeslot.DateSlot;
+import com.estime.room.timeslot.TimeSlot;
 import java.time.LocalDateTime;
 import java.util.List;
 

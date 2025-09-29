@@ -3,7 +3,7 @@ package com.estime.room.application;
 import com.estime.notification.application.NotificationService;
 import com.estime.room.application.vo.NotificationTask;
 import com.estime.room.application.vo.NotificationTaskType;
-import com.estime.domain.room.Room;
+import com.estime.room.Room;
 import com.estime.room.application.port.RoomRepository;
 import com.estime.platform.application.port.PlatformRepository;
 import jakarta.annotation.PostConstruct;

@@ -1,6 +1,6 @@
 package com.estime.room.infrastructure.platform.discord.config;
 
-import com.estime.domain.room.platform.PlatformMessage;
+import com.estime.room.platform.PlatformMessage;
 import com.estime.room.infrastructure.platform.discord.DiscordGuildJoinMessageRegistrar;
 import com.estime.room.infrastructure.platform.discord.DiscordSlashCommandListener;
 import com.estime.room.infrastructure.platform.discord.DiscordSlashCommandRegistrar;

@@ -1,7 +1,7 @@
 package com.estime.common.sse.application;
 
 import com.estime.common.sse.domain.SseConnection;
-import com.estime.domain.room.RoomSession;
+import com.estime.room.RoomSession;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

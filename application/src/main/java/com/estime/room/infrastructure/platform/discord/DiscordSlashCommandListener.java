@@ -1,7 +1,7 @@
 package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.domain.room.platform.PlatformCommand;
-import com.estime.domain.room.platform.PlatformType;
+import com.estime.room.platform.PlatformCommand;
+import com.estime.room.platform.PlatformType;
 import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

@@ -1,6 +1,6 @@
 package com.estime.converter;
 
-import com.estime.domain.room.timeslot.DateSlot;
+import com.estime.room.timeslot.DateSlot;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.time.LocalDate;
