@@ -2,7 +2,7 @@ package com.estime.room.application.dto.input;
 
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.vote.Vote;
-import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.RoomSession;
 import java.util.List;
 

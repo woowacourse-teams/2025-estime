@@ -1,6 +1,6 @@
 package com.estime.converter;
 
-import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import java.sql.Timestamp;

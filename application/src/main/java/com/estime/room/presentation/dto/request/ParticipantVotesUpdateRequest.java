@@ -2,7 +2,7 @@ package com.estime.room.presentation.dto.request;
 
 import com.estime.room.application.dto.input.VotesUpdateInput;
 import com.estime.room.participant.ParticipantName;
-import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.RoomSession;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.f4b6a3.tsid.Tsid;

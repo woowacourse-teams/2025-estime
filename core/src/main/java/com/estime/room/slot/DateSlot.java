@@ -1,4 +1,4 @@
-package com.estime.room.timeslot;
+package com.estime.room.slot;
 
 import com.estime.shared.Validator;
 import java.time.LocalDate;

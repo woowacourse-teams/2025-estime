@@ -26,7 +26,7 @@ import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformNotificationType;
 import com.estime.platform.application.port.PlatformRepository;
-import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.RoomSession;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import java.time.LocalDateTime;

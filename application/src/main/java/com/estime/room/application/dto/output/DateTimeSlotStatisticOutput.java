@@ -1,7 +1,7 @@
 package com.estime.room.application.dto.output;
 
 import com.estime.room.participant.ParticipantName;
-import com.estime.room.timeslot.DateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import java.util.List;
 
 public record DateTimeSlotStatisticOutput(

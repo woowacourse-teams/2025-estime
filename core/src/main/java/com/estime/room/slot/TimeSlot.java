@@ -1,8 +1,8 @@
-package com.estime.room.timeslot;
+package com.estime.room.slot;
 
 import com.estime.shared.DomainTerm;
-import com.estime.room.timeslot.exception.InvalidTimeDetailException;
-import com.estime.room.timeslot.exception.SlotNotDivideException;
+import com.estime.room.slot.exception.InvalidTimeDetailException;
+import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.Validator;
 import java.time.Duration;
 import java.time.LocalTime;

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.shared.exception.NullNotAllowedException;
-import com.estime.room.timeslot.DateSlot;
+import com.estime.room.slot.DateSlot;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

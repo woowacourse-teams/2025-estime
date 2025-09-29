@@ -1,4 +1,4 @@
-package com.estime.room.timeslot.exception;
+package com.estime.room.slot.exception;
 
 import com.estime.shared.exception.DomainException;
 import com.estime.shared.DomainTerm;
