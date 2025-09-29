@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.domain.DomainTerm;
-import com.estime.exception.DeadlineOverdueException;
+import com.estime.domain.room.exception.DeadlineOverdueException;
 import com.estime.exception.InvalidLengthException;
-import com.estime.exception.PastNotAllowedException;
+import com.estime.domain.room.exception.PastNotAllowedException;
 import com.estime.domain.room.Room;
 import com.estime.domain.room.timeslot.DateSlot;
 import com.estime.domain.room.timeslot.TimeSlot;

@@ -1,6 +1,7 @@
-package com.estime.exception;
+package com.estime.domain.room.timeslot.exception;
 
 import com.estime.domain.DomainTerm;
+import com.estime.exception.DomainException;
 import com.estime.util.ExceptionMessageFormatter;
 
 public class SlotNotDivideException extends DomainException {

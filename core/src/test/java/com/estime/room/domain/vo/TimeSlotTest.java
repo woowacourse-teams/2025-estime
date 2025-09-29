@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.exception.InvalidTimeDetailException;
+import com.estime.domain.room.timeslot.exception.InvalidTimeDetailException;
 import com.estime.exception.NullNotAllowedException;
-import com.estime.exception.SlotNotDivideException;
+import com.estime.domain.room.timeslot.exception.SlotNotDivideException;
 import com.estime.domain.room.timeslot.TimeSlot;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;

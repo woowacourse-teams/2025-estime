@@ -1,6 +1,7 @@
-package com.estime.exception;
+package com.estime.domain.room.participant.vote.exception;
 
 import com.estime.domain.DomainTerm;
+import com.estime.exception.DomainException;
 import com.estime.util.ExceptionMessageFormatter;
 
 public class DuplicateNotAllowedException extends DomainException {

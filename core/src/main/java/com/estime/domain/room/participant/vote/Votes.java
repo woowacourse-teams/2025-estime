@@ -1,7 +1,7 @@
 package com.estime.domain.room.participant.vote;
 
 import com.estime.domain.DomainTerm;
-import com.estime.exception.DuplicateNotAllowedException;
+import com.estime.domain.room.participant.vote.exception.DuplicateNotAllowedException;
 import com.estime.util.Validator;
 import com.estime.domain.room.timeslot.DateTimeSlot;
 import java.util.Comparator;

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.doNothing;
 
 import com.estime.domain.DomainTerm;
 import com.estime.exception.NotFoundException;
-import com.estime.exception.UnavailableSlotException;
+import com.estime.domain.room.exception.UnavailableSlotException;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
