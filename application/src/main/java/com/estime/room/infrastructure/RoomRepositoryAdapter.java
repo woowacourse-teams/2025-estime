@@ -1,6 +1,6 @@
 package com.estime.room.infrastructure;
 
-import com.estime.domain.room.QRoom;
+import com.estime.room.QRoom;
 import com.estime.room.Room;
 import com.estime.room.RoomSession;
 import com.estime.room.application.port.RoomRepository;

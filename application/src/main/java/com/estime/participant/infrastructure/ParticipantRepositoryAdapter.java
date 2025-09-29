@@ -1,9 +1,9 @@
 package com.estime.participant.infrastructure;
 
-import com.estime.domain.room.participant.QParticipant;
 import com.estime.participant.application.port.ParticipantRepository;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
+import com.estime.room.participant.QParticipant;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
