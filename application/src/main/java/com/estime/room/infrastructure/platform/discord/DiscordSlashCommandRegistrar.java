@@ -1,6 +1,6 @@
 package com.estime.room.infrastructure.platform.discord;
 
-import com.estime.room.platform.PlatformCommand;
+import com.estime.domain.room.platform.PlatformCommand;
 import java.util.List;
 import java.util.stream.Stream;
 import net.dv8tion.jda.api.JDA;

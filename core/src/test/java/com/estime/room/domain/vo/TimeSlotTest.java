@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.common.exception.InvalidTimeDetailException;
-import com.estime.common.exception.NullNotAllowedException;
-import com.estime.common.exception.SlotNotDivideException;
-import com.estime.room.timeslot.TimeSlot;
+import com.estime.exception.InvalidTimeDetailException;
+import com.estime.exception.NullNotAllowedException;
+import com.estime.exception.SlotNotDivideException;
+import com.estime.domain.room.timeslot.TimeSlot;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

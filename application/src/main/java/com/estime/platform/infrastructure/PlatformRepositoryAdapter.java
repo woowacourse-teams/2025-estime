@@ -1,7 +1,7 @@
 package com.estime.platform.infrastructure;
 
 import com.estime.platform.application.port.PlatformRepository;
-import com.estime.room.platform.Platform;
+import com.estime.domain.room.platform.Platform;
 import com.estime.room.platform.QPlatform;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;

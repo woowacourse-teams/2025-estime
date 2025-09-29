@@ -1,6 +1,6 @@
 package com.estime.room.application.service;
 
-import com.estime.common.DomainTerm;
+import com.estime.domain.DomainTerm;
 import com.estime.exception.NotFoundException;
 import com.estime.common.sse.application.SseService;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
@@ -16,18 +16,18 @@ import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTi
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
-import com.estime.room.Room;
+import com.estime.domain.room.Room;
 import com.estime.room.application.port.RoomRepository;
 import com.estime.participant.application.port.ParticipantRepository;
-import com.estime.room.participant.Participants;
-import com.estime.room.participant.ParticipantName;
+import com.estime.domain.room.participant.Participants;
+import com.estime.domain.room.participant.ParticipantName;
 import com.estime.vote.application.port.VoteRepository;
-import com.estime.room.participant.vote.Votes;
-import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformNotificationType;
+import com.estime.domain.room.participant.vote.Votes;
+import com.estime.domain.room.platform.Platform;
+import com.estime.domain.room.platform.PlatformNotificationType;
 import com.estime.platform.application.port.PlatformRepository;
-import com.estime.room.timeslot.DateTimeSlot;
-import com.estime.room.RoomSession;
+import com.estime.domain.room.timeslot.DateTimeSlot;
+import com.estime.domain.room.RoomSession;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import java.time.LocalDateTime;
 import java.util.Collection;

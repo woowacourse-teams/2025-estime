@@ -3,10 +3,10 @@ package com.estime.room.domain.participant;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.estime.common.DomainTerm;
-import com.estime.common.exception.InvalidLengthException;
-import com.estime.room.participant.Participant;
-import com.estime.room.participant.ParticipantName;
+import com.estime.domain.DomainTerm;
+import com.estime.exception.InvalidLengthException;
+import com.estime.domain.room.participant.Participant;
+import com.estime.domain.room.participant.ParticipantName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

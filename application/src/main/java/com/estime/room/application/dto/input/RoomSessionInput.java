@@ -1,6 +1,6 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.room.RoomSession;
+import com.estime.domain.room.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
 
 public record RoomSessionInput(

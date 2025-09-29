@@ -1,6 +1,6 @@
 package com.estime.converter;
 
-import com.estime.room.participant.ParticipantName;
+import com.estime.domain.room.participant.ParticipantName;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

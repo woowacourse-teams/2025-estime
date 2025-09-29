@@ -1,7 +1,5 @@
 package com.estime.exception;
 
-import com.estime.common.exception.BaseException;
-
 public abstract class ApplicationException extends BaseException {
 
     protected ApplicationException(final String logMessage, final String userMessage) {

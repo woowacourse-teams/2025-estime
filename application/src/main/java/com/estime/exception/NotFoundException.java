@@ -1,7 +1,7 @@
 package com.estime.exception;
 
-import com.estime.common.DomainTerm;
-import com.estime.common.util.ExceptionMessageFormatter;
+import com.estime.domain.DomainTerm;
+import com.estime.util.ExceptionMessageFormatter;
 
 public class NotFoundException extends ApplicationException {
 
