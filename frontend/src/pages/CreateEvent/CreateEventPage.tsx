@@ -31,7 +31,7 @@ const CreateEventPage = () => {
     isCalendarReady,
     isBasicReady,
     roomInfoSubmit,
-    isCreateRoomLoading,
+    isRoomSubmitLoading,
   } = useCreateRoom();
   const { shouldShake, handleShouldShake } = useShakeAnimation();
 
@@ -128,10 +128,10 @@ const CreateEventPage = () => {
                 size="small"
                 onClick={handleCreateRoom}
                 data-ga-id="create-event-button"
-                disabled={isCreateRoomLoading || isRouting}
+                disabled={isRoomSubmitLoading || isRouting}
               >
                 <Text variant="button" color="background">
-                  {isCreateRoomLoading || isRouting ? '생성 중...' : '방 만들기'}
+                  {isRoomSubmitLoading || isRouting ? '생성 중...' : '방 만들기'}
                 </Text>
               </Button>
             </Flex>

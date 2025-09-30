@@ -54,7 +54,7 @@ const CheckEventContent = ({
     userData,
     handleUserData,
     name,
-    isUserLoginLoading,
+    isLoginLoading,
     handleLoggedIn,
     isLoggedIn,
   } = useUserLogin({
@@ -65,7 +65,8 @@ const CheckEventContent = ({
     userAvailability,
     userAvailabilitySubmit,
     fetchUserAvailableTime,
-    isUserAvailabilityLoading,
+    isSavingUserTime,
+    userAvailabilityRef,
   } = useUserAvailability({
     name,
     session,
@@ -100,11 +101,11 @@ const CheckEventContent = ({
   const switchToViewMode = async () => {
     try {
       const currentTimes = getCurrentSelectedTimes();
-      const updatedUserAvailability = {
+      userAvailabilityRef.current = {
         ...userAvailability,
         selectedTimes: currentTimes,
       };
-      await userAvailabilitySubmit(updatedUserAvailability);
+      await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       // save 모드에서 저장하기를 누르면 edit 모드로 전환
       setMode('edit');
@@ -194,6 +195,8 @@ const CheckEventContent = ({
   }, [fetchRoomStatistics, session]);
 
   useSSE(session, handleError, onVoteChange);
+
+  console.log('check');
   return (
     <>
       <Wrapper
@@ -254,7 +257,7 @@ const CheckEventContent = ({
                     name={userAvailability.userName}
                     mode="save"
                     onToggleEditMode={handleToggleMode}
-                    isLoading={isUserAvailabilityLoading || isAnimating}
+                    isLoading={isSavingUserTime || isAnimating}
                     isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
@@ -291,7 +294,7 @@ const CheckEventContent = ({
         handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
-        isUserLoginLoading={isUserLoginLoading || isUserAvailabilityLoading}
+        isLoginLoading={isLoginLoading || isSavingUserTime}
       />
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
