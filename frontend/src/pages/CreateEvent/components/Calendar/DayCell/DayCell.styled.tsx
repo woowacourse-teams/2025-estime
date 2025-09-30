@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { Theme, css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const dayCellRadius = 36;
@@ -12,6 +12,17 @@ interface DayCellProps {
   isEmpty: boolean;
   isDateBlockedByLimit: boolean;
 }
+
+const getHoverBackgroundColor = (
+  isSelected: boolean,
+  isPast: boolean,
+  isEmpty: boolean,
+  theme: Theme
+) => {
+  if (isSelected) return theme.colors.primary;
+  if (isPast || isEmpty) return 'none';
+  return theme.colors.plum50;
+};
 
 export const Container = styled.div<DayCellProps>`
   user-select: none;
@@ -38,11 +49,12 @@ export const Container = styled.div<DayCellProps>`
     if (isSelected) return theme.colors.primary;
     return 'none';
   }};
-  ${({ theme, isPast, isEmpty }) =>
+  ${({ theme, isSelected, isPast, isEmpty }) =>
     !theme.isMobile &&
     css`
       &:hover {
-        background-color: ${isPast || isEmpty ? 'none' : theme.colors.primary};
+        border: none;
+        background-color: ${getHoverBackgroundColor(isSelected, isPast, isEmpty, theme)};
         color: ${isEmpty ? 'inherit' : isPast ? theme.colors.gray20 : theme.colors.background};
         cursor: ${isPast || isEmpty ? 'not-allowed' : 'grab'};
       }

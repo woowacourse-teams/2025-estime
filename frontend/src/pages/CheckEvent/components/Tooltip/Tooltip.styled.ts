@@ -1,5 +1,6 @@
-import styled from '@emotion/styled';
 import { zIndex } from '@/constants/styles';
+import styled from '@emotion/styled';
+import { hexToRgba } from '../../utils/getCellColor';
 
 function getGridTemplateColumns(participants: number) {
   if (participants <= 4) return 'minmax(0, 1fr)';
@@ -7,23 +8,24 @@ function getGridTemplateColumns(participants: number) {
   return 'repeat(3, minmax(0, 1fr))';
 }
 
-export const Container = styled.div<{
-  x: number;
-  y: number;
-}>`
+export const Tooltip = styled.div<{ visible: boolean }>`
   position: fixed;
-  transform: translate(-50%, -120%);
-  top: ${({ y }) => y}px;
-  left: ${({ x }) => x}px;
+  top: 0;
+  left: 0;
+  margin-bottom: 8px;
   padding: var(--padding-6) var(--padding-8);
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.gray20};
   background-color: ${({ theme }) => theme.colors.gray10};
   z-index: ${zIndex.tooltip};
-  pointer-events: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   max-width: 300px;
   width: max-content;
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
 
   ::before {
     content: '';
@@ -52,7 +54,12 @@ export const Container = styled.div<{
     border-top: 10px solid ${({ theme }) => theme.colors.gray10};
     z-index: 2;
   }
+
+  @media (hover: none) {
+    pointer-events: auto;
+  }
 `;
+
 export const ParticipantGrid = styled.div<{ participants: number }>`
   display: grid;
   grid-template-columns: ${({ participants }) => getGridTemplateColumns(participants)};
@@ -61,6 +68,14 @@ export const ParticipantGrid = styled.div<{ participants: number }>`
   width: 100%;
   justify-items: center;
   justify-content: center;
+`;
+
+export const Wrapper = styled.div<{ weight: number }>`
+  padding: var(--padding-3);
+  border-radius: var(--radius-3);
+  border: 2px solid
+    ${({ weight, theme }) =>
+      weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
 `;
 
 export const Person = styled.div`

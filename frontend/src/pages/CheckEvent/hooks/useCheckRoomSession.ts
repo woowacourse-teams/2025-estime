@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
 import { getRoomInfo } from '@/apis/room/room';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
@@ -6,6 +6,7 @@ import { initialCheckRoomInfo } from '@/constants/initialRoomInfo';
 import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 import { useNavigate } from 'react-router';
 import useFetch from '@/shared/hooks/common/useFetch';
+import { DateManager } from '@/shared/utils/common/DateManager';
 
 const useCheckRoomSession = () => {
   const { runFetch } = useFetch();
@@ -17,7 +18,7 @@ const useCheckRoomSession = () => {
   >(initialCheckRoomInfo);
   const [isSessionExist, setIsSessionExist] = useState(false);
 
-  const fetchSession = async () => {
+  const fetchSession = useCallback(async () => {
     if (!session) return;
 
     const response = await runFetch({
@@ -34,13 +35,15 @@ const useCheckRoomSession = () => {
     setIsSessionExist(true);
     const parseData = fromParseRoomInfo(response);
     setRoomInfo(parseData);
-  };
+  }, [navigate, runFetch, session]);
+
+  const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
   useEffect(() => {
     fetchSession();
-  }, [session]);
+  }, [session, fetchSession]);
 
-  return { roomInfo, session, isRoomSessionExist: isSessionExist };
+  return { roomInfo, session, isExpired, isRoomSessionExist: isSessionExist };
 };
 
 export default useCheckRoomSession;

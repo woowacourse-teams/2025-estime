@@ -5,9 +5,10 @@ import Button from '@/shared/components/Button';
 import Flex from '@/shared/layout/Flex';
 import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
+import Notice from '@/shared/components/Notice';
 
 //로딩 구현시 saving을 쓰면 됨.
-type HeaderMode = 'view' | 'edit';
+type HeaderMode = 'register' | 'edit' | 'save';
 
 interface Presets {
   title: string;
@@ -18,12 +19,17 @@ interface Presets {
 }
 
 const HeaderPresets: Record<HeaderMode, Presets> = {
-  view: {
+  register: {
     title: `전체 시간표`,
-    description: () => '현재 시간표를 확인해보세요!',
-    cta: '편집하기',
+    description: () => '시간표를 등록해주세요!',
+    cta: '등록하기',
   },
   edit: {
+    title: `전체 시간표`,
+    description: () => '현재 시간표를 확인해보세요!',
+    cta: '수정하기',
+  },
+  save: {
     title: `나의 시간표`,
     description: (name: string, isMobile?: boolean) =>
       isMobile
@@ -38,13 +44,15 @@ interface TimeTableHeaderProps extends ComponentProps<'header'> {
   mode?: HeaderMode;
   onToggleEditMode: () => void;
   isLoading?: boolean;
+  isExpired: boolean;
 }
 
 const TimeTableHeader = ({
   name,
-  mode = 'view',
+  mode = 'register',
   onToggleEditMode,
   isLoading,
+  isExpired,
   ...props
 }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
@@ -60,12 +68,23 @@ const TimeTableHeader = ({
           {presets.description(name, theme.isMobile)}
         </Text>
       </Flex>
-
-      <Button color="primary" onClick={onToggleEditMode} disabled={isLoading} size="small">
-        <Text variant="button" color="text">
-          {isLoading ? '저장 중...' : presets.cta}
-        </Text>
-      </Button>
+      <Flex gap="var(--gap-8)">
+        <Notice type="warning" show={isExpired}>
+          <Text variant="body" color="warningText">
+            ⚠️ 마감일이 지났어요. 결과를 확인해주세요!
+          </Text>
+        </Notice>
+        <Button
+          color="primary"
+          onClick={onToggleEditMode}
+          disabled={isLoading || isExpired}
+          size="small"
+        >
+          <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
+            {isLoading ? '저장 중...' : presets.cta}
+          </Text>
+        </Button>
+      </Flex>
     </S.Container>
   );
 };

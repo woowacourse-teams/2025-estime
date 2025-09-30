@@ -1,9 +1,9 @@
+import { useState, useCallback } from 'react';
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
-import { useState } from 'react';
 import useFetch from '@/shared/hooks/common/useFetch';
+import { showToast } from '@/shared/store/toastStore';
 
 const initialUserAvailability = {
   userName: '앙부일구',
@@ -17,22 +17,10 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
-  const { addToast } = useToastContext();
   const { isLoading, runFetch } = useFetch();
 
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
-
-  const userName = {
-    value: userAvailability.userName,
-    set: (userName: string) => setUserAvailability((prev) => ({ ...prev, userName })),
-  };
-
-  const selectedTimes = {
-    value: userAvailability.selectedTimes,
-    set: (selectedTimes: Set<string>) =>
-      setUserAvailability((prev) => ({ ...prev, selectedTimes })),
-  };
 
   const userAvailabilitySubmit = async () => {
     const payload = toCreateUserAvailability(userAvailability);
@@ -40,13 +28,13 @@ export const useUserAvailability = ({
       context: 'userAvailabilitySubmit',
       requestFn: () => updateUserAvailableTime(session, payload),
     });
-    addToast({
+    showToast({
       type: 'success',
       message: '시간표 저장이 완료되었습니다!',
     });
   };
 
-  const fetchUserAvailableTime = async () => {
+  const fetchUserAvailableTime = useCallback(async () => {
     if (!session) {
       alert('세션이 없습니다. 다시 시도해주세요.');
       return;
@@ -57,20 +45,17 @@ export const useUserAvailability = ({
       requestFn: () => getUserAvailableTime(session, name),
     });
     if (userAvailableTimeInfo === undefined) return;
-    const dateTimeSlotsResponse = userAvailableTimeInfo.dateTimeSlots;
-    userName.set(name);
     if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
-      const selectedTimesResponse = new Set(dateTimeSlotsResponse);
-      selectedTimes.set(selectedTimesResponse);
+      const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
+      setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
     }
-  };
+  }, [name, session, runFetch]);
 
   return {
-    userName,
-    selectedTimes,
     userAvailabilitySubmit,
     fetchUserAvailableTime,
     isUserAvailabilityLoading: isLoading,
+    userAvailability,
   };
 };
 

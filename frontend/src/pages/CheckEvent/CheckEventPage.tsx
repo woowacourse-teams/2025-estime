@@ -1,9 +1,8 @@
 import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import Timetable from '@/pages/CheckEvent/components/Timetable';
-import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
 import Heatmap from '@/pages/CheckEvent/components/Heatmap';
 import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
@@ -13,7 +12,6 @@ import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
 import useSSE from '@/pages/CheckEvent/hooks/useSSE';
-import { useToastContext } from '@/shared/contexts/ToastContext';
 import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
@@ -24,14 +22,30 @@ import useUserLogin from './hooks/useUserLogin';
 import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
+import {
+  TimeSelectionProvider,
+  useTimeSelectionContext,
+} from '@/pages/CheckEvent/contexts/TimeSelectionContext';
 import * as S from './CheckEventPage.styled';
 import useAnimationEnd from './hooks/useAnimationEnd';
+import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
+import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
+import { showToast } from '@/shared/store/toastStore';
 
-const CheckEventPage = () => {
+interface CheckEventContentProps {
+  roomInfo: ReturnType<typeof useCheckRoomSession>['roomInfo'];
+  session: string;
+  isExpired: boolean;
+  isRoomSessionExist: boolean;
+}
+
+const CheckEventContent = ({
+  roomInfo,
+  session,
+  isExpired,
+  isRoomSessionExist,
+}: CheckEventContentProps) => {
   const theme = useTheme();
-  const { addToast } = useToastContext();
-
-  const { roomInfo, session, isRoomSessionExist } = useCheckRoomSession();
 
   const { modalHelpers } = useModalControl();
 
@@ -48,8 +62,7 @@ const CheckEventPage = () => {
   });
 
   const {
-    userName,
-    selectedTimes,
+    userAvailability,
     userAvailabilitySubmit,
     fetchUserAvailableTime,
     isUserAvailabilityLoading,
@@ -58,7 +71,7 @@ const CheckEventPage = () => {
     session,
   });
 
-  const { roomStatistics, fetchRoomStatistics } = useHeatmapStatistics({
+  const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
     weightCalculateStrategy,
     isRoomSessionExist,
@@ -66,69 +79,8 @@ const CheckEventPage = () => {
 
   const { isAnimating, ref: flipCardRef, startAnimation: startFlip } = useAnimationEnd();
 
-  const [mode, setMode] = useState<'view' | 'edit'>('view');
-
+  const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
   const handleError = useHandleError();
-
-  const switchToViewMode = async () => {
-    try {
-      await userAvailabilitySubmit();
-      await fetchRoomStatistics(session);
-      setMode('view');
-      pageReset();
-    } catch (error) {
-      handleError(error, 'switchToViewMode');
-    }
-  };
-
-  const switchToEditMode = async () => {
-    if (isLoggedIn) {
-      await fetchUserAvailableTime();
-      setMode('edit');
-      pageReset();
-    } else {
-      modalHelpers.login.open();
-    }
-  };
-
-  const handleToggleMode = async () => {
-    if (mode === 'edit') {
-      startFlip();
-      await switchToViewMode();
-    } else {
-      switchToEditMode();
-    }
-  };
-
-  const handleLoginSuccess = async () => {
-    try {
-      const isDuplicated = await handleLogin();
-      if (isDuplicated) {
-        modalHelpers.entryConfirm.open();
-        return;
-      }
-      await fetchUserAvailableTime();
-      modalHelpers.login.close();
-      handleLoggedIn.setTrue();
-      setMode('edit');
-      pageReset();
-    } catch (error) {
-      handleError(error, 'handleLoginSuccess');
-    }
-  };
-
-  const handleContinueWithDuplicated = async () => {
-    try {
-      modalHelpers.entryConfirm.close();
-      modalHelpers.login.close();
-      await fetchUserAvailableTime();
-      handleLoggedIn.setTrue();
-      setMode('edit');
-      pageReset();
-    } catch (error) {
-      handleError(error, 'handleContinueWithDuplicated');
-    }
-  };
 
   const {
     totalPages,
@@ -144,6 +96,75 @@ const CheckEventPage = () => {
   } = useTimeTablePagination({
     availableDates: roomInfo.availableDateSlots,
   });
+  const { getCurrentSelectedTimes } = useTimeSelectionContext();
+  const switchToViewMode = async () => {
+    try {
+      const currentTimes = getCurrentSelectedTimes();
+      const updatedUserAvailability = {
+        ...userAvailability,
+        selectedTimes: currentTimes,
+      };
+      await userAvailabilitySubmit(updatedUserAvailability);
+      await fetchRoomStatistics(session);
+      // save 모드에서 저장하기를 누르면 edit 모드로 전환
+      setMode('edit');
+      pageReset();
+    } catch (error) {
+      handleError(error, 'switchToViewMode');
+    }
+  };
+
+  const switchToEditMode = async () => {
+    if (isLoggedIn) {
+      await fetchUserAvailableTime();
+      // register에서 등록하기를 누르거나, edit에서 수정하기를 누르면 save 모드로 전환
+      setMode('save');
+      pageReset();
+    } else {
+      modalHelpers.login.open();
+    }
+  };
+
+  const handleToggleMode = async () => {
+    if (mode === 'save') {
+      // save 모드에서 "저장하기" 버튼을 누르면 view 모드(edit)로 전환
+      startFlip();
+      await switchToViewMode();
+    } else {
+      // register 모드에서 "등록하기" 또는 edit 모드에서 "수정하기"를 누르면 edit 모드(save)로 전환
+      switchToEditMode();
+    }
+  };
+
+  const handleLoginSuccess = async () => {
+    try {
+      const isDuplicated = await handleLogin();
+      if (isDuplicated) {
+        modalHelpers.entryConfirm.open();
+        return;
+      }
+      await fetchUserAvailableTime();
+      modalHelpers.login.close();
+      handleLoggedIn.setTrue();
+      setMode('save');
+      pageReset();
+    } catch (error) {
+      handleError(error, 'handleLoginSuccess');
+    }
+  };
+
+  const handleContinueWithDuplicated = async () => {
+    try {
+      modalHelpers.entryConfirm.close();
+      modalHelpers.login.close();
+      await fetchUserAvailableTime();
+      handleLoggedIn.setTrue();
+      setMode('save');
+      pageReset();
+    } catch (error) {
+      handleError(error, 'handleContinueWithDuplicated');
+    }
+  };
 
   const handleDuplicatedCancel = () => {
     modalHelpers.entryConfirm.close();
@@ -154,23 +175,25 @@ const CheckEventPage = () => {
   const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isLoggedIn) return;
 
-    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-heatmap-cell]');
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
+
     if (!cell) return;
 
-    addToast({
+    if (isExpired) return;
+
+    showToast({
       type: 'warning',
       message: '시간을 등록하려면 "편집하기"를 눌러주세요',
     });
   };
 
-  useSSE(session, handleError, {
-    onVoteChange: async () => {
-      console.log('🔄 SSE vote-changed event 확인... fetch중...');
-      await fetchRoomStatistics(session);
-      console.log('✅ fetch 완료!');
-    },
-  });
+  const onVoteChange = useCallback(async () => {
+    console.log('🔄 SSE vote-changed event 확인... fetch중...');
+    await fetchRoomStatistics(session);
+    console.log('✅ fetch 완료!');
+  }, [fetchRoomStatistics, session]);
 
+  useSSE(session, handleError, onVoteChange);
   return (
     <>
       <Wrapper
@@ -187,15 +210,16 @@ const CheckEventPage = () => {
             roomSession={roomInfo.roomSession}
             openCopyModal={modalHelpers.copyLink.open}
           />
-          <S.FlipCard isFlipped={mode !== 'view'} ref={flipCardRef}>
+          <S.FlipCard isFlipped={mode === 'save'} ref={flipCardRef}>
             {/* view 모드 */}
-            <S.FrontFace isFlipped={mode !== 'view'}>
+            <S.FrontFace isFlipped={mode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
-                    mode="view"
+                    mode={mode}
                     onToggleEditMode={handleToggleMode}
+                    isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
@@ -215,7 +239,6 @@ const CheckEventPage = () => {
                       timeColumnRef={timeColumnRef}
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
-                      roomStatistics={roomStatistics}
                       handleBeforeEdit={handleBeforeEdit}
                     />
                   </Flex>
@@ -224,14 +247,15 @@ const CheckEventPage = () => {
             </S.FrontFace>
 
             {/* edit 모드 */}
-            <S.BackFace isFlipped={mode !== 'view'}>
+            <S.BackFace isFlipped={mode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
-                    name={userName.value}
-                    mode="edit"
+                    name={userAvailability.userName}
+                    mode="save"
                     onToggleEditMode={handleToggleMode}
                     isLoading={isUserAvailabilityLoading || isAnimating}
+                    isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
@@ -251,7 +275,7 @@ const CheckEventPage = () => {
                       timeColumnRef={timeColumnRef}
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
-                      selectedTimes={selectedTimes}
+                      initialSelectedTimes={userAvailability.selectedTimes}
                     />
                   </Flex>
                 </Flex>
@@ -260,6 +284,7 @@ const CheckEventPage = () => {
           </S.FlipCard>
         </Flex>
       </Wrapper>
+
       <LoginModal
         isLoginModalOpen={modalHelpers.login.isOpen}
         handleCloseLoginModal={modalHelpers.login.close}
@@ -281,6 +306,23 @@ const CheckEventPage = () => {
         <CopyLinkModal sessionId={session} />
       </Modal>
     </>
+  );
+};
+
+const CheckEventPage = () => {
+  const { roomInfo, session, isExpired, isRoomSessionExist } = useCheckRoomSession();
+
+  return (
+    <TimeSelectionProvider>
+      <RoomStatisticsProvider>
+        <CheckEventContent
+          roomInfo={roomInfo}
+          session={session}
+          isExpired={isExpired}
+          isRoomSessionExist={isRoomSessionExist}
+        />
+      </RoomStatisticsProvider>
+    </TimeSelectionProvider>
   );
 };
 
