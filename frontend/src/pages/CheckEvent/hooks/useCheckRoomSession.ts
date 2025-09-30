@@ -9,7 +9,10 @@ import useFetch from '@/shared/hooks/common/useFetch';
 import { DateManager } from '@/shared/utils/common/DateManager';
 
 const useCheckRoomSession = () => {
-  const { runFetch } = useFetch();
+  const { triggerFetch: getRoomSession } = useFetch({
+    context: 'fetchSession',
+    requestFn: () => getRoomInfo(session),
+  });
   const navigate = useNavigate();
 
   let session = useExtractQueryParams('id');
@@ -21,11 +24,7 @@ const useCheckRoomSession = () => {
   const fetchSession = useCallback(async () => {
     if (!session) return;
 
-    const response = await runFetch({
-      context: 'fetchSession',
-      requestFn: () => getRoomInfo(session),
-    });
-
+    const response = await getRoomSession();
     if (response === undefined) {
       setIsSessionExist(false);
       navigate('/404', { replace: true });

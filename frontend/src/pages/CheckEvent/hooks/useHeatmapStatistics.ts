@@ -22,7 +22,10 @@ const useHeatmapStatistics = ({
   weightCalculateStrategy: WeightCalculateStrategy;
   isRoomSessionExist: boolean;
 }) => {
-  const { runFetch } = useFetch();
+  const { triggerFetch: getStatistics } = useFetch({
+    context: 'fetchRoomStatistics',
+    requestFn: () => getRoomStatistics(session),
+  });
   const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
   const getWeightStatistics = useCallback(
@@ -80,10 +83,7 @@ const useHeatmapStatistics = ({
     async (sessionId: string) => {
       if (!sessionId || !isRoomSessionExist) return;
 
-      const response = await runFetch({
-        context: 'fetchRoomStatistics',
-        requestFn: () => getRoomStatistics(sessionId),
-      });
+      const response = await getStatistics();
 
       if (response === undefined) return;
       const result = formatRoomStatistics(response);

@@ -10,7 +10,13 @@ const useUserLogin = ({ session }: { session: string | null }) => {
     throw new Error('Session ID is required for user login');
   }
   const [userData, setUserData] = useState<LoginData>({ name: '' });
-  const { isLoading, runFetch } = useFetch();
+  const { isLoading: isLoginLoading, triggerFetch: userLoginSubmit } = useFetch({
+    context: 'handleLogin',
+    requestFn: () =>
+      joinUser(session, {
+        participantName: userData.name.trim(),
+      }),
+  });
   const isLoggedIn = useRef(false);
 
   const handleUserData = (data: LoginData) => setUserData(data);
@@ -20,15 +26,7 @@ const useUserLogin = ({ session }: { session: string | null }) => {
       throw new Error('아이디를 입력해주세요.');
     }
 
-    const response = await runFetch({
-      context: 'handleLogin',
-      requestFn: () =>
-        joinUser(session, {
-          participantName: userData.name.trim(),
-        }),
-    });
-
-    if (response === undefined) return false;
+    const response = await userLoginSubmit();
 
     return response?.isDuplicateName;
   }, [session, userData.name]);
@@ -47,7 +45,7 @@ const useUserLogin = ({ session }: { session: string | null }) => {
     resetUserData,
     isLoggedIn: isLoggedIn.current,
     handleLoggedIn,
-    isUserLoginLoading: isLoading,
+    isLoginLoading,
   };
 };
 export default useUserLogin;

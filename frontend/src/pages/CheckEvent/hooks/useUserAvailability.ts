@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
 import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
@@ -19,33 +19,36 @@ export const useUserAvailability = ({
 }) => {
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
+  const userAvailabilityRef = useRef<UserAvailability>({
+    userName: '',
+    selectedTimes: new Set(),
+  });
 
-  const { isLoading, runFetch } = useFetch();
+  const { isLoading: isSavingUserTime, triggerFetch: updateUserTime } = useFetch({
+    context: 'userAvailabilitySubmit',
+    requestFn: () =>
+      updateUserAvailableTime(session, toCreateUserAvailability(userAvailabilityRef.current)),
+  });
 
-  const userAvailabilitySubmit = useCallback(
-    async (updatedUserAvailability: UserAvailability) => {
-      const payload = toCreateUserAvailability(updatedUserAvailability);
-      await runFetch({
-        context: 'userAvailabilitySubmit',
-        requestFn: () => updateUserAvailableTime(session, payload),
-      });
-      showToast({
-        type: 'success',
-        message: '시간표 저장이 완료되었습니다!',
-      });
-    },
-    [session]
-  );
+  const { triggerFetch: getUserTime } = useFetch({
+    context: 'fetchUserAvailableTime',
+    requestFn: () => getUserAvailableTime(session || '', name),
+  });
+
+  const userAvailabilitySubmit = useCallback(async () => {
+    await updateUserTime();
+    showToast({
+      type: 'success',
+      message: '시간표 저장이 완료되었습니다!',
+    });
+  }, [session]);
 
   const fetchUserAvailableTime = useCallback(async () => {
     if (!session) {
       alert('세션이 없습니다. 다시 시도해주세요.');
       return;
     }
-    const userAvailableTimeInfo = await runFetch({
-      context: 'fetchUserAvailableTime',
-      requestFn: () => getUserAvailableTime(session, name),
-    });
+    const userAvailableTimeInfo = await getUserTime();
     if (userAvailableTimeInfo === undefined) return;
     if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
     const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
@@ -55,8 +58,9 @@ export const useUserAvailability = ({
   return {
     userAvailabilitySubmit,
     fetchUserAvailableTime,
-    isUserAvailabilityLoading: isLoading,
+    isSavingUserTime,
     userAvailability,
+    userAvailabilityRef,
   };
 };
 

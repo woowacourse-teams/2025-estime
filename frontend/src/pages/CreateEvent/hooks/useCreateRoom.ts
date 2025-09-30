@@ -14,8 +14,6 @@ interface checkedNotification {
 }
 
 export const useCreateRoom = () => {
-  const { isLoading, runFetch } = useFetch();
-
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { time: { startTime: string; endTime: string } }
   >(initialCreateRoomInfo);
@@ -29,6 +27,22 @@ export const useCreateRoom = () => {
   });
 
   const isTimeRangeValid = TimeManager.isValidRange(roomInfo.time.startTime, roomInfo.time.endTime);
+
+  const { triggerFetch: roomWithChannelSubmit } = useFetch({
+    context: 'roomInfoSubmit',
+    requestFn: () =>
+      createChannelRoom({
+        ...toCreateRoomInfo(roomInfo),
+        platformType: platformType as 'DISCORD' | 'SLACK',
+        channelId: channelId || 'DISCORD',
+        notification: checkedNotification,
+      }),
+  });
+
+  const { isLoading: isRoomSubmitLoading, triggerFetch: roomSubmit } = useFetch({
+    context: 'roomInfoSubmit',
+    requestFn: () => createRoom(toCreateRoomInfo(roomInfo)),
+  });
 
   const title = {
     value: roomInfo.title,
@@ -70,28 +84,15 @@ export const useCreateRoom = () => {
     roomInfo.deadline.date.trim() !== '' &&
     roomInfo.deadline.time.trim() !== '';
 
-  // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
+  // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을 emt
 
   const roomInfoSubmit = useCallback(async () => {
-    const payload = toCreateRoomInfo(roomInfo);
     if (platformType && channelId) {
-      const response = await runFetch({
-        context: 'roomInfoSubmit',
-        requestFn: () =>
-          createChannelRoom({
-            ...payload,
-            platformType: platformType as 'DISCORD' | 'SLACK',
-            channelId,
-            notification: checkedNotification,
-          }),
-      });
+      const response = await roomWithChannelSubmit();
       return response?.session;
     }
 
-    const response = await runFetch({
-      context: 'roomInfoSubmit',
-      requestFn: () => createRoom(payload),
-    });
+    const response = await roomSubmit();
     return response?.session;
   }, [channelId, checkedNotification, platformType, roomInfo]);
 
@@ -105,7 +106,7 @@ export const useCreateRoom = () => {
     isCalendarReady,
     isBasicReady,
     roomInfoSubmit,
-    isCreateRoomLoading: isLoading,
+    isRoomSubmitLoading,
   };
 };
 
