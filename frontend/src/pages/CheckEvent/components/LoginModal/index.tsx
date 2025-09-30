@@ -13,7 +13,7 @@ export interface LoginModalProps {
   handleModalLogin: () => void;
   userData: LoginData;
   handleUserData: (data: LoginData) => void;
-  isUserLoginLoading: boolean;
+  isLoginLoading: boolean;
 }
 export const LoginModal = ({
   isLoginModalOpen,
@@ -21,7 +21,7 @@ export const LoginModal = ({
   handleModalLogin,
   userData,
   handleUserData,
-  isUserLoginLoading,
+  isLoginLoading,
 }: LoginModalProps) => {
   const { inputRef } = useEnterKeySubmit({ callback: handleModalLogin });
 
@@ -75,11 +75,11 @@ export const LoginModal = ({
                 color={userData.name.trim().length > 0 ? 'primary' : 'plum40'}
                 selected={true}
                 onClick={handleModalLogin}
-                disabled={!userData.name.trim() || isUserLoginLoading}
+                disabled={!userData.name.trim() || isLoginLoading}
                 data-ga-id="submit-button"
               >
                 <Text variant="button" color="background">
-                  {isUserLoginLoading ? '입장 중...' : '입장하기'}
+                  {isLoginLoading ? '입장 중...' : '입장하기'}
                 </Text>
               </Button>
             </Flex.Item>
