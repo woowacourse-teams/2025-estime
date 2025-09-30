@@ -17,6 +17,9 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
+  if (!session) {
+    throw new Error('세션이 없습니다. 다시 시도해주세요');
+  }
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
   const userAvailabilityRef = useRef<UserAvailability>({
@@ -32,7 +35,7 @@ export const useUserAvailability = ({
 
   const { triggerFetch: getUserTime } = useFetch({
     context: 'fetchUserAvailableTime',
-    requestFn: () => getUserAvailableTime(session || '', name),
+    requestFn: () => getUserAvailableTime(session, name),
   });
 
   const userAvailabilitySubmit = useCallback(async () => {
@@ -44,10 +47,6 @@ export const useUserAvailability = ({
   }, [updateUserTime]);
 
   const fetchUserAvailableTime = useCallback(async () => {
-    if (!session) {
-      alert('세션이 없습니다. 다시 시도해주세요.');
-      return;
-    }
     const userAvailableTimeInfo = await getUserTime();
     if (userAvailableTimeInfo === undefined) return;
     if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
