@@ -19,6 +19,10 @@ spring:
   flyway:
     enabled: true
 
+url:
+  origin:
+    client: ${URL_ORIGIN_CLIENT:https://test.estime.com/}
+
 springdoc:
   swagger-ui:
     path: /docs

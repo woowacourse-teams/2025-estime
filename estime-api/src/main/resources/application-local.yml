@@ -19,6 +19,10 @@ spring:
   flyway:
     enabled: true
 
+url:
+  origin:
+    client: ${URL_ORIGIN_CLIENT:http://localhost:3000/}
+
 springdoc:
   swagger-ui:
     path: /docs

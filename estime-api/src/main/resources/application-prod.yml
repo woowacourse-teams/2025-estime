@@ -15,6 +15,10 @@ spring:
   flyway:
     enabled: true
 
+url:
+  origin:
+    client: ${URL_ORIGIN_CLIENT:https://estime.com/}
+
 logging:
   discord:
     webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
