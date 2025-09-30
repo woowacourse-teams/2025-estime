@@ -17,7 +17,7 @@ spring:
 
 url:
   origin:
-    client: ${URL_ORIGIN_CLIENT:https://estime.com/}
+    client: ${URL_ORIGIN_CLIENT}
 
 logging:
   discord:

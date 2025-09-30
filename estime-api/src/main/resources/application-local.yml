@@ -21,7 +21,7 @@ spring:
 
 url:
   origin:
-    client: ${URL_ORIGIN_CLIENT:http://localhost:3000/}
+    client: ${URL_ORIGIN_CLIENT}
 
 springdoc:
   swagger-ui:
