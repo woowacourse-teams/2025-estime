@@ -29,7 +29,7 @@ const useUserLogin = ({ session }: { session: string | null }) => {
     const response = await userLoginSubmit();
 
     return response?.isDuplicateName;
-  }, [session, userData.name]);
+  }, [userData.name, userLoginSubmit]);
 
   const handleLoggedIn = {
     setTrue: () => (isLoggedIn.current = true),

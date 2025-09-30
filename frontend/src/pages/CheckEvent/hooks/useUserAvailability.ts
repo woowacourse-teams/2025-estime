@@ -41,7 +41,7 @@ export const useUserAvailability = ({
       type: 'success',
       message: '시간표 저장이 완료되었습니다!',
     });
-  }, [session]);
+  }, [updateUserTime]);
 
   const fetchUserAvailableTime = useCallback(async () => {
     if (!session) {
@@ -53,7 +53,7 @@ export const useUserAvailability = ({
     if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
     const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
     setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
-  }, [name, session]);
+  }, [name, session, getUserTime]);
 
   return {
     userAvailabilitySubmit,

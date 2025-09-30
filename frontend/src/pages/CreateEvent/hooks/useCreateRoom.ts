@@ -94,7 +94,7 @@ export const useCreateRoom = () => {
 
     const response = await roomSubmit();
     return response?.session;
-  }, [channelId, checkedNotification, platformType, roomInfo]);
+  }, [channelId, platformType, roomSubmit, roomWithChannelSubmit]);
 
   return {
     platformType,

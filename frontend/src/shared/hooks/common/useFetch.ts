@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import useHandleError from './useCreateError';
 
 const useFetch = <T>({
@@ -11,7 +11,7 @@ const useFetch = <T>({
   const handleError = useHandleError();
   const [isLoading, setIsLoading] = useState(false);
 
-  const triggerFetch = async () => {
+  const triggerFetch = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await requestFn();
@@ -22,7 +22,7 @@ const useFetch = <T>({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [context, handleError, requestFn]);
   return { isLoading, triggerFetch };
 };
 
