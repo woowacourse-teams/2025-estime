@@ -35,9 +35,9 @@ jobs:
       SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: testpw
-      URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
-      URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
-      URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
+
+      URL_ORIGIN_CLIENT: ${{ secrets.URL_ORIGIN_PROD }}
+
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
     steps:
@@ -101,7 +101,7 @@ jobs:
 
     steps:
       - name: Backup existing .env.prod file
-        working-directory: ${{ github.workspace }}/estime-api
+        working-directory: ${{ github.workspace }}/application
         run: |
           BACKUP_DIR=~/env_backups/successful
           mkdir -p "$BACKUP_DIR"

@@ -32,9 +32,7 @@ jobs:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: testpw
 
-      URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
-      URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
-      URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
+      URL_ORIGIN_CLIENT: ${{ secrets.URL_ORIGIN_DEV }}
 
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
