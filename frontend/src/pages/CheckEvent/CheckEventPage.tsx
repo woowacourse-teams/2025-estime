@@ -54,9 +54,9 @@ const CheckEventContent = ({
     userData,
     handleUserData,
     name,
-    isLoggedIn,
-    handleLoggedIn,
     isUserLoginLoading,
+    handleLoggedIn,
+    isLoggedIn,
   } = useUserLogin({
     session,
   });

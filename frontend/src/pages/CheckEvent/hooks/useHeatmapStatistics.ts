@@ -89,14 +89,14 @@ const useHeatmapStatistics = ({
       const result = formatRoomStatistics(response);
       setRoomStatistics(result);
     },
-    [formatRoomStatistics, isRoomSessionExist, runFetch]
+    [isRoomSessionExist, formatRoomStatistics]
   );
 
   useEffect(() => {
     if (session) {
       fetchRoomStatistics(session);
     }
-  }, [session, isRoomSessionExist, fetchRoomStatistics]);
+  }, [session, fetchRoomStatistics]);
 
   return { roomStatistics, fetchRoomStatistics };
 };

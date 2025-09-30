@@ -34,8 +34,8 @@ export const Container = styled.button<{
   align-items: center;
   gap: var(--gap-3);
   background-color: ${({ theme, selected, color, disabled }) => {
-    if (selected) return theme.colors[color];
     if (disabled) return theme.colors.gray20;
+    if (selected) return theme.colors[color];
     return theme.colors.background;
   }};
 

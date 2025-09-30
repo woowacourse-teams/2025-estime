@@ -17,39 +17,40 @@ export const useUserAvailability = ({
   name: string;
   session: string | null;
 }) => {
-  const { isLoading, runFetch } = useFetch();
-
   const [userAvailability, setUserAvailability] =
     useState<UserAvailability>(initialUserAvailability);
 
-  const userAvailabilitySubmit = async () => {
-    const payload = toCreateUserAvailability(userAvailability);
-    await runFetch({
-      context: 'userAvailabilitySubmit',
-      requestFn: () => updateUserAvailableTime(session, payload),
-    });
-    showToast({
-      type: 'success',
-      message: '시간표 저장이 완료되었습니다!',
-    });
-  };
+  const { isLoading, runFetch } = useFetch();
+
+  const userAvailabilitySubmit = useCallback(
+    async (updatedUserAvailability: UserAvailability) => {
+      const payload = toCreateUserAvailability(updatedUserAvailability);
+      await runFetch({
+        context: 'userAvailabilitySubmit',
+        requestFn: () => updateUserAvailableTime(session, payload),
+      });
+      showToast({
+        type: 'success',
+        message: '시간표 저장이 완료되었습니다!',
+      });
+    },
+    [session]
+  );
 
   const fetchUserAvailableTime = useCallback(async () => {
     if (!session) {
       alert('세션이 없습니다. 다시 시도해주세요.');
       return;
     }
-
     const userAvailableTimeInfo = await runFetch({
       context: 'fetchUserAvailableTime',
       requestFn: () => getUserAvailableTime(session, name),
     });
     if (userAvailableTimeInfo === undefined) return;
-    if (userAvailableTimeInfo.dateTimeSlots.length > 0) {
-      const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
-      setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
-    }
-  }, [name, session, runFetch]);
+    if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
+    const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
+    setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
+  }, [name, session]);
 
   return {
     userAvailabilitySubmit,

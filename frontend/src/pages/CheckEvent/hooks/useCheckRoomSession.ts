@@ -35,7 +35,7 @@ const useCheckRoomSession = () => {
     setIsSessionExist(true);
     const parseData = fromParseRoomInfo(response);
     setRoomInfo(parseData);
-  }, [navigate, runFetch, session]);
+  }, [navigate, session]);
 
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 

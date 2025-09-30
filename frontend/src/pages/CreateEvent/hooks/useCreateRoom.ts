@@ -2,7 +2,7 @@ import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialCreateRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import useFetch from '@/shared/hooks/common/useFetch';
@@ -72,7 +72,7 @@ export const useCreateRoom = () => {
 
   // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
 
-  const roomInfoSubmit = async () => {
+  const roomInfoSubmit = useCallback(async () => {
     const payload = toCreateRoomInfo(roomInfo);
     if (platformType && channelId) {
       const response = await runFetch({
@@ -93,7 +93,7 @@ export const useCreateRoom = () => {
       requestFn: () => createRoom(payload),
     });
     return response?.session;
-  };
+  }, [channelId, checkedNotification, platformType, roomInfo]);
 
   return {
     platformType,
