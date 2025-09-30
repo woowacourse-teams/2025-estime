@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import useHandleError from './useCreateError';
 
-const useFetch = () => {
+const useFetch = <T>({
+  context,
+  requestFn,
+}: {
+  context: string;
+  requestFn: () => Promise<T>;
+}): { isLoading: boolean; triggerFetch: () => Promise<T | undefined> } => {
   const handleError = useHandleError();
   const [isLoading, setIsLoading] = useState(false);
 
-  const runFetch = async <T>({
-    context,
-    requestFn,
-  }: {
-    context: string;
-    requestFn: () => Promise<T>;
-  }): Promise<T | undefined> => {
+  const triggerFetch = async () => {
     try {
       setIsLoading(true);
       const response = await requestFn();
@@ -23,7 +23,7 @@ const useFetch = () => {
       setIsLoading(false);
     }
   };
-  return { isLoading, runFetch };
+  return { isLoading, triggerFetch };
 };
 
 export default useFetch;
