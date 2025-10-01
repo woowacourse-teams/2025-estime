@@ -1,9 +1,8 @@
 import { getRoomStatistics } from '@/apis/room/room';
 import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/type';
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
+import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
-import * as Sentry from '@sentry/react';
-import { showToast } from '@/shared/store/toastStore';
 import { useRoomStatisticsContext } from '../provider/RoomStatisticsProvider';
 
 export interface DateCellInfo {
@@ -17,10 +16,16 @@ export interface HeatmapDateCellInfo extends DateCellInfo {
 const useHeatmapStatistics = ({
   session,
   weightCalculateStrategy,
+  isRoomSessionExist,
 }: {
   session: string;
   weightCalculateStrategy: WeightCalculateStrategy;
+  isRoomSessionExist: boolean;
 }) => {
+  const { triggerFetch: getStatistics } = useFetch({
+    context: 'fetchRoomStatistics',
+    requestFn: () => getRoomStatistics(session),
+  });
   const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
   const getWeightStatistics = useCallback(
@@ -76,31 +81,22 @@ const useHeatmapStatistics = ({
 
   const fetchRoomStatistics = useCallback(
     async (sessionId: string) => {
-      if (!sessionId) return;
-      try {
-        const res = await getRoomStatistics(sessionId);
-        const result = formatRoomStatistics(res);
-        setRoomStatistics(result);
-      } catch (err) {
-        const e = err as Error;
-        console.error(e);
-        showToast({
-          type: 'error',
-          message: e.message,
-        });
-        Sentry.captureException(err, {
-          level: 'error',
-        });
-      }
+      if (!sessionId || !isRoomSessionExist) return;
+
+      const response = await getStatistics();
+
+      if (response === undefined) return;
+      const result = formatRoomStatistics(response);
+      setRoomStatistics(result);
     },
-    [formatRoomStatistics]
+    [isRoomSessionExist, formatRoomStatistics]
   );
 
   useEffect(() => {
     if (session) {
       fetchRoomStatistics(session);
     }
-  }, [fetchRoomStatistics, session]);
+  }, [session, fetchRoomStatistics]);
 
   return { roomStatistics, fetchRoomStatistics };
 };

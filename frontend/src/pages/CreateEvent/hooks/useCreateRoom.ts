@@ -2,11 +2,10 @@ import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 import { initialCreateRoomInfo } from '@/constants/initialRoomInfo';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import { useRef, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
-import * as Sentry from '@sentry/react';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
-import { showToast } from '@/shared/store/toastStore';
+import useFetch from '@/shared/hooks/common/useFetch';
 
 interface checkedNotification {
   created: boolean;
@@ -15,8 +14,6 @@ interface checkedNotification {
 }
 
 export const useCreateRoom = () => {
-  const submittingRef = useRef(false);
-
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { time: { startTime: string; endTime: string } }
   >(initialCreateRoomInfo);
@@ -30,6 +27,22 @@ export const useCreateRoom = () => {
   });
 
   const isTimeRangeValid = TimeManager.isValidRange(roomInfo.time.startTime, roomInfo.time.endTime);
+
+  const { triggerFetch: roomWithPlatformSubmit } = useFetch({
+    context: 'roomInfoSubmit',
+    requestFn: () =>
+      createChannelRoom({
+        ...toCreateRoomInfo(roomInfo),
+        platformType: platformType as 'DISCORD' | 'SLACK',
+        channelId: channelId || 'DISCORD',
+        notification: checkedNotification,
+      }),
+  });
+
+  const { isLoading: isRoomSubmitLoading, triggerFetch: roomSubmit } = useFetch({
+    context: 'roomInfoSubmit',
+    requestFn: () => createRoom(toCreateRoomInfo(roomInfo)),
+  });
 
   const title = {
     value: roomInfo.title,
@@ -71,37 +84,17 @@ export const useCreateRoom = () => {
     roomInfo.deadline.date.trim() !== '' &&
     roomInfo.deadline.time.trim() !== '';
 
-  // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을듯
+  // 추후 어떤 조건이 빠졌는지도 반환하는 함수 만들어도 좋을 emt
 
-  const roomInfoSubmit = async () => {
-    if (submittingRef.current) return;
-    submittingRef.current = true;
-    try {
-      const payload = toCreateRoomInfo(roomInfo);
-      if (platformType && channelId) {
-        const response = await createChannelRoom({
-          ...payload,
-          platformType: platformType as 'DISCORD' | 'SLACK',
-          channelId,
-          notification: checkedNotification,
-        });
-        return response.session;
-      }
-      const response = await createRoom(payload);
-      return response.session;
-    } catch (err) {
-      const e = err as Error;
-      showToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    } finally {
-      submittingRef.current = false;
+  const roomInfoSubmit = useCallback(async () => {
+    if (platformType && channelId) {
+      const response = await roomWithPlatformSubmit();
+      return response?.session;
     }
-  };
+
+    const response = await roomSubmit();
+    return response?.session;
+  }, [channelId, platformType, roomSubmit, roomWithPlatformSubmit]);
 
   return {
     platformType,
@@ -113,6 +106,7 @@ export const useCreateRoom = () => {
     isCalendarReady,
     isBasicReady,
     roomInfoSubmit,
+    isRoomSubmitLoading,
   };
 };
 

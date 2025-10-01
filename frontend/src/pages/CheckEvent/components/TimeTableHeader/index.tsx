@@ -81,7 +81,7 @@ const TimeTableHeader = ({
           size="small"
         >
           <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
-            {presets.cta}
+            {isLoading ? '저장 중...' : presets.cta}
           </Text>
         </Button>
       </Flex>

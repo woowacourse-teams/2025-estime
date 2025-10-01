@@ -27,6 +27,7 @@ import {
   useTimeSelectionContext,
 } from '@/pages/CheckEvent/contexts/TimeSelectionContext';
 import * as S from './CheckEventPage.styled';
+import useAnimationEnd from './hooks/useAnimationEnd';
 import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import { showToast } from '@/shared/store/toastStore';
@@ -35,18 +36,38 @@ interface CheckEventContentProps {
   roomInfo: ReturnType<typeof useCheckRoomSession>['roomInfo'];
   session: string;
   isExpired: boolean;
+  isRoomSessionExist: boolean;
 }
 
-const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentProps) => {
+const CheckEventContent = ({
+  roomInfo,
+  session,
+  isExpired,
+  isRoomSessionExist,
+}: CheckEventContentProps) => {
   const theme = useTheme();
 
   const { modalHelpers } = useModalControl();
 
-  const { handleLogin, userData, handleUserData, name, isLoggedIn, handleLoggedIn } = useUserLogin({
+  const {
+    handleLogin,
+    userData,
+    handleUserData,
+    name,
+    isLoginLoading,
+    handleLoggedIn,
+    isLoggedIn,
+  } = useUserLogin({
     session,
   });
 
-  const { userAvailability, userAvailabilitySubmit, fetchUserAvailableTime } = useUserAvailability({
+  const {
+    userAvailability,
+    userAvailabilitySubmit,
+    fetchUserAvailableTime,
+    isSavingUserTime,
+    userAvailabilityRef,
+  } = useUserAvailability({
     name,
     session,
   });
@@ -54,7 +75,10 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
   const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
     weightCalculateStrategy,
+    isRoomSessionExist,
   });
+
+  const { isAnimating, ref: flipCardRef, startAnimation: startFlip } = useAnimationEnd();
 
   const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
   const handleError = useHandleError();
@@ -77,11 +101,11 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
   const switchToViewMode = async () => {
     try {
       const currentTimes = getCurrentSelectedTimes();
-      const updatedUserAvailability = {
+      userAvailabilityRef.current = {
         ...userAvailability,
         selectedTimes: currentTimes,
       };
-      await userAvailabilitySubmit(updatedUserAvailability);
+      await userAvailabilitySubmit();
       await fetchRoomStatistics(session);
       // save 모드에서 저장하기를 누르면 edit 모드로 전환
       setMode('edit');
@@ -105,6 +129,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
   const handleToggleMode = async () => {
     if (mode === 'save') {
       // save 모드에서 "저장하기" 버튼을 누르면 view 모드(edit)로 전환
+      startFlip();
       await switchToViewMode();
     } else {
       // register 모드에서 "등록하기" 또는 edit 모드에서 "수정하기"를 누르면 edit 모드(save)로 전환
@@ -170,6 +195,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
   }, [fetchRoomStatistics, session]);
 
   useSSE(session, handleError, onVoteChange);
+
   return (
     <>
       <Wrapper
@@ -186,7 +212,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
             roomSession={roomInfo.roomSession}
             openCopyModal={modalHelpers.copyLink.open}
           />
-          <S.FlipCard isFlipped={mode === 'save'}>
+          <S.FlipCard isFlipped={mode === 'save'} ref={flipCardRef}>
             {/* view 모드 */}
             <S.FrontFace isFlipped={mode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
@@ -230,6 +256,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
                     name={userAvailability.userName}
                     mode="save"
                     onToggleEditMode={handleToggleMode}
+                    isLoading={isSavingUserTime || isAnimating}
                     isExpired={isExpired}
                   />
                   <Flex direction="column" gap="var(--gap-4)">
@@ -266,6 +293,7 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
         handleModalLogin={handleLoginSuccess}
         userData={userData}
         handleUserData={handleUserData}
+        isLoginLoading={isLoginLoading || isSavingUserTime}
       />
       <EntryConfirmModal
         isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
@@ -284,12 +312,17 @@ const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentPr
 };
 
 const CheckEventPage = () => {
-  const { roomInfo, session, isExpired } = useCheckRoomSession();
+  const { roomInfo, session, isExpired, isRoomSessionExist } = useCheckRoomSession();
 
   return (
     <TimeSelectionProvider>
       <RoomStatisticsProvider>
-        <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
+        <CheckEventContent
+          roomInfo={roomInfo}
+          session={session}
+          isExpired={isExpired}
+          isRoomSessionExist={isRoomSessionExist}
+        />
       </RoomStatisticsProvider>
     </TimeSelectionProvider>
   );

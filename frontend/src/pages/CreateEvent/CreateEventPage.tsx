@@ -15,6 +15,10 @@ import { showToast } from '@/shared/store/toastStore';
 
 const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
+
+  const isRoutingRef = useRef(false);
+  let isRouting = isRoutingRef.current;
+
   const showValidation = useRef(false);
   const navigate = useNavigate();
   const {
@@ -27,6 +31,7 @@ const CreateEventPage = () => {
     isCalendarReady,
     isBasicReady,
     roomInfoSubmit,
+    isRoomSubmitLoading,
   } = useCreateRoom();
   const { shouldShake, handleShouldShake } = useShakeAnimation();
 
@@ -69,6 +74,7 @@ const CreateEventPage = () => {
   //  실제 제출
   const submitAndNavigate = async () => {
     const session = await roomInfoSubmit();
+    isRoutingRef.current = true;
     if (session) onSubmitSuccess(session);
   };
 
@@ -122,9 +128,10 @@ const CreateEventPage = () => {
                 size="small"
                 onClick={handleCreateRoom}
                 data-ga-id="create-event-button"
+                disabled={isRoomSubmitLoading || isRouting}
               >
                 <Text variant="button" color="background">
-                  방 만들기
+                  {isRoomSubmitLoading || isRouting ? '생성 중...' : '방 만들기'}
                 </Text>
               </Button>
             </Flex>
