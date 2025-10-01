@@ -196,7 +196,6 @@ const CheckEventContent = ({
 
   useSSE(session, handleError, onVoteChange);
 
-  console.log('check');
   return (
     <>
       <Wrapper

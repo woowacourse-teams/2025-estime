@@ -15,7 +15,7 @@ const useCheckRoomSession = () => {
   });
   const navigate = useNavigate();
 
-  let session = useExtractQueryParams('id');
+  const session = useExtractQueryParams('id');
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { roomSession: string; availableTimeSlots: string[] }
   >(initialCheckRoomInfo);

@@ -28,7 +28,7 @@ export const useCreateRoom = () => {
 
   const isTimeRangeValid = TimeManager.isValidRange(roomInfo.time.startTime, roomInfo.time.endTime);
 
-  const { triggerFetch: roomWithChannelSubmit } = useFetch({
+  const { triggerFetch: roomWithPlatformSubmit } = useFetch({
     context: 'roomInfoSubmit',
     requestFn: () =>
       createChannelRoom({
@@ -88,13 +88,13 @@ export const useCreateRoom = () => {
 
   const roomInfoSubmit = useCallback(async () => {
     if (platformType && channelId) {
-      const response = await roomWithChannelSubmit();
+      const response = await roomWithPlatformSubmit();
       return response?.session;
     }
 
     const response = await roomSubmit();
     return response?.session;
-  }, [channelId, platformType, roomSubmit, roomWithChannelSubmit]);
+  }, [channelId, platformType, roomSubmit, roomWithPlatformSubmit]);
 
   return {
     platformType,
