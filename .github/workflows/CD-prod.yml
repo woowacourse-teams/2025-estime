@@ -200,7 +200,13 @@ jobs:
           echo "$TARGET 환경 배포 시작"
           echo "=========================================="
 
-          # TARGET 환경 컨테이너 시작
+          # 기존 중지된 컨테이너가 있다면 제거
+          if docker ps -a --format "{{.Names}}" | grep -q "^estime-api-$TARGET$"; then
+            echo "기존 $TARGET 컨테이너 제거 중..."
+            docker compose -f docker-compose.prod.yml rm -f api-$TARGET
+          fi
+
+          # 새 컨테이너 시작
           docker compose -f docker-compose.prod.yml up -d api-$TARGET
           echo "api-$TARGET 컨테이너 시작 완료"
 
@@ -275,8 +281,30 @@ jobs:
           fi
           echo "$TARGET 환경 정상"
 
-          echo "[2/4] Nginx 포트 변경: $TARGET_PORT"
+          echo "[2/4] Nginx 포트 변경: $OLD_PORT → $TARGET_PORT"
+
+          # 변경 전 현재 포트 확인
+          CURRENT_PORT=$(grep -oP 'proxy_pass\s+http://127\.0\.0\.1:\K\d+' /etc/nginx/sites-available/default | head -1)
+          echo "변경 전 포트: $CURRENT_PORT"
+
+          # 현재 포트가 OLD_PORT인지 검증 (초기 배포 제외)
+          if [ "$CURRENT" != "none" ] && [ "$CURRENT_PORT" != "$OLD_PORT" ]; then
+            echo "포트 불일치: 예상 $OLD_PORT, 실제 $CURRENT_PORT"
+            exit 1
+          fi
+
+          # 포트 변경
           sudo sed -i "s/\(proxy_pass\s\+http:\/\/127\.0\.0\.1:\)[0-9]\+/\1$TARGET_PORT/g" /etc/nginx/sites-available/default
+
+          # 변경 후 포트 확인
+          CHANGED_PORT=$(grep -oP 'proxy_pass\s+http://127\.0\.0\.1:\K\d+' /etc/nginx/sites-available/default | head -1)
+          echo "변경 후 포트: $CHANGED_PORT"
+
+          # 변경 후 포트가 TARGET_PORT인지 검증
+          if [ "$CHANGED_PORT" != "$TARGET_PORT" ]; then
+            echo "포트 불일치: 예상 $TARGET_PORT, 실제 $CHANGED_PORT"
+            exit 1
+          fi
           echo "포트 변경 완료"
 
           echo "[3/4] Nginx 리로드..."
@@ -289,7 +317,7 @@ jobs:
 
           echo "[4/4] Nginx 트래픽 전환 확인..."
           sleep 2
-          if ! curl -sf http://localhost/actuator/health > /dev/null; then
+          if ! curl -sf https://prod.estime.today/actuator/health > /dev/null; then
             echo "헬스체크 실패"
             exit 1
           fi
