@@ -117,6 +117,11 @@ jobs:
         run: |
           printf '%s\n' "${{ secrets.ENV_DEV }}" > .env.dev
 
+      - name: Prepare log directory
+        run: |
+          sudo mkdir -p /app/logs
+          sudo chown -R 1001:1001 /app/logs
+
       - name: Deploy with Docker Compose
         run: |
           docker compose -f docker-compose.dev.yml pull api
