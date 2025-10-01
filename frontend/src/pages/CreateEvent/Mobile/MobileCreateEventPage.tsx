@@ -16,6 +16,7 @@ import useFunnelWithHistory from '@/shared/hooks/Funnel/useFunnelWithHistory';
 import Modal from '@/shared/components/Modal';
 import NotificationModal from '@/pages/CreateEvent/components/NotificationModal';
 import { showToast } from '@/shared/store/toastStore';
+import { checkBasicReady, checkCalendarReady } from '@/pages/CreateEvent/utils/CreateRoomValidator';
 
 const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
 
@@ -28,23 +29,12 @@ const MobileCreateEventPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory(STEP);
-  const {
-    platformType,
-    title,
-    availableDateSlots,
-    time,
-    deadline,
-    notification,
-    isCalendarReady,
-    isBasicReady,
-    roomInfoSubmit,
-    isRoomSubmitLoading,
-  } = useCreateRoom();
+  const { platformType, notification, roomInfoSubmit, isRoomSubmitLoading } = useCreateRoom();
   const { shouldShake, handleShouldShake } = useShakeAnimation();
 
   const handleNextStep = async (type: 'calendar' | 'rest') => {
     if (type === 'calendar') {
-      if (!isCalendarReady) {
+      if (!checkCalendarReady()) {
         showToast({ type: 'warning', message: '날짜를 선택해주세요.' });
         showValidation.current.calendar = true;
         handleShouldShake();
@@ -55,7 +45,7 @@ const MobileCreateEventPage = () => {
     }
 
     if (type === 'rest') {
-      if (!isBasicReady) {
+      if (!checkBasicReady()) {
         showToast({ type: 'warning', message: '약속 정보를 입력해주세요.' });
         showValidation.current.rest = true;
         handleShouldShake();
@@ -123,8 +113,7 @@ const MobileCreateEventPage = () => {
         <Funnel.Step name="캘린더 선택 화면">
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <CalendarSettings
-              availableDateSlots={availableDateSlots}
-              isValid={!showValidation.current.calendar || isCalendarReady}
+              isValid={!showValidation.current.calendar || checkCalendarReady()}
               shouldShake={shouldShake}
             />
 
@@ -157,12 +146,10 @@ const MobileCreateEventPage = () => {
         <Funnel.Step name="제목 및 시간 선택 화면">
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings
-              title={title}
-              time={time}
-              deadline={deadline}
-              isValid={!showValidation.current.rest || isBasicReady}
+              isValid={!showValidation.current.rest || checkBasicReady()}
               shouldShake={shouldShake}
             />
+
             <Flex justify="space-between" gap="var(--gap-4)">
               <Button
                 color="primary"

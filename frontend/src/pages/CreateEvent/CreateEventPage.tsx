@@ -1,17 +1,20 @@
 import Flex from '@/shared/layout/Flex';
 import Wrapper from '@/shared/layout/Wrapper';
-import BasicSettings from '@/pages/CreateEvent/components/BasicSettings';
+
+import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
+
+import { showToast } from '@/shared/store/toastStore';
 import CalendarSettings from '@/pages/CreateEvent/components/CalendarSettings';
 import Button from '@/shared/components/Button';
 import Text from '@/shared/components/Text';
-import { useNavigate } from 'react-router';
 import useCreateRoom from '@/pages/CreateEvent/hooks/useCreateRoom';
 import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
-import { useRef, useState } from 'react';
 import Modal from '@/shared/components/Modal';
 import NotificationModal from '@/pages/CreateEvent/components/NotificationModal';
 import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
-import { showToast } from '@/shared/store/toastStore';
+import BasicSettings from '@/pages/CreateEvent/components/BasicSettings';
+import { checkBasicReady, checkCalendarReady } from '@/pages/CreateEvent/utils/CreateRoomValidator';
 
 const CreateEventPage = () => {
   const [notificationModal, setNotificationModal] = useState(false);
@@ -21,22 +24,11 @@ const CreateEventPage = () => {
 
   const showValidation = useRef(false);
   const navigate = useNavigate();
-  const {
-    platformType,
-    title,
-    availableDateSlots,
-    time,
-    deadline,
-    notification,
-    isCalendarReady,
-    isBasicReady,
-    roomInfoSubmit,
-    isRoomSubmitLoading,
-  } = useCreateRoom();
+  const { platformType, notification, roomInfoSubmit, isRoomSubmitLoading } = useCreateRoom();
   const { shouldShake, handleShouldShake } = useShakeAnimation();
 
   const handleValidation = () => {
-    if (!isCalendarReady && !isBasicReady) {
+    if (!checkCalendarReady() && !checkBasicReady()) {
       showToast({
         type: 'warning',
         message: '날짜와 약속 정보를 입력해주세요.',
@@ -45,7 +37,7 @@ const CreateEventPage = () => {
       handleShouldShake();
       return false;
     }
-    if (!isCalendarReady) {
+    if (!checkCalendarReady()) {
       showToast({
         type: 'warning',
         message: '날짜를 선택해주세요.',
@@ -54,7 +46,7 @@ const CreateEventPage = () => {
       handleShouldShake();
       return false;
     }
-    if (!isBasicReady) {
+    if (!checkBasicReady()) {
       showToast({
         type: 'warning',
         message: '약속 정보를 입력해주세요.',
@@ -106,18 +98,14 @@ const CreateEventPage = () => {
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
           <CalendarSettings
-            availableDateSlots={availableDateSlots}
-            isValid={!showValidation.current || isCalendarReady}
+            isValid={!showValidation.current || checkCalendarReady()}
             shouldShake={shouldShake}
           />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
             <BasicSettings
-              title={title}
-              time={time}
-              deadline={deadline}
-              isValid={!showValidation.current || isBasicReady}
+              isValid={!showValidation.current || checkBasicReady()}
               shouldShake={shouldShake}
             />
             <Flex justify="flex-end">

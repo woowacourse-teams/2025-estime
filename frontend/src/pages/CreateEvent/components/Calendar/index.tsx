@@ -9,20 +9,24 @@ import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
 import Flex from '../../../../shared/layout/Flex';
 import { DateManager } from '@/shared/utils/common/DateManager';
+import { onChangeAvailableDateSlots, useRoomSelector } from '@/shared/store/createRoomStore';
+import { useDateSelection } from '../../hooks/Calendar/useDateSelection';
 
-interface CalenderProps {
-  today: Date;
-  selectedDates: Set<string>;
-  mouseHandlers: {
-    onMouseDown: (date: Date | null) => void;
-    onMouseEnter: (date: Date | null) => void;
-    onMouseUp: () => void;
-    onMouseLeave: () => void;
-  };
-}
-
-const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
+const Calender = () => {
+  const today = new Date();
   const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
+  const selectedDates = useRoomSelector('availableDateSlots');
+  const dateSelection = useDateSelection({
+    selectedDates,
+    setSelectedDates: onChangeAvailableDateSlots,
+    today,
+  });
+  const mouseHandlers = {
+    onMouseDown: dateSelection.onMouseDown,
+    onMouseEnter: dateSelection.onMouseEnter,
+    onMouseUp: dateSelection.onMouseUp,
+    onMouseLeave: dateSelection.onMouseLeave,
+  };
   const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = mouseHandlers;
 
   return (
