@@ -11,10 +11,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class PlatformShortcutBuilder {
 
-    private final ClientOriginProperties clientOriginProperties;
+    private final ClientOriginProperties properties;
 
     public String buildConnectedRoomCreateUrl(final PlatformType type, final String channelId) {
-        return UriComponentsBuilder.fromUriString(clientOriginProperties.prod())
+        return UriComponentsBuilder.fromUriString(properties.client())
                 .queryParam("platformType", type.name())
                 .queryParam("channelId", channelId)
                 .build()
@@ -22,7 +22,8 @@ public class PlatformShortcutBuilder {
     }
 
     public String buildConnectedRoomUrl(final RoomSession session) {
-        return UriComponentsBuilder.fromUriString(clientOriginProperties.prod() + "check")
+        return UriComponentsBuilder.fromUriString(properties.client())
+                .path("check")
                 .queryParam("id", session.toString())
                 .build()
                 .toUriString();
