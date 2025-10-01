@@ -295,7 +295,7 @@ jobs:
 
           echo "[4/4] Nginx 트래픽 전환 확인..."
           sleep 2
-          if ! curl -sf http://localhost/actuator/health > /dev/null; then
+          if ! curl -sf https://prod.estime.today/actuator/health > /dev/null; then
             echo "헬스체크 실패"
             exit 1
           fi
