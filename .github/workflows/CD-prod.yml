@@ -287,9 +287,9 @@ jobs:
           sudo systemctl reload nginx
           echo "Nginx 리로드 완료"
 
-          echo "[4/4] 트래픽 전환 확인..."
+          echo "[4/4] Nginx 트래픽 전환 확인..."
           sleep 2
-          if ! curl -sf https://localhost/actuator/health > /dev/null; then
+          if ! curl -sf http://localhost/actuator/health > /dev/null; then
             echo "헬스체크 실패"
             exit 1
           fi
