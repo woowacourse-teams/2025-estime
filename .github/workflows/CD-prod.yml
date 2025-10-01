@@ -200,7 +200,13 @@ jobs:
           echo "$TARGET 환경 배포 시작"
           echo "=========================================="
 
-          # TARGET 환경 컨테이너 시작
+          # 기존 중지된 컨테이너가 있다면 제거
+          if docker ps -a --format "{{.Names}}" | grep -q "^estime-api-$TARGET$"; then
+            echo "기존 $TARGET 컨테이너 제거 중..."
+            docker compose -f docker-compose.prod.yml rm -f api-$TARGET
+          fi
+
+          # 새 컨테이너 시작
           docker compose -f docker-compose.prod.yml up -d api-$TARGET
           echo "api-$TARGET 컨테이너 시작 완료"
 
