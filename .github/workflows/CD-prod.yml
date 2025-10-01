@@ -122,35 +122,207 @@ jobs:
           sudo mkdir -p /app/logs
           sudo chown -R 1001:1001 /app/logs
 
-      - name: Deploy with Docker Compose
+      - name: Detect current environment and determine target
+        id: detect
         run: |
-          docker compose -f docker-compose.prod.yml pull api
-          docker compose -f docker-compose.prod.yml up -d
+          set -e
 
-      - name: healthcheck application containers
-        run: |
-          echo "Waiting 10 seconds for application to start up..."
-          sleep 10
-          echo "Starting health checks..."
-          for i in {1..12}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || true)
-            if [ "$STATUS" -eq 200 ]; then
-              echo "✅ Deployment successful! Application is healthy."
-              docker ps -a
-              exit 0 # 배포 성공
+          echo "=========================================="
+          echo "Blue-Green 배포 환경 감지 시작"
+          echo "=========================================="
+
+          # Blue 환경 상태 확인
+          BLUE_RUNNING=false
+          if docker ps --format "{{.Names}}" | grep -q "^estime-api-blue$"; then
+            echo "Blue 컨테이너 실행 중"
+            if curl -sf http://localhost:8080/actuator/health > /dev/null 2>&1; then
+              echo "Blue 헬스체크 통과"
+              BLUE_RUNNING=true
+            else
+              echo "Blue 컨테이너는 있지만 헬스체크 실패"
             fi
-            echo "Attempt $i: Application not ready yet (Status: $STATUS). Retrying in 5 seconds..."
+          else
+            echo "Blue 컨테이너 미실행"
+          fi
+
+          # Green 환경 상태 확인
+          GREEN_RUNNING=false
+          if docker ps --format "{{.Names}}" | grep -q "^estime-api-green$"; then
+            echo "Green 컨테이너 실행 중"
+            if curl -sf http://localhost:8081/actuator/health > /dev/null 2>&1; then
+              echo "Green 헬스체크 통과"
+              GREEN_RUNNING=true
+            else
+              echo "Green 컨테이너는 있지만 헬스체크 실패"
+            fi
+          else
+            echo "Green 컨테이너 미실행"
+          fi
+
+          # 배포 전략 결정
+          if [ "$BLUE_RUNNING" = true ] && [ "$GREEN_RUNNING" = false ]; then
+            CURRENT="blue"
+            TARGET="green"
+            echo "현재 환경: Blue → 배포 대상: Green"
+          elif [ "$GREEN_RUNNING" = true ] && [ "$BLUE_RUNNING" = false ]; then
+            CURRENT="green"
+            TARGET="blue"
+            echo "현재 환경: Green → 배포 대상: Blue"
+          elif [ "$BLUE_RUNNING" = false ] && [ "$GREEN_RUNNING" = false ]; then
+            CURRENT="none"
+            TARGET="blue"
+            echo "현재 환경: 없음 → 초기 배포 대상: Blue"
+          else
+            CURRENT="both"
+            TARGET="blue"
+            echo "경고: Blue와 Green이 모두 실행 중입니다. Blue를 재배포합니다."
+          fi
+
+          echo "=========================================="
+          echo "배포 결정: $CURRENT → $TARGET"
+          echo "=========================================="
+
+          echo "current=$CURRENT" >> $GITHUB_OUTPUT
+          echo "target=$TARGET" >> $GITHUB_OUTPUT
+
+      - name: Pull new Docker image
+        run: |
+          echo "=========================================="
+          echo "Docker 이미지 Pull 시작"
+          echo "=========================================="
+          docker compose -f docker-compose.prod.yml pull api-${{ steps.detect.outputs.target }}
+          echo "이미지 Pull 완료"
+
+      - name: Deploy target environment
+        run: |
+          TARGET="${{ steps.detect.outputs.target }}"
+          echo "=========================================="
+          echo "$TARGET 환경 배포 시작"
+          echo "=========================================="
+
+          # TARGET 환경 컨테이너 시작
+          docker compose -f docker-compose.prod.yml up -d api-$TARGET
+          echo "api-$TARGET 컨테이너 시작 완료"
+
+      - name: Health check for new deployment
+        run: |
+          TARGET="${{ steps.detect.outputs.target }}"
+
+          # 포트 설정 (blue=8080, green=8081)
+          if [ "$TARGET" = "blue" ]; then
+            PORT=8080
+          else
+            PORT=8081
+          fi
+
+          echo "=========================================="
+          echo "$TARGET 환경 헬스체크 시작 (포트: $PORT)"
+          echo "=========================================="
+
+          echo "애플리케이션 초기화 대기 중... (10초)"
+          sleep 10
+
+          # 최대 12번 시도 (총 60초)
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/actuator/health || echo "000")
+
+            if [ "$STATUS" -eq 200 ]; then
+              echo "=========================================="
+              echo "$TARGET 환경 배포 성공!"
+              echo "=========================================="
+              docker ps --filter "name=estime-api"
+              exit 0
+            fi
+
+            echo "[$i/12] 헬스체크 재시도... (응답 코드: $STATUS)"
             sleep 5
           done
-          
-          echo "❌ Health check failed after 60 seconds."
-          echo "==== docker container status ===="
-          docker ps -a
-          echo "==== docker container logs (api) ===="
-          docker logs $(docker ps --filter "name=api" --format "{{.ID}}") || true
-          
-          exit 1 # 배포 실패
+
+          # 헬스체크 실패 시
+          echo "=========================================="
+          echo "$TARGET 환경 헬스체크 실패"
+          echo "=========================================="
+          echo "컨테이너 상태:"
+          docker ps -a --filter "name=estime-api"
+          echo ""
+          echo "컨테이너 로그:"
+          docker logs estime-api-$TARGET --tail 100 || true
+
+          exit 1
+
+      - name: Switch Nginx traffic to new environment
+        run: |
+          TARGET="${{ steps.detect.outputs.target }}"
+          CURRENT="${{ steps.detect.outputs.current }}"
+
+          # 포트 매핑 (Blue: 8080, Green: 8081)
+          if [ "$TARGET" = "blue" ]; then
+            TARGET_PORT=8080
+            OLD_PORT=8081
+          else
+            TARGET_PORT=8081
+            OLD_PORT=8080
+          fi
+
+          echo "=========================================="
+          echo "Nginx 트래픽 전환: $TARGET (포트 $TARGET_PORT)"
+          echo "=========================================="
+
+          echo "[1/4] 새 환경 헬스체크..."
+          if ! curl -sf http://localhost:$TARGET_PORT/actuator/health > /dev/null; then
+            echo "$TARGET 환경 응답 없음"
+            exit 1
+          fi
+          echo "$TARGET 환경 정상"
+
+          echo "[2/4] Nginx 포트 변경: $TARGET_PORT"
+          sudo sed -i "s/\(proxy_pass\s\+http:\/\/127\.0\.0\.1:\)[0-9]\+/\1$TARGET_PORT/g" /etc/nginx/sites-available/default
+          echo "포트 변경 완료"
+
+          echo "[3/4] Nginx 리로드..."
+          if ! sudo nginx -t 2>&1; then
+            echo "Nginx 검증 실패"
+            exit 1
+          fi
+          sudo systemctl reload nginx
+          echo "Nginx 리로드 완료"
+
+          echo "[4/4] 트래픽 전환 확인..."
+          sleep 2
+          if ! curl -sf https://localhost/actuator/health > /dev/null; then
+            echo "헬스체크 실패"
+            exit 1
+          fi
+          echo "전환 확인 완료"
+
+          echo ""
+          echo "=========================================="
+          echo "Nginx 트래픽 전환 성공!"
+          echo "   활성 환경: $TARGET (포트 $TARGET_PORT)"
+          echo "=========================================="
+
+      - name: Stop old environment
+        if: steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
+        run: |
+          CURRENT="${{ steps.detect.outputs.current }}"
+          TARGET="${{ steps.detect.outputs.target }}"
+
+          echo "=========================================="
+          echo "이전 환경 종료: $CURRENT"
+          echo "=========================================="
+
+          # 이전 환경 컨테이너 중지
+          docker compose -f docker-compose.prod.yml stop api-$CURRENT
+
+          echo "=========================================="
+          echo "Blue-Green 배포 완료"
+          echo "   이전 환경: $CURRENT (종료됨)"
+          echo "   현재 환경: $TARGET (Nginx를 통해 서비스 중)"
+          echo "=========================================="
+          docker ps --filter "name=estime-api"
 
       - name: Clean up unused Docker resources
         if: always()
-        run: docker system prune -a -f
+        run: |
+          docker image prune -a -f
+          docker builder prune -a -f
