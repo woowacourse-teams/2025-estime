@@ -1,0 +1,30 @@
+dependencies {
+    compileOnly 'jakarta.persistence:jakarta.persistence-api'
+    compileOnly 'org.hibernate.orm:hibernate-core'
+
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    // todo move infra
+    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
+
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+def generatedDir = layout.buildDirectory.dir('generated/querydsl')
+
+sourceSets {
+    main.java.srcDirs += files(generatedDir)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(generatedDir)
+}
+
+clean.doLast {
+    delete generatedDir
+}
+

@@ -39,7 +39,7 @@ out/
 
 # env
 .env.*
-**/.env*
+estime-api/.env.local
 
 # macOS
 .DS_Store
