@@ -100,30 +100,8 @@ jobs:
       SPRING_PROFILES_ACTIVE: prod
 
     steps:
-      - name: Backup existing .env.prod file
-        working-directory: ${{ github.workspace }}/application
-        run: |
-          BACKUP_DIR=~/env_backups/successful
-          mkdir -p "$BACKUP_DIR"
-          if [ -f .env.prod ]; then
-            BACKUP_NAME=".env.prod.backup.${{ needs.build-and-push.outputs.version }}.$(date +%Y%m%d%H%M%S)"
-            echo "Backing up the current .env.prod to $BACKUP_DIR/$BACKUP_NAME"
-            mv .env.prod "$BACKUP_DIR/$BACKUP_NAME"
-          else
-            echo "No .env.prod file found to back up."
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Restore .env.prod from backup
-        run: |
-          if [ -f ~/.env.prod.backup ]; then
-            echo "Restoring .env.prod from backup."
-            mv ~/.env.prod.backup ./application/.env.prod.before
-          else
-            echo "No backup file found to restore."
-          fi
 
       - name: Create env file for Docker Compose
         run: |
