@@ -1,125 +1,45 @@
 import Flex from '@/shared/layout/Flex';
 import Wrapper from '@/shared/layout/Wrapper';
-
-import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
-
-import { showToast } from '@/shared/store/toastStore';
-import CalendarSettings from '@/pages/CreateEvent/components/CalendarSettings';
-import Button from '@/shared/components/Button';
 import Text from '@/shared/components/Text';
-import useCreateRoom from '@/pages/CreateEvent/hooks/useCreateRoom';
-import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
+import Button from '@/shared/components/Button';
 import Modal from '@/shared/components/Modal';
 import NotificationModal from '@/pages/CreateEvent/components/NotificationModal';
-import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
+import CalendarSettings from '@/pages/CreateEvent/components/CalendarSettings';
 import BasicSettings from '@/pages/CreateEvent/components/BasicSettings';
-import { checkBasicReady, checkCalendarReady } from '@/pages/CreateEvent/utils/CreateRoomValidator';
+import useCreateRoomController from '@/pages/CreateEvent/hooks/useCreateRoomController';
 
 const CreateEventPage = () => {
-  const [notificationModal, setNotificationModal] = useState(false);
-
-  const isRoutingRef = useRef(false);
-  let isRouting = isRoutingRef.current;
-
-  const showValidation = useRef(false);
-  const navigate = useNavigate();
-  const { platformType, notification, roomInfoSubmit, isRoomSubmitLoading } = useCreateRoom();
-  const { shouldShake, handleShouldShake } = useShakeAnimation();
-
-  const handleValidation = () => {
-    if (!checkCalendarReady() && !checkBasicReady()) {
-      showToast({
-        type: 'warning',
-        message: '날짜와 약속 정보를 입력해주세요.',
-      });
-      showValidation.current = true;
-      handleShouldShake();
-      return false;
-    }
-    if (!checkCalendarReady()) {
-      showToast({
-        type: 'warning',
-        message: '날짜를 선택해주세요.',
-      });
-      showValidation.current = true;
-      handleShouldShake();
-      return false;
-    }
-    if (!checkBasicReady()) {
-      showToast({
-        type: 'warning',
-        message: '약속 정보를 입력해주세요.',
-      });
-      showValidation.current = true;
-      handleShouldShake();
-      return false;
-    }
-    return true;
-  };
-
-  const onSubmitSuccess = (session: string) => {
-    showToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
-    navigate(`/check?id=${session}`, { replace: true });
-  };
-
-  //  실제 제출
-  const submitAndNavigate = async () => {
-    const session = await roomInfoSubmit();
-    isRoutingRef.current = true;
-    if (session) onSubmitSuccess(session);
-  };
-
-  // 메인 버튼 핸들러
-  const handleCreateRoom = async () => {
-    // 입력 검증
-    if (!handleValidation()) return;
-
-    // 디스코드 연동이면 모달 오픈 후 모달에서 최종 제출
-    if (platformType) {
-      setNotificationModal(true);
-      return;
-    }
-
-    // 일반 생성 플로우
-    await submitAndNavigate();
-  };
-
-  // 디스코드 핸들러
-  const handleDiscordCreateRoom = async () => {
-    await submitAndNavigate();
-    setNotificationModal(false);
-  };
-
-  const { buttonRef } = useEnterKeySubmit({ callback: handleCreateRoom });
+  const {
+    notificationModal,
+    checkNotification,
+    isValid,
+    animation,
+    submitButtonRef,
+    isRoomCreateLoading,
+    handler,
+  } = useCreateRoomController();
 
   return (
     <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
       <Flex justify="space-between" gap="var(--gap-9)">
         <Flex.Item flex={1}>
-          <CalendarSettings
-            isValid={!showValidation.current || checkCalendarReady()}
-            shouldShake={shouldShake}
-          />
+          <CalendarSettings isValid={isValid.calendar} shouldShake={animation.shake} />
         </Flex.Item>
         <Flex.Item flex={1}>
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <BasicSettings
-              isValid={!showValidation.current || checkBasicReady()}
-              shouldShake={shouldShake}
-            />
+            <BasicSettings isValid={isValid.basic} shouldShake={animation.shake} />
             <Flex justify="flex-end">
               <Button
-                ref={buttonRef}
+                ref={submitButtonRef}
                 color="primary"
                 selected={true}
                 size="small"
-                onClick={handleCreateRoom}
+                onClick={handler.createRoom}
                 data-ga-id="create-event-button"
-                disabled={isRoomSubmitLoading || isRouting}
+                disabled={isRoomCreateLoading}
               >
                 <Text variant="button" color="background">
-                  {isRoomSubmitLoading || isRouting ? '생성 중...' : '방 만들기'}
+                  {isRoomCreateLoading ? '생성 중...' : '방 만들기'}
                 </Text>
               </Button>
             </Flex>
@@ -127,11 +47,15 @@ const CreateEventPage = () => {
         </Flex.Item>
       </Flex>
       <Modal
-        isOpen={notificationModal}
-        onClose={() => setNotificationModal(false)}
+        isOpen={notificationModal.isOpen}
+        onClose={() => notificationModal.setIsOpen(false)}
         position="center"
       >
-        <NotificationModal notification={notification} handleCreateRoom={handleDiscordCreateRoom} />
+        <NotificationModal
+          notification={checkNotification}
+          handleCreateRoom={handler.platformCreateRoom}
+          isRoomCreateLoading={isRoomCreateLoading}
+        />
       </Modal>
     </Wrapper>
   );

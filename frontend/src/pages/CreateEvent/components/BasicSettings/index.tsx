@@ -13,7 +13,7 @@ import {
   onChangeTime,
   onChangeTitle,
   useRoomSelector,
-} from '@/shared/store/createRoomStore';
+} from '@/pages/CreateEvent/store/createRoomStore';
 import { checkTimeRangeValid } from '@/pages/CreateEvent/utils/CreateRoomValidator';
 
 type BasicSettingsProps = {
