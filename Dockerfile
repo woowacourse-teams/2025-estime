@@ -22,8 +22,11 @@ FROM amazoncorretto:21-alpine3.19
 
 WORKDIR /app
 
-# 헬스체크용 curl 설치 (root 권한으로)
-RUN apk add --no-cache curl
+# 한국 시간대 설정 및 헬스체크용 curl 설치 (root 권한으로)
+RUN apk add --no-cache curl tzdata && \
+    cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
+    echo "Asia/Seoul" > /etc/timezone && \
+    apk del tzdata
 
 # 빌드 단계에서 생성된 JAR 파일 복사
 COPY --from=build /app/application/build/libs/application-*-SNAPSHOT.jar app.jar
