@@ -1,4 +1,4 @@
-import { getRoomInfo } from '@/shared/store/createRoomStore';
+import { getRoomInfo } from '@/pages/CreateEvent/store/createRoomStore';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 
 export const checkTimeRangeValid = () =>

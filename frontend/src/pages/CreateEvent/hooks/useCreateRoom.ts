@@ -2,15 +2,15 @@ import { createChannelRoom, createRoom } from '@/apis/room/room';
 import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
 
 import { useCallback, useState } from 'react';
-import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
+import { useExtractQueryParams } from '@/shared/hooks/common/useExtractQueryParams';
 import useFetch from '@/shared/hooks/common/useFetch';
-import { getRoomInfo } from '@/shared/store/createRoomStore';
+import { getRoomInfo } from '@/pages/CreateEvent/store/createRoomStore';
 
-interface checkedNotification {
+type checkedNotification = {
   created: boolean;
   remind: boolean;
   deadline: boolean;
-}
+};
 
 export const useCreateRoom = () => {
   const { platformType, channelId } = useExtractQueryParams(['platformType', 'channelId'] as const);
