@@ -14,22 +14,36 @@ public record DateTimeSlotStatisticResponse(
 
         @Schema(example = "[\"강산\", \"제프리\", \"플린트\", \"리버\"]")
         List<String> participants,
+
+        @Schema(example = "3")
+        int maxVoteCount,
+
         List<DateTimeSlotVotesResponse> statistic
 ) {
 
     public static DateTimeSlotStatisticResponse from(final DateTimeSlotStatisticOutput output) {
+        final int participantCount = output.participantCount();
         return new DateTimeSlotStatisticResponse(
-                output.participantCount(),
+                participantCount,
                 output.participants()
                         .stream()
                         .map(ParticipantName::getValue)
                         .toList(),
                 output.statistic()
                         .stream()
+                        .mapToInt(each1 -> each1.participantNames().size())
+                        .max()
+                        .orElse(0),
+                output.statistic()
+                        .stream()
                         .map(each -> {
                             final List<ParticipantName> participantNames = each.participantNames();
+                            final int voteCount = each.participantNames().size();
+                            final double weight = Math.round((double) voteCount / participantCount * 100.0) / 100.0;
                             return new DateTimeSlotVotesResponse(
                                     each.dateTimeSlot().getStartAt(),
+                                    voteCount,
+                                    weight,
                                     participantNames.stream().map(ParticipantName::getValue).toList()
                             );
                         })
@@ -43,7 +57,13 @@ public record DateTimeSlotStatisticResponse(
             @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
             LocalDateTime dateTimeSlot,
 
-            @Schema(example = "[\"강산\", \"제프리\", \"플린트\", \"리버\"]")
+            @Schema(example = "3")
+            int voteCount,
+
+            @Schema(example = "0.75")
+            double weight,
+
+            @Schema(example = "[\"강산\", \"플린트\", \"리버\"]")
             List<String> participantNames
     ) {
     }
