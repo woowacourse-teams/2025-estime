@@ -2,12 +2,11 @@ import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import Timetable from '@/pages/CheckEvent/components/Timetable';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import TimeTableHeader from '@/pages/CheckEvent/components/TimeTableHeader';
 import Heatmap from '@/pages/CheckEvent/components/Heatmap';
 import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { EntryConfirmModal } from '@/pages/CheckEvent/components/EntryConfirmModal';
-import useHandleError from '@/shared/hooks/common/useCreateError';
 import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
 import { useTheme } from '@emotion/react';
@@ -17,71 +16,42 @@ import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
 import Text from '@/shared/components/Text';
 import useHeatmapStatistics from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
-import useModalControl from '@/shared/hooks/Modal/useModalControl';
 import useUserLogin from './hooks/useUserLogin';
 import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
-import {
-  TimeSelectionProvider,
-  useTimeSelectionContext,
-} from '@/pages/CheckEvent/contexts/TimeSelectionContext';
+import { TimeSelectionProvider } from '@/pages/CheckEvent/contexts/TimeSelectionContext';
 import * as S from './CheckEventPage.styled';
-import useAnimationEnd from './hooks/useAnimationEnd';
 import { RoomStatisticsProvider } from './provider/RoomStatisticsProvider';
 import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import { showToast } from '@/shared/store/toastStore';
+import Button from '@/shared/components/Button';
+import useCheckEventHandlers from './hooks/useCheckEventHandlers';
+import { userNameStore } from './stores/userNameStore';
+import { userAvailabilityStore } from './stores/userAvailabilityStore';
 
 interface CheckEventContentProps {
   roomInfo: ReturnType<typeof useCheckRoomSession>['roomInfo'];
   session: string;
   isExpired: boolean;
-  isRoomSessionExist: boolean;
 }
 
-const CheckEventContent = ({
-  roomInfo,
-  session,
-  isExpired,
-  isRoomSessionExist,
-}: CheckEventContentProps) => {
+const CheckEventContent = ({ roomInfo, session, isExpired }: CheckEventContentProps) => {
   const theme = useTheme();
 
-  const { modalHelpers } = useModalControl();
-
-  const {
-    handleLogin,
-    userData,
-    handleUserData,
-    name,
-    isLoginLoading,
-    handleLoggedIn,
-    isLoggedIn,
-  } = useUserLogin({
+  const { handleLogin, isLoginLoading } = useUserLogin({
     session,
   });
 
-  const {
-    userAvailability,
-    userAvailabilitySubmit,
-    fetchUserAvailableTime,
-    isSavingUserTime,
-    userAvailabilityRef,
-  } = useUserAvailability({
-    name,
-    session,
-  });
+  const { handleUserAvailabilitySubmit, fetchUserAvailableTime, isSavingUserTime } =
+    useUserAvailability({
+      session,
+    });
 
   const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
     weightCalculateStrategy,
-    isRoomSessionExist,
   });
-
-  const { isAnimating, ref: flipCardRef, startAnimation: startFlip } = useAnimationEnd();
-
-  const [mode, setMode] = useState<'register' | 'edit' | 'save'>('register');
-  const handleError = useHandleError();
 
   const {
     totalPages,
@@ -97,85 +67,26 @@ const CheckEventContent = ({
   } = useTimeTablePagination({
     availableDates: roomInfo.availableDateSlots,
   });
-  const { getCurrentSelectedTimes } = useTimeSelectionContext();
-  const switchToViewMode = async () => {
-    try {
-      const currentTimes = getCurrentSelectedTimes();
-      userAvailabilityRef.current = {
-        ...userAvailability,
-        selectedTimes: currentTimes,
-      };
-      await userAvailabilitySubmit();
-      await fetchRoomStatistics(session);
-      // save 모드에서 저장하기를 누르면 edit 모드로 전환
-      setMode('edit');
-      pageReset();
-    } catch (error) {
-      handleError(error, 'switchToViewMode');
-    }
-  };
 
-  const switchToEditMode = async () => {
-    if (isLoggedIn) {
-      await fetchUserAvailableTime();
-      // register에서 등록하기를 누르거나, edit에서 수정하기를 누르면 save 모드로 전환
-      setMode('save');
-      pageReset();
-    } else {
-      modalHelpers.login.open();
-    }
-  };
-
-  const handleToggleMode = async () => {
-    if (mode === 'save') {
-      // save 모드에서 "저장하기" 버튼을 누르면 view 모드(edit)로 전환
-      startFlip();
-      await switchToViewMode();
-    } else {
-      // register 모드에서 "등록하기" 또는 edit 모드에서 "수정하기"를 누르면 edit 모드(save)로 전환
-      switchToEditMode();
-    }
-  };
-
-  const handleLoginSuccess = async () => {
-    try {
-      const isDuplicated = await handleLogin();
-      if (isDuplicated) {
-        modalHelpers.entryConfirm.open();
-        return;
-      }
-      await fetchUserAvailableTime();
-      modalHelpers.login.close();
-      handleLoggedIn.setTrue();
-      setMode('save');
-      pageReset();
-    } catch (error) {
-      handleError(error, 'handleLoginSuccess');
-    }
-  };
-
-  const handleContinueWithDuplicated = async () => {
-    try {
-      modalHelpers.entryConfirm.close();
-      modalHelpers.login.close();
-      await fetchUserAvailableTime();
-      handleLoggedIn.setTrue();
-      setMode('save');
-      pageReset();
-    } catch (error) {
-      handleError(error, 'handleContinueWithDuplicated');
-    }
-  };
-
-  const handleDuplicatedCancel = () => {
-    modalHelpers.entryConfirm.close();
-    handleLoggedIn.setFalse();
-  };
+  const {
+    buttonMode,
+    buttonName,
+    modal,
+    handleButtonClick,
+    handleLoginModalButtonClick,
+    handleConfirmModalButtonClick,
+    handleCopyLinkButtonClick,
+  } = useCheckEventHandlers({
+    handleLogin,
+    fetchUserAvailableTime,
+    handleUserAvailabilitySubmit,
+    pageReset,
+  });
 
   // 로그인 안했을 때, 토스트 띄우기
   const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (isLoggedIn) return;
-
+    // if (isLoggedIn) return;
+    // 전역 store userName으로 체크해야 함
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
 
     if (!cell) return;
@@ -190,11 +101,11 @@ const CheckEventContent = ({
 
   const onVoteChange = useCallback(async () => {
     console.log('🔄 SSE vote-changed event 확인... fetch중...');
-    await fetchRoomStatistics(session);
+    await fetchRoomStatistics();
     console.log('✅ fetch 완료!');
-  }, [fetchRoomStatistics, session]);
+  }, [fetchRoomStatistics]);
 
-  useSSE(session, handleError, onVoteChange);
+  useSSE(session, onVoteChange);
 
   return (
     <>
@@ -210,19 +121,29 @@ const CheckEventContent = ({
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
-            openCopyModal={modalHelpers.copyLink.open}
+            handleCopyLinkButtonClick={handleCopyLinkButtonClick}
           />
-          <S.FlipCard isFlipped={mode === 'save'} ref={flipCardRef}>
+          <S.FlipCard isFlipped={buttonMode === 'save'}>
             {/* view 모드 */}
-            <S.FrontFace isFlipped={mode === 'save'}>
+            <S.FrontFace isFlipped={buttonMode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
                     name={roomInfo.title}
-                    mode={mode}
-                    onToggleEditMode={handleToggleMode}
+                    mode={userNameStore.getSnapshot() !== '' ? 'edit' : 'register'}
                     isExpired={isExpired}
-                  />
+                  >
+                    <Button
+                      color="primary"
+                      onClick={handleButtonClick}
+                      disabled={isExpired}
+                      size="small"
+                    >
+                      <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
+                        {buttonName}
+                      </Text>
+                    </Button>
+                  </TimeTableHeader>
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
                       <Flex gap="var(--gap-3)" justify="flex-end" align="center">
@@ -249,16 +170,27 @@ const CheckEventContent = ({
             </S.FrontFace>
 
             {/* edit 모드 */}
-            <S.BackFace isFlipped={mode === 'save'}>
+            <S.BackFace isFlipped={buttonMode === 'save'}>
               <S.TimeTableContainer ref={timeTableContainerRef}>
                 <Flex direction="column" gap="var(--gap-8)">
                   <TimeTableHeader
-                    name={userAvailability.userName}
+                    name={userNameStore.getSnapshot()}
                     mode="save"
-                    onToggleEditMode={handleToggleMode}
-                    isLoading={isSavingUserTime || isAnimating}
+                    isLoading={isSavingUserTime}
                     isExpired={isExpired}
-                  />
+                  >
+                    <Button
+                      color="primary"
+                      onClick={handleButtonClick}
+                      disabled={isExpired}
+                      size="small"
+                    >
+                      <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
+                        {buttonName}
+                      </Text>
+                    </Button>
+                  </TimeTableHeader>
+
                   <Flex direction="column" gap="var(--gap-4)">
                     {theme.isMobile && (
                       <Flex gap="var(--gap-3)" justify="flex-end" align="center">
@@ -277,7 +209,7 @@ const CheckEventContent = ({
                       timeColumnRef={timeColumnRef}
                       dateTimeSlots={roomInfo.availableTimeSlots}
                       availableDates={currentPageDates}
-                      initialSelectedTimes={userAvailability.selectedTimes}
+                      initialSelectedTimes={userAvailabilityStore.getSnapshot().selectedTimes}
                     />
                   </Flex>
                 </Flex>
@@ -288,23 +220,16 @@ const CheckEventContent = ({
       </Wrapper>
 
       <LoginModal
-        isLoginModalOpen={modalHelpers.login.isOpen}
-        handleCloseLoginModal={modalHelpers.login.close}
-        handleModalLogin={handleLoginSuccess}
-        userData={userData}
-        handleUserData={handleUserData}
+        isLoginModalOpen={modal.login}
+        handleModalLogin={handleLoginModalButtonClick}
         isLoginLoading={isLoginLoading || isSavingUserTime}
       />
       <EntryConfirmModal
-        isEntryConfirmModalOpen={modalHelpers.entryConfirm.isOpen}
-        onConfirm={handleContinueWithDuplicated}
-        onCancel={handleDuplicatedCancel}
+        isEntryConfirmModalOpen={modal.entryConfirm}
+        onConfirm={() => handleConfirmModalButtonClick('Y')}
+        onCancel={() => handleConfirmModalButtonClick('N')}
       />
-      <Modal
-        isOpen={modalHelpers.copyLink.isOpen}
-        onClose={modalHelpers.copyLink.close}
-        position="center"
-      >
+      <Modal isOpen={modal.copyLink} position="center">
         <CopyLinkModal sessionId={session} />
       </Modal>
     </>
@@ -312,17 +237,12 @@ const CheckEventContent = ({
 };
 
 const CheckEventPage = () => {
-  const { roomInfo, session, isExpired, isRoomSessionExist } = useCheckRoomSession();
+  const { roomInfo, session, isExpired } = useCheckRoomSession();
 
   return (
     <TimeSelectionProvider>
       <RoomStatisticsProvider>
-        <CheckEventContent
-          roomInfo={roomInfo}
-          session={session}
-          isExpired={isExpired}
-          isRoomSessionExist={isRoomSessionExist}
-        />
+        <CheckEventContent roomInfo={roomInfo} session={session} isExpired={isExpired} />
       </RoomStatisticsProvider>
     </TimeSelectionProvider>
   );

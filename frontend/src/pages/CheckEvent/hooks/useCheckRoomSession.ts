@@ -19,19 +19,16 @@ const useCheckRoomSession = () => {
   const [roomInfo, setRoomInfo] = useState<
     RoomInfo & { roomSession: string; availableTimeSlots: string[] }
   >(initialCheckRoomInfo);
-  const [isSessionExist, setIsSessionExist] = useState(false);
 
   const fetchSession = useCallback(async () => {
     if (!session) return;
 
     const response = await getRoomSession();
     if (response === undefined) {
-      setIsSessionExist(false);
-      navigate('/404', { replace: true });
+      // navigate('/404', { replace: true });
       return;
     }
 
-    setIsSessionExist(true);
     const parseData = fromParseRoomInfo(response);
     setRoomInfo(parseData);
   }, [navigate, session]);
@@ -42,7 +39,7 @@ const useCheckRoomSession = () => {
     fetchSession();
   }, [session, fetchSession]);
 
-  return { roomInfo, session, isExpired, isRoomSessionExist: isSessionExist };
+  return { roomInfo, session, isExpired };
 };
 
 export default useCheckRoomSession;

@@ -16,18 +16,20 @@ export interface HeatmapDateCellInfo extends DateCellInfo {
 const useHeatmapStatistics = ({
   session,
   weightCalculateStrategy,
-  isRoomSessionExist,
 }: {
   session: string;
+  // 서버에서 weight 내려준 이후에 제거 예정
   weightCalculateStrategy: WeightCalculateStrategy;
-  isRoomSessionExist: boolean;
 }) => {
   const { triggerFetch: getStatistics } = useFetch({
     context: 'fetchRoomStatistics',
     requestFn: () => getRoomStatistics(session),
   });
+
+  // roomStatistics도 전역 store로 관리 예정
   const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
+  // 서버에서 데이터 보내줄 예정
   const getWeightStatistics = useCallback(
     (statistic: StatisticItem[], participantCount: number) => {
       const dummyMinValue = 0;
@@ -53,6 +55,8 @@ const useHeatmapStatistics = ({
     },
     [weightCalculateStrategy]
   );
+
+  // 서버에서 데이터 보내줄 예정
   const formatRoomStatistics = useCallback(
     (statistics: GetRoomStatisticsResponseType): Map<string, HeatmapDateCellInfo> => {
       const { statistic, participantCount } = statistics;
@@ -79,22 +83,19 @@ const useHeatmapStatistics = ({
     [getWeightStatistics]
   );
 
-  const fetchRoomStatistics = useCallback(
-    async (sessionId: string) => {
-      if (!sessionId || !isRoomSessionExist) return;
+  // 사라질 예정
+  const fetchRoomStatistics = useCallback(async () => {
+    const response = await getStatistics();
 
-      const response = await getStatistics();
-
-      if (response === undefined) return;
-      const result = formatRoomStatistics(response);
-      setRoomStatistics(result);
-    },
-    [isRoomSessionExist, formatRoomStatistics]
-  );
+    if (response === undefined) return;
+    const result = formatRoomStatistics(response);
+    setRoomStatistics(result);
+  }, [formatRoomStatistics]);
 
   useEffect(() => {
     if (session) {
-      fetchRoomStatistics(session);
+      // await getStatistics();
+      fetchRoomStatistics();
     }
   }, [session, fetchRoomStatistics]);
 

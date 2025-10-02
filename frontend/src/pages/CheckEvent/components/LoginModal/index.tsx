@@ -4,29 +4,25 @@ import Input from '@/shared/components/Input';
 import Flex from '@/shared/layout/Flex';
 import Button from '@/shared/components/Button';
 import * as S from './LoginModal.styled';
-import type { LoginData } from '../../hooks/useUserLogin';
 import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
+import { useUserName, userNameStore } from '../../stores/userNameStore';
 
 export interface LoginModalProps {
   isLoginModalOpen: boolean;
-  handleCloseLoginModal: () => void;
   handleModalLogin: () => void;
-  userData: LoginData;
-  handleUserData: (data: LoginData) => void;
   isLoginLoading: boolean;
 }
 export const LoginModal = ({
   isLoginModalOpen,
-  handleCloseLoginModal,
   handleModalLogin,
-  userData,
-  handleUserData,
   isLoginLoading,
 }: LoginModalProps) => {
   const { inputRef } = useEnterKeySubmit({ callback: handleModalLogin });
 
+  const name = useUserName();
+
   return (
-    <Modal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal} position="center">
+    <Modal isOpen={isLoginModalOpen} position="center">
       <S.LoginModalContainer>
         <Modal.Content>
           <S.LoginModalHeader>
@@ -49,21 +45,21 @@ export const LoginModal = ({
                     autoFocus={true}
                     ref={inputRef}
                     data-autofocus
-                    value={userData.name}
-                    onChange={(e) => handleUserData({ ...userData, name: e.target.value.trim() })}
-                    onPaste={(e) => {
-                      const text = e.clipboardData.getData('text');
-                      e.preventDefault();
-                      // https://stackoverflow.com/a/45421387
-                      const trimmedText = text.split(' ').join('');
-                      handleUserData({ ...userData, name: trimmedText });
-                    }}
+                    value={name}
+                    onChange={(e) => userNameStore.setState(e.target.value.trim())}
+                    // onPaste={(e) => {
+                    //   const text = e.clipboardData.getData('text');
+                    //   e.preventDefault();
+                    //   // https://stackoverflow.com/a/45421387
+                    //   const trimmedText = text.split(' ').join('');
+                    //   handleUserData({ ...userData, name: trimmedText });
+                    // }}
                   />
                   <Text
                     variant="caption"
                     color="red40"
                     aria-hidden="true"
-                    opacity={userData.name.trim().length === 0}
+                    opacity={name.trim().length === 0}
                   >
                     닉네임을 입력해주세요.
                   </Text>
@@ -72,10 +68,10 @@ export const LoginModal = ({
             </Flex>
             <Flex.Item flex={1}>
               <Button
-                color={userData.name.trim().length > 0 ? 'primary' : 'plum40'}
+                color={name.trim().length > 0 ? 'primary' : 'plum40'}
                 selected={true}
                 onClick={handleModalLogin}
-                disabled={!userData.name.trim() || isLoginLoading}
+                disabled={!name.trim() || isLoginLoading}
                 data-ga-id="submit-button"
               >
                 <Text variant="button" color="background">
