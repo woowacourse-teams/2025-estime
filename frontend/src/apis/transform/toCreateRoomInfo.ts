@@ -1,4 +1,3 @@
-import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 import { CreateRoomRequestType } from '@/apis/room/type';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { CreateRoomInfoType } from '@/pages/CreateEvent/types/roomInfo';
