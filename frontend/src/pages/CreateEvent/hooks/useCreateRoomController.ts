@@ -1,66 +1,21 @@
-import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import useCreateRoom from './useCreateRoom';
-import { checkBasicReady, checkCalendarReady } from '../utils/CreateRoomValidator';
 import { showToast } from '@/shared/store/toastStore';
 import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
-
-type FieldType = 'all' | 'calendar' | 'basic';
-
-interface showCreateRoomValidationErrorType {
-  type?: 'warning';
-  field: FieldType;
-}
-
-const validationFailureMessages: Record<FieldType, string> = {
-  all: '날짜와 기본 설정을 선택해주세요!',
-  calendar: '날짜를 선택해주세요!',
-  basic: '제목과 시간을 선택해주세요!',
-};
+import useCreateRoomValidation from './useCreateRoomValidation';
 
 const useCreateRoomController = () => {
-  const isRoutingRef = useRef(false);
-  const showValidationBorder = useRef<boolean>(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+
   const [isRoomCreateLoading, setIsRoomCreateLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { platformType, roomInfoSubmit, isRoomSubmitLoading, notification } = useCreateRoom();
-  const { shouldShake, handleShouldShake } = useShakeAnimation();
 
-  const isCalendarValid = !showValidationBorder.current || checkCalendarReady();
-  const isBasicValid = !showValidationBorder.current || checkBasicReady();
+  const { platformType, roomInfoSubmit, notification } = useCreateRoom();
 
-  const isRoomCreateLoading = isRoomSubmitLoading || isRoutingRef.current;
-
-  const showCreateRoomValidationError = ({
-    type = 'warning',
-    field,
-  }: showCreateRoomValidationErrorType) => {
-    showToast({
-      type,
-      message: validationFailureMessages[field],
-    });
-    showValidationBorder.current = true;
-    handleShouldShake();
-  };
-
-  const validateCreateRoom = () => {
-    if (!checkCalendarReady() && !checkBasicReady()) {
-      showCreateRoomValidationError({ field: 'all' });
-      return false;
-    }
-    if (!checkCalendarReady()) {
-      showCreateRoomValidationError({ field: 'calendar' });
-      return false;
-    }
-    if (!checkBasicReady()) {
-      showCreateRoomValidationError({ field: 'basic' });
-      return false;
-    }
-    return true;
-  };
+  const { shouldShake, isCalendarValid, isBasicValid, validateCreateRoom } =
+    useCreateRoomValidation();
 
   const onSubmit = async () => {
     setIsRoomCreateLoading(true);

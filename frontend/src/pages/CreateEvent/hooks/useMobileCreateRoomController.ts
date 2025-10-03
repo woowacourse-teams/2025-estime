@@ -1,47 +1,26 @@
-import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import useCreateRoom from './useCreateRoom';
 import { checkBasicReady, checkCalendarReady } from '../utils/CreateRoomValidator';
 import { showToast } from '@/shared/store/toastStore';
 import useFunnelWithHistory from '@/shared/hooks/Funnel/useFunnelWithHistory';
+import useMobileCreateRoomValidation from './useMobileCreateRoomValidation';
 
-type FieldType = 'calendar' | 'basic';
-
-interface showCreateRoomValidationErrorType {
-  type?: 'warning';
-  field: FieldType;
-}
-
-const validationFailureMessages: Record<FieldType, string> = {
-  calendar: '날짜를 선택해주세요!',
-  basic: '제목과 시간을 선택해주세요!',
-};
 const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
 
 const useMobileCreateRoomController = () => {
   const [isRoomCreateLoading, setIsRoomCreateLoading] = useState(false);
+
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
 
   const navigate = useNavigate();
-  const { platformType, roomInfoSubmit, isRoomSubmitLoading, notification } = useCreateRoom();
-  const { shouldShake, handleShouldShake } = useShakeAnimation();
+
+  const { platformType, roomInfoSubmit, notification } = useCreateRoom();
+
   const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory(STEP);
 
-  const isCalendarValid = !showValidationBorder.current.calendar || checkCalendarReady();
-  const isBasicValid = !showValidationBorder.current.basic || checkBasicReady();
-
-  const isRoomCreateLoading = isRoomSubmitLoading || isRoutingRef.current;
-
-  const showCreateRoomValidationError = ({
-    type = 'warning',
-    field,
-  }: showCreateRoomValidationErrorType) => {
-    showToast({ type: 'warning', message: validationFailureMessages[field] });
-    showValidationBorder.current[field] = true;
-    handleShouldShake();
-    return;
-  };
+  const { shouldShake, isCalendarValid, isBasicValid, showCreateRoomValidationError } =
+    useMobileCreateRoomValidation();
 
   const onSubmit = async () => {
     setIsRoomCreateLoading(true);
@@ -116,6 +95,11 @@ const useMobileCreateRoomController = () => {
       },
     }),
     [
+      Funnel,
+      step,
+      stepNext,
+      stepPrev,
+      handleNextStep,
       isNotificationModalOpen,
       isCalendarValid,
       isBasicValid,
