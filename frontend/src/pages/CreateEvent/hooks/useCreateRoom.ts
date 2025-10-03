@@ -31,7 +31,7 @@ export const useCreateRoom = () => {
       }),
   });
 
-  const { isLoading: isRoomSubmitLoading, triggerFetch: roomSubmit } = useFetch({
+  const { triggerFetch: roomSubmit } = useFetch({
     context: 'roomInfoSubmit',
     requestFn: () => createRoom(toCreateRoomInfo(getRoomInfo())),
   });
@@ -56,7 +56,6 @@ export const useCreateRoom = () => {
     platformType,
     notification,
     roomInfoSubmit,
-    isRoomSubmitLoading,
   };
 };
 

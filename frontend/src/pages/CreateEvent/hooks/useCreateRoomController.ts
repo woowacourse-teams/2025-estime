@@ -23,6 +23,7 @@ const useCreateRoomController = () => {
   const isRoutingRef = useRef(false);
   const showValidationBorder = useRef<boolean>(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [isRoomCreateLoading, setIsRoomCreateLoading] = useState(false);
 
   const navigate = useNavigate();
   const { platformType, roomInfoSubmit, isRoomSubmitLoading, notification } = useCreateRoom();
@@ -62,11 +63,13 @@ const useCreateRoomController = () => {
   };
 
   const onSubmit = async () => {
+    setIsRoomCreateLoading(true);
     const session = await roomInfoSubmit();
-    isRoutingRef.current = true;
     if (session) {
       showToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
       navigate(`/check?id=${session}`, { replace: true });
+    } else {
+      setIsRoomCreateLoading(false);
     }
   };
 

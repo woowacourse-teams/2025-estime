@@ -20,11 +20,7 @@ const validationFailureMessages: Record<FieldType, string> = {
 const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
 
 const useMobileCreateRoomController = () => {
-  const isRoutingRef = useRef(false);
-  const showValidationBorder = useRef({
-    calendar: false,
-    basic: false,
-  });
+  const [isRoomCreateLoading, setIsRoomCreateLoading] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -48,11 +44,13 @@ const useMobileCreateRoomController = () => {
   };
 
   const onSubmit = async () => {
+    setIsRoomCreateLoading(true);
     const session = await roomInfoSubmit();
-    isRoutingRef.current = true;
     if (session) {
       showToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
       navigate(`/check?id=${session}`, { replace: true });
+    } else {
+      setIsRoomCreateLoading(false);
     }
   };
 
