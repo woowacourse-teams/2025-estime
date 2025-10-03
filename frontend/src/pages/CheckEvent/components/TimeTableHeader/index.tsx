@@ -6,8 +6,7 @@ import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
 import Notice from '@/shared/components/Notice';
 
-//로딩 구현시 saving을 쓰면 됨.
-type HeaderMode = 'register' | 'edit' | 'save';
+type HeaderMode = 'edit' | 'save';
 
 interface Presets {
   title: string;
@@ -17,10 +16,6 @@ interface Presets {
 }
 
 const HeaderPresets: Record<HeaderMode, Presets> = {
-  register: {
-    title: `전체 시간표`,
-    description: () => '시간표를 등록해주세요!',
-  },
   edit: {
     title: `전체 시간표`,
     description: () => '현재 시간표를 확인해보세요!',
@@ -36,17 +31,11 @@ const HeaderPresets: Record<HeaderMode, Presets> = {
 
 interface TimeTableHeaderProps extends ComponentProps<'header'> {
   name: string;
-  mode?: HeaderMode;
-  isLoading?: boolean;
+  mode: HeaderMode;
   isExpired: boolean;
 }
 
-const TimeTableHeader = ({
-  name,
-  mode = 'register',
-  isExpired,
-  ...props
-}: TimeTableHeaderProps) => {
+const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
   const theme = useTheme();
 

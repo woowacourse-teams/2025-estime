@@ -6,7 +6,7 @@ type ModalState = {
   copyLink: boolean;
 };
 
-type ModalAction =
+export type ModalAction =
   | 'open_login'
   | 'close_login'
   | 'open_confirm'

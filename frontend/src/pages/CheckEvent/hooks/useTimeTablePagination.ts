@@ -8,7 +8,22 @@ interface TimeTablePaginationProps {
   availableDates: Set<string>;
 }
 
-const useTimeTablePagination = ({ availableDates }: TimeTablePaginationProps) => {
+export interface TimeTablePaginationReturns {
+  totalPages: number;
+  page: number;
+  timeTableContainerRef: React.RefObject<HTMLDivElement | null>;
+  timeColumnRef: React.RefObject<HTMLDivElement | null>;
+  currentPageDates: Set<string>;
+  handlePageNext: () => void;
+  handlePagePrev: () => void;
+  canPagePrev: boolean;
+  canPageNext: boolean;
+  pageReset: () => void;
+}
+
+const useTimeTablePagination = ({
+  availableDates,
+}: TimeTablePaginationProps): TimeTablePaginationReturns => {
   const timeTableContainerRef = useRef<HTMLDivElement>(null);
   const timeColumnRef = useRef<HTMLDivElement>(null);
   const maxColumnCountPerPageRef = useRef(0);

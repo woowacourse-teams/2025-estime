@@ -3,7 +3,7 @@ import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/t
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
-import { useRoomStatisticsContext } from '../provider/RoomStatisticsProvider';
+import { roomStatisticsStore } from '../stores/roomStatisticsStore';
 
 export interface DateCellInfo {
   weight: number;
@@ -23,11 +23,8 @@ const useHeatmapStatistics = ({
 }) => {
   const { triggerFetch: getStatistics } = useFetch({
     context: 'fetchRoomStatistics',
-    requestFn: () => getRoomStatistics(session),
+    requestFn: useCallback(() => getRoomStatistics(session), [session]),
   });
-
-  // roomStatistics도 전역 store로 관리 예정
-  const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
   // 서버에서 데이터 보내줄 예정
   const getWeightStatistics = useCallback(
@@ -89,17 +86,17 @@ const useHeatmapStatistics = ({
 
     if (response === undefined) return;
     const result = formatRoomStatistics(response);
-    setRoomStatistics(result);
-  }, [formatRoomStatistics]);
+
+    roomStatisticsStore.setState(result);
+  }, [formatRoomStatistics, getStatistics]);
 
   useEffect(() => {
     if (session) {
-      // await getStatistics();
       fetchRoomStatistics();
     }
   }, [session, fetchRoomStatistics]);
 
-  return { roomStatistics, fetchRoomStatistics };
+  return { fetchRoomStatistics };
 };
 
 export default useHeatmapStatistics;

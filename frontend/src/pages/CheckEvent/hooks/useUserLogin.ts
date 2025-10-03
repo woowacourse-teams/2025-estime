@@ -8,11 +8,12 @@ export type LoginData = {
 const useUserLogin = ({ session }: { session: string }) => {
   const { isLoading: isLoginLoading, triggerFetch: handleLogin } = useFetch({
     context: 'handleLogin',
-    requestFn: () =>
-      // const name = userNameStore.getSnapshot();
-      joinUser(session, {
-        participantName: userNameStore.getSnapshot(),
-      }),
+    requestFn: async () => {
+      const name = userNameStore.getSnapshot();
+      return await joinUser(session, {
+        participantName: name,
+      });
+    },
   });
 
   return {
