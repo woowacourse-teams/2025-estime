@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import:
+      - application-common.yml
+      - optional:file:application/.env.prod[.properties]
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+
+  flyway:
+    enabled: true
+
+url:
+  origin:
+    client: ${URL_ORIGIN_CLIENT}
+
+logging:
+  discord:
+    webhook-url: ${DISCORD_LOG_WEBHOOK_URL}

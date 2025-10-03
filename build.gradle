@@ -4,13 +4,25 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
+ext {
+    springBootVersion = '3.5.3'
+    querydslVersion = '5.1.0'
+    tsidVersion = '5.2.6'
+}
+
+allprojects {
+    group = 'com.estime'
+    version = '0.0.1-SNAPSHOT'
 
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
 
     java {
         toolchain {
@@ -18,9 +30,28 @@ subprojects {
         }
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+    }
+
     configurations {
         compileOnly {
             extendsFrom annotationProcessor
         }
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+        workingDir = rootDir
     }
 }

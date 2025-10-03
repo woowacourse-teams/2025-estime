@@ -1,4 +1,4 @@
-rootProject.name = '2025-estime'
+rootProject.name = 'estime'
 
-include 'estime-api'
-include 'estime-platform'
+include 'core'
+include 'application'

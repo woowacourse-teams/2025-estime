@@ -3,7 +3,7 @@ services:
     ports:
       - "13306:3306"
     env_file:
-      - ./estime-api/.env.local
+      - ./application/.env.local
     image: mysql:8.0
     container_name: estime-mysql
     restart: unless-stopped

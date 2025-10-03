@@ -32,10 +32,7 @@ jobs:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: testpw
 
-      URL_ORIGIN_LOCAL: ${{ secrets.URL_ORIGIN_LOCAL }}
-      URL_ORIGIN_DEV: ${{ secrets.URL_ORIGIN_DEV }}
-      URL_ORIGIN_PROD: ${{ secrets.URL_ORIGIN_PROD }}
-      LOKI_URL: localhost:3100
+      URL_ORIGIN_CLIENT: ${{ secrets.URL_ORIGIN_DEV }}
 
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
 
@@ -74,8 +71,8 @@ jobs:
       - name: Build & Push (multi-arch)
         uses: docker/build-push-action@v6
         with:
-          context: ./estime-api
-          file: ./estime-api/Dockerfile
+          context: ./
+          file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
@@ -92,9 +89,9 @@ jobs:
     steps:
       - name: Move .env.dev to home directory
         run: |
-          if [ -f ./estime-api/.env.dev ]; then
+          if [ -f ./application/.env.dev ]; then
             echo "Found .env.dev, moving it to home directory for backup."
-            mv ./estime-api/.env.dev ~/.env.dev.backup
+            mv ./application/.env.dev ~/.env.dev.backup
           else
             echo "No .env.dev file found to back up."
           fi
@@ -106,7 +103,7 @@ jobs:
         run: |
           if [ -f ~/.env.dev.backup ]; then
             echo "Restoring .env.dev.before from backup."
-            mv ~/.env.dev.backup ./estime-api/.env.dev.before
+            mv ~/.env.dev.backup ./application/.env.dev.before
           else
             echo "No backup file found to restore."
           fi
@@ -116,9 +113,14 @@ jobs:
           printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
 
       - name: Create env file for env.dev file
-        working-directory: ./estime-api
+        working-directory: ./application
         run: |
           printf '%s\n' "${{ secrets.ENV_DEV }}" > .env.dev
+
+      - name: Prepare log directory
+        run: |
+          sudo mkdir -p /app/logs
+          sudo chown -R 1001:1001 /app/logs
 
       - name: Deploy with Docker Compose
         run: |
