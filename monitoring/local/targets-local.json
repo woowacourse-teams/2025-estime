@@ -1,8 +1,0 @@
-[
-  {
-    "targets": ["host.docker.internal:8080"],
-    "labels": {
-      "env": "local"
-    }
-  }
-]
