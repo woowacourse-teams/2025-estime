@@ -15,9 +15,9 @@ services:
     image: grafana/alloy:latest
     container_name: alloy
     env_file:
-      - ./estime-api/.env.prod
+      - ./application/.env.prod
     volumes:
-      - ./estime-api/alloy/config-prod.river:/etc/alloy/config-prod.river
+      - ./application/alloy/config-prod.river:/etc/alloy/config-prod.river
       - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-prod.river"
