@@ -22,8 +22,6 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 
     implementation 'com.github.napstr:logback-discord-appender:1.0.0'
-//    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
-//    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     // todo move infra
