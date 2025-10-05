@@ -25,8 +25,6 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
   background-color: ${({ weight, theme }) =>
     weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
 
-  contain: paint;
-
   // before는 배경 그라디에이션
 
   &::before {
