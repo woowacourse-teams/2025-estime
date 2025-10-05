@@ -1,7 +1,5 @@
-package com.estime.room.application.port;
+package com.estime.room;
 
-import com.estime.room.Room;
-import com.estime.room.RoomSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
