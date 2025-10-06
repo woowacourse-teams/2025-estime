@@ -48,5 +48,4 @@ limits_config:
 
 compactor:
   working_directory: /loki/compactor
-  shared_store: filesystem
   compaction_interval: 1h
