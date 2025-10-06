@@ -20,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -88,6 +89,23 @@ public class Room extends BaseEntity {
         );
     }
 
+    public static Room withoutSlots(
+            final String title,
+            final LocalDateTime deadline
+    ) {
+        validateTitleAndDeadline(title, deadline);
+        final String trimmedTitle = title.trim();
+        validateTitle(trimmedTitle);
+        validateDeadline(deadline);
+        return new Room(
+                RoomSession.generate(),
+                trimmedTitle,
+                Collections.emptySet(),
+                Collections.emptySet(),
+                deadline
+        );
+    }
+
     private static void validateNull(
             final String title,
             final List<DateSlot> availableDateSlots,
@@ -98,6 +116,13 @@ public class Room extends BaseEntity {
                 .add(Fields.title, title)
                 .add(Fields.availableDateSlots, availableDateSlots)
                 .add(Fields.availableTimeSlots, availableTimeSlots)
+                .add(Fields.deadline, deadline)
+                .validateNull();
+    }
+
+    private static void validateTitleAndDeadline(final String title, final LocalDateTime deadline) {
+        Validator.builder()
+                .add(Fields.title, title)
                 .add(Fields.deadline, deadline)
                 .validateNull();
     }

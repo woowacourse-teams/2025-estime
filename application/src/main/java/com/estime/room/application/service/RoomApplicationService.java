@@ -1,8 +1,11 @@
 package com.estime.room.application.service;
 
-import com.estime.shared.DomainTerm;
-import com.estime.exception.NotFoundException;
 import com.estime.common.sse.application.SseService;
+import com.estime.exception.NotFoundException;
+import com.estime.participant.application.port.ParticipantRepository;
+import com.estime.platform.application.port.PlatformRepository;
+import com.estime.room.Room;
+import com.estime.room.RoomSession;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
@@ -16,19 +19,17 @@ import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTi
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
-import com.estime.room.Room;
 import com.estime.room.application.port.RoomRepository;
-import com.estime.participant.application.port.ParticipantRepository;
-import com.estime.room.participant.Participants;
+import com.estime.room.SlotBatchRepository;
+import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.estime.room.participant.ParticipantName;
-import com.estime.vote.application.port.VoteRepository;
+import com.estime.room.participant.Participants;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformNotificationType;
-import com.estime.platform.application.port.PlatformRepository;
 import com.estime.room.slot.DateTimeSlot;
-import com.estime.room.RoomSession;
-import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
+import com.estime.shared.DomainTerm;
+import com.estime.vote.application.port.VoteRepository;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -52,21 +53,37 @@ public class RoomApplicationService {
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
+    private final SlotBatchRepository slotBatchRepository;
     private final DiscordMessageSender discordMessageSender; // TODO EVENT
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        return RoomCreateOutput.from(roomRepository.save(input.toEntity()));
+        final Room room = Room.withoutSlots(input.title(), input.deadline());
+        final Room savedRoom = roomRepository.save(room);
+
+        slotBatchRepository.batchInsertSlots(
+                savedRoom.getId(),
+                input.availableDateSlots(),
+                input.availableTimeSlots()
+        );
+        return RoomCreateOutput.from(savedRoom);
     }
 
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
         final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
-        final Room room = roomRepository.save(roomCreateInput.toEntity());
+        final Room room = Room.withoutSlots(roomCreateInput.title(), roomCreateInput.deadline());
+        final Room savedRoom = roomRepository.save(room);
+
+        slotBatchRepository.batchInsertSlots(
+                savedRoom.getId(),
+                input.availableDateSlots(),
+                input.availableTimeSlots()
+        );
 
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
-                        room.getId(),
+                        savedRoom.getId(),
                         input.type(),
                         input.channelId(),
                         input.notification()));
@@ -74,12 +91,12 @@ public class RoomApplicationService {
         if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
             discordMessageSender.sendConnectedRoomCreatedMessage(
                     input.channelId(),
-                    room.getSession(),
-                    room.getTitle(),
-                    room.getDeadline());
+                    savedRoom.getSession(),
+                    savedRoom.getTitle(),
+                    savedRoom.getDeadline());
         }
 
-        return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
+        return ConnectedRoomCreateOutput.from(savedRoom.getSession(), platform.getType());
     }
 
     @Transactional(readOnly = true)
