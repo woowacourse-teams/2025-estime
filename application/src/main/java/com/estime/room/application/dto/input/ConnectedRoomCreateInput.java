@@ -9,8 +9,8 @@ import java.util.List;
 
 public record ConnectedRoomCreateInput(
         String title,
-        List<DateSlot> availableDates,
-        List<TimeSlot> availableTimes,
+        List<DateSlot> availableDateSlots,
+        List<TimeSlot> availableTimeSlots,
         LocalDateTime deadline,
         PlatformType type,
         String channelId,
@@ -18,6 +18,6 @@ public record ConnectedRoomCreateInput(
 ) {
 
     public RoomCreateInput toRoomCreateInput() {
-        return new RoomCreateInput(title, availableDates, availableTimes, deadline);
+        return new RoomCreateInput(title, availableDateSlots, availableTimeSlots, deadline);
     }
 }

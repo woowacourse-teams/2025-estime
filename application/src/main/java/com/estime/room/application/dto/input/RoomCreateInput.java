@@ -1,6 +1,5 @@
 package com.estime.room.application.dto.input;
 
-import com.estime.room.Room;
 import com.estime.room.slot.DateSlot;
 import com.estime.room.slot.TimeSlot;
 import java.time.LocalDateTime;
@@ -12,8 +11,4 @@ public record RoomCreateInput(
         List<TimeSlot> availableTimeSlots,
         LocalDateTime deadline
 ) {
-
-    public Room toEntity() {
-        return Room.withoutId(title, availableDateSlots, availableTimeSlots, deadline);
-    }
 }
