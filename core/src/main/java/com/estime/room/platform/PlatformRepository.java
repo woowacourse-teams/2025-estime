@@ -1,6 +1,5 @@
-package com.estime.platform.application.port;
+package com.estime.room.platform;
 
-import com.estime.room.platform.Platform;
 import java.util.Optional;
 
 public interface PlatformRepository {
