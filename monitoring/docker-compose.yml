@@ -1,0 +1,48 @@
+networks:
+  monitor-net:
+
+services:
+  grafana:
+    image: grafana/grafana:12.1.0
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:3.5.0
+    ports:
+      - "${LOKI_PORT}:3100"
+    volumes:
+      - ./configs/loki/loki-config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    command: ["-config.file", "/etc/loki/config.yml"]
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    volumes:
+      - ./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-remote-write-receiver'
+    networks:
+      - monitor-net
+    restart: unless-stopped
+
+volumes:
+  grafana-data:
+  loki-data:
+  prometheus-data:
