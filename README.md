@@ -12,8 +12,8 @@
 
 | 강산 🏔️ | 리버 💧 | 제프리 🍎 | 플린트 🔥 |
 |:-------:|:------:|:--------:|:--------:|
-| <img src="https://github.com/user-attachments/assets/b8222adf-c28e-4686-b7b6-7014db3056f9" alt="강산" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/1362c4d0-4282-4801-9b5a-52cbe5c5d673" alt="리버" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/122d491e-26e5-46d4-88d8-4921c846ba8c" alt="제프리" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/509c085d-5935-4949-a470-b5fc18d933b7" alt="플린트" style="width:100px;height:100px;object-fit:cover;" /> |
-| [@m-a-king](https://github.com/m-a-king) | [@yeonhuu](https://github.com/yeonhuu) | [@AppleMint98](https://github.com/AppleMint98) | [@jhan0121](https://github.com/jhan0121) |
+| <img src="https://github.com/user-attachments/assets/b8222adf-c28e-4686-b7b6-7014db3056f9" alt="강산" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/67aadd73-1e95-4845-a8ee-293880e832ba" alt="리버" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/122d491e-26e5-46d4-88d8-4921c846ba8c" alt="제프리" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/509c085d-5935-4949-a470-b5fc18d933b7" alt="플린트" style="width:100px;height:100px;object-fit:cover;" /> |
+| [@m-a-king](https://github.com/m-a-king) | [@yeonnhuu](https://github.com/yeonnhuu) | [@AppleMint98](https://github.com/AppleMint98) | [@jhan0121](https://github.com/jhan0121) |
 
 ## Frontend 🎨
 
