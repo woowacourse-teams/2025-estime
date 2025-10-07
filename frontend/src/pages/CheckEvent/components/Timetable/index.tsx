@@ -8,18 +8,10 @@ interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
-  initialSelectedTimes: Set<string>;
 }
 
-const Timetable = ({
-  timeColumnRef,
-  dateTimeSlots,
-  availableDates,
-  initialSelectedTimes,
-}: TimetableProps) => {
-  const { containerRef, pointerHandlers } = useLocalTimeSelection({
-    initialSelectedTimes,
-  });
+const Timetable = ({ timeColumnRef, dateTimeSlots, availableDates }: TimetableProps) => {
+  const { containerRef, pointerHandlers } = useLocalTimeSelection();
 
   return (
     <S.TimetableContent ref={containerRef} {...pointerHandlers}>

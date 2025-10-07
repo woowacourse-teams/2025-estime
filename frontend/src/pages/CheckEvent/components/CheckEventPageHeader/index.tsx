@@ -7,10 +7,14 @@ import ShareButton from '../../../../shared/components/Button/ShareButton';
 
 type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
   roomSession: string;
-  openCopyModal: () => void;
+  handleCopyLinkButtonClick: () => void;
 };
 
-const CheckEventPageHeader = ({ deadline, title, openCopyModal }: CheckEventPageHeaderProps) => {
+const CheckEventPageHeader = ({
+  deadline,
+  title,
+  handleCopyLinkButtonClick,
+}: CheckEventPageHeaderProps) => {
   const theme = useTheme();
 
   return (
@@ -19,7 +23,7 @@ const CheckEventPageHeader = ({ deadline, title, openCopyModal }: CheckEventPage
         <Text variant="h1" color="primary">
           {title}
         </Text>
-        <ShareButton onClick={openCopyModal} />
+        <ShareButton onClick={handleCopyLinkButtonClick} />
       </Flex>
       <Flex gap="var(--gap-6)" justify="flex-start" align="center">
         <Flex justify="space-between" align="center" gap="var(--gap-3)">

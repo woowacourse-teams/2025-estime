@@ -8,29 +8,20 @@ export const TimeTableContainer = styled.div`
   box-shadow: var(--shadow-card);
 `;
 
-export const FlipCard = styled.div<{ isFlipped: boolean }>`
+export const FlipCard = styled.div`
   position: relative;
   width: 100%;
-  transition: transform 0.65s ease;
+  height: 100%;
+  perspective: 1000px;
+`;
+
+// 실제 회전하는 내부 래퍼
+export const FlipInner = styled.div<{ isFlipped: boolean }>`
+  display: grid;
+  > * {
+    grid-area: 1 / 1;
+  }
   transform-style: preserve-3d;
-  transform: ${({ isFlipped }) => (isFlipped ? 'rotateY(180deg)' : 'none')};
-`;
-
-export const FlipFace = styled.div`
-  backface-visibility: hidden;
-  width: 100%;
-`;
-
-export const FrontFace = styled(FlipFace)<{ isFlipped: boolean }>`
-  z-index: ${({ isFlipped }) => (isFlipped ? 1 : 2)};
-  pointer-events: ${({ isFlipped }) => (isFlipped ? 'none' : 'auto')};
-`;
-
-export const BackFace = styled(FlipFace)<{ isFlipped: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotateY(180deg);
-  z-index: ${({ isFlipped }) => (isFlipped ? 2 : 1)};
-  pointer-events: ${({ isFlipped }) => (isFlipped ? 'auto' : 'none')};
+  transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform: ${({ isFlipped }) => (isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)')};
 `;
