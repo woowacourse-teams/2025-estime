@@ -9,8 +9,8 @@ interface HeatMapDataCellProps {
 
 const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
   const roomStatistics = useRoomStatistics();
-  const cellInfo = roomStatistics.get(`${date}T${timeText}`);
-  const isRecommended = cellInfo?.isRecommended;
+  const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
+  const isRecommended = cellInfo?.participantNames.length === roomStatistics.maxVoteCount;
 
   const weight = cellInfo?.weight ?? 0;
   return (
