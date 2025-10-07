@@ -1,130 +1,91 @@
-import { useRef, useCallback, useEffect, useMemo } from 'react';
-import { useLockBodyScroll } from '../../../shared/hooks/common/useLockBodyScroll';
-import { useTimeSelectionContext } from '../contexts/TimeSelectionContext';
-
-interface UseLocalTimeSelectionOptions {
-  initialSelectedTimes: Set<string>;
-}
+import { useRef, useCallback, useMemo, useEffect } from 'react';
+import { useLockBodyScroll } from '@/shared/hooks/common/useLockBodyScroll';
+import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
 
 type TimeCellHitbox = {
-  key: string; // data-time
-
+  key: string;
   left: number;
   right: number;
   top: number;
   bottom: number;
 };
 
-const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOptions) => {
-  const { updateCurrentSelectedTimes } = useTimeSelectionContext();
+const useLocalTimeSelection = () => {
+  const selectedTimes = useUserAvailability().selectedTimes;
 
-  // 임계영역에 접근하기 위한 ref
-  const currentWorkingSetRef = useRef<Set<string>>(new Set(initialSelectedTimes));
+  // 전역 값 복제 → 드래그 중 임시 보관
+  const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isTouch = useRef(false);
-
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const selectionModeRef = useRef<'add' | 'remove'>('add');
   const isDraggingRef = useRef(false);
-  // 스냅샷
+
   const containerBoundingRectRef = useRef<DOMRectReadOnly | null>(null);
   const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
-
-  // 배치(rAF)
   const renderAnimationFrameId = useRef<number | null>(null);
 
-  const updateCellClasses = (isInitializing = false) => {
+  useLockBodyScroll(isTouch.current);
+
+  /** 셀 UI 클래스 갱신 */
+  const updateCellClasses = () => {
     if (renderAnimationFrameId.current != null) return;
     renderAnimationFrameId.current = requestAnimationFrame(() => {
       renderAnimationFrameId.current = null;
-
       const container = containerRef.current;
       if (!container) return;
 
-      // 모든 heat-map-cell 요소의 클래스를 업데이트
       container.querySelectorAll<HTMLElement>('.heat-map-cell').forEach((cell) => {
-        const dateTime = cell.getAttribute('data-time');
+        const dateTime = cell.dataset.time;
         if (!dateTime) return;
-
-        const isSelected = currentWorkingSetRef.current.has(dateTime);
-
-        // fetch 후 초기화가 필요한 경우 (서버 데이터로 초기값 설정 시)
-        if (isInitializing) {
-          // 기존 selected 클래스를 완전히 제거하고 새로운 상태로 초기화
-          cell.classList.remove('selected');
-          if (isSelected) {
-            cell.classList.add('selected');
-          }
-        } else {
-          // isSelected가 true면 → 'selected' 클래스 추가
-          // isSelected가 false면 → 'selected' 클래스 제거
-
-          cell.classList.toggle('selected', isSelected);
-        }
+        cell.classList.toggle('selected', currentWorkingSetRef.current.has(dateTime));
       });
     });
   };
 
-  useLockBodyScroll(isTouch.current);
-
-  useEffect(() => {
-    const nextSelectedTimes = new Set(initialSelectedTimes);
-    currentWorkingSetRef.current = new Set(nextSelectedTimes);
-    // 필요... 한가? 없어도 되는데 버그 방지.
-    updateCurrentSelectedTimes(nextSelectedTimes);
-    updateCellClasses(true);
-  }, [initialSelectedTimes, updateCurrentSelectedTimes]);
-
+  /** 셀 hitbox 캐싱 */
   const cacheDragHitboxes = () => {
     const container = containerRef.current;
     if (!container) return;
     const containerRect = container.getBoundingClientRect();
     containerBoundingRectRef.current = containerRect;
 
-    const hitboxes: TimeCellHitbox[] = [];
-    // 모든 heat-map-cell 요소를 순회하며
-    container.querySelectorAll<HTMLElement>('.heat-map-cell').forEach((selectableElement) => {
-      const dateTime = selectableElement.getAttribute('data-time');
-      if (!dateTime) return;
-      const elementRect = selectableElement.getBoundingClientRect();
-      hitboxes.push({
-        key: dateTime,
-        left: elementRect.left - containerRect.left,
-        right: elementRect.right - containerRect.left,
-        top: elementRect.top - containerRect.top,
-        bottom: elementRect.bottom - containerRect.top,
-      });
+    dragHitboxesRef.current = Array.from(
+      container.querySelectorAll<HTMLElement>('.heat-map-cell')
+    ).map((el) => {
+      const rect = el.getBoundingClientRect();
+      return {
+        key: el.dataset.time!,
+        left: rect.left - containerRect.left,
+        right: rect.right - containerRect.left,
+        top: rect.top - containerRect.top,
+        bottom: rect.bottom - containerRect.top,
+      };
     });
-    dragHitboxesRef.current = hitboxes;
   };
 
+  /** 드래그 시작 */
   const handleDragStart = useCallback((event: React.PointerEvent) => {
     if (event.pointerType === 'touch') isTouch.current = true;
-
     cacheDragHitboxes();
 
     const bounds = containerBoundingRectRef.current;
     if (!bounds) return;
 
-    // 클릭한 요소에서 가장 가까운 셀 찾기
     const targetCell = (event.target as HTMLElement).closest(
       '.heat-map-cell'
     ) as HTMLElement | null;
     const cellKey = targetCell?.dataset.time;
     if (!cellKey) return;
-    isDraggingRef.current = true;
-    // 컨테이너 기준 시작 좌표 보정
-    const startX = event.clientX - bounds.left;
-    const startY = event.clientY - bounds.top;
-    dragStartX.current = startX;
-    dragStartY.current = startY;
 
-    // 드래그 의도(add/remove) 결정
+    isDraggingRef.current = true;
+    dragStartX.current = event.clientX - bounds.left;
+    dragStartY.current = event.clientY - bounds.top;
+
     selectionModeRef.current = currentWorkingSetRef.current.has(cellKey) ? 'remove' : 'add';
 
-    // 첫 셀 즉시 반영
     if (selectionModeRef.current === 'add') {
       currentWorkingSetRef.current.add(cellKey);
     } else {
@@ -134,16 +95,15 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     updateCellClasses();
   }, []);
 
+  /** 드래그 중 */
   const handleDragMove = useCallback((event: React.PointerEvent) => {
     if (!isDraggingRef.current) return;
     const bounds = containerBoundingRectRef.current;
     if (!bounds) return;
 
-    // 포인터의 컨테이너 기준 좌표
     const pointerX = event.clientX - bounds.left;
     const pointerY = event.clientY - bounds.top;
 
-    // 현재 드래그 선택 사각형
     const selectionRect = {
       left: Math.min(dragStartX.current, pointerX),
       top: Math.min(dragStartY.current, pointerY),
@@ -152,7 +112,6 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     };
 
     let didChange = false;
-
     for (const cell of dragHitboxesRef.current) {
       const overlaps =
         cell.left < selectionRect.right &&
@@ -178,28 +137,37 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
     if (didChange) updateCellClasses();
   }, []);
 
-  const resetDragState = useCallback(() => {
+  useEffect(() => {
+    currentWorkingSetRef.current = selectedTimes;
+    updateCellClasses();
+  }, [selectedTimes]);
+
+  /** 최종 반영 */
+  const commitSelection = () => {
+    userAvailabilityStore.setState((prev) => ({
+      ...prev,
+      selectedTimes: new Set(currentWorkingSetRef.current),
+    }));
+  };
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    commitSelection();
+    updateCellClasses();
     dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
     isTouch.current = false;
   }, []);
 
-  const handleDragEnd = useCallback(() => {
+  const handleDragLeave = useCallback(() => {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
-    resetDragState();
-    const finalSelectedTimes = new Set(currentWorkingSetRef.current);
-
-    updateCellClasses();
-    updateCurrentSelectedTimes(finalSelectedTimes);
-  }, [updateCurrentSelectedTimes, resetDragState]);
-
-  const handleDragLeave = useCallback(() => {
-    isDraggingRef.current = false;
-    const finalSelectedTimes = new Set(currentWorkingSetRef.current);
-    updateCurrentSelectedTimes(finalSelectedTimes);
-    resetDragState();
-  }, [resetDragState, updateCurrentSelectedTimes]);
+    commitSelection();
+    dragHitboxesRef.current = [];
+    containerBoundingRectRef.current = null;
+    isTouch.current = false;
+  }, []);
 
   const pointerHandlers = useMemo(
     () => ({
@@ -208,13 +176,10 @@ const useLocalTimeSelection = ({ initialSelectedTimes }: UseLocalTimeSelectionOp
       onPointerUp: handleDragEnd,
       onPointerLeave: handleDragLeave,
     }),
-    [handleDragEnd, handleDragLeave, handleDragMove, handleDragStart]
+    [handleDragStart, handleDragMove, handleDragEnd, handleDragLeave]
   );
 
-  return {
-    containerRef,
-    pointerHandlers,
-  };
+  return { containerRef, pointerHandlers };
 };
 
 export default useLocalTimeSelection;

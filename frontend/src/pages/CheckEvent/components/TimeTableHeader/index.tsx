@@ -1,33 +1,24 @@
 import * as S from './TimeTableHeader.styled';
 
 import Text from '@/shared/components/Text';
-import Button from '@/shared/components/Button';
 import Flex from '@/shared/layout/Flex';
 import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
 import Notice from '@/shared/components/Notice';
 
-//로딩 구현시 saving을 쓰면 됨.
-type HeaderMode = 'register' | 'edit' | 'save';
+type HeaderMode = 'edit' | 'save';
 
 interface Presets {
   title: string;
   description: (name: string, isMobile?: boolean) => string;
   //call-to-action
-  cta: string;
   disabled?: boolean;
 }
 
 const HeaderPresets: Record<HeaderMode, Presets> = {
-  register: {
-    title: `전체 시간표`,
-    description: () => '시간표를 등록해주세요!',
-    cta: '등록하기',
-  },
   edit: {
     title: `전체 시간표`,
     description: () => '현재 시간표를 확인해보세요!',
-    cta: '수정하기',
   },
   save: {
     title: `나의 시간표`,
@@ -35,26 +26,16 @@ const HeaderPresets: Record<HeaderMode, Presets> = {
       isMobile
         ? `${name}님의 \n 가능한 시간을 드래그 해주세요!`
         : `${name}님의 가능한 시간을 드래그 해주세요!`,
-    cta: '저장하기',
   },
 };
 
 interface TimeTableHeaderProps extends ComponentProps<'header'> {
   name: string;
-  mode?: HeaderMode;
-  onToggleEditMode: () => void;
-  isLoading?: boolean;
+  mode: HeaderMode;
   isExpired: boolean;
 }
 
-const TimeTableHeader = ({
-  name,
-  mode = 'register',
-  onToggleEditMode,
-  isLoading,
-  isExpired,
-  ...props
-}: TimeTableHeaderProps) => {
+const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
   const theme = useTheme();
 
@@ -74,16 +55,7 @@ const TimeTableHeader = ({
             ⚠️ 마감일이 지났어요. 결과를 확인해주세요!
           </Text>
         </Notice>
-        <Button
-          color="primary"
-          onClick={onToggleEditMode}
-          disabled={isLoading || isExpired}
-          size="small"
-        >
-          <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
-            {presets.cta}
-          </Text>
-        </Button>
+        {props.children}
       </Flex>
     </S.Container>
   );

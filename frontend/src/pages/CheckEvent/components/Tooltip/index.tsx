@@ -3,9 +3,9 @@ import * as S from './Tooltip.styled';
 import Text from '@/shared/components/Text';
 import IPerson from '@/assets/icons/IPerson';
 import { createPortal } from 'react-dom';
-import { useRoomStatisticsContext } from '../../provider/RoomStatisticsProvider';
 import { RefObject, memo } from 'react';
 import getCellInfo from '../../utils/getCellInfo';
+import { useRoomStatistics } from '../../stores/roomStatisticsStore';
 
 interface TooltipProps {
   currentCellId: string;
@@ -28,7 +28,7 @@ const ParticipantItem = memo(({ participantList }: { participantList: string[] }
 ParticipantItem.displayName = 'ParticipantItem';
 
 const Tooltip = ({ currentCellId, tooltipRef }: TooltipProps) => {
-  const { roomStatistics } = useRoomStatisticsContext();
+  const roomStatistics = useRoomStatistics();
   const { currentTime, nextTime, participantList } = getCellInfo(currentCellId, roomStatistics);
 
   if (!participantList || participantList.length === 0) {

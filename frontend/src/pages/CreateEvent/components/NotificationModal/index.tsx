@@ -1,9 +1,9 @@
-import Button from '../../../../shared/components/Button';
-import Check from '../../../../shared/components/Check';
-import Flex from '../../../../shared/layout/Flex';
-import Wrapper from '../../../../shared/layout/Wrapper';
-import Modal from '../../../../shared/components/Modal';
-import Text from '../../../../shared/components/Text';
+import Button from '@/shared/components/Button';
+import Check from '@/shared/components/Check';
+import Flex from '@/shared/layout/Flex';
+import Wrapper from '@/shared/layout/Wrapper';
+import Modal from '@/shared/components/Modal';
+import Text from '@/shared/components/Text';
 import * as S from './NotificationModal.styled';
 
 type CheckedNotification = {
@@ -33,8 +33,13 @@ interface NotificationState {
 interface NotificationModalProps {
   notification: NotificationState;
   handleCreateRoom: () => void;
+  isRoomCreateLoading: boolean;
 }
-const NotificationModal = ({ notification, handleCreateRoom }: NotificationModalProps) => {
+const NotificationModal = ({
+  notification,
+  handleCreateRoom,
+  isRoomCreateLoading,
+}: NotificationModalProps) => {
   return (
     <S.NotificationModalContainer>
       <Wrapper>
@@ -62,9 +67,10 @@ const NotificationModal = ({ notification, handleCreateRoom }: NotificationModal
             selected={true}
             onClick={handleCreateRoom}
             data-ga-id="create-event-button"
+            disabled={isRoomCreateLoading}
           >
             <Text variant="button" color="background">
-              방 만들기
+              {isRoomCreateLoading ? '생성 중...' : '방 만들기'}
             </Text>
           </Button>
         </Flex>

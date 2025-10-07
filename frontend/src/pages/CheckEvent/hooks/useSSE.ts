@@ -1,20 +1,17 @@
 import { useEffect, useRef } from 'react';
-import type { HandleErrorReturn } from '../../../shared/hooks/common/useCreateError';
+import useHandleError from '../../../shared/hooks/common/useCreateError';
 
 // SSE 재연결 관련 상수
 const MAX_RETRY_COUNT = 10;
 const RETRY_INTERVAL = 1000; // 1초
 
-const useSSE = (
-  session: string,
-  handleError: HandleErrorReturn,
-  onVoteChange: () => Promise<void>
-) => {
+const useSSE = (session: string, onVoteChange: () => Promise<void>) => {
   const retryCountRef = useRef(0);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const connectionFailed = useRef(false);
+  const handleError = useHandleError();
 
   useEffect(() => {
     if (!session) return;

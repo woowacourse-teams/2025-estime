@@ -1,99 +1,43 @@
-import { useRef, useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import { toCreateUserAvailability } from '@/apis/transform/toCreateUserAvailablity';
-import { UserAvailability } from '@/pages/CheckEvent/types/userAvailability';
-import * as Sentry from '@sentry/react';
-import { showToast } from '@/shared/store/toastStore';
+import useFetch from '@/shared/hooks/common/useFetch';
+import { userNameStore } from '../stores/userNameStore';
+import { userAvailabilityStore } from '../stores/userAvailabilityStore';
 
-const initialUserAvailability = {
-  userName: '앙부일구',
-  selectedTimes: new Set<string>(),
-};
+export const useUserAvailability = ({ session }: { session: string }) => {
+  const { triggerFetch: getUserTime } = useFetch({
+    context: 'fetchUserAvailableTime',
+    requestFn: () =>
+      // const name = userNameStore.getSnapshot();
+      getUserAvailableTime(session, userNameStore.getSnapshot()),
+  });
 
-export const useUserAvailability = ({
-  name,
-  session,
-}: {
-  name: string;
-  session: string | null;
-}) => {
-  const isUserSubmitLoading = useRef(false);
-  const isFetchUserAvailableTimeLoading = useRef(false);
-
-  const [userAvailability, setUserAvailability] =
-    useState<UserAvailability>(initialUserAvailability);
-
-  const userAvailabilitySubmit = useCallback(
-    async (updatedUserAvailability: UserAvailability) => {
-      if (isUserSubmitLoading.current) {
-        showToast({
-          type: 'warning',
-          message: '시간표를 불러오는 중입니다. 잠시만 기다려주세요.',
-        });
-        return;
-      }
-
-      isUserSubmitLoading.current = true;
-      try {
-        const payload = toCreateUserAvailability(updatedUserAvailability);
-        await updateUserAvailableTime(session, payload);
-        showToast({
-          type: 'success',
-          message: '시간표 저장이 완료되었습니다!',
-        });
-      } catch (err) {
-        const e = err as Error;
-        showToast({
-          type: 'error',
-          message: e.message,
-        });
-        Sentry.captureException(err, {
-          level: 'error',
-        });
-      } finally {
-        isUserSubmitLoading.current = false;
-      }
-    },
-    [session]
-  );
+  const { isLoading: isSavingUserTime, triggerFetch: handleUserAvailabilitySubmit } = useFetch({
+    context: 'handleUserAvailabilitySubmit',
+    requestFn: () =>
+      updateUserAvailableTime(
+        session,
+        toCreateUserAvailability(userAvailabilityStore.getSnapshot())
+      ),
+  });
 
   const fetchUserAvailableTime = useCallback(async () => {
-    if (!session) {
-      alert('세션이 없습니다. 다시 시도해주세요.');
-      return;
-    }
-    if (isFetchUserAvailableTimeLoading.current) {
-      showToast({
-        type: 'warning',
-        message: '시간표를 불러오는 중입니다. 잠시만 기다려주세요.',
-      });
-      return;
-    }
+    const userAvailableTimeInfo = await getUserTime();
+    if (userAvailableTimeInfo === undefined) return;
 
-    isFetchUserAvailableTimeLoading.current = true;
-    try {
-      const userAvailableTimeInfo = await getUserAvailableTime(session, name);
-      if (userAvailableTimeInfo.dateTimeSlots.length < 0) return;
-      const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
-      setUserAvailability({ userName: name, selectedTimes: selectedTimesResponse });
-    } catch (err) {
-      const e = err as Error;
-      showToast({
-        type: 'error',
-        message: e.message,
-      });
-      Sentry.captureException(err, {
-        level: 'error',
-      });
-    } finally {
-      isFetchUserAvailableTimeLoading.current = false;
-    }
-  }, [name, session]);
+    const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
+    userAvailabilityStore.setState((prev) => ({
+      ...prev,
+      userName: userNameStore.getSnapshot(),
+      selectedTimes: selectedTimesResponse,
+    }));
+  }, [getUserTime]);
 
   return {
-    userAvailability,
-    userAvailabilitySubmit,
+    handleUserAvailabilitySubmit,
     fetchUserAvailableTime,
+    isSavingUserTime,
   };
 };
 
