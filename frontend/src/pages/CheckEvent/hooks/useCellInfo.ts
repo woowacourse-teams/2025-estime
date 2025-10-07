@@ -1,13 +1,11 @@
 import { TimeManager } from '@/shared/utils/common/TimeManager';
-import type { HeatmapDateCellInfo } from '../hooks/useHeatmapStatistics';
+import { useRoomStatistics } from '../stores/roomStatisticsStore';
 
-const getCellInfo = (
-  currentCellId: string | null,
-  roomStatistics: Map<string, HeatmapDateCellInfo>
-) => {
+const useCellInfo = (currentCellId: string | null) => {
+  const { maxVoteCount, statistics } = useRoomStatistics();
+
   if (!currentCellId) return { participantList: [], currentTime: '', nextTime: '' };
-
-  const cellInfo = roomStatistics.get(currentCellId);
+  const cellInfo = statistics.get(currentCellId);
   if (!cellInfo || cellInfo.participantNames.length === 0) {
     return { participantList: [], currentTime: '', nextTime: '' };
   }
@@ -15,8 +13,7 @@ const getCellInfo = (
   const timeText = currentCellId.split('T')[1];
   const currentTime = timeText;
   const nextTime = TimeManager.addMinutes(timeText, 30);
-  const isRecommended = cellInfo.isRecommended;
-
+  const isRecommended = cellInfo.weight === maxVoteCount;
   return {
     participantList: cellInfo.participantNames,
     currentTime,
@@ -25,4 +22,4 @@ const getCellInfo = (
   };
 };
 
-export default getCellInfo;
+export default useCellInfo;
