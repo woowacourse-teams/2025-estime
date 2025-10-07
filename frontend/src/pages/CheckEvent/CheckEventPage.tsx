@@ -32,7 +32,6 @@ const CheckEventPage = () => {
 
   const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
-    weightCalculateStrategy,
   });
 
   const pagination = useTimeTablePagination({
