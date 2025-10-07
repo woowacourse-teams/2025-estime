@@ -1,4 +1,4 @@
-package com.estime.participant.infrastructure;
+package com.estime.participant;
 
 import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.Participant;

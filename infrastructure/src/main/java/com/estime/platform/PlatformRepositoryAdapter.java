@@ -1,4 +1,4 @@
-package com.estime.platform.infrastructure;
+package com.estime.platform;
 
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.Platform;

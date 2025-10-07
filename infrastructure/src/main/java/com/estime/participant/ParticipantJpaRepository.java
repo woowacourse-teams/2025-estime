@@ -1,4 +1,4 @@
-package com.estime.participant.infrastructure;
+package com.estime.participant;
 
 import com.estime.room.participant.Participant;
 import org.springframework.data.jpa.repository.JpaRepository;

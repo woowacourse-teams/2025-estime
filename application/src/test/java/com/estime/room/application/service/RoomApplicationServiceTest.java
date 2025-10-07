@@ -36,7 +36,7 @@ import com.estime.room.slot.DateSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.TimeSlot;
 import com.estime.room.RoomSession;
-import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
+import com.estime.room.platform.discord.DiscordMessageSender;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;

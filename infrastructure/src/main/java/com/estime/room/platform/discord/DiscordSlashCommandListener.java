@@ -1,8 +1,8 @@
-package com.estime.room.infrastructure.platform.discord;
+package com.estime.room.platform.discord;
 
 import com.estime.room.platform.PlatformCommand;
 import com.estime.room.platform.PlatformType;
-import com.estime.room.infrastructure.platform.PlatformShortcutBuilder;
+import com.estime.room.platform.PlatformShortcutBuilder;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

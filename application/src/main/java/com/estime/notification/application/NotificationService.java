@@ -6,7 +6,7 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformRepository;
-import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
+import com.estime.room.platform.discord.DiscordMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

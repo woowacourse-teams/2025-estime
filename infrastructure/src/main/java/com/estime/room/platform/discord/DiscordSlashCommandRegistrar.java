@@ -1,4 +1,4 @@
-package com.estime.room.infrastructure.platform.discord;
+package com.estime.room.platform.discord;
 
 import com.estime.room.platform.PlatformCommand;
 import java.util.List;

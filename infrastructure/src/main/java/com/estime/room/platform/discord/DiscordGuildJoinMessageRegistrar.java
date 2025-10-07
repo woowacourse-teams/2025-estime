@@ -1,4 +1,4 @@
-package com.estime.room.infrastructure.platform.discord;
+package com.estime.room.platform.discord;
 
 import com.estime.room.platform.PlatformMessage;
 import com.estime.room.platform.PlatformMessageStyle;

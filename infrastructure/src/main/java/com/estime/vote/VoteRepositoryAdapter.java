@@ -1,4 +1,4 @@
-package com.estime.vote.infrastructure;
+package com.estime.vote;
 
 import com.estime.room.participant.vote.QVote;
 import com.estime.room.participant.vote.Vote;

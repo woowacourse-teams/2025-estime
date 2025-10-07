@@ -1,6 +1,5 @@
-package com.estime.room.infrastructure;
+package com.estime.room;
 
-import com.estime.room.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoomJpaRepository extends JpaRepository<Room, Long> {

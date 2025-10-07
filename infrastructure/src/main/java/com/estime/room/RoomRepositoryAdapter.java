@@ -1,4 +1,4 @@
-package com.estime.room.infrastructure;
+package com.estime.room;
 
 import com.estime.room.QRoom;
 import com.estime.room.Room;

@@ -28,7 +28,7 @@ import com.estime.room.platform.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.RoomSession;
-import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
+import com.estime.room.platform.discord.DiscordMessageSender;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;

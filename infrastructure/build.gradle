@@ -1,0 +1,26 @@
+dependencies {
+    implementation project(':core')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-web'
+    implementation 'org.springframework.boot:spring-boot'
+
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Discord integration
+    implementation 'net.dv8tion:JDA:5.6.1'
+
+    // AWS CloudWatch
+    implementation 'io.micrometer:micrometer-registry-cloudwatch2'
+
+    // TSID
+    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

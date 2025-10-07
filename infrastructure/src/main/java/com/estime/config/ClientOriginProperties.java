@@ -1,4 +1,4 @@
-package com.estime.common.config;
+package com.estime.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

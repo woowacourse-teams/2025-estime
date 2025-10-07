@@ -1,4 +1,4 @@
-package com.estime.room.infrastructure.converter;
+package com.estime.room.converter;
 
 import com.estime.exception.InternalLogOnlyException;
 import com.github.f4b6a3.tsid.Tsid;
