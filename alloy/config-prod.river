@@ -1,0 +1,68 @@
+loki.write "prod" {
+    endpoint {
+        url = "http://" + env("MONITORING_SERVER") + ":3100/loki/api/v1/push"
+    }
+}
+
+loki.source.file "estime_api_logs" {
+    targets = [{ "__path__" = "/app/logs/estime-api.log" }]
+    forward_to = [loki.relabel.add_api_labels.receiver]
+}
+
+loki.relabel "add_api_labels" {
+    forward_to = [loki.write.prod.receiver]
+
+    rule {
+        target_label = "job"
+        replacement = "estime-api-prod"
+    }
+    rule {
+        target_label = "app"
+        replacement = "estime-api-prod"
+    }
+    rule {
+        target_label = "env"
+        replacement = "prod"
+    }
+}
+
+prometheus.scrape "estime_api_metrics_blue" {
+    targets = [{
+        __address__ = "host.docker.internal:8080",
+        job = "estime-api-prod",
+        env = "prod",
+        deployment = "blue",
+    }]
+
+    forward_to = [prometheus.relabel.add_metrics_labels.receiver]
+    scrape_interval = "15s"
+    metrics_path = "/actuator/prometheus"
+}
+
+prometheus.scrape "estime_api_metrics_green" {
+    targets = [{
+        __address__ = "host.docker.internal:8081",
+        job = "estime-api-prod",
+        env = "prod",
+        deployment = "green",
+    }]
+
+    forward_to = [prometheus.relabel.add_metrics_labels.receiver]
+    scrape_interval = "15s"
+    metrics_path = "/actuator/prometheus"
+}
+
+prometheus.relabel "add_metrics_labels" {
+    forward_to = [prometheus.remote_write.prod.receiver]
+
+    rule {
+        source_labels = ["__address__"]
+        target_label = "instance"
+    }
+}
+
+prometheus.remote_write "prod" {
+    endpoint {
+        url = "http://" + env("MONITORING_SERVER") + ":9090/api/v1/write"
+    }
+}

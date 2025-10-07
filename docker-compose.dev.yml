@@ -10,3 +10,18 @@ services:
       SPRING_PROFILES_ACTIVE: dev
     volumes:
       - /app/logs:/app/logs
+
+  alloy:
+    image: grafana/alloy:v1.11.0
+    container_name: alloy
+    env_file:
+      - ./application/.env.dev
+    volumes:
+      - ./alloy/config-dev.river:/etc/alloy/config-dev.river
+      - /app/logs:/app/logs
+      - alloy-data:/var/lib/alloy
+    command: "run /etc/alloy/config-dev.river"
+    restart: unless-stopped
+
+volumes:
+  alloy-data:
