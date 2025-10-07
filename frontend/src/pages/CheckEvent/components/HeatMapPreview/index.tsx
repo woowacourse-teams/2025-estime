@@ -11,7 +11,7 @@ interface HeatmapProps {
 
 const HeatmapPreview = ({ date, dateTimeSlots, show }: HeatmapProps) => {
   return (
-    <S.HeatmapContainer show={show}>
+    <S.Container show={show}>
       <Wrapper center={false} maxWidth="100%">
         <TimeTableDay date={date} />
         {dateTimeSlots.map((dateTimeSlot) => (
@@ -22,7 +22,7 @@ const HeatmapPreview = ({ date, dateTimeSlots, show }: HeatmapProps) => {
           />
         ))}
       </Wrapper>
-    </S.HeatmapContainer>
+    </S.Container>
   );
 };
 
