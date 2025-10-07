@@ -22,7 +22,7 @@ services:
       - ./application/.env.local
     volumes:
       - ./alloy/config-local.river:/etc/alloy/config-local.river
-      - /c/app/logs:/app/logs
+      - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-local.river"
     restart: unless-stopped
