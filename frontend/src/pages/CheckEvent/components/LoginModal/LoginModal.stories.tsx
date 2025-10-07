@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Button from '@/shared/components/Button';
 import Flex from '@/shared/layout/Flex';
 import Text from '@/shared/components/Text';
+import Modal from '@/shared/components/Modal';
 
 const meta: Meta<typeof LoginModal> = {
   title: 'Components/LoginModal',
@@ -43,14 +44,14 @@ export const Default: Story = {
             Open Modal
           </Text>
         </Button>
-        <LoginModal
-          isLoginModalOpen={isLoginModalOpen}
-          handleCloseLoginModal={() => {}}
-          handleModalLogin={() => {}}
-          userData={{ name: '' }}
-          handleUserData={() => {}}
-          isLoginLoading={false}
-        />
+
+        <Modal
+          isOpen={isLoginModalOpen}
+          position="center"
+          onClose={() => setIsLoginModalOpen(false)}
+        >
+          <LoginModal handleModalLogin={() => {}} isLoginLoading={false} />
+        </Modal>
       </Flex>
     );
   },
@@ -70,14 +71,13 @@ export const PreOpenModal: Story = {
             Open Modal
           </Text>
         </Button>
-        <LoginModal
-          isLoginModalOpen={isLoginModalOpen}
-          handleCloseLoginModal={() => {}}
-          handleModalLogin={() => {}}
-          userData={{ name: '' }}
-          handleUserData={() => {}}
-          isLoginLoading={false}
-        />
+        <Modal
+          isOpen={isLoginModalOpen}
+          position="center"
+          onClose={() => setIsLoginModalOpen(false)}
+        >
+          <LoginModal handleModalLogin={() => {}} isLoginLoading={false} />
+        </Modal>
       </Flex>
     );
   },

@@ -7,7 +7,7 @@ const useFetch = <T>({
 }: {
   context: string;
   requestFn: () => Promise<T>;
-}): { isLoading: boolean; triggerFetch: () => Promise<T | undefined> } => {
+}): { isLoading: boolean; triggerFetch: () => Promise<T> } => {
   const handleError = useHandleError();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -19,6 +19,7 @@ const useFetch = <T>({
     } catch (err) {
       const e = err as Error;
       handleError(e, context);
+      throw e;
     } finally {
       setIsLoading(false);
     }

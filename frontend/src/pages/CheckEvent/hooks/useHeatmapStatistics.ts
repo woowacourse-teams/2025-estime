@@ -3,7 +3,7 @@ import type { GetRoomStatisticsResponseType, StatisticItem } from '@/apis/room/t
 import type { WeightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
-import { useRoomStatisticsContext } from '../provider/RoomStatisticsProvider';
+import { roomStatisticsStore } from '../stores/roomStatisticsStore';
 
 export interface DateCellInfo {
   weight: number;
@@ -16,18 +16,17 @@ export interface HeatmapDateCellInfo extends DateCellInfo {
 const useHeatmapStatistics = ({
   session,
   weightCalculateStrategy,
-  isRoomSessionExist,
 }: {
   session: string;
+  // 서버에서 weight 내려준 이후에 제거 예정
   weightCalculateStrategy: WeightCalculateStrategy;
-  isRoomSessionExist: boolean;
 }) => {
   const { triggerFetch: getStatistics } = useFetch({
     context: 'fetchRoomStatistics',
-    requestFn: () => getRoomStatistics(session),
+    requestFn: useCallback(() => getRoomStatistics(session), [session]),
   });
-  const { roomStatistics, setRoomStatistics } = useRoomStatisticsContext();
 
+  // 서버에서 데이터 보내줄 예정
   const getWeightStatistics = useCallback(
     (statistic: StatisticItem[], participantCount: number) => {
       const dummyMinValue = 0;
@@ -53,6 +52,8 @@ const useHeatmapStatistics = ({
     },
     [weightCalculateStrategy]
   );
+
+  // 서버에서 데이터 보내줄 예정
   const formatRoomStatistics = useCallback(
     (statistics: GetRoomStatisticsResponseType): Map<string, HeatmapDateCellInfo> => {
       const { statistic, participantCount } = statistics;
@@ -79,26 +80,23 @@ const useHeatmapStatistics = ({
     [getWeightStatistics]
   );
 
-  const fetchRoomStatistics = useCallback(
-    async (sessionId: string) => {
-      if (!sessionId || !isRoomSessionExist) return;
+  // 사라질 예정
+  const fetchRoomStatistics = useCallback(async () => {
+    const response = await getStatistics();
 
-      const response = await getStatistics();
+    if (response === undefined) return;
+    const result = formatRoomStatistics(response);
 
-      if (response === undefined) return;
-      const result = formatRoomStatistics(response);
-      setRoomStatistics(result);
-    },
-    [isRoomSessionExist, formatRoomStatistics]
-  );
+    roomStatisticsStore.setState(result);
+  }, [formatRoomStatistics, getStatistics]);
 
   useEffect(() => {
     if (session) {
-      fetchRoomStatistics(session);
+      fetchRoomStatistics();
     }
   }, [session, fetchRoomStatistics]);
 
-  return { roomStatistics, fetchRoomStatistics };
+  return { fetchRoomStatistics };
 };
 
 export default useHeatmapStatistics;
