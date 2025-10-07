@@ -1,3 +1,14 @@
+## 1.4.0 (2025-10-07)
+
+* refactor: checkEventPage 리펙터 (#635) ([f09872a](https://github.com/woowacourse-teams/2025-estime/commit/f09872a)), closes [#635](https://github.com/woowacourse-teams/2025-estime/issues/635)
+* refactor: createEventPage 리펙터 (#633) ([f7b5fd5](https://github.com/woowacourse-teams/2025-estime/commit/f7b5fd5)), closes [#633](https://github.com/woowacourse-teams/2025-estime/issues/633)
+* feat: API 로딩  (#567) ([10c416b](https://github.com/woowacourse-teams/2025-estime/commit/10c416b)), closes [#567](https://github.com/woowacourse-teams/2025-estime/issues/567)
+* chore: 버전 변경 (v1.3.1) ([1a627a2](https://github.com/woowacourse-teams/2025-estime/commit/1a627a2))
+* fix: 잘못된 폰트 문법 수정 (#607) ([e3ffd49](https://github.com/woowacourse-teams/2025-estime/commit/e3ffd49)), closes [#607](https://github.com/woowacourse-teams/2025-estime/issues/607)
+* hotfix: og:image name 속성 변경 (property로) (#605) ([04f8a73](https://github.com/woowacourse-teams/2025-estime/commit/04f8a73)), closes [#605](https://github.com/woowacourse-teams/2025-estime/issues/605)
+
+
+
 ## <small>1.3.1 (2025-09-26)</small>
 
 * fix: handleDragLeave에서 상태갱신 안하는것 수정 (#593) ([2afe96b](https://github.com/woowacourse-teams/2025-estime/commit/2afe96b)), closes [#593](https://github.com/woowacourse-teams/2025-estime/issues/593)
