@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 export const HeaderCell = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   border-right: 1px solid ${({ theme }) => theme.colors.gray20};
-  background-color: ${({ theme }) => theme.colors.gray10};
+  // 투명도를 위해 alpha레이어 99 추가
+  background-color: ${({ theme }) => theme.colors.gray10 + '99'};
   display: flex;
   align-items: center;
   justify-content: center;
