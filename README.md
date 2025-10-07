@@ -26,6 +26,7 @@
 
 ### 🎨 Frontend 
 
+
 ![Typescript](https://img.shields.io/badge/typescript-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/react-%23333333.svg?style=for-the-badge&logo=react&logoColor=#61DAFB)
 ![Storybook](https://img.shields.io/badge/storybook-%23FF4785.svg?style=for-the-badge&logo=storybook&logoColor=white)
@@ -46,3 +47,6 @@
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
+
+## 🏭 Architecture
+<img width="4254" height="3181" alt="AWS cloud diagram (Community)" src="https://github.com/user-attachments/assets/95c6bd8b-f8da-471a-927f-087b0dfdd8c6" />
