@@ -90,7 +90,7 @@ const useCheckEventHandlers = ({
       // 그 순간 "flip" (예: buttonModeDispatch('click_save')) 실행하고 싶다
       setTimeout(() => {
         buttonModeDispatch('click_save');
-      }, 700);
+      }, 200);
     } else if (buttonMode === 'edit') {
       buttonModeDispatch('click_edit');
     }
