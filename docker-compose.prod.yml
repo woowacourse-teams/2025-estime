@@ -12,12 +12,12 @@ services:
       - /app/logs:/app/logs
 
   alloy:
-    image: grafana/alloy:latest
+    image: grafana/alloy:v1.11.0
     container_name: alloy
     env_file:
       - ./application/.env.prod
     volumes:
-      - ./application/alloy/config-prod.river:/etc/alloy/config-prod.river
+      - ./alloy/config-prod.river:/etc/alloy/config-prod.river
       - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-prod.river"
