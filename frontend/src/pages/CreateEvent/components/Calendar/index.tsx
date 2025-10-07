@@ -2,28 +2,28 @@ import * as S from './Calendar.styled';
 import { weekdays } from '@/constants/calender';
 import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalender';
 
-import PageArrowButton from '../../../../shared/components/Button/PageArrowButton';
+import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import DayCell from './DayCell';
 import Text from '@/shared/components/Text';
 import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
-import Flex from '../../../../shared/layout/Flex';
+import Flex from '@/shared/layout/Flex';
 import { DateManager } from '@/shared/utils/common/DateManager';
+import {
+  onChangeAvailableDateSlots,
+  useRoomSelector,
+} from '@/pages/CreateEvent/store/createRoomStore';
+import { useDateSelection } from '@/pages/CreateEvent/hooks/Calendar/useDateSelection';
 
-interface CalenderProps {
-  today: Date;
-  selectedDates: Set<string>;
-  mouseHandlers: {
-    onMouseDown: (date: Date | null) => void;
-    onMouseEnter: (date: Date | null) => void;
-    onMouseUp: () => void;
-    onMouseLeave: () => void;
-  };
-}
-
-const Calender = ({ today, selectedDates, mouseHandlers }: CalenderProps) => {
+const Calender = () => {
+  const today = new Date();
+  const selectedDates = useRoomSelector('availableDateSlots');
   const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
-  const { onMouseDown, onMouseEnter, onMouseUp, onMouseLeave } = mouseHandlers;
+  const { onMouseDown, onMouseEnter, onMouseLeave, onMouseUp } = useDateSelection({
+    selectedDates,
+    setSelectedDates: onChangeAvailableDateSlots,
+    today,
+  });
 
   return (
     <S.Container>

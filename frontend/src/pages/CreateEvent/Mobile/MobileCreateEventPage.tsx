@@ -2,98 +2,29 @@ import Flex from '@/shared/layout/Flex';
 import Wrapper from '@/shared/layout/Wrapper';
 import Button from '@/shared/components/Button';
 import Text from '@/shared/components/Text';
-import { useNavigate } from 'react-router';
-import useCreateRoom from '@/pages/CreateEvent/hooks/useCreateRoom';
-import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
-import { useRef, useState } from 'react';
 import IEstimeLogo from '@/assets/icons/IEstimeLogo';
-import { useTheme } from '@emotion/react';
 import IEstimeIcon from '@/assets/icons/IEstimeIcon';
+import { useTheme } from '@emotion/react';
 import * as S from './MobileCreateEventPage.styled';
 import CalendarSettings from '@/pages/CreateEvent/components/CalendarSettings';
 import BasicSettings from '@/pages/CreateEvent/components/BasicSettings';
-import useFunnelWithHistory from '@/shared/hooks/Funnel/useFunnelWithHistory';
 import Modal from '@/shared/components/Modal';
 import NotificationModal from '@/pages/CreateEvent/components/NotificationModal';
-import { showToast } from '@/shared/store/toastStore';
-
-const STEP = ['메인 화면', '캘린더 선택 화면', '제목 및 시간 선택 화면'] as const;
+import useMobileCreateRoomController from '../hooks/useMobileCreateRoomController';
 
 const MobileCreateEventPage = () => {
-  const [notificationModal, setNotificationModal] = useState(false);
-  const showValidation = useRef({
-    calendar: false,
-    rest: false,
-  });
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const { Funnel, step, stepNext, stepPrev } = useFunnelWithHistory(STEP);
   const {
-    platformType,
-    title,
-    availableDateSlots,
-    time,
-    deadline,
-    notification,
-    isCalendarReady,
-    isBasicReady,
-    roomInfoSubmit,
-    isRoomSubmitLoading,
-  } = useCreateRoom();
-  const { shouldShake, handleShouldShake } = useShakeAnimation();
+    notificationModal,
+    checkNotification,
+    isValid,
+    animation,
+    isRoomCreateLoading,
+    handler,
+    funnel,
+  } = useMobileCreateRoomController();
 
-  const handleNextStep = async (type: 'calendar' | 'rest') => {
-    if (type === 'calendar') {
-      if (!isCalendarReady) {
-        showToast({ type: 'warning', message: '날짜를 선택해주세요.' });
-        showValidation.current.calendar = true;
-        handleShouldShake();
-        return; // 유효하지 않으면 종료
-      }
-      stepNext();
-      return;
-    }
-
-    if (type === 'rest') {
-      if (!isBasicReady) {
-        showToast({ type: 'warning', message: '약속 정보를 입력해주세요.' });
-        showValidation.current.rest = true;
-        handleShouldShake();
-        return;
-      }
-      await handleCreateRoom(); // 최종 단계는 생성으로 종료
-      return;
-    }
-  };
-
-  const onSubmitSuccess = (session: string) => {
-    showToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
-    navigate(`/check?id=${session}`, { replace: true });
-  };
-
-  //  실제 제출
-  const submitAndNavigate = async () => {
-    const session = await roomInfoSubmit();
-    if (session) onSubmitSuccess(session);
-  };
-
-  // 메인 버튼 핸들러
-  const handleCreateRoom = async () => {
-    // 디스코드 연동이면 모달 오픈 후 모달에서 최종 제출
-    if (platformType) {
-      setNotificationModal(true);
-      return;
-    }
-
-    // 일반 생성 플로우
-    await submitAndNavigate();
-  };
-
-  // 디스코드 핸들러
-  const handleDiscordCreateRoom = async () => {
-    await submitAndNavigate();
-    setNotificationModal(false);
-  };
+  const { Funnel, step, stepNext, stepPrev } = funnel;
+  const theme = useTheme();
 
   return (
     <Wrapper maxWidth={430} padding="var(--padding-6)" borderRadius="var(--radius-4)">
@@ -122,11 +53,7 @@ const MobileCreateEventPage = () => {
 
         <Funnel.Step name="캘린더 선택 화면">
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <CalendarSettings
-              availableDateSlots={availableDateSlots}
-              isValid={!showValidation.current.calendar || isCalendarReady}
-              shouldShake={shouldShake}
-            />
+            <CalendarSettings isValid={isValid.calendar} shouldShake={animation.shake} />
 
             <Flex justify="space-between" gap="var(--gap-4)">
               <Button
@@ -144,7 +71,7 @@ const MobileCreateEventPage = () => {
                 color="primary"
                 selected={true}
                 size="large"
-                onClick={() => handleNextStep('calendar')}
+                onClick={() => handler.nextStep('calendar')}
               >
                 <Text variant="button" color="background">
                   다음
@@ -156,13 +83,8 @@ const MobileCreateEventPage = () => {
 
         <Funnel.Step name="제목 및 시간 선택 화면">
           <Flex direction="column" justify="space-between" gap="var(--gap-8)">
-            <BasicSettings
-              title={title}
-              time={time}
-              deadline={deadline}
-              isValid={!showValidation.current.rest || isBasicReady}
-              shouldShake={shouldShake}
-            />
+            <BasicSettings isValid={isValid.basic} shouldShake={animation.shake} />
+
             <Flex justify="space-between" gap="var(--gap-4)">
               <Button
                 color="primary"
@@ -179,12 +101,12 @@ const MobileCreateEventPage = () => {
                 color="primary"
                 selected={true}
                 size="large"
-                onClick={() => handleNextStep('rest')}
+                onClick={() => handler.nextStep('basic')}
                 data-ga-id="create-event-button"
-                disabled={isRoomSubmitLoading}
+                disabled={isRoomCreateLoading}
               >
                 <Text variant="button" color="background">
-                  {isRoomSubmitLoading ? '방 생성 중...' : '방 만들기'}
+                  {isRoomCreateLoading ? '방 생성 중...' : '방 만들기'}
                 </Text>
               </Button>
             </Flex>
@@ -192,11 +114,15 @@ const MobileCreateEventPage = () => {
         </Funnel.Step>
       </Funnel>
       <Modal
-        isOpen={notificationModal}
-        onClose={() => setNotificationModal(false)}
+        isOpen={notificationModal.isOpen}
+        onClose={() => notificationModal.setIsOpen(false)}
         position="center"
       >
-        <NotificationModal notification={notification} handleCreateRoom={handleDiscordCreateRoom} />
+        <NotificationModal
+          notification={checkNotification}
+          handleCreateRoom={handler.platformCreateRoom}
+          isRoomCreateLoading={isRoomCreateLoading}
+        />
       </Modal>
     </Wrapper>
   );
