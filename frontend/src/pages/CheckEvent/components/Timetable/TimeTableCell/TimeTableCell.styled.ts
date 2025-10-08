@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 export const HeaderCell = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   border-right: 1px solid ${({ theme }) => theme.colors.gray20};
+  // 99 => 60% 불투명도
+  // 즉, 실제로 보이는 heatmap-preview의 불투명도는 100% - 60% = 40% 불투명도
   background-color: ${({ theme }) => theme.colors.gray10};
   display: flex;
   align-items: center;

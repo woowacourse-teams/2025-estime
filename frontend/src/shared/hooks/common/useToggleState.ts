@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-const useToggleState = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const useToggleState = (defaultState = false) => {
+  const [isOpen, setIsOpen] = useState(defaultState);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
