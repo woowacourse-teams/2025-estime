@@ -26,7 +26,7 @@ const Timetable = ({
       <S.TimetableContent ref={containerRef} {...pointerHandlers}>
         <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
         {[...availableDates].map((date) => (
-          <Wrapper key={date} center={false} maxWidth="100%">
+          <Wrapper key={date} maxWidth="100%">
             <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} show={showHeatmapPreview} />
             <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
           </Wrapper>
