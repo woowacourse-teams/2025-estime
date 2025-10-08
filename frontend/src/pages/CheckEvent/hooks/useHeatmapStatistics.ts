@@ -1,7 +1,8 @@
 import { getRoomStatistics } from '@/apis/room/room';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
-import { roomStatisticsStore } from '../stores/roomStatisticsStore';
+import { roomStatisticsStore, type StatisticItem } from '../stores/roomStatisticsStore';
+import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 
 const useHeatmapStatistics = ({ session }: { session: string }) => {
   const { triggerFetch: getStatistics } = useFetch({
@@ -9,13 +10,10 @@ const useHeatmapStatistics = ({ session }: { session: string }) => {
     requestFn: useCallback(() => getRoomStatistics(session), [session]),
   });
 
-  const fetchRoomStatistics = useCallback(async () => {
-    const response = await getStatistics();
+  const storeRoomResponse = useCallback((response: GetRoomStatisticsResponseType) => {
+    const statisticsMap = new Map<string, StatisticItem>();
 
-    if (response === undefined) return;
     const { participantCount, participants, maxVoteCount, statistic } = response;
-    const statisticsMap = new Map();
-
     for (const item of statistic) {
       statisticsMap.set(item.dateTimeSlot, {
         voteCount: item.voteCount,
@@ -30,7 +28,14 @@ const useHeatmapStatistics = ({ session }: { session: string }) => {
       maxVoteCount,
       statistics: statisticsMap,
     });
-  }, [getStatistics]);
+  }, []);
+
+  const fetchRoomStatistics = useCallback(async () => {
+    const response = await getStatistics();
+    if (response) {
+      storeRoomResponse(response);
+    }
+  }, [storeRoomResponse, getStatistics]);
 
   useEffect(() => {
     if (session) {
