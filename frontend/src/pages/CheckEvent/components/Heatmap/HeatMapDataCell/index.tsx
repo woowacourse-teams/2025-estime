@@ -1,6 +1,6 @@
 import * as S from './HeatMapDataCell.styled';
 import { memo } from 'react';
-import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import useCellInfo from '@/pages/CheckEvent/hooks/useCellInfo';
 
 interface HeatMapDataCellProps {
   date: string;
@@ -8,11 +8,10 @@ interface HeatMapDataCellProps {
 }
 
 const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
-  const roomStatistics = useRoomStatistics();
-  const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
-  const isRecommended = cellInfo?.participantNames.length === roomStatistics.maxVoteCount;
+  const { cellInfo, isRecommended } = useCellInfo(`${date}T${timeText}`);
 
   const weight = cellInfo?.weight ?? 0;
+
   return (
     <S.Container
       data-cell-id={`${date}T${timeText}`}
