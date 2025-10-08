@@ -4,8 +4,7 @@ import Text from '@/shared/components/Text';
 import IPerson from '@/assets/icons/IPerson';
 import { createPortal } from 'react-dom';
 import { RefObject, memo } from 'react';
-import getCellInfo from '../../utils/getCellInfo';
-import { useRoomStatistics } from '../../stores/roomStatisticsStore';
+import useCellInfo from '@/pages/CheckEvent/hooks/useCellInfo';
 
 interface TooltipProps {
   currentCellId: string;
@@ -28,14 +27,18 @@ const ParticipantItem = memo(({ participantList }: { participantList: string[] }
 ParticipantItem.displayName = 'ParticipantItem';
 
 const Tooltip = ({ currentCellId, tooltipRef }: TooltipProps) => {
-  const roomStatistics = useRoomStatistics();
-  const { currentTime, nextTime, participantList } = getCellInfo(currentCellId, roomStatistics);
+  const { cellInfo, participantList, times } = useCellInfo(currentCellId);
+
+  if (!times) {
+    return null;
+  }
+
+  const { currentTime, nextTime } = times;
 
   if (!participantList || participantList.length === 0) {
     return null;
   }
 
-  const cellInfo = roomStatistics.get(currentCellId);
   const visible = cellInfo ? true : false;
   const weight = cellInfo?.weight ?? 0;
 
