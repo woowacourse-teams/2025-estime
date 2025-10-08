@@ -1,5 +1,6 @@
 @import url('./reset.css');
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import url('./timetable/timetable.css');
 
 body {
   font-family:
@@ -58,40 +59,4 @@ body {
   --shadow-card: 0px 10px 20px 0px rgba(33, 33, 33, 0.15);
 
   --info-background: rgba(255, 198, 76, 0.15);
-  --gray10: #f4f4f4;
-  --gray20: #c6c6c6;
-  --primary: #8052e1;
-}
-
-.heat-map-cell {
-  position: relative;
-  border-top: 1px solid var(--gray20);
-  border-right: 1px solid var(--gray20);
-  background-color: var(--gray10);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--padding-4);
-  height: 1.5rem;
-  width: 100%;
-  user-select: none;
-  touch-action: none;
-}
-
-.heat-map-cell:hover {
-  cursor: pointer;
-}
-
-.heat-map-cell::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: var(--primary);
-  opacity: 0;
-  transition: opacity 0.15s cubic-bezier(0.2, 0, 0, 1);
-  pointer-events: none;
-}
-
-.heat-map-cell.selected::after {
-  opacity: 1;
 }
