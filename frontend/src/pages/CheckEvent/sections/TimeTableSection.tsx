@@ -12,8 +12,9 @@ import { userNameStore } from '../stores/userNameStore';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import useToggleHeatmapPreview from '../hooks/useToggleHeatmapPreview';
+
 import Toggle from '@/shared/components/Toggle';
+import useToggleState from '@/shared/hooks/common/useToggleState';
 
 interface TimetableSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
@@ -31,7 +32,7 @@ const TimetableSection = ({
   const theme = useTheme();
 
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
-  const toggleHeatmapPreview = useToggleHeatmapPreview();
+  const toggleHeatmapPreview = useToggleState(true);
   return (
     <S.BackFace ref={pagination.timeTableContainerRef}>
       <Flex direction="column" gap="var(--gap-8)">
@@ -42,8 +43,8 @@ const TimetableSection = ({
                 미리보기
               </Text>
               <Toggle
-                isOn={toggleHeatmapPreview.show}
-                onToggle={toggleHeatmapPreview.handleToggle}
+                isOn={toggleHeatmapPreview.isOpen}
+                onToggle={toggleHeatmapPreview.toggleOpen}
               />
             </Flex>
             <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
@@ -78,7 +79,7 @@ const TimetableSection = ({
             timeColumnRef={pagination.timeColumnRef}
             dateTimeSlots={roomInfo.availableTimeSlots}
             availableDates={pagination.currentPageDates}
-            showHeatmapPreview={toggleHeatmapPreview.show}
+            showHeatmapPreview={toggleHeatmapPreview.isOpen}
           />
         </Flex>
       </Flex>
