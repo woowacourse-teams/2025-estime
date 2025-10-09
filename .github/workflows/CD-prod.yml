@@ -329,8 +329,78 @@ jobs:
           echo "   활성 환경: $TARGET (포트 $TARGET_PORT)"
           echo "=========================================="
 
+      - name: Rollback on failure
+        if: failure() && steps.detect.outputs.current != 'none'
+        run: |
+          CURRENT="${{ steps.detect.outputs.current }}"
+          TARGET="${{ steps.detect.outputs.target }}"
+
+          # 포트 매핑 (Blue: 8080, Green: 8081)
+          if [ "$CURRENT" = "blue" ]; then
+            ROLLBACK_PORT=8080
+          else
+            ROLLBACK_PORT=8081
+          fi
+
+          echo "=========================================="
+          echo "배포 실패 감지 - 롤백 시작"
+          echo "   이전 환경: $CURRENT (포트 $ROLLBACK_PORT)"
+          echo "   실패한 환경: $TARGET"
+          echo "=========================================="
+
+          echo "[1/5] Nginx 설정을 이전 환경으로 복원 중..."
+          sudo sed -i "s/\(proxy_pass\s\+http:\/\/127\.0\.0\.1:\)[0-9]\+/\1$ROLLBACK_PORT/g" /etc/nginx/sites-available/default
+
+          # 복원 확인
+          RESTORED_PORT=$(grep -oP 'proxy_pass\s+http://127\.0\.0\.1:\K\d+' /etc/nginx/sites-available/default | head -1)
+          if [ "$RESTORED_PORT" != "$ROLLBACK_PORT" ]; then
+            echo "Nginx 설정 복원 실패"
+            exit 1
+          fi
+          echo "Nginx 설정 복원 완료 (포트: $RESTORED_PORT)"
+
+          echo "[2/5] Nginx 리로드..."
+          if ! sudo nginx -t 2>&1; then
+            echo "Nginx 검증 실패"
+            exit 1
+          fi
+          sudo systemctl reload nginx
+          echo "Nginx 리로드 완료"
+
+          echo "[3/5] 실패한 $TARGET 환경 정리 중..."
+          docker compose -f docker-compose.prod.yml stop api-$TARGET || true
+          docker compose -f docker-compose.prod.yml rm -f api-$TARGET || true
+          echo "정리 완료"
+
+          echo "[4/5] 이전 $CURRENT 환경 상태 확인..."
+          if ! docker ps --format "{{.Names}}" | grep -q "^estime-api-$CURRENT$"; then
+            echo "$CURRENT 환경이 중지됨. 재시작 중..."
+            docker compose -f docker-compose.prod.yml up -d api-$CURRENT
+            sleep 10
+          fi
+
+          echo "[5/5] 롤백 검증 중..."
+          if ! curl -sf http://localhost:$ROLLBACK_PORT/actuator/health > /dev/null; then
+            echo "롤백 검증 실패 - 수동 개입 필요"
+            exit 1
+          fi
+
+          if ! curl -sf https://prod.estime.today/actuator/health > /dev/null; then
+            echo "프로덕션 URL 검증 실패 - 수동 개입 필요"
+            exit 1
+          fi
+
+          echo ""
+          echo "=========================================="
+          echo "롤백 완료"
+          echo "   복원된 환경: $CURRENT (포트 $ROLLBACK_PORT)"
+          echo "=========================================="
+          docker ps --filter "name=estime-api"
+
+          exit 1
+
       - name: Stop old environment
-        if: steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
+        if: success() && steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
         run: |
           CURRENT="${{ steps.detect.outputs.current }}"
           TARGET="${{ steps.detect.outputs.target }}"
