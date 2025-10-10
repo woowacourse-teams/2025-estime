@@ -1,6 +1,7 @@
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { useLockBodyScroll } from '@/shared/hooks/common/useLockBodyScroll';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
+import { usePaginationStore } from '../stores/paginationStore';
 
 type TimeCellHitbox = {
   key: string;
@@ -12,6 +13,7 @@ type TimeCellHitbox = {
 
 const useLocalTimeSelection = () => {
   const selectedTimes = useUserAvailability().selectedTimes;
+  const { currentPage } = usePaginationStore();
 
   // 전역 값 복제 → 드래그 중 임시 보관
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
@@ -28,7 +30,6 @@ const useLocalTimeSelection = () => {
   const renderAnimationFrameId = useRef<number | null>(null);
 
   useLockBodyScroll(isTouch.current);
-
   /** 셀 UI 클래스 갱신 */
   const updateCellClasses = () => {
     if (renderAnimationFrameId.current != null) return;
@@ -140,7 +141,7 @@ const useLocalTimeSelection = () => {
   useEffect(() => {
     currentWorkingSetRef.current = selectedTimes;
     updateCellClasses();
-  }, [selectedTimes]);
+  }, [currentPage, selectedTimes]);
 
   /** 최종 반영 */
   const commitSelection = () => {

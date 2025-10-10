@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-// import { useColumnsPerPage } from './useColumnPerPage';
-import usePagination from '../../../shared/hooks/Pagination/usePagination';
+import usePagination from '@/shared/hooks/Pagination/usePagination';
+import { paginationStore } from '../stores/paginationStore';
 
 const MIN_COLUMN_WIDTH = 60;
 
@@ -55,6 +55,11 @@ const useTimeTablePagination = ({
   const endIndex = startIndex + maxColumnCountPerPage;
 
   const currentPageDates = new Set(Array.from(availableDates).slice(startIndex, endIndex));
+
+  // 페이지 변경시 스토어 업데이트
+  useEffect(() => {
+    paginationStore.setState({ currentPage: page });
+  }, [page]);
 
   return {
     totalPages,
