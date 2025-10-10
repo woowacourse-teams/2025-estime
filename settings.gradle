@@ -2,3 +2,4 @@ rootProject.name = 'estime'
 
 include 'core'
 include 'application'
+include 'infrastructure'

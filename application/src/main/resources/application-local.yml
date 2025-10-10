@@ -4,7 +4,7 @@ spring:
       on-profile: local
     import:
       - application-common.yml
-      - optional:file:application/.env.local[.properties]
+      - optional:file:.env.local[.properties]
 
   jpa:
     show-sql: true
