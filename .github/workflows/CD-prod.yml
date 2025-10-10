@@ -96,6 +96,10 @@ jobs:
     runs-on: [ self-hosted, estime-prod ]
     needs: build-and-push
 
+    outputs:
+      current: ${{ steps.detect.outputs.current }}
+      target: ${{ steps.detect.outputs.target }}
+
     env:
       SPRING_PROFILES_ACTIVE: prod
 
@@ -330,7 +334,7 @@ jobs:
           echo "=========================================="
 
       - name: Stop old environment
-        if: steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
+        if: success() && steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
         run: |
           CURRENT="${{ steps.detect.outputs.current }}"
           TARGET="${{ steps.detect.outputs.target }}"
@@ -346,6 +350,111 @@ jobs:
           echo "Blue-Green 배포 완료"
           echo "   이전 환경: $CURRENT (종료됨)"
           echo "   현재 환경: $TARGET (Nginx를 통해 서비스 중)"
+          echo "=========================================="
+          docker ps --filter "name=estime-api"
+
+      - name: Clean up unused Docker resources
+        if: always()
+        run: |
+          docker image prune -a -f
+          docker builder prune -a -f
+
+  rollback:
+    runs-on: [ self-hosted, estime-prod ]
+    needs: [ build-and-push, deploy ]
+    if: failure() && needs.deploy.outputs.current != 'none'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create env file for Docker Compose
+        run: |
+          cat <<EOF > .env
+          IMAGE_NAME=${{ secrets.PROD_IMAGE_NAME }}
+          IMAGE_TAG=${{ needs.build-and-push.outputs.version }}
+          EOF
+
+      - name: Rollback to previous environment
+        run: |
+          CURRENT="${{ needs.deploy.outputs.current }}"
+          TARGET="${{ needs.deploy.outputs.target }}"
+
+          # 포트 매핑 (Blue: 8080, Green: 8081)
+          if [ "$CURRENT" = "blue" ]; then
+            ROLLBACK_PORT=8080
+          else
+            ROLLBACK_PORT=8081
+          fi
+
+          echo "=========================================="
+          echo "배포 실패 감지 - 롤백 시작"
+          echo "   이전 환경: $CURRENT (포트 $ROLLBACK_PORT)"
+          echo "   실패한 환경: $TARGET"
+          echo "=========================================="
+
+          echo "[1/4] Nginx 설정을 이전 환경으로 복원 중..."
+          sudo sed -i "s/\(proxy_pass\s\+http:\/\/127\.0\.0\.1:\)[0-9]\+/\1$ROLLBACK_PORT/g" /etc/nginx/sites-available/default
+
+          RESTORED_PORT=$(grep -oP 'proxy_pass\s+http://127\.0\.0\.1:\K\d+' /etc/nginx/sites-available/default | head -1)
+          if [ "$RESTORED_PORT" != "$ROLLBACK_PORT" ]; then
+            echo "Nginx 설정 복원 실패"
+            exit 1
+          fi
+          echo "Nginx 설정 복원 완료 (포트: $RESTORED_PORT)"
+
+          echo "[2/4] Nginx 리로드..."
+          if ! sudo nginx -t 2>&1; then
+            echo "Nginx 검증 실패"
+            exit 1
+          fi
+          sudo systemctl reload nginx
+          echo "Nginx 리로드 완료"
+
+          echo "[3/4] 실패한 $TARGET 환경 정리 중..."
+          if docker ps -a --format "{{.Names}}" | grep -q "^estime-api-$TARGET$"; then
+            echo "실패한 $TARGET 컨테이너 발견, 정리 중..."
+            docker compose -f docker-compose.prod.yml stop api-$TARGET
+            docker compose -f docker-compose.prod.yml rm -f api-$TARGET
+            echo "정리 완료"
+          else
+            echo "$TARGET 컨테이너 없음 (이미 정리됨)"
+          fi
+
+          echo "[4/4] 이전 $CURRENT 환경 복구 및 검증..."
+          if ! docker ps --format "{{.Names}}" | grep -q "^estime-api-$CURRENT$"; then
+            echo "$CURRENT 환경이 중지됨. 재시작 중..."
+            docker compose -f docker-compose.prod.yml up -d api-$CURRENT
+          fi
+
+          echo "서비스 헬스체크 중..."
+          HEALTHY=false
+          for i in {1..60}; do
+            if curl -sf http://localhost:$ROLLBACK_PORT/actuator/health > /dev/null; then
+              echo "로컬 헬스체크 통과 (${i}초)"
+              HEALTHY=true
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$HEALTHY" != "true" ]; then
+            echo "로컬 헬스체크 실패 - 수동 개입 필요"
+            exit 1
+          fi
+
+          if ! curl -sf https://prod.estime.today/actuator/health > /dev/null; then
+            echo "프로덕션 URL 검증 실패 - 수동 개입 필요"
+            exit 1
+          fi
+
+          echo "롤백 검증 완료"
+
+          echo ""
+          echo "=========================================="
+          echo "롤백 완료"
+          echo "   복원된 환경: $CURRENT (포트 $ROLLBACK_PORT)"
+          echo "   서비스가 정상적으로 복구되었습니다"
           echo "=========================================="
           docker ps --filter "name=estime-api"
 
