@@ -23,12 +23,12 @@ import com.estime.room.participant.Participants;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
+import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.RoomSession;
-import com.estime.room.platform.discord.DiscordMessageSender;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +52,7 @@ public class RoomApplicationService {
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
-    private final DiscordMessageSender discordMessageSender; // TODO EVENT
+    private final PlatformMessageSender platformMessageSender;
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
@@ -72,7 +72,7 @@ public class RoomApplicationService {
                         input.notification()));
 
         if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
-            discordMessageSender.sendConnectedRoomCreatedMessage(
+            platformMessageSender.sendConnectedRoomCreatedMessage(
                     input.channelId(),
                     room.getSession(),
                     room.getTitle(),

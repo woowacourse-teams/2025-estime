@@ -1,6 +1,6 @@
 package com.estime.config;
 
-import com.estime.shared.config.ClientOriginProvider;
+import com.estime.port.out.ClientOriginProvider;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "url.origin")

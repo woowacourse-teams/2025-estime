@@ -1,4 +1,4 @@
-package com.estime.shared.config;
+package com.estime.port.out;
 
 public interface ClientOriginProvider {
 

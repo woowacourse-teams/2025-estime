@@ -1,6 +1,6 @@
 package com.estime.common.config;
 
-import com.estime.shared.config.ClientOriginProvider;
+import com.estime.port.out.ClientOriginProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
