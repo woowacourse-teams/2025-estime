@@ -96,6 +96,10 @@ jobs:
     runs-on: [ self-hosted, estime-prod ]
     needs: build-and-push
 
+    outputs:
+      current: ${{ steps.detect.outputs.current }}
+      target: ${{ steps.detect.outputs.target }}
+
     env:
       SPRING_PROFILES_ACTIVE: prod
 
@@ -329,11 +333,45 @@ jobs:
           echo "   활성 환경: $TARGET (포트 $TARGET_PORT)"
           echo "=========================================="
 
-      - name: Rollback on failure
-        if: failure() && steps.detect.outputs.current != 'none'
+      - name: Stop old environment
+        if: success() && steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
         run: |
           CURRENT="${{ steps.detect.outputs.current }}"
           TARGET="${{ steps.detect.outputs.target }}"
+
+          echo "=========================================="
+          echo "이전 환경 종료: $CURRENT"
+          echo "=========================================="
+
+          # 이전 환경 컨테이너 중지
+          docker compose -f docker-compose.prod.yml stop api-$CURRENT
+
+          echo "=========================================="
+          echo "Blue-Green 배포 완료"
+          echo "   이전 환경: $CURRENT (종료됨)"
+          echo "   현재 환경: $TARGET (Nginx를 통해 서비스 중)"
+          echo "=========================================="
+          docker ps --filter "name=estime-api"
+
+      - name: Clean up unused Docker resources
+        if: always()
+        run: |
+          docker image prune -a -f
+          docker builder prune -a -f
+
+  rollback:
+    runs-on: [ self-hosted, estime-prod ]
+    needs: deploy
+    if: failure() && needs.deploy.outputs.current != 'none'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rollback to previous environment
+        run: |
+          CURRENT="${{ needs.deploy.outputs.current }}"
+          TARGET="${{ needs.deploy.outputs.target }}"
 
           # 포트 매핑 (Blue: 8080, Green: 8081)
           if [ "$CURRENT" = "blue" ]; then
@@ -394,28 +432,7 @@ jobs:
           echo "=========================================="
           echo "롤백 완료"
           echo "   복원된 환경: $CURRENT (포트 $ROLLBACK_PORT)"
-          echo "=========================================="
-          docker ps --filter "name=estime-api"
-
-          exit 1
-
-      - name: Stop old environment
-        if: success() && steps.detect.outputs.current != 'none' && steps.detect.outputs.current != 'both'
-        run: |
-          CURRENT="${{ steps.detect.outputs.current }}"
-          TARGET="${{ steps.detect.outputs.target }}"
-
-          echo "=========================================="
-          echo "이전 환경 종료: $CURRENT"
-          echo "=========================================="
-
-          # 이전 환경 컨테이너 중지
-          docker compose -f docker-compose.prod.yml stop api-$CURRENT
-
-          echo "=========================================="
-          echo "Blue-Green 배포 완료"
-          echo "   이전 환경: $CURRENT (종료됨)"
-          echo "   현재 환경: $TARGET (Nginx를 통해 서비스 중)"
+          echo "   서비스가 정상적으로 복구되었습니다"
           echo "=========================================="
           docker ps --filter "name=estime-api"
 
