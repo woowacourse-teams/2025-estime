@@ -29,6 +29,8 @@ public class RoomRepositoryImpl implements RoomRepository {
     public Optional<Room> findBySession(final RoomSession session) {
         return Optional.ofNullable(
                 queryFactory.selectFrom(room)
+                        .leftJoin(room.availableDateSlots).fetchJoin()
+                        .leftJoin(room.availableTimeSlots).fetchJoin()
                         .where(room.session.eq(session))
                         .fetchOne()
         );
