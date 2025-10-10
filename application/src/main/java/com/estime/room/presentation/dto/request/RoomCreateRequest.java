@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.request;
 
-import com.estime.room.application.dto.input.RoomCreateInput;
+import com.estime.room.dto.input.RoomCreateInput;
 import com.estime.room.slot.DateSlot;
 import com.estime.room.slot.TimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;

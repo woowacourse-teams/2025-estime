@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.request;
 
-import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.slot.DateSlot;

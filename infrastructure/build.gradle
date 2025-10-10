@@ -27,6 +27,9 @@ dependencies {
     // TSID (for JPA converters)
     implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
 
+    // Configuration processor for @ConfigurationProperties
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

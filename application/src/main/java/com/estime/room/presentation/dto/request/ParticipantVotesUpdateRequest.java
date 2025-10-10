@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.request;
 
-import com.estime.room.application.dto.input.VotesUpdateInput;
+import com.estime.room.dto.input.VotesUpdateInput;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.RoomSession;
