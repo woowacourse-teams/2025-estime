@@ -6,6 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
+import com.estime.port.out.PlatformMessageSender;
 import com.estime.shared.DomainTerm;
 import com.estime.exception.NotFoundException;
 import com.estime.room.exception.UnavailableSlotException;
@@ -36,7 +37,6 @@ import com.estime.room.slot.DateSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.TimeSlot;
 import com.estime.room.RoomSession;
-import com.estime.room.platform.discord.DiscordMessageSender;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
@@ -72,7 +72,7 @@ class RoomApplicationServiceTest {
     private VoteRepository voteRepository;
 
     @MockitoBean
-    private DiscordMessageSender discordMessageSender;
+    private PlatformMessageSender platformMessageSender;
 
     @Autowired
     private PlatformRepository platformRepository;
@@ -378,7 +378,7 @@ class RoomApplicationServiceTest {
                 PlatformNotification.of(false, false, false)
         );
 
-        doNothing().when(discordMessageSender).sendConnectedRoomCreatedMessage(any(), any(), any(), any());
+        doNothing().when(platformMessageSender).sendConnectedRoomCreatedMessage(any(), any(), any(), any());
 
         // when
         final ConnectedRoomCreateOutput saved = roomApplicationService.createConnectedRoom(input);
