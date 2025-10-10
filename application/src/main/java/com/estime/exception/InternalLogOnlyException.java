@@ -1,6 +1,8 @@
-package com.estime.shared.exception;
+package com.estime.exception;
 
-public class InternalLogOnlyException extends BaseException {
+import com.estime.shared.exception.ExceptionMessageFormatter;
+
+public class InternalLogOnlyException extends ApplicationException {
 
     public InternalLogOnlyException(final String message, final Object... params) {
         super(
