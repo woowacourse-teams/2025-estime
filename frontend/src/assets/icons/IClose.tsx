@@ -1,11 +1,11 @@
 import { IconType } from '@/shared/types/iconType';
 
-function IClose({ color = 'currentColor', ...props }: IconType) {
+function IClose({ color = 'currentColor', width = '36', height = '36', ...props }: IconType) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="36"
-      height="36"
+      width={width}
+      height={height}
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
