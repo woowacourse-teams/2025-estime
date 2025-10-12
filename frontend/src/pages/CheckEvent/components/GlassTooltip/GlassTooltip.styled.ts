@@ -44,7 +44,7 @@ export const ParticipantList = styled.div`
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  pointer-events: auto; /* 내부 스크롤 가능 */
+  pointer-events: ${({ theme }) => (theme.isMobile ? ' auto' : 'none')};
 
   &::-webkit-scrollbar {
     width: 5px;
