@@ -1,4 +1,4 @@
-package com.estime.room.presentation.dto.request;
+package com.estime.room.controller.dto.request;
 
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.dto.input.DateSlotInput;

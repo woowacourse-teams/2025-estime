@@ -1,4 +1,4 @@
-package com.estime.sse.application;
+package com.estime.sse;
 
 import com.estime.room.RoomSession;
 import lombok.RequiredArgsConstructor;

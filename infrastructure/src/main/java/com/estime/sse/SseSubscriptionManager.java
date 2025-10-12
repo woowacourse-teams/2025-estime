@@ -1,6 +1,5 @@
-package com.estime.sse.application;
+package com.estime.sse;
 
-import com.estime.sse.domain.SseConnection;
 import com.estime.room.RoomSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

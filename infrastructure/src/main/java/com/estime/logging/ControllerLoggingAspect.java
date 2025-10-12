@@ -20,7 +20,7 @@ public class ControllerLoggingAspect {
 
     private static final int MAX_LOG_LENGTH = 500;
 
-    @Pointcut("execution(* com.estime.common.sse.presentation..*(..)) || execution(* com.estime.room.presentation..*(..))")
+    @Pointcut("execution(* com.estime.sse.controller..*(..)) || execution(* com.estime.room.controller..*(..))")
     public void controllerMethods() {
     }
 

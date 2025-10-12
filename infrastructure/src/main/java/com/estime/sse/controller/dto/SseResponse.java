@@ -1,4 +1,4 @@
-package com.estime.sse.presentation.dto;
+package com.estime.sse.controller.dto;
 
 public record SseResponse(
         String status

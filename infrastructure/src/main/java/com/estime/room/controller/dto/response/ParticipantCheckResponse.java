@@ -1,4 +1,4 @@
-package com.estime.room.presentation.dto.response;
+package com.estime.room.controller.dto.response;
 
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,7 +1,7 @@
-package com.estime.sse.presentation;
+package com.estime.sse.controller;
 
-import com.estime.sse.application.SseSubscriptionManager;
-import com.estime.sse.domain.SseConnection;
+import com.estime.sse.SseSubscriptionManager;
+import com.estime.sse.SseConnection;
 import com.estime.room.RoomSession;
 import com.github.f4b6a3.tsid.Tsid;
 import lombok.RequiredArgsConstructor;
