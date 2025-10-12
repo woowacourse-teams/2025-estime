@@ -1,7 +1,7 @@
-package com.estime.common.sse.application;
+package com.estime.sse.application;
 
-import com.estime.common.sse.domain.SseConnection;
-import com.estime.common.sse.presentation.dto.SseResponse;
+import com.estime.sse.domain.SseConnection;
+import com.estime.sse.presentation.dto.SseResponse;
 import com.estime.room.RoomSession;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

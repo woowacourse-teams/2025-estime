@@ -7,6 +7,7 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.SlotBatchRepository;
+import com.estime.sse.application.SseService;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.dto.input.DateSlotInput;
 import com.estime.room.dto.input.ParticipantCreateInput;

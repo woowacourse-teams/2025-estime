@@ -1,4 +1,4 @@
-package com.estime.common.sse.domain;
+package com.estime.sse.domain;
 
 import com.estime.room.RoomSession;
 import java.io.IOException;

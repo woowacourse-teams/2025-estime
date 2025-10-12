@@ -1,7 +1,6 @@
-package com.estime.common.exception;
+package com.estime.exception;
 
 import com.estime.common.CustomApiResponse;
-import com.estime.exception.ApplicationException;
 import com.estime.shared.exception.DomainException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;

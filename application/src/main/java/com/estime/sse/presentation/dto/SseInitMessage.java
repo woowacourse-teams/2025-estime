@@ -1,4 +1,4 @@
-package com.estime.common.sse.presentation.dto;
+package com.estime.sse.presentation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.f4b6a3.tsid.Tsid;

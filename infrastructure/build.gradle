@@ -2,17 +2,18 @@ dependencies {
     implementation project(':core')
     compileOnly project(':application')
 
-    // Spring Data JPA for repository implementations
+    // Spring Boot Starters
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-    // Spring context for @Component, @Configuration
-    implementation 'org.springframework:spring-context'
+    // API documentation (Swagger)
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 
-    // Spring Web for UriComponentsBuilder (PlatformShortcutBuilder)
-    implementation 'org.springframework:spring-web'
-
-    // Spring Boot for ConfigurationProperties
-    implementation 'org.springframework.boot:spring-boot'
+    // Monitoring & Logging
+    implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
 
     // QueryDSL for dynamic queries
     implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
@@ -20,8 +21,8 @@ dependencies {
     // MySQL driver
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    // External integrations
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2'  // AWS CloudWatch
+    // Discord
+    implementation 'net.dv8tion:JDA:5.6.1'  // Discord
 
     // TSID (for JPA converters)
     implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"

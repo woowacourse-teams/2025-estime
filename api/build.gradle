@@ -13,8 +13,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    // Test에서 필요한 의존성
     testImplementation 'org.springframework:spring-tx'
     testImplementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
 }
