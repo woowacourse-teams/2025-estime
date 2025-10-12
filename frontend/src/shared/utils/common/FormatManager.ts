@@ -15,6 +15,19 @@ export const FormatManager = {
   },
 
   /**
+   * Date 객체를 'YYYY년 MM월 DD일' 포맷의 문자열로 변환합니다.
+   * @param date - 변환할 날짜 객체
+   * @returns 'YYYY년 MM월 DD일' 형식의 문자열
+   */
+  formatKoreanDate(date: string): string {
+    const newDate = new Date(date);
+    const yyyy = newDate.getFullYear();
+    const mm = newDate.getMonth() + 1;
+    const dd = newDate.getDate();
+    return `${yyyy}년 ${mm}월 ${dd}일`;
+  },
+
+  /**
    * 'HH:mm' 형식의 문자열을 [HH, mm] 형태로 파싱합니다.
    * @param timeStr - 'HH:mm' 형식의 문자열
    * @returns [HH, mm] 숫자 배열
