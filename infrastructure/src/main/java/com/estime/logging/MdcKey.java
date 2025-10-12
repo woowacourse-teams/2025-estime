@@ -1,4 +1,4 @@
-package com.estime.common.logging;
+package com.estime.logging;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

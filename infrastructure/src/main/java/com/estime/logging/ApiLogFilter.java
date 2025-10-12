@@ -1,12 +1,12 @@
-package com.estime.common.logging;
+package com.estime.logging;
 
-import static com.estime.common.logging.MdcKey.CLIENT_IP;
-import static com.estime.common.logging.MdcKey.HOST;
-import static com.estime.common.logging.MdcKey.HTTP_METHOD;
-import static com.estime.common.logging.MdcKey.QUERY_STRING;
-import static com.estime.common.logging.MdcKey.REQUEST_URI;
-import static com.estime.common.logging.MdcKey.TRACE_ID;
-import static com.estime.common.logging.MdcKey.USER_AGENT;
+import static com.estime.logging.MdcKey.CLIENT_IP;
+import static com.estime.logging.MdcKey.HOST;
+import static com.estime.logging.MdcKey.HTTP_METHOD;
+import static com.estime.logging.MdcKey.QUERY_STRING;
+import static com.estime.logging.MdcKey.REQUEST_URI;
+import static com.estime.logging.MdcKey.TRACE_ID;
+import static com.estime.logging.MdcKey.USER_AGENT;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

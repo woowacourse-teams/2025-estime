@@ -1,4 +1,4 @@
-package com.estime.common.logging;
+package com.estime.logging;
 
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
