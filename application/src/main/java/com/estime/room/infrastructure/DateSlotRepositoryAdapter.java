@@ -1,7 +1,7 @@
 package com.estime.room.infrastructure;
 
-import com.estime.room.application.port.DateSlotRepository;
 import com.estime.room.slot.DateSlot;
+import com.estime.room.slot.DateSlotRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

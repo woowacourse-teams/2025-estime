@@ -1,6 +1,5 @@
-package com.estime.room.application.port;
+package com.estime.room.slot;
 
-import com.estime.room.slot.TimeSlot;
 import java.util.List;
 
 public interface TimeSlotRepository {

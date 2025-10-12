@@ -16,7 +16,7 @@ class ParticipantTest {
     @Test
     void validateName_exactMaxLength_success() {
         // given
-        ParticipantName exactLengthName = ParticipantName.from("열두글자이름입니다열두글");
+        final ParticipantName exactLengthName = ParticipantName.from("열두글자이름입니다열두글");
 
         // when & then
         assertThatCode(() -> Participant.withoutId(1L, exactLengthName))

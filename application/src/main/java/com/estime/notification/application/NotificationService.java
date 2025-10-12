@@ -1,11 +1,11 @@
 package com.estime.notification.application;
 
 import com.estime.exception.NotFoundException;
-import com.estime.platform.application.port.PlatformRepository;
 import com.estime.room.Room;
-import com.estime.room.application.port.RoomRepository;
+import com.estime.room.RoomRepository;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.estime.room.platform.Platform;
+import com.estime.room.platform.PlatformRepository;
 import com.estime.shared.DomainTerm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
