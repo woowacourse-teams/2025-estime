@@ -1,7 +1,5 @@
-package com.estime.participant.application.port;
+package com.estime.room.participant;
 
-import com.estime.room.participant.Participant;
-import com.estime.room.participant.ParticipantName;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

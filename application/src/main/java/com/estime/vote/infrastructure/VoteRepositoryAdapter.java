@@ -2,6 +2,7 @@ package com.estime.vote.infrastructure;
 
 import com.estime.room.participant.vote.QVote;
 import com.estime.room.participant.vote.Vote;
+import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.vote.application.port.VoteRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;

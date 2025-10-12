@@ -3,7 +3,7 @@ package com.estime.room.infrastructure;
 import com.estime.room.QRoom;
 import com.estime.room.Room;
 import com.estime.room.RoomSession;
-import com.estime.room.application.port.RoomRepository;
+import com.estime.room.RoomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;

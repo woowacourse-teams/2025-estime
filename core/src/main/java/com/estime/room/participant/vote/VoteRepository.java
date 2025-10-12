@@ -1,7 +1,5 @@
-package com.estime.vote.application.port;
+package com.estime.room.participant.vote;
 
-import com.estime.room.participant.vote.Vote;
-import com.estime.room.participant.vote.Votes;
 import java.util.List;
 
 public interface VoteRepository {
