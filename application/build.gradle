@@ -1,6 +1,5 @@
 dependencies {
     implementation project(':core')
-    runtimeOnly project(':infrastructure')
 
     // Spring Boot starters
     implementation 'org.springframework.boot:spring-boot-starter-web'
