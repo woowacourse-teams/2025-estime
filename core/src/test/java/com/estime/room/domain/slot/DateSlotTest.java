@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.Room;
-import com.estime.shared.exception.NullNotAllowedException;
 import com.estime.room.slot.DateSlot;
+import com.estime.shared.exception.NullNotAllowedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
