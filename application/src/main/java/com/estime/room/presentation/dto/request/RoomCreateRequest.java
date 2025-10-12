@@ -1,8 +1,8 @@
 package com.estime.room.presentation.dto.request;
 
+import com.estime.room.application.dto.input.DateSlotInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
-import com.estime.room.slot.DateSlot;
-import com.estime.room.slot.TimeSlot;
+import com.estime.room.application.dto.input.TimeSlotInput;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -30,8 +30,8 @@ public record RoomCreateRequest(
     public RoomCreateInput toInput() {
         return new RoomCreateInput(
                 title,
-                availableDateSlots.stream().map(DateSlot::from).toList(),
-                availableTimeSlots.stream().map(TimeSlot::from).toList(),
+                availableDateSlots.stream().map(DateSlotInput::new).toList(),
+                availableTimeSlots.stream().map(TimeSlotInput::new).toList(),
                 deadline
         );
     }

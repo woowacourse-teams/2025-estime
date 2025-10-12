@@ -1,9 +1,9 @@
 package com.estime.room.application.dto.output;
 
 import com.estime.room.Room;
+import com.estime.room.RoomSession;
 import com.estime.room.slot.DateSlot;
 import com.estime.room.slot.TimeSlot;
-import com.estime.room.RoomSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,11 +15,11 @@ public record RoomOutput(
         RoomSession session
 ) {
 
-    public static RoomOutput from(final Room room) {
+    public static RoomOutput of(final Room room, final List<DateSlot> dateSlots, final List<TimeSlot> timeSlots) {
         return new RoomOutput(
                 room.getTitle(),
-                room.getAvailableDateSlots().stream().toList(),
-                room.getAvailableTimeSlots().stream().toList(),
+                dateSlots,
+                timeSlots,
                 room.getDeadline(),
                 room.getSession()
         );

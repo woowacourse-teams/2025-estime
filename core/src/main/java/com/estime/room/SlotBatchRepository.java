@@ -6,5 +6,5 @@ import java.util.Collection;
 
 public interface SlotBatchRepository {
 
-    void batchInsertSlots(final Long roomId, final Collection<DateSlot> dateSlots, final Collection<TimeSlot> timeSlots);
+    void batchInsertSlots(final Collection<DateSlot> dateSlots, final Collection<TimeSlot> timeSlots);
 }

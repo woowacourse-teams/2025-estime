@@ -1,10 +1,12 @@
 package com.estime.room.slot;
 
-import com.estime.shared.DomainTerm;
 import com.estime.room.slot.exception.SlotNotDivideException;
+import com.estime.shared.DomainTerm;
 import com.estime.shared.Validator;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -42,12 +44,12 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         }
     }
 
-    public DateSlot toDateSlot() {
-        return DateSlot.from(startAt.toLocalDate());
+    public LocalDate getDate() {
+        return startAt.toLocalDate();
     }
 
-    public TimeSlot toTimeSlot() {
-        return TimeSlot.from(startAt.toLocalTime());
+    public LocalTime getTime() {
+        return startAt.toLocalTime();
     }
 
     public boolean isBefore(final LocalDateTime other) {

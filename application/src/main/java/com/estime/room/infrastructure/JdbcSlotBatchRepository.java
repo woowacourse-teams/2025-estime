@@ -20,30 +20,30 @@ public class JdbcSlotBatchRepository implements SlotBatchRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void batchInsertSlots(final Long roomId, final Collection<DateSlot> dateSlots, final Collection<TimeSlot> timeSlots) {
-        batchInsertDateSlots(roomId, dateSlots);
-        batchInsertTimeSlots(roomId, timeSlots);
+    public void batchInsertSlots(final Collection<DateSlot> dateSlots, final Collection<TimeSlot> timeSlots) {
+        batchInsertDateSlots(dateSlots);
+        batchInsertTimeSlots(timeSlots);
     }
 
-    private void batchInsertDateSlots(final Long roomId, final Collection<DateSlot> dateSlots) {
+    private void batchInsertDateSlots(final Collection<DateSlot> dateSlots) {
         jdbcTemplate.batchUpdate(
                 INSERT_DATE_SLOT_SQL,
                 dateSlots,
                 BATCH_SIZE,
                 (ps, slot) -> {
-                    ps.setLong(1, roomId);
+                    ps.setLong(1, slot.getRoom().getId());
                     ps.setObject(2, slot.getStartAt());
                 }
         );
     }
 
-    private void batchInsertTimeSlots(final Long roomId, final Collection<TimeSlot> timeSlots) {
+    private void batchInsertTimeSlots(final Collection<TimeSlot> timeSlots) {
         jdbcTemplate.batchUpdate(
                 INSERT_TIME_SLOT_SQL,
                 timeSlots,
                 BATCH_SIZE,
                 (ps, slot) -> {
-                    ps.setLong(1, roomId);
+                    ps.setLong(1, slot.getRoom().getId());
                     ps.setTime(2, Time.valueOf(slot.getStartAt()));
                 }
         );

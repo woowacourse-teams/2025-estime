@@ -6,7 +6,9 @@ import com.estime.participant.application.port.ParticipantRepository;
 import com.estime.platform.application.port.PlatformRepository;
 import com.estime.room.Room;
 import com.estime.room.RoomSession;
+import com.estime.room.SlotBatchRepository;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.application.dto.input.DateSlotInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
@@ -19,18 +21,25 @@ import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput.DateTi
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
+import com.estime.room.application.port.DateSlotRepository;
 import com.estime.room.application.port.RoomRepository;
-import com.estime.room.SlotBatchRepository;
+import com.estime.room.application.port.TimeSlotRepository;
+import com.estime.room.exception.PastNotAllowedException;
+import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.Participants;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformNotificationType;
+import com.estime.room.slot.DateSlot;
 import com.estime.room.slot.DateTimeSlot;
+import com.estime.room.slot.TimeSlot;
 import com.estime.shared.DomainTerm;
 import com.estime.vote.application.port.VoteRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -54,31 +63,57 @@ public class RoomApplicationService {
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
     private final SlotBatchRepository slotBatchRepository;
+    private final DateSlotRepository dateSlotRepository;
+    private final TimeSlotRepository timeSlotRepository;
     private final DiscordMessageSender discordMessageSender; // TODO EVENT
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        final Room room = Room.withoutSlots(input.title(), input.deadline());
+        final Room room = Room.withoutId(input.title(), input.deadline());
         final Room savedRoom = roomRepository.save(room);
 
+        validateAvailableDateSlots(input.availableDateSlots());
+
+        final List<DateSlot> dateSlots = input.availableDateSlots().stream()
+                .map(slot -> DateSlot.of(savedRoom, slot.startAt()))
+                .toList();
+        final List<TimeSlot> timeSlots = input.availableTimeSlots().stream()
+                .map(slot -> TimeSlot.of(savedRoom, slot.startAt()))
+                .toList();
+
         slotBatchRepository.batchInsertSlots(
-                savedRoom.getId(),
-                input.availableDateSlots(),
-                input.availableTimeSlots()
+                dateSlots,
+                timeSlots
         );
         return RoomCreateOutput.from(savedRoom);
+    }
+
+    private void validateAvailableDateSlots(final List<DateSlotInput> availableDateSlots) {
+        for (final DateSlotInput availableDateSlot : availableDateSlots) {
+            if (availableDateSlot.startAt().isBefore(LocalDate.now())) {
+                throw new PastNotAllowedException(DomainTerm.DATE_SLOT, availableDateSlot.startAt());
+            }
+        }
     }
 
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
         final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
-        final Room room = Room.withoutSlots(roomCreateInput.title(), roomCreateInput.deadline());
+        final Room room = Room.withoutId(roomCreateInput.title(), roomCreateInput.deadline());
         final Room savedRoom = roomRepository.save(room);
 
+        validateAvailableDateSlots(input.availableDateSlots());
+
+        final List<DateSlot> dateSlots = input.availableDateSlots().stream()
+                .map(slot -> DateSlot.of(savedRoom, slot.startAt()))
+                .toList();
+        final List<TimeSlot> timeSlots = input.availableTimeSlots().stream()
+                .map(slot -> TimeSlot.of(savedRoom, slot.startAt()))
+                .toList();
+
         slotBatchRepository.batchInsertSlots(
-                savedRoom.getId(),
-                input.availableDateSlots(),
-                input.availableTimeSlots()
+                dateSlots,
+                timeSlots
         );
 
         final Platform platform = platformRepository.save(
@@ -102,7 +137,9 @@ public class RoomApplicationService {
     @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final RoomSessionInput input) {
         final Room room = obtainRoomBySession(input.session());
-        return RoomOutput.from(room);
+        final List<DateSlot> dateSlots = dateSlotRepository.findByRoomId(room.getId());
+        final List<TimeSlot> timeSlots = timeSlotRepository.findByRoomId(room.getId());
+        return RoomOutput.of(room, dateSlots, timeSlots);
     }
 
     @Transactional(readOnly = true)
@@ -151,7 +188,7 @@ public class RoomApplicationService {
         final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.name());
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
-        room.ensureAvailableDateTimeSlots(input.dateTimeSlots());
+        ensureAvailableDateTimeSlots(room.getId(), room.getSession(), input.dateTimeSlots());
 
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
@@ -172,6 +209,23 @@ public class RoomApplicationService {
         });
 
         return VotesOutput.from(input.name(), updatedVotes);
+    }
+
+    private void ensureAvailableDateTimeSlots(final Long roomId, final RoomSession session,
+                                              final List<DateTimeSlot> dateTimeSlots) {
+        final Set<LocalDate> availableDates = dateSlotRepository.findByRoomId(roomId).stream()
+                .map(DateSlot::getStartAt)
+                .collect(Collectors.toSet());
+        final Set<LocalTime> availableTimes = timeSlotRepository.findByRoomId(roomId).stream()
+                .map(TimeSlot::getStartAt)
+                .collect(Collectors.toSet());
+
+        for (final DateTimeSlot dateTimeSlot : dateTimeSlots) {
+            if (!availableDates.contains(dateTimeSlot.getStartAt().toLocalDate()) || !availableTimes.contains(
+                    dateTimeSlot.getStartAt().toLocalTime())) {
+                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, dateTimeSlot);
+            }
+        }
     }
 
     @Transactional
