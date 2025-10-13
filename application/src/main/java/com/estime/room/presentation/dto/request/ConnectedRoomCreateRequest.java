@@ -1,8 +1,8 @@
 package com.estime.room.presentation.dto.request;
 
-import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
-import com.estime.room.application.dto.input.DateSlotInput;
-import com.estime.room.application.dto.input.TimeSlotInput;
+import com.estime.room.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.dto.input.DateSlotInput;
+import com.estime.room.dto.input.TimeSlotInput;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformType;
 import com.fasterxml.jackson.annotation.JsonFormat;

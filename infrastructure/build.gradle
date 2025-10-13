@@ -1,0 +1,37 @@
+dependencies {
+    implementation project(':core')
+    compileOnly project(':application')
+
+    // Spring Data JPA for repository implementations
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring context for @Component, @Configuration
+    implementation 'org.springframework:spring-context'
+
+    // Spring Web for UriComponentsBuilder (PlatformShortcutBuilder)
+    implementation 'org.springframework:spring-web'
+
+    // Spring Boot for ConfigurationProperties
+    implementation 'org.springframework.boot:spring-boot'
+
+    // QueryDSL for dynamic queries
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+
+    // MySQL driver
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // External integrations
+    implementation 'io.micrometer:micrometer-registry-cloudwatch2'  // AWS CloudWatch
+
+    // TSID (for JPA converters)
+    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
+
+    // Configuration processor for @ConfigurationProperties
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
