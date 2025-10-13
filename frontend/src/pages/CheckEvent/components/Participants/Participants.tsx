@@ -25,8 +25,8 @@ const Participants = () => {
       <S.Button onClick={handleParticipantClick}>
         <Flex justify={'flex-end'} align="center" gap="var(--gap-2)">
           <IPersonList color={theme.colors.primary} />
-          <Text variant="h4" color="primary">
-            {roomStatistics.participantCount}명 참여중
+          <Text style={{ fontSize: '1.25rem' }} color="primary">
+            {roomStatistics.participantCount}
           </Text>
         </Flex>
       </S.Button>

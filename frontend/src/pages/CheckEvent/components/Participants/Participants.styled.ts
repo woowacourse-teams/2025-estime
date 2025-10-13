@@ -19,21 +19,19 @@ export const Container = styled.div<{ show: boolean }>`
   position: absolute;
   display: flex;
   width: 370px;
-  box-sizing: border-box;
   flex-direction: column;
   border-radius: var(--radius-4);
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.primary};
-  right: 125px;
-  transform: translateY(-96%);
+  right: 70px;
+  bottom: 1px;
 
   &::before {
     content: '';
     position: absolute;
 
-    right: 0;
-    bottom: 0;
-    transform: translateX(13px) translateY(-6px);
+    right: -13px;
+    bottom: 6px;
     border-left: 13px solid ${({ theme }) => theme.colors.primary};
     border-top: 13px solid transparent;
     border-bottom: 13px solid transparent;
@@ -43,9 +41,8 @@ export const Container = styled.div<{ show: boolean }>`
     content: '';
     position: absolute;
 
-    right: 0;
-    bottom: 0;
-    transform: translateX(12px) translateY(-7px);
+    right: -12px;
+    bottom: 7px;
     border-left: 12px solid ${({ theme }) => theme.colors.background};
     border-top: 12px solid transparent;
     border-bottom: 12px solid transparent;
@@ -58,13 +55,11 @@ export const Container = styled.div<{ show: boolean }>`
   @media (max-width: 640px) {
     width: 180px;
     right: 0px;
-    transform: translateY(-140%);
+    bottom: 45px;
 
     &::before {
       right: 30px;
-      bottom: auto;
-      top: 100%;
-      transform: translateY(0);
+      bottom: -13px;
 
       border-left: 13px solid transparent;
       border-right: 13px solid transparent;
@@ -74,9 +69,7 @@ export const Container = styled.div<{ show: boolean }>`
 
     &::after {
       right: 31px;
-      bottom: auto;
-      top: 100%;
-      transform: translateY(-1px);
+      bottom: -12px;
 
       border-left: 12px solid transparent;
       border-right: 12px solid transparent;
@@ -110,7 +103,6 @@ export const Body = styled.div`
   height: calc(1.5rem * 2 + var(--padding-5));
   display: flex;
   align-items: center;
-  box-sizing: border-box;
 `;
 
 export const NameList = styled.div`
