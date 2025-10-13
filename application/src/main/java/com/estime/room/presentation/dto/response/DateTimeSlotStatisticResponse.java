@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.response;
 
-import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
+import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.participant.ParticipantName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;

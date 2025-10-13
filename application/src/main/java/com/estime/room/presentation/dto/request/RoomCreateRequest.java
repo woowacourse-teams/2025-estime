@@ -1,8 +1,8 @@
 package com.estime.room.presentation.dto.request;
 
-import com.estime.room.application.dto.input.DateSlotInput;
-import com.estime.room.application.dto.input.RoomCreateInput;
-import com.estime.room.application.dto.input.TimeSlotInput;
+import com.estime.room.dto.input.DateSlotInput;
+import com.estime.room.dto.input.RoomCreateInput;
+import com.estime.room.dto.input.TimeSlotInput;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;

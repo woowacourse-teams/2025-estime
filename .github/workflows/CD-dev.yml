@@ -89,9 +89,9 @@ jobs:
     steps:
       - name: Move .env.dev to home directory
         run: |
-          if [ -f ./application/.env.dev ]; then
+          if [ -f ./.env.dev ]; then
             echo "Found .env.dev, moving it to home directory for backup."
-            mv ./application/.env.dev ~/.env.dev.backup
+            mv ./.env.dev ~/.env.dev.backup
           else
             echo "No .env.dev file found to back up."
           fi
@@ -103,7 +103,7 @@ jobs:
         run: |
           if [ -f ~/.env.dev.backup ]; then
             echo "Restoring .env.dev.before from backup."
-            mv ~/.env.dev.backup ./application/.env.dev.before
+            mv ~/.env.dev.backup ./.env.dev.before
           else
             echo "No backup file found to restore."
           fi
@@ -113,7 +113,6 @@ jobs:
           printf '%s\n' "IMAGE_NAME=${{ secrets.DEV_IMAGE_NAME }}" > .env
 
       - name: Create env file for env.dev file
-        working-directory: ./application
         run: |
           printf '%s\n' "${{ secrets.ENV_DEV }}" > .env.dev
 
