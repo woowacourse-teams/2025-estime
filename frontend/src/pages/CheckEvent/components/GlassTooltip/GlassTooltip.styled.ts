@@ -42,6 +42,7 @@ export const Highlight = styled.div<{ opacity: number }>`
 export const ParticipantList = styled.div`
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: ${({ theme }) => (theme.isMobile ? '6px' : '10px')};
   margin-top: 4px;
   overflow-y: auto;
@@ -63,7 +64,7 @@ export const ParticipantList = styled.div`
 `;
 
 export const Participant = styled.span<{ active: boolean }>`
-  padding: ${({ theme }) => (theme.isMobile ? '3px 6px' : '4px 8px')};
+  padding: ${({ theme }) => (theme.isMobile ? '3px 6px' : '8px 10px')};
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -71,7 +72,8 @@ export const Participant = styled.span<{ active: boolean }>`
   background: ${({ active }) => (active ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)')};
   color: ${({ active }) => (active ? 'rgba(0,0,0,0.95)' : 'rgba(0,0,0,0.4)')};
   text-decoration: ${({ active }) => (active ? 'none' : 'line-through')};
-  border: 2px solid ${({ active, theme }) => (active ? theme.colors.orange30 : 'none')};
+  border: 2px solid
+    ${({ active, theme }) => (active ? theme.colors.orange30 : 'rgba(255,255,255,0.15)')};
 
   text-decoration-thickness: 2px;
   word-break: keep-all;
