@@ -1,35 +1,46 @@
 package com.estime.room.slot;
 
-import com.estime.shared.DomainTerm;
 import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
+import com.estime.shared.BaseEntity;
+import com.estime.shared.DomainTerm;
 import com.estime.shared.Validator;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.time.Duration;
 import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Entity
+@Table(name = "available_time_slot")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
-@EqualsAndHashCode
-public class TimeSlot implements Comparable<TimeSlot> {
+public class AvailableTimeSlot extends BaseEntity implements Comparable<AvailableTimeSlot> {
 
     public static final Duration UNIT = Duration.ofMinutes(30);
 
-    private final LocalTime startAt;
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;
 
-    public static TimeSlot from(final LocalTime startAt) {
-        validateNull(startAt);
+    @Column(name = "start_at", nullable = false)
+    private LocalTime startAt;
+
+    public static AvailableTimeSlot of(final Long roomId, final LocalTime startAt) {
+        validateNull(roomId, startAt);
         validateStartAt(startAt);
-        return new TimeSlot(startAt);
+        return new AvailableTimeSlot(roomId, startAt);
     }
 
-    private static void validateNull(final LocalTime startAt) {
+    private static void validateNull(final Long roomId, final LocalTime startAt) {
         Validator.builder()
+                .add("roomId", roomId)
                 .add("startAt", startAt)
                 .validateNull();
     }
@@ -46,7 +57,7 @@ public class TimeSlot implements Comparable<TimeSlot> {
     }
 
     @Override
-    public int compareTo(final TimeSlot other) {
+    public int compareTo(final AvailableTimeSlot other) {
         return this.startAt.compareTo(other.startAt);
     }
 }

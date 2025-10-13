@@ -6,13 +6,16 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
-import com.estime.shared.DomainTerm;
 import com.estime.exception.NotFoundException;
-import com.estime.room.exception.UnavailableSlotException;
+import com.estime.room.Room;
+import com.estime.room.RoomRepository;
+import com.estime.room.RoomSession;
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.application.dto.input.DateSlotInput;
 import com.estime.room.application.dto.input.ParticipantCreateInput;
 import com.estime.room.application.dto.input.RoomCreateInput;
 import com.estime.room.application.dto.input.RoomSessionInput;
+import com.estime.room.application.dto.input.TimeSlotInput;
 import com.estime.room.application.dto.input.VotesFindInput;
 import com.estime.room.application.dto.input.VotesOutput;
 import com.estime.room.application.dto.input.VotesUpdateInput;
@@ -21,22 +24,23 @@ import com.estime.room.application.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.application.dto.output.ParticipantCheckOutput;
 import com.estime.room.application.dto.output.RoomCreateOutput;
 import com.estime.room.application.dto.output.RoomOutput;
-import com.estime.room.Room;
-import com.estime.room.RoomRepository;
+import com.estime.room.exception.UnavailableSlotException;
+import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
 import com.estime.room.participant.Participant;
-import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.ParticipantName;
+import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
-import com.estime.room.slot.DateSlot;
+import com.estime.room.slot.AvailableTimeSlot;
+import com.estime.room.slot.AvailableDateSlot;
+import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.DateTimeSlot;
-import com.estime.room.slot.TimeSlot;
-import com.estime.room.RoomSession;
-import com.estime.room.infrastructure.platform.discord.DiscordMessageSender;
+import com.estime.room.slot.AvailableTimeSlotRepository;
+import com.estime.shared.DomainTerm;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
@@ -64,6 +68,12 @@ class RoomApplicationServiceTest {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private AvailableDateSlotRepository availableDateSlotRepository;
+
+    @Autowired
+    private AvailableTimeSlotRepository availableTimeSlotRepository;
 
     @Autowired
     private ParticipantRepository participantRepository;
@@ -97,17 +107,17 @@ class RoomApplicationServiceTest {
 
     @BeforeEach
     void setUp() {
-        room = roomRepository.save(
-                Room.withoutId(
-                        "test",
-                        List.of(DateSlot.from(LocalDate.now().plusDays(1))),
-                        List.of(TimeSlot.from(LocalTime.of(10, 0)),
-                                TimeSlot.from(LocalTime.of(10, 30)),
-                                TimeSlot.from(LocalTime.of(11, 0)),
-                                TimeSlot.from(LocalTime.of(11, 30))
-                        ),
-                        LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
-                ));
+        Room tempRoom = Room.withoutId(
+                "test",
+                LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
+        );
+        room = roomRepository.save(tempRoom);
+
+        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 30)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(11, 0)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(11, 30)));
 
         participant1 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user1")));
         participant2 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user2")));
@@ -119,8 +129,8 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(DateSlot.from(LocalDate.now().plusDays(1))),
-                List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                List.of(new DateSlotInput(LocalDate.now().plusDays(1))),
+                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
                 LocalDateTime.now().plusYears(1)
         );
 
@@ -143,10 +153,8 @@ class RoomApplicationServiceTest {
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(output.title())
                     .isEqualTo(room.getTitle());
-            softAssertions.assertThat(output.availableDateSlots())
-                    .containsExactlyInAnyOrderElementsOf(room.getAvailableDateSlots());
-            softAssertions.assertThat(output.availableTimeSlots())
-                    .containsExactlyInAnyOrderElementsOf(room.getAvailableTimeSlots());
+            softAssertions.assertThat(output.availableDateSlots()).hasSize(1);
+            softAssertions.assertThat(output.availableTimeSlots()).hasSize(4);
             softAssertions.assertThat(output.deadline())
                     .isEqualTo(room.getDeadline());
             softAssertions.assertThat(output.session())
@@ -370,8 +378,8 @@ class RoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                List.of(DateSlot.from(LocalDate.now().plusDays(1))),
-                List.of(TimeSlot.from(LocalTime.of(7, 0)), TimeSlot.from(LocalTime.of(20, 0))),
+                List.of(new DateSlotInput(LocalDate.now().plusDays(1))),
+                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
                 LocalDateTime.now().plusYears(1),
                 PlatformType.DISCORD,
                 "testChannelId",

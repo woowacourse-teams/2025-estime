@@ -1,10 +1,10 @@
 package com.estime.room.presentation.dto.request;
 
 import com.estime.room.application.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.application.dto.input.DateSlotInput;
+import com.estime.room.application.dto.input.TimeSlotInput;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformType;
-import com.estime.room.slot.DateSlot;
-import com.estime.room.slot.TimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -39,8 +39,8 @@ public record ConnectedRoomCreateRequest(
     public ConnectedRoomCreateInput toInput() {
         return new ConnectedRoomCreateInput(
                 title,
-                availableDateSlots.stream().map(DateSlot::from).toList(),
-                availableTimeSlots.stream().map(TimeSlot::from).toList(),
+                availableDateSlots.stream().map(DateSlotInput::new).toList(),
+                availableTimeSlots.stream().map(TimeSlotInput::new).toList(),
                 deadline,
                 PlatformType.from(platformType),
                 channelId,
