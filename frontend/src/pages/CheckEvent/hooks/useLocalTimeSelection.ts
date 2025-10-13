@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo, useEffect } from 'react';
+import { useRef, useCallback, useMemo, useEffect, useState } from 'react';
 import { useLockBodyScroll } from '@/shared/hooks/common/useLockBodyScroll';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
 
@@ -17,7 +17,7 @@ const useLocalTimeSelection = () => {
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isTouch = useRef(false);
+  const [isTouch, setIsTouch] = useState(false);
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const selectionModeRef = useRef<'add' | 'remove'>('add');
@@ -27,7 +27,7 @@ const useLocalTimeSelection = () => {
   const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
   const renderAnimationFrameId = useRef<number | null>(null);
 
-  useLockBodyScroll(isTouch.current);
+  useLockBodyScroll(isTouch);
 
   /** 셀 UI 클래스 갱신 */
   const updateCellClasses = () => {
@@ -68,7 +68,7 @@ const useLocalTimeSelection = () => {
 
   /** 드래그 시작 */
   const handleDragStart = useCallback((event: React.PointerEvent) => {
-    if (event.pointerType === 'touch') isTouch.current = true;
+    if (event.pointerType === 'touch') setIsTouch(true);
     cacheDragHitboxes();
 
     const bounds = containerBoundingRectRef.current;
@@ -157,7 +157,7 @@ const useLocalTimeSelection = () => {
     updateCellClasses();
     dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
-    isTouch.current = false;
+    setIsTouch(false);
   }, []);
 
   const handleDragLeave = useCallback(() => {
@@ -166,7 +166,7 @@ const useLocalTimeSelection = () => {
     commitSelection();
     dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
-    isTouch.current = false;
+    setIsTouch(false);
   }, []);
 
   const pointerHandlers = useMemo(
