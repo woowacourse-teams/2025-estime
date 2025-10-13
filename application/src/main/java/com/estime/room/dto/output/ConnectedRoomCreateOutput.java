@@ -1,7 +1,7 @@
 package com.estime.room.dto.output;
 
-import com.estime.room.platform.PlatformType;
 import com.estime.room.RoomSession;
+import com.estime.room.platform.PlatformType;
 
 public record ConnectedRoomCreateOutput(
         RoomSession session,

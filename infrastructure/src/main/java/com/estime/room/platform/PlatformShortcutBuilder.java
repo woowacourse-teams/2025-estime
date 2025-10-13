@@ -1,7 +1,6 @@
 package com.estime.room.platform;
 
 import com.estime.config.ClientOriginProperties;
-import com.estime.room.platform.PlatformType;
 import com.estime.room.RoomSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

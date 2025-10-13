@@ -1,12 +1,12 @@
 package com.estime.notification;
 
-import com.estime.shared.DomainTerm;
 import com.estime.exception.NotFoundException;
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformRepository;
+import com.estime.shared.DomainTerm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
