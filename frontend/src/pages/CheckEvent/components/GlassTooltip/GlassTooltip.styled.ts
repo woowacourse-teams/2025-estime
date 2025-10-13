@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.div<{ opacity: number }>`
-  width: ${({ theme }) => (theme.isMobile ? '90%' : '60%')};
-  min-height: ${({ theme }) => (theme.isMobile ? '90px' : '150px')};
+  width: 60%;
+  min-height: 150px;
   margin: 0 auto;
-  padding: ${({ theme }) => (theme.isMobile ? '14px 16px' : '20px 28px')};
+  padding: 20px 28px;
 
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => (theme.isMobile ? '10px' : '15px')};
+  gap: 15px;
 
   opacity: ${({ opacity }) => opacity};
   transition: opacity 0.2s ease;
@@ -21,6 +21,13 @@ export const Container = styled.div<{ opacity: number }>`
     rgba(255, 255, 255, 0.33) 106.73%
   );
   backdrop-filter: blur(20px);
+
+  @media (max-width: 768px) {
+    width: 90%;
+    min-height: 90px;
+    padding: 14px 16px;
+    gap: 10px;
+  }
 `;
 
 export const Highlight = styled.div<{ opacity: number }>`
