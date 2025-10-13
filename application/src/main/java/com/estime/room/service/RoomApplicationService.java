@@ -2,6 +2,7 @@ package com.estime.room.service;
 
 import com.estime.common.sse.application.SseService;
 import com.estime.exception.NotFoundException;
+import com.estime.port.out.RoomMessageSender;
 import com.estime.room.platform.discord.DiscordMessageSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
@@ -58,7 +59,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Slf4j
 public class RoomApplicationService {
 
-    private final SseService sseService;
+    private final RoomMessageSender roomMessageSender;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
@@ -202,7 +203,7 @@ public class RoomApplicationService {
             @Override
             public void afterCommit() {
                 try {
-                    sseService.sendMessageByRoomSession(roomSession, "vote-changed");
+                    roomMessageSender.sendMessage(roomSession, "vote-changed");
                 } catch (final Exception e) {
                     log.warn("Failed to send SSE [vote-changed] after commit. roomSession={}", roomSession, e);
                 }
