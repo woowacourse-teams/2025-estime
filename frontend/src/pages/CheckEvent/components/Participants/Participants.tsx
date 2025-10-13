@@ -6,13 +6,13 @@ import Flex from '@/shared/layout/Flex';
 import IClose from '@/assets/icons/IClose';
 import IPersonList from '@/assets/icons/IPersonList';
 import Wrapper from '@/shared/layout/Wrapper';
-import { roomStatisticsStore } from '../../stores/roomStatisticsStore';
+import { useRoomStatistics } from '../../stores/roomStatisticsStore';
 
 const Participants = () => {
   const theme = useTheme();
   const [show, setShow] = useState(true);
 
-  const roomStatistics = roomStatisticsStore.getSnapshot();
+  const roomStatistics = useRoomStatistics();
   const hasParticipants = roomStatistics.participantCount > 0;
 
   const handleToggleParticipants = () => {
