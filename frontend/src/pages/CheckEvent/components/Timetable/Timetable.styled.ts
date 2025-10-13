@@ -41,6 +41,10 @@ export const TimeLabel = styled.div`
   height: 3rem;
   transition: color 0.15s ease-in-out;
 
+  &:nth-of-type(n) {
+    border-top: 1px dashed ${({ theme }) => theme.colors.gray20};
+  }
+
   span {
     color: ${({ theme }) => theme.colors.text};
     transition: all 0.2s ease;
