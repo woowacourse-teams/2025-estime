@@ -1,3 +1,6 @@
+networks:
+  monitor_net:
+
 services:
   mysql:
     ports:
@@ -9,6 +12,8 @@ services:
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - monitor_net
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
@@ -19,12 +24,14 @@ services:
     image: grafana/alloy:v1.11.0
     container_name: alloy
     env_file:
-      - ./application/.env.local
+      - ./.env.local
     volumes:
       - ./alloy/config-local.river:/etc/alloy/config-local.river
       - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-local.river"
+    networks:
+      - monitor_net
     restart: unless-stopped
 
 volumes:

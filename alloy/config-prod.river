@@ -28,7 +28,7 @@ loki.relabel "add_api_labels" {
 
 prometheus.scrape "estime_api_metrics_blue" {
     targets = [{
-        __address__ = "host.docker.internal:8080",
+        __address__ = "estime-api-blue:8080",
         job = "estime-api-prod",
         env = "prod",
         deployment = "blue",
@@ -41,7 +41,7 @@ prometheus.scrape "estime_api_metrics_blue" {
 
 prometheus.scrape "estime_api_metrics_green" {
     targets = [{
-        __address__ = "host.docker.internal:8081",
+        __address__ = "estime-api-green:8080",
         job = "estime-api-prod",
         env = "prod",
         deployment = "green",
