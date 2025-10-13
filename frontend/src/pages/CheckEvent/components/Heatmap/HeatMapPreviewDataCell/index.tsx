@@ -9,17 +9,10 @@ interface HeatMapDataCellProps {
 
 const HeatmapPreviewDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
   const roomStatistics = useRoomStatistics();
-  const cellInfo = roomStatistics.get(`${date}T${timeText}`);
-  const isRecommended = cellInfo?.isRecommended;
+  const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
 
   const weight = cellInfo?.weight ?? 0;
-  return (
-    <S.Container
-      data-cell-id={`${date}T${timeText}`}
-      weight={weight}
-      isRecommended={isRecommended}
-    />
-  );
+  return <S.Container data-cell-id={`${date}T${timeText}`} weight={weight} />;
 };
 
 export default memo(HeatmapPreviewDataCell);
