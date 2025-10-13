@@ -1,62 +1,19 @@
 import * as S from './GlassTooltip.styled';
-// import { createPortal } from 'react-dom';
 import { useCellData } from '../../stores/CellDataStore';
 import Wrapper from '@/shared/layout/Wrapper';
 import { createPortal } from 'react-dom';
 import Flex from '@/shared/layout/Flex';
 import Text from '@/shared/components/Text';
 import { useTheme } from '@emotion/react';
+import { useRoomStatistics } from '../../stores/roomStatisticsStore';
 
-// ✅ 더미 데이터: 실제 useCellData() 대체
-// const mockData = {
-//   date: '2025년 10월 24일 (금)',
-//   startTime: '09:00',
-//   endTime: '09:30',
-//   participantNames: ['호이초이', '제프리', '마빈'], // 현재 참여자
-// };
-
-// ✅ 전체 인원 (예시)
-const allPeople = [
-  '호이초이',
-  '제프리',
-  '마빈',
-  '메이토',
-  '리버',
-  '플린트',
-  '강산',
-  '수이',
-  '레온',
-  '루나',
-  '에이든',
-  '벨라',
-  '카밀라',
-  '아이작',
-  '제이드',
-  '리안',
-  '하루',
-  '은호',
-  '소율',
-  '현우',
-  '로아',
-  '하린',
-  '도윤',
-  '채원',
-  '시온',
-  '주하',
-  '민재',
-  '루시',
-  '하람',
-  '라온',
-];
 const GlassTooltip = () => {
-  const data = useCellData();
-
-  // 여기서 전체 인원 보내주면 그거랑 가공해서 아래 삭선과 함께 보여준다.
-  //   const data = mockData; // 임시 테스트용
   const { isMobile } = useTheme();
 
+  const data = useCellData();
+  const roomStatistics = useRoomStatistics();
   const participantSet = new Set(data?.participantNames ?? []);
-  const sortedPeople = allPeople
+  const sortedPeople = roomStatistics.participants
     .map((name) => ({
       name,
       active: participantSet.has(name),
