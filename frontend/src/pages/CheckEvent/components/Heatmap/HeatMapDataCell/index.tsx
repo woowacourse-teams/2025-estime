@@ -15,6 +15,7 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
   const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const weight = cellInfo?.weight ?? 0;
+
   return (
     <S.Container
       data-cell-id={`${date}T${timeText}`}
