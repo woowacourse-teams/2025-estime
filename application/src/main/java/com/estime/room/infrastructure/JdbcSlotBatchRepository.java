@@ -31,7 +31,7 @@ public class JdbcSlotBatchRepository implements SlotBatchRepository {
                 dateSlots,
                 BATCH_SIZE,
                 (ps, slot) -> {
-                    ps.setLong(1, slot.getRoom().getId());
+                    ps.setLong(1, slot.getRoomId());
                     ps.setObject(2, slot.getStartAt());
                 }
         );
@@ -43,7 +43,7 @@ public class JdbcSlotBatchRepository implements SlotBatchRepository {
                 timeSlots,
                 BATCH_SIZE,
                 (ps, slot) -> {
-                    ps.setLong(1, slot.getRoom().getId());
+                    ps.setLong(1, slot.getRoomId());
                     ps.setTime(2, Time.valueOf(slot.getStartAt()));
                 }
         );

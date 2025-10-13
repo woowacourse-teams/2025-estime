@@ -113,11 +113,11 @@ class RoomApplicationServiceTest {
         );
         room = roomRepository.save(tempRoom);
 
-        dateSlotRepository.save(DateSlot.of(room, LocalDate.now().plusDays(1)));
-        timeSlotRepository.save(TimeSlot.of(room, LocalTime.of(10, 0)));
-        timeSlotRepository.save(TimeSlot.of(room, LocalTime.of(10, 30)));
-        timeSlotRepository.save(TimeSlot.of(room, LocalTime.of(11, 0)));
-        timeSlotRepository.save(TimeSlot.of(room, LocalTime.of(11, 30)));
+        dateSlotRepository.save(DateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
+        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(10, 0)));
+        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(10, 30)));
+        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(11, 0)));
+        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(11, 30)));
 
         participant1 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user1")));
         participant2 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user2")));

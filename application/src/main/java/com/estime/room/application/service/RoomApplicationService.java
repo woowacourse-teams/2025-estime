@@ -75,10 +75,10 @@ public class RoomApplicationService {
         validateAvailableDateSlots(input.availableDateSlots());
 
         final List<DateSlot> dateSlots = input.availableDateSlots().stream()
-                .map(slot -> DateSlot.of(savedRoom, slot.startAt()))
+                .map(slot -> DateSlot.of(savedRoom.getId(), slot.startAt()))
                 .toList();
         final List<TimeSlot> timeSlots = input.availableTimeSlots().stream()
-                .map(slot -> TimeSlot.of(savedRoom, slot.startAt()))
+                .map(slot -> TimeSlot.of(savedRoom.getId(), slot.startAt()))
                 .toList();
 
         slotBatchRepository.batchInsertSlots(
@@ -105,10 +105,10 @@ public class RoomApplicationService {
         validateAvailableDateSlots(input.availableDateSlots());
 
         final List<DateSlot> dateSlots = input.availableDateSlots().stream()
-                .map(slot -> DateSlot.of(savedRoom, slot.startAt()))
+                .map(slot -> DateSlot.of(savedRoom.getId(), slot.startAt()))
                 .toList();
         final List<TimeSlot> timeSlots = input.availableTimeSlots().stream()
-                .map(slot -> TimeSlot.of(savedRoom, slot.startAt()))
+                .map(slot -> TimeSlot.of(savedRoom.getId(), slot.startAt()))
                 .toList();
 
         slotBatchRepository.batchInsertSlots(

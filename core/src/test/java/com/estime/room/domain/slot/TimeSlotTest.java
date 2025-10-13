@@ -1,30 +1,19 @@
 package com.estime.room.domain.slot;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.room.Room;
 import com.estime.room.slot.TimeSlot;
 import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.exception.NullNotAllowedException;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class TimeSlotTest {
-
-    private Room room;
-
-    @BeforeEach
-    void setUp() {
-        room = Room.withoutId("title", LocalDateTime.now().plusDays(1));
-    }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 30})
@@ -34,10 +23,13 @@ class TimeSlotTest {
         final LocalTime time = LocalTime.of(10, minute);
 
         // when
-        final TimeSlot timeSlot = TimeSlot.of(room, time);
+        final TimeSlot timeSlot = TimeSlot.of(1L, time);
 
         // then
-        assertThat(timeSlot.getStartAt()).isEqualTo(time);
+        assertSoftly(softly -> {
+            softly.assertThat(timeSlot.getRoomId()).isEqualTo(1L);
+            softly.assertThat(timeSlot.getStartAt()).isEqualTo(time);
+        });
     }
 
     @DisplayName("of 메소드에 null을 전달하면 예외가 발생한다.")
@@ -45,11 +37,17 @@ class TimeSlotTest {
     void of_withNull() {
         // given
         final LocalTime nullTime = null;
+        final Long nullRoomId = null;
 
         // when & then
-        assertThatThrownBy(() -> TimeSlot.of(room, nullTime))
-                .isInstanceOf(NullNotAllowedException.class)
-                .hasMessageContaining("cannot be null");
+        assertSoftly(softly -> {
+            softly.assertThatThrownBy(() -> TimeSlot.of(1L, nullTime))
+                    .isInstanceOf(NullNotAllowedException.class)
+                    .hasMessageContaining("cannot be null");
+            softly.assertThatThrownBy(() -> TimeSlot.of(nullRoomId, LocalTime.of(10, 0)))
+                    .isInstanceOf(NullNotAllowedException.class)
+                    .hasMessageContaining("cannot be null");
+        });
     }
 
     @DisplayName("초 또는 나노초가 0이 아닌 시간으로 TimeSlot을 생성하면 예외가 발생한다.")
@@ -59,7 +57,7 @@ class TimeSlotTest {
         final LocalTime invalidTime = LocalTime.of(10, 0, 1);
 
         // when & then
-        assertThatThrownBy(() -> TimeSlot.of(room, invalidTime))
+        assertThatThrownBy(() -> TimeSlot.of(1L, invalidTime))
                 .isInstanceOf(InvalidTimeDetailException.class)
                 .hasMessageContaining("seconds and nanoseconds must be 0 for");
     }
@@ -71,7 +69,7 @@ class TimeSlotTest {
         final LocalTime invalidTime = LocalTime.of(10, 15);
 
         // when & then
-        assertThatThrownBy(() -> TimeSlot.of(room, invalidTime))
+        assertThatThrownBy(() -> TimeSlot.of(1L, invalidTime))
                 .isInstanceOf(SlotNotDivideException.class)
                 .hasMessageContaining("must be an interval of 30 minutes");
     }
@@ -80,8 +78,8 @@ class TimeSlotTest {
     @Test
     void compareTo() {
         // given
-        final TimeSlot ten = TimeSlot.of(room, LocalTime.of(10, 0));
-        final TimeSlot tenThirty = TimeSlot.of(room, LocalTime.of(10, 30));
+        final TimeSlot ten = TimeSlot.of(1L, LocalTime.of(10, 0));
+        final TimeSlot tenThirty = TimeSlot.of(1L, LocalTime.of(10, 30));
 
         // when & then
         assertSoftly(softly -> {
