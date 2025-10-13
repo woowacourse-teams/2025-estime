@@ -37,21 +37,6 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', { modules: false }],
-              '@babel/preset-typescript',
-              ['@babel/preset-react', { runtime: 'automatic' }],
-            ],
-            plugins: ['@emotion'],
-          },
-        },
-      },
-      {
         test: /\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
