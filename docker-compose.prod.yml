@@ -1,6 +1,9 @@
+networks:
+  monitor_net:
+
 services:
-  api:
-    container_name: estime-api
+  api-blue:
+    container_name: estime-api-blue
     image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
     env_file:
       - ./.env.prod
@@ -10,17 +13,37 @@ services:
       SPRING_PROFILES_ACTIVE: prod
     volumes:
       - /app/logs:/app/logs
+    networks:
+      - monitor_net
+    restart: unless-stopped
+
+  api-green:
+    container_name: estime-api-green
+    image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
+    env_file:
+      - ./.env.prod
+    ports:
+      - "127.0.0.1:8081:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    volumes:
+      - /app/logs:/app/logs
+    networks:
+      - monitor_net
+    restart: unless-stopped
 
   alloy:
     image: grafana/alloy:v1.11.0
     container_name: alloy
     env_file:
-      - ./application/.env.prod
+      - ./.env.prod
     volumes:
       - ./alloy/config-prod.river:/etc/alloy/config-prod.river
       - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-prod.river"
+    networks:
+      - monitor_net
     restart: unless-stopped
 
 volumes:
