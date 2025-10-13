@@ -1,6 +1,5 @@
 package com.estime.room.platform.discord;
 
-import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.RoomSession;
 import com.estime.room.platform.PlatformMessage;
 import com.estime.room.platform.PlatformShortcutBuilder;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class DiscordMessageSender implements PlatformMessageSender {
+public class DiscordMessageSender {
 
     private final JDA jda;
     private final DiscordMessageBuilder discordMessageBuilder;
@@ -30,7 +29,6 @@ public class DiscordMessageSender implements PlatformMessageSender {
         channel.sendMessage(message).queue();
     }
 
-    @Override
     public void sendConnectedRoomCreatedMessage(
             final String channelId,
             final RoomSession session,
@@ -51,7 +49,6 @@ public class DiscordMessageSender implements PlatformMessageSender {
         sendMessage(channel, message);
     }
 
-    @Override
     public void sendReminderMessage(
             final String channelId,
             final RoomSession session,
@@ -71,7 +68,6 @@ public class DiscordMessageSender implements PlatformMessageSender {
         sendMessage(channel, message);
     }
 
-    @Override
     public void sendDeadlineAlertMessage(
             final String channelId,
             final RoomSession session,

@@ -21,7 +21,6 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     // External integrations
-    implementation 'net.dv8tion:JDA:5.6.1'  // Discord
     implementation 'io.micrometer:micrometer-registry-cloudwatch2'  // AWS CloudWatch
 
     // TSID (for JPA converters)
