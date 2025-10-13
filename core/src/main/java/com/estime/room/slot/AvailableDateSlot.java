@@ -18,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
-public class DateSlot extends BaseEntity implements Comparable<DateSlot> {
+public class AvailableDateSlot extends BaseEntity implements Comparable<AvailableDateSlot> {
 
     @Column(name = "room_id", nullable = false)
     private Long roomId;
@@ -26,9 +26,9 @@ public class DateSlot extends BaseEntity implements Comparable<DateSlot> {
     @Column(name = "start_at", nullable = false)
     private LocalDate startAt;
 
-    public static DateSlot of(final Long roomId, final LocalDate startAt) {
+    public static AvailableDateSlot of(final Long roomId, final LocalDate startAt) {
         validateNull(roomId, startAt);
-        return new DateSlot(roomId, startAt);
+        return new AvailableDateSlot(roomId, startAt);
     }
 
     private static void validateNull(final Long roomId, final LocalDate startAt) {
@@ -39,7 +39,7 @@ public class DateSlot extends BaseEntity implements Comparable<DateSlot> {
     }
 
     @Override
-    public int compareTo(final DateSlot other) {
+    public int compareTo(final AvailableDateSlot other) {
         return this.startAt.compareTo(other.startAt);
     }
 }

@@ -1,10 +1,11 @@
 package com.estime.room;
 
-import com.estime.room.slot.DateSlot;
-import com.estime.room.slot.TimeSlot;
+import com.estime.room.slot.AvailableDateSlot;
+import com.estime.room.slot.AvailableTimeSlot;
 import java.util.Collection;
 
 public interface SlotBatchRepository {
 
-    void batchInsertSlots(final Collection<DateSlot> dateSlots, final Collection<TimeSlot> timeSlots);
+    void batchInsertSlots(final Collection<AvailableDateSlot> availableDateSlots,
+                          final Collection<AvailableTimeSlot> availableTimeSlots);
 }

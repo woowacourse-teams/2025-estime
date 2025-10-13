@@ -28,10 +28,6 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         return new DateTimeSlot(startAt);
     }
 
-    public static DateTimeSlot of(final DateSlot dateSlot, final TimeSlot timeSlot) {
-        return from(LocalDateTime.of(dateSlot.getStartAt(), timeSlot.getStartAt()));
-    }
-
     private static void validateNull(final LocalDateTime startAt) {
         Validator.builder()
                 .add("startAt", startAt)

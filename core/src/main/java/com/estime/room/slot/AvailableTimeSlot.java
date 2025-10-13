@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
-public class TimeSlot extends BaseEntity implements Comparable<TimeSlot> {
+public class AvailableTimeSlot extends BaseEntity implements Comparable<AvailableTimeSlot> {
 
     public static final Duration UNIT = Duration.ofMinutes(30);
 
@@ -32,10 +32,10 @@ public class TimeSlot extends BaseEntity implements Comparable<TimeSlot> {
     @Column(name = "start_at", nullable = false)
     private LocalTime startAt;
 
-    public static TimeSlot of(final Long roomId, final LocalTime startAt) {
+    public static AvailableTimeSlot of(final Long roomId, final LocalTime startAt) {
         validateNull(roomId, startAt);
         validateStartAt(startAt);
-        return new TimeSlot(roomId, startAt);
+        return new AvailableTimeSlot(roomId, startAt);
     }
 
     private static void validateNull(final Long roomId, final LocalTime startAt) {
@@ -57,7 +57,7 @@ public class TimeSlot extends BaseEntity implements Comparable<TimeSlot> {
     }
 
     @Override
-    public int compareTo(final TimeSlot other) {
+    public int compareTo(final AvailableTimeSlot other) {
         return this.startAt.compareTo(other.startAt);
     }
 }

@@ -1,8 +1,8 @@
 package com.estime.room.infrastructure;
 
 import com.estime.room.SlotBatchRepository;
-import com.estime.room.slot.DateSlot;
-import com.estime.room.slot.TimeSlot;
+import com.estime.room.slot.AvailableDateSlot;
+import com.estime.room.slot.AvailableTimeSlot;
 import java.sql.Time;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -14,21 +14,22 @@ import org.springframework.stereotype.Repository;
 public class JdbcSlotBatchRepository implements SlotBatchRepository {
 
     private static final int BATCH_SIZE = 50;
-    private static final String INSERT_DATE_SLOT_SQL = "INSERT INTO room_available_date_slot (room_id, start_at) VALUES (?, ?)";
-    private static final String INSERT_TIME_SLOT_SQL = "INSERT INTO room_available_time_slot (room_id, start_at) VALUES (?, ?)";
+    private static final String INSERT_DATE_SLOT_SQL = "INSERT INTO available_date_slot (room_id, start_at) VALUES (?, ?)";
+    private static final String INSERT_TIME_SLOT_SQL = "INSERT INTO available_time_slot (room_id, start_at) VALUES (?, ?)";
 
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void batchInsertSlots(final Collection<DateSlot> dateSlots, final Collection<TimeSlot> timeSlots) {
-        batchInsertDateSlots(dateSlots);
-        batchInsertTimeSlots(timeSlots);
+    public void batchInsertSlots(final Collection<AvailableDateSlot> availableDateSlots,
+                                 final Collection<AvailableTimeSlot> availableTimeSlots) {
+        batchInsertDateSlots(availableDateSlots);
+        batchInsertTimeSlots(availableTimeSlots);
     }
 
-    private void batchInsertDateSlots(final Collection<DateSlot> dateSlots) {
+    private void batchInsertDateSlots(final Collection<AvailableDateSlot> availableDateSlots) {
         jdbcTemplate.batchUpdate(
                 INSERT_DATE_SLOT_SQL,
-                dateSlots,
+                availableDateSlots,
                 BATCH_SIZE,
                 (ps, slot) -> {
                     ps.setLong(1, slot.getRoomId());
@@ -37,10 +38,10 @@ public class JdbcSlotBatchRepository implements SlotBatchRepository {
         );
     }
 
-    private void batchInsertTimeSlots(final Collection<TimeSlot> timeSlots) {
+    private void batchInsertTimeSlots(final Collection<AvailableTimeSlot> availableTimeSlots) {
         jdbcTemplate.batchUpdate(
                 INSERT_TIME_SLOT_SQL,
-                timeSlots,
+                availableTimeSlots,
                 BATCH_SIZE,
                 (ps, slot) -> {
                     ps.setLong(1, slot.getRoomId());

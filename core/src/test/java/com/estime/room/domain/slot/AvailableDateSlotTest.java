@@ -2,13 +2,13 @@ package com.estime.room.domain.slot;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.room.slot.DateSlot;
+import com.estime.room.slot.AvailableDateSlot;
 import com.estime.shared.exception.NullNotAllowedException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DateSlotTest {
+class AvailableDateSlotTest {
 
     @DisplayName("정적 팩토리 메소드 of으로 DateSlot을 생성한다.")
     @Test
@@ -17,12 +17,12 @@ class DateSlotTest {
         final LocalDate now = LocalDate.now();
 
         // when
-        final DateSlot dateSlot = DateSlot.of(1L, now);
+        final AvailableDateSlot availableDateSlot = AvailableDateSlot.of(1L, now);
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(dateSlot.getRoomId()).isEqualTo(1L);
-            softly.assertThat(dateSlot.getStartAt()).isEqualTo(now);
+            softly.assertThat(availableDateSlot.getRoomId()).isEqualTo(1L);
+            softly.assertThat(availableDateSlot.getStartAt()).isEqualTo(now);
         });
     }
 
@@ -35,10 +35,10 @@ class DateSlotTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThatThrownBy(() -> DateSlot.of(1L, nullDate))
+            softly.assertThatThrownBy(() -> AvailableDateSlot.of(1L, nullDate))
                     .isInstanceOf(NullNotAllowedException.class)
                     .hasMessageContaining("cannot be null");
-            softly.assertThatThrownBy(() -> DateSlot.of(nullRoomId, LocalDate.now()))
+            softly.assertThatThrownBy(() -> AvailableDateSlot.of(nullRoomId, LocalDate.now()))
                     .isInstanceOf(NullNotAllowedException.class)
                     .hasMessageContaining("cannot be null");
         });
@@ -48,8 +48,8 @@ class DateSlotTest {
     @Test
     void compareTo() {
         // given
-        final DateSlot today = DateSlot.of(1L, LocalDate.now());
-        final DateSlot tomorrow = DateSlot.of(1L, LocalDate.now().plusDays(1));
+        final AvailableDateSlot today = AvailableDateSlot.of(1L, LocalDate.now());
+        final AvailableDateSlot tomorrow = AvailableDateSlot.of(1L, LocalDate.now().plusDays(1));
 
         // when & then
         assertSoftly(softly -> {

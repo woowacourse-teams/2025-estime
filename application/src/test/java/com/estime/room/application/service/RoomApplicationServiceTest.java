@@ -35,11 +35,11 @@ import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
-import com.estime.room.slot.DateSlot;
-import com.estime.room.slot.DateSlotRepository;
+import com.estime.room.slot.AvailableTimeSlot;
+import com.estime.room.slot.AvailableDateSlot;
+import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.DateTimeSlot;
-import com.estime.room.slot.TimeSlot;
-import com.estime.room.slot.TimeSlotRepository;
+import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.shared.DomainTerm;
 import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
@@ -70,10 +70,10 @@ class RoomApplicationServiceTest {
     private RoomRepository roomRepository;
 
     @Autowired
-    private DateSlotRepository dateSlotRepository;
+    private AvailableDateSlotRepository availableDateSlotRepository;
 
     @Autowired
-    private TimeSlotRepository timeSlotRepository;
+    private AvailableTimeSlotRepository availableTimeSlotRepository;
 
     @Autowired
     private ParticipantRepository participantRepository;
@@ -113,11 +113,11 @@ class RoomApplicationServiceTest {
         );
         room = roomRepository.save(tempRoom);
 
-        dateSlotRepository.save(DateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
-        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(10, 0)));
-        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(10, 30)));
-        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(11, 0)));
-        timeSlotRepository.save(TimeSlot.of(room.getId(), LocalTime.of(11, 30)));
+        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 30)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(11, 0)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(11, 30)));
 
         participant1 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user1")));
         participant2 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user2")));
