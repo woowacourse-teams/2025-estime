@@ -17,10 +17,10 @@ export const Container = styled.div<{ opacity: number }>`
   border: 2px solid rgba(255, 255, 255, 0.7);
   background: linear-gradient(
     359deg,
-    rgba(168, 126, 255, 0.17) 106.72%,
+    rgba(255, 255, 255, 0.33) 106.72%,
     rgba(255, 255, 255, 0.33) 106.73%
   );
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
 `;
 
 export const Highlight = styled.div<{ opacity: number }>`
@@ -64,6 +64,8 @@ export const Participant = styled.span<{ active: boolean }>`
   background: ${({ active }) => (active ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)')};
   color: ${({ active }) => (active ? 'rgba(0,0,0,0.95)' : 'rgba(0,0,0,0.4)')};
   text-decoration: ${({ active }) => (active ? 'none' : 'line-through')};
+  border: 2px solid ${({ active, theme }) => (active ? theme.colors.orange30 : 'none')};
+
   text-decoration-thickness: 2px;
   word-break: keep-all;
 
