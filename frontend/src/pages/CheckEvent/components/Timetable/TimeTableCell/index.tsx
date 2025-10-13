@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
-import { HoveredTimeRef } from '../TimeTableColumn';
 import * as S from '../Timetable.styled';
+import { HoveredTimeRef } from '@/pages/CheckEvent/types/hoveredTimeRef';
 
 interface TimeTableCellProps {
   date: string;

@@ -2,11 +2,7 @@ import TimeTableDay from '../TimeTableDay';
 import TimeTableCell from '../TimeTableCell';
 import Wrapper from '@/shared/layout/Wrapper';
 import { RefObject } from 'react';
-
-export interface HoveredTimeRef {
-  current: string | null;
-  update?: (hovered: string | null) => void;
-}
+import { HoveredTimeRef } from '@/pages/CheckEvent/types/hoveredTimeRef';
 
 interface TimeTableColumnProps {
   date: string;

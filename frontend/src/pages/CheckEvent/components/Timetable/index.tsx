@@ -1,10 +1,11 @@
 import * as S from './Timetable.styled';
-import TimeTableColumn, { HoveredTimeRef } from './TimeTableColumn';
 import TimeSlotColumn from './TimeSlotColumn';
 import useLocalTimeSelection from '@/pages/CheckEvent/hooks/useLocalTimeSelection';
 import { RefObject, useRef } from 'react';
 import HeatmapPreview from '../HeatMapPreview';
 import Wrapper from '@/shared/layout/Wrapper';
+import { HoveredTimeRef } from '../../types/hoveredTimeRef';
+import TimeTableColumn from './TimeTableColumn';
 
 interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
