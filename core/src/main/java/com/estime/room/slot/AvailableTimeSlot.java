@@ -7,6 +7,7 @@ import com.estime.shared.DomainTerm;
 import com.estime.shared.Validator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -17,7 +18,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "available_time_slot")
+@Table(indexes = {
+        @Index(name = "idx_available_time_slot_room_id", columnList = "room_id")
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
