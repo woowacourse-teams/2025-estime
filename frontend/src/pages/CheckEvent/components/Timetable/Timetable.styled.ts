@@ -4,6 +4,7 @@ export const TimetableContent = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  touch-action: none;
   user-select: none;
 `;
 
