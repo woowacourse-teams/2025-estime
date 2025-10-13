@@ -1,6 +1,9 @@
 import * as S from './HeatMapDataCell.styled';
 import { memo } from 'react';
-import useCellInfo from '@/pages/CheckEvent/hooks/useCellInfo';
+import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
+import { TimeManager } from '@/shared/utils/common/TimeManager';
+import { FormatManager } from '@/shared/utils/common/FormatManager';
 
 interface HeatMapDataCellProps {
   date: string;
@@ -8,8 +11,9 @@ interface HeatMapDataCellProps {
 }
 
 const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
-  const { cellInfo, isRecommended } = useCellInfo(`${date}T${timeText}`);
-
+  const roomStatistics = useRoomStatistics();
+  const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
+  const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const weight = cellInfo?.weight ?? 0;
 
   return (
@@ -17,6 +21,20 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
       data-cell-id={`${date}T${timeText}`}
       weight={weight}
       isRecommended={isRecommended}
+      onMouseOver={() => {
+        if (!cellInfo) {
+          cellDataStore.initialStore();
+        } else {
+          cellDataStore.setState({
+            ...cellInfo,
+            isRecommended,
+            date: FormatManager.formatKoreanDate(date),
+            startTime: timeText,
+            endTime: TimeManager.addMinutes(timeText, 30),
+          });
+        }
+      }}
+      onMouseLeave={() => cellDataStore.initialStore()}
     />
   );
 };
