@@ -32,7 +32,7 @@ dependencies {
 
     // Monitoring & Logging
     implementation 'com.github.napstr:logback-discord-appender:1.0.0'
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
