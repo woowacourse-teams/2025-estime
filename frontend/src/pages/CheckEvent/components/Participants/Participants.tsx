@@ -15,14 +15,14 @@ const Participants = () => {
   const roomStatistics = roomStatisticsStore.getSnapshot();
   const hasParticipants = roomStatistics.participantCount > 0;
 
-  const handleParticipantClick = () => {
+  const handleToggleParticipants = () => {
     if (!hasParticipants) return;
     setShow(true);
   };
 
   return (
     <Wrapper center={false}>
-      <S.Button onClick={handleParticipantClick}>
+      <S.Button onClick={handleToggleParticipants}>
         <Flex justify={'flex-end'} align="center" gap="var(--gap-2)">
           <IPersonList color={theme.colors.primary} />
           <Text style={{ fontSize: '1.25rem' }} color="primary">
