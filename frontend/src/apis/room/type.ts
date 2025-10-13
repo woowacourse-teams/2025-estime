@@ -35,10 +35,14 @@ export interface CreateUserResponseType {
 
 export type StatisticItem = {
   dateTimeSlot: string;
+  voteCount: number;
+  weight: number;
   participantNames: string[];
 };
 
 export type GetRoomStatisticsResponseType = {
   participantCount: number;
+  participants: string[];
+  maxVoteCount: number;
   statistic: StatisticItem[] | [];
 };

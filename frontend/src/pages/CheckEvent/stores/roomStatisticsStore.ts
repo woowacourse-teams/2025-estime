@@ -1,12 +1,23 @@
 import createStore from '@/shared/store/createStore';
 import { useSyncExternalStore } from 'react';
-import { HeatmapDateCellInfo } from '../hooks/useHeatmapStatistics';
 
+import { GetRoomStatisticsResponseType } from '@/apis/room/type';
 
-type RoomStatistics = Map<string, HeatmapDateCellInfo>;
-
+export interface StatisticItem {
+  voteCount: number;
+  weight: number;
+  participantNames: string[];
+}
+interface RoomStatisticsStore extends Omit<GetRoomStatisticsResponseType, 'statistic'> {
+  statistics: Map<string, StatisticItem>;
+}
 const createRoomStatisticsStore = () => {
-  const store = createStore<RoomStatistics>(new Map());
+  const store = createStore<RoomStatisticsStore>({
+    participantCount: 0,
+    participants: [],
+    maxVoteCount: 0,
+    statistics: new Map(),
+  });
 
   return {
     ...store, // getSnapshot, subscribe, setState 재사용
