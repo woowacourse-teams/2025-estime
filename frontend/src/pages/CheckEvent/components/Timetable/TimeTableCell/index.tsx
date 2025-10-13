@@ -1,12 +1,34 @@
+import { RefObject } from 'react';
+import { HoveredTimeRef } from '../TimeTableColumn';
+import * as S from '../Timetable.styled';
+
 interface TimeTableCellProps {
   date: string;
   timeText: string;
+  hoveredTimeRef: RefObject<HoveredTimeRef>;
 }
 
-const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
+const TimeTableCell = ({ date, timeText, hoveredTimeRef }: TimeTableCellProps) => {
   const dateTimeKey = `${date}T${timeText}`;
 
-  return <div className="heat-map-cell" data-time={dateTimeKey} />;
+  const handleEnter = () => {
+    hoveredTimeRef.current.current = timeText;
+    hoveredTimeRef.current.update?.(timeText);
+  };
+
+  const handleLeave = () => {
+    hoveredTimeRef.current.current = null;
+    hoveredTimeRef.current.update?.(null);
+  };
+
+  return (
+    <S.TimetableCell
+      className="heat-map-cell"
+      data-time={dateTimeKey}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    />
+  );
 };
 
 export default TimeTableCell;
