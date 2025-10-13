@@ -1,4 +1,4 @@
-package com.estime;
+package com.estime.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

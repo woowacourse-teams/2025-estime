@@ -1,4 +1,4 @@
-package com.estime.common;
+package com.estime.shared;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

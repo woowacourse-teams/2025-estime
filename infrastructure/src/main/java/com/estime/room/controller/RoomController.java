@@ -1,6 +1,6 @@
 package com.estime.room.controller;
 
-import com.estime.common.CustomApiResponse;
+import com.estime.shared.CustomApiResponse;
 import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesFindInput;
 import com.estime.room.dto.input.VotesOutput;

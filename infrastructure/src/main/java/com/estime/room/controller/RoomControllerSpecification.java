@@ -1,6 +1,6 @@
 package com.estime.room.controller;
 
-import com.estime.common.CustomApiResponse;
+import com.estime.shared.CustomApiResponse;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequest;
