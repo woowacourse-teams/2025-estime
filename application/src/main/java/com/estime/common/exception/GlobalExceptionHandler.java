@@ -12,6 +12,7 @@ import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler {
     public CustomApiResponse<Void> handleApplicationException(final ApplicationException e) {
         log.warn(e.getLogMessage());
         return CustomApiResponse.badRequest(e.getUserMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public CustomApiResponse<Void> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException e) {
+        log.warn(e.getMessage());
+        return CustomApiResponse.badRequest("올바른 형식으로 다시 입력해 주세요.");
     }
 
     @ExceptionHandler(AsyncRequestTimeoutException.class)
