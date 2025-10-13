@@ -1,9 +1,9 @@
 package com.estime.room.infrastructure.platform.discord.config;
 
-import com.estime.room.platform.PlatformMessage;
 import com.estime.room.infrastructure.platform.discord.DiscordGuildJoinMessageRegistrar;
 import com.estime.room.infrastructure.platform.discord.DiscordSlashCommandListener;
 import com.estime.room.infrastructure.platform.discord.DiscordSlashCommandRegistrar;
+import com.estime.room.platform.PlatformMessage;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
