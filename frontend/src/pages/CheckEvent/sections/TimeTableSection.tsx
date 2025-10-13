@@ -40,7 +40,7 @@ const TimetableSection = ({
           <Flex gap="var(--gap-8)" align="center" justify="flex-end">
             <Flex gap="var(--gap-3)" align="center" justify="center" direction="column">
               <Text variant="h4" color="text">
-                미리보기
+                전체 시간표
               </Text>
               <Toggle
                 isOn={toggleHeatmapPreview.isOpen}
