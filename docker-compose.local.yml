@@ -15,5 +15,18 @@ services:
       timeout: 5s
       retries: 5
 
+  alloy:
+    image: grafana/alloy:v1.11.0
+    container_name: alloy
+    env_file:
+      - ./application/.env.local
+    volumes:
+      - ./alloy/config-local.river:/etc/alloy/config-local.river
+      - /app/logs:/app/logs
+      - alloy-data:/var/lib/alloy
+    command: "run /etc/alloy/config-local.river"
+    restart: unless-stopped
+
 volumes:
   db_data:
+  alloy-data:
