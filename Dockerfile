@@ -9,9 +9,10 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 
-# 소스 코드 복사 (core, application 모듈)
+# 소스 코드 복사 (core, application, infrastructure 모듈)
 COPY core core
 COPY application application
+COPY infrastructure infrastructure
 
 # Gradle 실행 권한 부여 및 애플리케이션 빌드
 RUN chmod +x ./gradlew
