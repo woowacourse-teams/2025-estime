@@ -1,4 +1,3 @@
-import React from 'react';
 import * as S from './GlassTooltip.styled';
 // import { createPortal } from 'react-dom';
 import { useCellData } from '../../stores/CellDataStore';

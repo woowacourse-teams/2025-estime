@@ -12,8 +12,8 @@ interface HeatMapDataCellProps {
 
 const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
   const roomStatistics = useRoomStatistics();
-  const cellInfo = roomStatistics.get(`${date}T${timeText}`);
-  const isRecommended = cellInfo?.isRecommended;
+  const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
+  const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const weight = cellInfo?.weight ?? 0;
   return (
     <S.Container
@@ -26,6 +26,7 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
         } else {
           cellDataStore.setState({
             ...cellInfo,
+            isRecommended,
             date: FormatManager.formatKoreanDate(date),
             startTime: timeText,
             endTime: TimeManager.addMinutes(timeText, 30),

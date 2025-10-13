@@ -8,6 +8,21 @@ export default merge(common, {
   module: {
     rules: [
       {
+        test: /\.(js|jsx|ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { modules: false }],
+              '@babel/preset-typescript',
+              ['@babel/preset-react', { runtime: 'automatic' }],
+            ],
+            plugins: ['@emotion'],
+          },
+        },
+      },
+      {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },

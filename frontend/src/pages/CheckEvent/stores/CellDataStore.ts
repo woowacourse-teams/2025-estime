@@ -1,14 +1,16 @@
 import createStore from '@/shared/store/createStore';
 import { useSyncExternalStore } from 'react';
-import { HeatmapDateCellInfo } from '../hooks/useHeatmapStatistics';
+import { StatisticItem } from './roomStatisticsStore';
 
-interface TooltipCellData extends HeatmapDateCellInfo {
+interface TooltipCellData extends StatisticItem {
   date: string;
+  isRecommended: boolean;
   startTime: string;
   endTime: string;
 }
 
 const initialCellData = {
+  voteCount: 0,
   weight: 0,
   participantNames: [],
   isRecommended: false,
