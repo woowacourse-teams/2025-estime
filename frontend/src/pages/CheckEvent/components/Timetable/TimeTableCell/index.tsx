@@ -1,4 +1,5 @@
 import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
+import { glassPreviewStore } from '@/pages/CheckEvent/stores/glassPreviewStore';
 import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
@@ -10,29 +11,36 @@ interface TimeTableCellProps {
 
 const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const dateTimeKey = `${date}T${timeText}`;
-
   const roomStatistics = useRoomStatistics();
   const cellInfo = roomStatistics.statistics.get(dateTimeKey);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
 
+  const handleLeave = () => {
+    cellDataStore.initialStore();
+  };
+  const handleMouseOver = () => {
+    if (glassPreviewStore.getSnapshot().isDragging) return;
+    if (!glassPreviewStore.getSnapshot().isPreviewOn) return;
+
+    if (!cellInfo) {
+      cellDataStore.initialStore();
+    } else {
+      cellDataStore.setState({
+        ...cellInfo,
+        isRecommended,
+        date: FormatManager.formatKoreanDate(date),
+        startTime: timeText,
+        endTime: TimeManager.addMinutes(timeText, 30),
+      });
+    }
+  };
+
   return (
     <div
-      className="time-table-cell"
       data-time={dateTimeKey}
-      onMouseOver={() => {
-        if (!cellInfo) {
-          cellDataStore.initialStore();
-        } else {
-          cellDataStore.setState({
-            ...cellInfo,
-            isRecommended,
-            date: FormatManager.formatKoreanDate(date),
-            startTime: timeText,
-            endTime: TimeManager.addMinutes(timeText, 30),
-          });
-        }
-      }}
-      onMouseLeave={() => cellDataStore.initialStore()}
+      className="time-table-cell"
+      onMouseOver={handleMouseOver}
+      onMouseLeave={handleLeave}
     />
   );
 };
