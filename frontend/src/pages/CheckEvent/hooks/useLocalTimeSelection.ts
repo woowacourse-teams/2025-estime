@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo, useEffect } from 'react';
-import { useLockBodyScroll } from '@/shared/hooks/common/useLockBodyScroll';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
+import usePreventScroll from './usePreventScroll';
 
 type TimeCellHitbox = {
   key: string;
@@ -26,7 +26,7 @@ const useLocalTimeSelection = () => {
   const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
   const renderAnimationFrameId = useRef<number | null>(null);
 
-  useLockBodyScroll(isTouch.current);
+  usePreventScroll(containerRef);
 
   const addDraggingClass = useCallback(() => {
     const container = containerRef.current;
