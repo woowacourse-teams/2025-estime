@@ -1,5 +1,6 @@
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
+import { glassPreviewStore } from '../stores/glassPreviewStore';
 import usePreventScroll from './usePreventScroll';
 
 type TimeCellHitbox = {
@@ -17,7 +18,6 @@ const useLocalTimeSelection = () => {
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const isTouch = useRef(false);
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const selectionModeRef = useRef<'add' | 'remove'>('add');
@@ -32,26 +32,32 @@ const useLocalTimeSelection = () => {
     const container = containerRef.current;
     if (!container) return;
     container.classList.add('dragging');
+    glassPreviewStore.startDragging();
   }, []);
 
   const removeDraggingClass = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
     container.classList.remove('dragging');
+    glassPreviewStore.stopDragging();
   }, []);
 
   const updateCellClasses = useCallback(() => {
     if (renderAnimationFrameId.current != null) return;
-    renderAnimationFrameId.current = requestAnimationFrame(() => {
-      renderAnimationFrameId.current = null;
-      const container = containerRef.current;
-      if (!container) return;
 
-      container.querySelectorAll<HTMLElement>('.time-table-cell').forEach((cell) => {
-        const dateTime = cell.dataset.time;
-        if (!dateTime) return;
-        cell.classList.toggle('selected', currentWorkingSetRef.current.has(dateTime));
-      });
+    renderAnimationFrameId.current = requestAnimationFrame(() => {
+      try {
+        const container = containerRef.current;
+        if (!container) return;
+
+        container.querySelectorAll<HTMLElement>('.time-table-cell').forEach((cell) => {
+          const dateTime = cell.dataset.time;
+          if (!dateTime) return;
+          cell.classList.toggle('selected', currentWorkingSetRef.current.has(dateTime));
+        });
+      } finally {
+        renderAnimationFrameId.current = null;
+      }
     });
   }, []);
 
@@ -77,7 +83,6 @@ const useLocalTimeSelection = () => {
 
   const handleDragStart = useCallback(
     (event: React.PointerEvent) => {
-      if (event.pointerType === 'touch') isTouch.current = true;
       cacheDragHitboxes();
 
       const bounds = containerBoundingRectRef.current;
@@ -163,23 +168,22 @@ const useLocalTimeSelection = () => {
     }));
   };
 
-  const handleDragEnd = useCallback(() => {
-    commitSelection();
+  const cleanUp = useCallback(() => {
     updateCellClasses();
     removeDraggingClass();
     dragHitboxesRef.current = [];
     containerBoundingRectRef.current = null;
-    isTouch.current = false;
-  }, [removeDraggingClass, updateCellClasses]);
+  }, [updateCellClasses, removeDraggingClass]);
+
+  const handleDragEnd = useCallback(() => {
+    commitSelection();
+    cleanUp();
+  }, [cleanUp]);
 
   const handleDragLeave = useCallback(() => {
     commitSelection();
-    updateCellClasses();
-    removeDraggingClass();
-    dragHitboxesRef.current = [];
-    containerBoundingRectRef.current = null;
-    isTouch.current = false;
-  }, [removeDraggingClass, updateCellClasses]);
+    cleanUp();
+  }, [cleanUp]);
 
   const pointerHandlers = useMemo(
     () => ({
