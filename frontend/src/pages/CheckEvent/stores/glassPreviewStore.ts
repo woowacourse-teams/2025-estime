@@ -1,18 +1,16 @@
 import createStore from '@/shared/store/createStore';
 import { useCallback, useSyncExternalStore } from 'react';
 
-interface DragState {
-  isDragging: boolean;
+interface GlassPreviewState {
   isPreviewOn: boolean;
 }
 
-const initialDragState: DragState = {
-  isDragging: false,
+const initialGlassPreviewState: GlassPreviewState = {
   isPreviewOn: true,
 };
 
 const createGlassPreviewStore = () => {
-  const store = createStore<DragState>(initialDragState);
+  const store = createStore<GlassPreviewState>(initialGlassPreviewState);
 
   const togglePreview = () =>
     store.setState((prev) => ({ ...prev, isPreviewOn: !prev.isPreviewOn }));

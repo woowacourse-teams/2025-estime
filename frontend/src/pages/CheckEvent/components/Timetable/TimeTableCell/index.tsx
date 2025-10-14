@@ -3,7 +3,6 @@ import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
 import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
-import { MouseEvent as ReactMouseEvent } from 'react';
 
 interface TimeTableCellProps {
   date: string;
@@ -22,7 +21,7 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
     cellDataStore.initialStore();
   };
 
-  const handleMouseOver = (e: ReactMouseEvent<HTMLDivElement>) => {
+  const handleMouseOver = (e: React.MouseEvent<HTMLDivElement>) => {
     const isDragging = e.currentTarget.closest('.dragging') !== null;
 
     if (isDragging) return;
