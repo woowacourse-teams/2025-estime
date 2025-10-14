@@ -14,7 +14,7 @@ import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 
 import Toggle from '@/shared/components/Toggle';
-import { glassPreviewStore, useGlassPreview } from '../stores/glassPreviewStore';
+import { useGlassPreview } from '../stores/glassPreviewStore';
 
 interface TimetableSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
@@ -44,7 +44,7 @@ const TimetableSection = ({
               <Text variant="h4" color="text">
                 전체 시간표
               </Text>
-              <Toggle isOn={glassPreview.isPreviewOn} onToggle={glassPreviewStore.togglePreview} />
+              <Toggle isOn={glassPreview.isOn} onToggle={glassPreview.toggle} />
             </Flex>
             <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
               <Text variant="button" color={isExpired ? 'gray50' : 'text'}>

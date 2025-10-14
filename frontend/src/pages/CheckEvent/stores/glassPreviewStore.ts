@@ -1,5 +1,5 @@
 import createStore from '@/shared/store/createStore';
-import { useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 interface DragState {
   isDragging: boolean;
@@ -30,5 +30,10 @@ const createGlassPreviewStore = () => {
 export const glassPreviewStore = createGlassPreviewStore();
 
 export const useGlassPreview = () => {
-  return useSyncExternalStore(glassPreviewStore.subscribe, glassPreviewStore.getSnapshot);
+  const isOn = useSyncExternalStore(
+    glassPreviewStore.subscribe,
+    () => glassPreviewStore.getSnapshot().isPreviewOn
+  );
+  const toggle = useCallback(() => glassPreviewStore.togglePreview(), []);
+  return { isOn, toggle };
 };
