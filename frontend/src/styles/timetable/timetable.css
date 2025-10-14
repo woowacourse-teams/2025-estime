@@ -37,3 +37,7 @@
 .heat-map-cell.selected::after {
   opacity: 1;
 }
+
+.dragging .heat-map-cell {
+  pointer-events: none;
+}
