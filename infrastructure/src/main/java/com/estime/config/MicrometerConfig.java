@@ -1,4 +1,4 @@
-package com.estime.common.config;
+package com.estime.config;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
