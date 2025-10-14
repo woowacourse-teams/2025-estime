@@ -47,7 +47,7 @@ const useLocalTimeSelection = () => {
       const container = containerRef.current;
       if (!container) return;
 
-      container.querySelectorAll<HTMLElement>('.heat-map-cell').forEach((cell) => {
+      container.querySelectorAll<HTMLElement>('.time-table-cell').forEach((cell) => {
         const dateTime = cell.dataset.time;
         if (!dateTime) return;
         cell.classList.toggle('selected', currentWorkingSetRef.current.has(dateTime));
@@ -62,7 +62,7 @@ const useLocalTimeSelection = () => {
     containerBoundingRectRef.current = containerRect;
 
     dragHitboxesRef.current = Array.from(
-      container.querySelectorAll<HTMLElement>('.heat-map-cell')
+      container.querySelectorAll<HTMLElement>('.time-table-cell')
     ).map((el) => {
       const rect = el.getBoundingClientRect();
       return {
@@ -84,7 +84,7 @@ const useLocalTimeSelection = () => {
       if (!bounds) return;
 
       const targetCell = (event.target as HTMLElement).closest(
-        '.heat-map-cell'
+        '.time-table-cell'
       ) as HTMLElement | null;
       const cellKey = targetCell?.dataset.time;
       if (!cellKey) return;

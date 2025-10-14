@@ -17,7 +17,7 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
 
   return (
     <div
-      className="heat-map-cell"
+      className="time-table-cell"
       data-time={dateTimeKey}
       onMouseOver={() => {
         if (!cellInfo) {

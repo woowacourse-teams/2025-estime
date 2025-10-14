@@ -4,7 +4,7 @@
   --primary: #8052e1;
 }
 
-.heat-map-cell {
+.time-table-cell {
   position: relative;
   border-top: 1px solid var(--gray20);
   border-right: 1px solid var(--gray20);
@@ -20,11 +20,11 @@
   touch-action: none;
 }
 
-.heat-map-cell:hover {
+.time-table-cell:hover {
   cursor: pointer;
 }
 
-.heat-map-cell::after {
+.time-table-cell::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -34,10 +34,10 @@
   pointer-events: none;
 }
 
-.heat-map-cell.selected::after {
+.time-table-cell.selected::after {
   opacity: 1;
 }
 
-.dragging .heat-map-cell {
+.dragging .time-table-cell {
   pointer-events: none;
 }
