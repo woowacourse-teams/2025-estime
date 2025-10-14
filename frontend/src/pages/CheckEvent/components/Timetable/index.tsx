@@ -10,15 +10,9 @@ interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
-  showHeatmapPreview: boolean;
 }
 
-const Timetable = ({
-  timeColumnRef,
-  dateTimeSlots,
-  availableDates,
-  showHeatmapPreview,
-}: TimetableProps) => {
+const Timetable = ({ timeColumnRef, dateTimeSlots, availableDates }: TimetableProps) => {
   const { containerRef, pointerHandlers } = useLocalTimeSelection();
 
   return (
@@ -27,7 +21,7 @@ const Timetable = ({
         <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
         {[...availableDates].map((date) => (
           <Wrapper key={date} maxWidth="100%">
-            <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} show={showHeatmapPreview} />
+            <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
             <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
           </Wrapper>
         ))}
