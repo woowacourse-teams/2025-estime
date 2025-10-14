@@ -1,8 +1,8 @@
-package com.estime.room;
+package com.estime.room.schedule;
 
 import com.estime.notification.NotificationService;
-import com.estime.room.vo.NotificationTask;
-import com.estime.room.vo.NotificationTaskType;
+import com.estime.room.Room;
+import com.estime.room.RoomRepository;
 import com.estime.room.platform.PlatformRepository;
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;

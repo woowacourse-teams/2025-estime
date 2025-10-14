@@ -9,6 +9,7 @@ import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
+import com.estime.room.schedule.RoomDeadlineScheduler;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

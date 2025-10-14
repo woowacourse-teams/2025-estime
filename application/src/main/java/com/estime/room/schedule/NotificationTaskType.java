@@ -1,4 +1,4 @@
-package com.estime.room.vo;
+package com.estime.room.schedule;
 
 public enum NotificationTaskType {
     REMIND,
