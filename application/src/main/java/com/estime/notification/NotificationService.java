@@ -1,7 +1,7 @@
 package com.estime.notification;
 
 import com.estime.exception.NotFoundException;
-import com.estime.room.platform.discord.DiscordMessageSender;
+import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.platform.Platform;
@@ -19,7 +19,7 @@ public class NotificationService {
 
     private final RoomRepository roomRepository;
     private final PlatformRepository platformRepository;
-    private final DiscordMessageSender discordMessageSender;
+    private final PlatformMessageSender platformMessageSender;
 
     @Transactional(readOnly = true)
     public void sendReminderNotification(final Long roomId) {
@@ -30,7 +30,7 @@ public class NotificationService {
             final Platform platform = platformRepository.findByRoomId(roomId)
                     .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            discordMessageSender.sendReminderMessage(
+            platformMessageSender.sendReminderMessage(
                     platform.getChannelId(),
                     room.getSession(),
                     room.getTitle(),
@@ -52,7 +52,7 @@ public class NotificationService {
             final Platform platform = platformRepository.findByRoomId(roomId)
                     .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            discordMessageSender.sendDeadlineAlertMessage(
+            platformMessageSender.sendDeadlineAlertMessage(
                     platform.getChannelId(),
                     room.getSession(),
                     room.getTitle()

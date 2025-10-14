@@ -6,7 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
-import com.estime.room.platform.discord.DiscordMessageSender;
+import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.dto.input.DateSlotInput;
 import com.estime.room.dto.input.TimeSlotInput;
 import com.estime.shared.DomainTerm;
@@ -82,7 +82,7 @@ class RoomApplicationServiceTest {
     private VoteRepository voteRepository;
 
     @MockitoBean
-    private DiscordMessageSender discordMessageSender;
+    private PlatformMessageSender platformMessageSender;
 
     @Autowired
     private PlatformRepository platformRepository;
@@ -386,7 +386,7 @@ class RoomApplicationServiceTest {
                 PlatformNotification.of(false, false, false)
         );
 
-        doNothing().when(discordMessageSender).sendConnectedRoomCreatedMessage(any(), any(), any(), any());
+        doNothing().when(platformMessageSender).sendConnectedRoomCreatedMessage(any(), any(), any(), any());
 
         // when
         final ConnectedRoomCreateOutput saved = roomApplicationService.createConnectedRoom(input);

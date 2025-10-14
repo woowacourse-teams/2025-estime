@@ -1,14 +1,12 @@
 package com.estime.room.service;
 
-import com.estime.common.sse.application.SseService;
 import com.estime.exception.NotFoundException;
+import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomMessageSender;
-import com.estime.room.platform.discord.DiscordMessageSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.SlotBatchRepository;
-import com.estime.sse.application.SseService;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.dto.input.DateSlotInput;
 import com.estime.room.dto.input.ParticipantCreateInput;
@@ -64,7 +62,7 @@ public class RoomApplicationService {
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
-    private final DiscordMessageSender discordMessageSender;
+    private final PlatformMessageSender platformMessageSender;
     private final SlotBatchRepository slotBatchRepository;
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
@@ -126,7 +124,7 @@ public class RoomApplicationService {
                         input.notification()));
 
         if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
-            discordMessageSender.sendConnectedRoomCreatedMessage(
+            platformMessageSender.sendConnectedRoomCreatedMessage(
                     input.channelId(),
                     savedRoom.getSession(),
                     savedRoom.getTitle(),
