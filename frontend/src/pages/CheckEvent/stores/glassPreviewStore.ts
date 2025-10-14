@@ -14,15 +14,11 @@ const initialDragState: DragState = {
 const createGlassPreviewStore = () => {
   const store = createStore<DragState>(initialDragState);
 
-  const startDragging = () => store.setState((prev) => ({ ...prev, isDragging: true }));
-  const stopDragging = () => store.setState((prev) => ({ ...prev, isDragging: false }));
   const togglePreview = () =>
     store.setState((prev) => ({ ...prev, isPreviewOn: !prev.isPreviewOn }));
 
   return {
     ...store,
-    startDragging,
-    stopDragging,
     togglePreview,
   };
 };

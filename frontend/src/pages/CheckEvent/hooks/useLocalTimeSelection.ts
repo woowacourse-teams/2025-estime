@@ -1,6 +1,5 @@
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
-import { glassPreviewStore } from '../stores/glassPreviewStore';
 import usePreventScroll from './usePreventScroll';
 
 type TimeCellHitbox = {
@@ -32,14 +31,12 @@ const useLocalTimeSelection = () => {
     const container = containerRef.current;
     if (!container) return;
     container.classList.add('dragging');
-    glassPreviewStore.startDragging();
   }, []);
 
   const removeDraggingClass = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
     container.classList.remove('dragging');
-    glassPreviewStore.stopDragging();
   }, []);
 
   const updateCellClasses = useCallback(() => {

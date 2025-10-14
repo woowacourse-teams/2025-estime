@@ -1,8 +1,9 @@
 import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
-import { glassPreviewStore } from '@/pages/CheckEvent/stores/glassPreviewStore';
+import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
 import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
+import { MouseEvent as ReactMouseEvent } from 'react';
 
 interface TimeTableCellProps {
   date: string;
@@ -15,12 +16,18 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const cellInfo = roomStatistics.statistics.get(dateTimeKey);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
 
+  const { isOn } = useGlassPreview();
+
   const handleLeave = () => {
     cellDataStore.initialStore();
   };
-  const handleMouseOver = () => {
-    if (glassPreviewStore.getSnapshot().isDragging) return;
-    if (!glassPreviewStore.getSnapshot().isPreviewOn) return;
+
+  const handleMouseOver = (e: ReactMouseEvent<HTMLDivElement>) => {
+    const isDragging = e.currentTarget.closest('.dragging') !== null;
+
+    if (isDragging) return;
+
+    if (!isOn) return;
 
     if (!cellInfo) {
       cellDataStore.initialStore();
