@@ -2,17 +2,19 @@ import { useEffect, RefObject } from 'react';
 
 const usePreventScroll = (containerRef: RefObject<HTMLDivElement | null>) => {
   useEffect(() => {
-    if (!containerRef) return;
-    const preventScroll = (e: TouchEvent) => {
-      if (containerRef.current?.classList.contains('dragging')) {
-        e.preventDefault();
-      }
+    const container = containerRef.current;
+    if (!container) return;
+
+    const prevent = (e: Event) => {
+      // 드래그 중일 때만, cancelable일 때만 차단
+      if (!container.classList.contains('dragging')) return;
+      if (e.cancelable) e.preventDefault();
     };
 
-    document.addEventListener('touchmove', preventScroll, { passive: false });
+    container.addEventListener('touchmove', prevent, { passive: false });
 
     return () => {
-      document.removeEventListener('touchmove', preventScroll);
+      container.removeEventListener('touchmove', prevent);
     };
   }, [containerRef]);
 };
