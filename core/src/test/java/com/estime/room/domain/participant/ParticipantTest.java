@@ -3,10 +3,10 @@ package com.estime.room.domain.participant;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.estime.shared.DomainTerm;
-import com.estime.shared.exception.InvalidLengthException;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
+import com.estime.shared.DomainTerm;
+import com.estime.shared.exception.InvalidLengthException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class ParticipantTest {
     @Test
     void validateName_exactMaxLength_success() {
         // given
-        ParticipantName exactLengthName = ParticipantName.from("열두글자이름입니다열두글");
+        final ParticipantName exactLengthName = ParticipantName.from("열두글자이름입니다열두글");
 
         // when & then
         assertThatCode(() -> Participant.withoutId(1L, exactLengthName))

@@ -2,26 +2,15 @@ package com.estime.room;
 
 import com.estime.room.exception.DeadlineOverdueException;
 import com.estime.room.exception.PastNotAllowedException;
-import com.estime.room.exception.UnavailableSlotException;
-import com.estime.room.slot.DateSlot;
-import com.estime.room.slot.DateTimeSlot;
-import com.estime.room.slot.TimeSlot;
 import com.estime.shared.BaseEntity;
 import com.estime.shared.DomainTerm;
-import com.estime.shared.exception.InvalidLengthException;
 import com.estime.shared.Validator;
-import jakarta.persistence.CollectionTable;
+import com.estime.shared.exception.InvalidLengthException;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,55 +38,27 @@ public class Room extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-            name = "room_available_date_slot",
-            joinColumns = @JoinColumn(name = "room_id")
-    )
-    @Column(name = "start_at", nullable = false)
-    private Set<DateSlot> availableDateSlots;
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-            name = "room_available_time_slot",
-            joinColumns = @JoinColumn(name = "room_id")
-    )
-    @Column(name = "start_at", nullable = false)
-    private Set<TimeSlot> availableTimeSlots;
-
     @Column(name = "deadline", nullable = false)
     private LocalDateTime deadline;
 
     public static Room withoutId(
             final String title,
-            final List<DateSlot> availableDateSlots,
-            final List<TimeSlot> availableTimeSlots,
             final LocalDateTime deadline
     ) {
-        validateNull(title, availableDateSlots, availableTimeSlots, deadline);
+        validateTitleAndDeadline(title, deadline);
         final String trimmedTitle = title.trim();
         validateTitle(trimmedTitle);
-        validateAvailableDateSlots(availableDateSlots);
         validateDeadline(deadline);
         return new Room(
                 RoomSession.generate(),
                 trimmedTitle,
-                Set.copyOf(availableDateSlots),
-                Set.copyOf(availableTimeSlots),
                 deadline
         );
     }
 
-    private static void validateNull(
-            final String title,
-            final List<DateSlot> availableDateSlots,
-            final List<TimeSlot> availableTimeSlots,
-            final LocalDateTime deadline
-    ) {
+    private static void validateTitleAndDeadline(final String title, final LocalDateTime deadline) {
         Validator.builder()
                 .add(Fields.title, title)
-                .add(Fields.availableDateSlots, availableDateSlots)
-                .add(Fields.availableTimeSlots, availableTimeSlots)
                 .add(Fields.deadline, deadline)
                 .validateNull();
     }
@@ -108,27 +69,9 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateAvailableDateSlots(final List<DateSlot> availableDateSlots) {
-        for (final DateSlot availableDateSlot : availableDateSlots) {
-            if (availableDateSlot.getStartAt().isBefore(LocalDate.now())) {
-                throw new PastNotAllowedException(DomainTerm.DATE_SLOT, availableDateSlot.getStartAt());
-            }
-        }
-    }
-
     private static void validateDeadline(final LocalDateTime deadline) {
         if (deadline.isBefore(LocalDateTime.now())) {
             throw new PastNotAllowedException(DomainTerm.DEADLINE, deadline);
-        }
-    }
-
-    public void ensureAvailableDateTimeSlots(final List<DateTimeSlot> dateTimeSlots) {
-        for (final DateTimeSlot dateTimeSlot : dateTimeSlots) {
-            final DateSlot dateSlot = dateTimeSlot.toDateSlot();
-            final TimeSlot timeSlot = dateTimeSlot.toTimeSlot();
-            if (!availableDateSlots.contains(dateSlot) || !availableTimeSlots.contains(timeSlot)) {
-                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, dateTimeSlot);
-            }
         }
     }
 

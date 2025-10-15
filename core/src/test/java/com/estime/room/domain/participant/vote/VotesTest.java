@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.shared.exception.NullNotAllowedException;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.slot.DateTimeSlot;
+import com.estime.shared.exception.NullNotAllowedException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;

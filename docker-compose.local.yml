@@ -1,19 +1,39 @@
+networks:
+  monitor_net:
+
 services:
   mysql:
     ports:
       - "13306:3306"
     env_file:
-      - ./application/.env.local
+      - ./.env.local
     image: mysql:8.0
     container_name: estime-mysql
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - monitor_net
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  alloy:
+    image: grafana/alloy:v1.11.0
+    container_name: alloy
+    env_file:
+      - ./.env.local
+    volumes:
+      - ./alloy/config-local.river:/etc/alloy/config-local.river
+      - /app/logs:/app/logs
+      - alloy-data:/var/lib/alloy
+    command: "run /etc/alloy/config-local.river"
+    networks:
+      - monitor_net
+    restart: unless-stopped
+
 volumes:
   db_data:
+  alloy-data:

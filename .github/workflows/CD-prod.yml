@@ -115,7 +115,6 @@ jobs:
           EOF
 
       - name: Create env file for env.prod file
-        working-directory: ./application
         run: |
           cat <<EOF > .env.prod
           ${{ secrets.ENV_PROD }}

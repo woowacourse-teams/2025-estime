@@ -4,7 +4,7 @@ spring:
       on-profile: prod
     import:
       - application-common.yml
-      - optional:file:application/.env.prod[.properties]
+      - optional:file:.env.prod[.properties]
 
   jpa:
     hibernate:
@@ -22,12 +22,3 @@ url:
 logging:
   discord:
     webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
-
-management:
-  metrics:
-    export:
-      cloudwatch:
-        enabled: true
-        namespace: "EC2/estime-api/prod"
-        region: ap-northeast-2
-        url: ${CLOUDWATCH_URL}

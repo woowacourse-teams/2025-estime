@@ -1,0 +1,54 @@
+loki.write "dev" {
+    endpoint {
+        url = "http://" + env("MONITORING_SERVER") + ":3100/loki/api/v1/push"
+    }
+}
+
+loki.source.file "estime_api_logs" {
+    targets = [{ "__path__" = "/app/logs/estime-api.log" }]
+    forward_to = [loki.relabel.add_api_labels.receiver]
+}
+
+loki.relabel "add_api_labels" {
+    forward_to = [loki.write.dev.receiver]
+
+    rule {
+        target_label = "job"
+        replacement = "estime-api-dev"
+    }
+    rule {
+        target_label = "app"
+        replacement = "estime-api-dev"
+    }
+    rule {
+        target_label = "env"
+        replacement = "dev"
+    }
+}
+
+prometheus.scrape "estime_api_metrics" {
+    targets = [{
+        __address__ = "estime-api:8080",
+        job = "estime-api-dev",
+        env = "dev",
+    }]
+
+    forward_to = [prometheus.relabel.add_metrics_labels.receiver]
+    scrape_interval = "15s"
+    metrics_path = "/actuator/prometheus"
+}
+
+prometheus.relabel "add_metrics_labels" {
+    forward_to = [prometheus.remote_write.dev.receiver]
+
+    rule {
+        source_labels = ["__address__"]
+        target_label = "instance"
+    }
+}
+
+prometheus.remote_write "dev" {
+    endpoint {
+        url = "http://" + env("MONITORING_SERVER") + ":9090/api/v1/write"
+    }
+}

@@ -1,6 +1,6 @@
 package com.estime.room.presentation.dto.response;
 
-import com.estime.room.application.dto.output.ParticipantCreateOutput;
+import com.estime.room.dto.output.ParticipantCreateOutput;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ParticipantCreateResponse(
