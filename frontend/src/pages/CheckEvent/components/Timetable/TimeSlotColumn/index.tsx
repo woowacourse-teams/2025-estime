@@ -1,19 +1,14 @@
-import { HoveredTimeRef } from '@/pages/CheckEvent/types/hoveredTimeRef';
+import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
 import * as S from '../Timetable.styled';
-import { RefObject, useRef } from 'react';
-import { useTimeHoverEffect } from '@/pages/CheckEvent/hooks/useTimeHoverEffect';
+import { RefObject } from 'react';
 
 interface TimeSlotColumnProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
-  hoveredTimeRef: RefObject<HoveredTimeRef>;
 }
 
-const TimeSlotColumn = ({ timeColumnRef, dateTimeSlots, hoveredTimeRef }: TimeSlotColumnProps) => {
-  const labelRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const hoverLabelRef = useRef<HTMLDivElement | null>(null);
-
-  useTimeHoverEffect(hoveredTimeRef, dateTimeSlots, labelRefs, hoverLabelRef);
+const TimeSlotColumn = ({ timeColumnRef, dateTimeSlots }: TimeSlotColumnProps) => {
+  const { hoverLabelRef, labelRefs } = useTimetableHoverContext();
 
   return (
     <S.TimeSlotColumn ref={timeColumnRef}>

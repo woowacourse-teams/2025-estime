@@ -1,11 +1,11 @@
 import * as S from './Timetable.styled';
 import TimeSlotColumn from './TimeSlotColumn';
 import useLocalTimeSelection from '@/pages/CheckEvent/hooks/useLocalTimeSelection';
-import { RefObject, useRef } from 'react';
+import { RefObject } from 'react';
 import HeatmapPreview from '../HeatMapPreview';
 import Wrapper from '@/shared/layout/Wrapper';
-import { HoveredTimeRef } from '../../types/hoveredTimeRef';
 import TimeTableColumn from './TimeTableColumn';
+import TimetableHoverProvider from '../../providers/TimetableProvider';
 
 interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -22,28 +22,18 @@ const Timetable = ({
 }: TimetableProps) => {
   const { containerRef, pointerHandlers } = useLocalTimeSelection();
 
-  const hoveredTimeRef = useRef<HoveredTimeRef>({ current: null });
-
   return (
-    <>
+    <TimetableHoverProvider dateTimeSlots={dateTimeSlots}>
       <S.TimetableContent ref={containerRef} {...pointerHandlers}>
-        <TimeSlotColumn
-          timeColumnRef={timeColumnRef}
-          dateTimeSlots={dateTimeSlots}
-          hoveredTimeRef={hoveredTimeRef}
-        />
+        <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
         {[...availableDates].map((date) => (
           <Wrapper key={date} maxWidth="100%">
             <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} show={showHeatmapPreview} />
-            <TimeTableColumn
-              date={date}
-              dateTimeSlots={dateTimeSlots}
-              hoveredTimeRef={hoveredTimeRef}
-            />
+            <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
           </Wrapper>
         ))}
       </S.TimetableContent>
-    </>
+    </TimetableHoverProvider>
   );
 };
 

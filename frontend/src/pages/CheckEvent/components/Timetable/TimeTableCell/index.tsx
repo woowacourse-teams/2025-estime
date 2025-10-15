@@ -1,25 +1,18 @@
-import { RefObject } from 'react';
 import * as S from '../Timetable.styled';
-import { HoveredTimeRef } from '@/pages/CheckEvent/types/hoveredTimeRef';
+import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
 
 interface TimeTableCellProps {
   date: string;
   timeText: string;
-  hoveredTimeRef: RefObject<HoveredTimeRef>;
 }
 
-const TimeTableCell = ({ date, timeText, hoveredTimeRef }: TimeTableCellProps) => {
+const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
+  const { timeTableCellHover } = useTimetableHoverContext();
+
   const dateTimeKey = `${date}T${timeText}`;
 
-  const handleEnter = () => {
-    hoveredTimeRef.current.current = timeText;
-    hoveredTimeRef.current.update?.(timeText);
-  };
-
-  const handleLeave = () => {
-    hoveredTimeRef.current.current = null;
-    hoveredTimeRef.current.update?.(null);
-  };
+  const handleEnter = () => timeTableCellHover(timeText);
+  const handleLeave = () => timeTableCellHover(null);
 
   return (
     <S.TimetableCell
