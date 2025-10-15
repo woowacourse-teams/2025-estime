@@ -51,7 +51,6 @@ const Heatmap = ({
           </Wrapper>
         ))}
       </S.HeatMapContent>
-      <GlassTooltip />
     </>
   );
 };
