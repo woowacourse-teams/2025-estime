@@ -37,7 +37,3 @@
 .time-table-cell.selected::after {
   opacity: 1;
 }
-
-.dragging .time-table-cell {
-  pointer-events: none;
-}
