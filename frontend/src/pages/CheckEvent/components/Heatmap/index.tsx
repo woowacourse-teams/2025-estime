@@ -4,7 +4,6 @@ import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
 import { RefObject, useMemo } from 'react';
-import GlassTooltip from '../GlassTooltip';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -19,9 +18,6 @@ const Heatmap = ({
   availableDates,
   handleBeforeEdit,
 }: HeatmapProps) => {
-  // const { currentCellId, containerRef, tooltipRef } = useEventDelegation();
-
-  // 시간 라벨 불필요한 리렌더링 방지를 위해 분리
   const timeSlotNodes = useMemo(
     () =>
       dateTimeSlots.map((timeText) => (
