@@ -70,7 +70,7 @@ class BaseEntityEqualsTest {
         // Given: id가 null인 엔티티
         final Room room = createRoomWithId(null);
 
-        // When & Then: 예외를 던지지 않고 상수를 반환
+        // When & Then
         assertThatThrownBy(room::hashCode)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("hashCode() called on entity without ID");
