@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLRestriction;
 
 @FieldNameConstants
@@ -26,15 +27,20 @@ public abstract class BaseEntity {
     @Column(name = "active", nullable = false)
     protected boolean active = true;
 
-    // 프록시 객체도 같은 타입 계열로 간주
+    // 프록시 객체를 고려한 타입 비교 + id 비교
     @Override
-    public boolean equals(final Object o) {
+    public final boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof final BaseEntity that)) {
+        if (o == null) {
             return false;
         }
+        // 프록시를 고려한 실제 타입 비교
+        if (Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        final BaseEntity that = (BaseEntity) o;
         return id != null && id.equals(that.id);
     }
 
