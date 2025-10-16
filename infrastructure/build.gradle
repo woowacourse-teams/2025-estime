@@ -1,6 +1,6 @@
 dependencies {
     implementation project(':core')
-    compileOnly project(':application')
+    implementation project(':application')
 
     // Spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -26,4 +26,7 @@ dependencies {
 
     // TSID
     implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
