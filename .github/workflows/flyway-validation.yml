@@ -1,0 +1,282 @@
+name: Flyway Migration Validation
+
+on:
+  pull_request:
+    branches:
+      [ be/dev, be/prod ]
+    paths:
+      - 'application/src/main/resources/db/migration/**'
+    types:
+      [ opened, synchronize, reopened ]
+
+jobs:
+  flyway-validation:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpw
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Github Repository 파일 불러오기
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: 변경된 Flyway 마이그레이션 파일 목록 탐색
+        id: check_changed_files
+        run: |
+          echo "변경된 Flyway 마이그레이션 파일 목록 탐색 시작..."
+
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- 'application/src/main/resources/db/migration/**.sql' \
+            | grep -E '/(V|R)[0-9_.]+__.*\.sql$' > changed_files.txt || true
+
+          if [ ! -s changed_files.txt ]; then
+            echo "변경된 Flyway 마이그레이션 파일 부재. 정적 분석 종료."
+            echo "has_changed_files=false" >> $GITHUB_OUTPUT
+          else
+            echo "검증 대상 파일:"
+            cat changed_files.txt
+            echo "has_changed_files=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: SQL 명령어 정적 검사
+        id: static_analysis
+        if: steps.check_changed_files.outputs.has_changed_files == 'true'
+        run: |
+          echo "위험 SQL 명령어 검사 시작..."
+          echo "정책: '금지' 유형 즉시 실패, '검토' 유형 경고 메시지 출력"
+
+          FORBIDDEN_FOUND=false
+          REVIEW_FOUND=false
+          FORBIDDEN_ERRORS_FILE="forbidden_errors.txt"
+          WARNING_DETAILS_FILE="warning_details.txt"
+          > $FORBIDDEN_ERRORS_FILE # Clear the file at the start
+          > $WARNING_DETAILS_FILE # Clear the file at the start
+
+          # 정적 검사 패턴
+          FORBIDDEN_PATTERNS="DROP[[:space:]]+(TABLE|DATABASE|SCHEMA)|ALTER[[:space:]]+TABLE.*DROP[[:space:]]+COLUMN|TRUNCATE[[:space:]]+TABLE"
+          DELETE_PATTERN="DELETE[[:space:]]+FROM"
+          SCHEMA_CHANGE_PATTERNS="ALTER[[:space:]]+TABLE[[:space:]]+[a-zA-Z0-9_\`]+[[:space:]]+((RENAME[[:space:]]+TO)|(MODIFY[[:space:]]+COLUMN)|(CHANGE[[:space:]]+COLUMN))"
+          INDEX_TABLE_CHANGE_PATTERNS="ALTER[[:space:]]+TABLE.*(ENGINE|CHARACTER[[:space:]]+SET|CHARSET|COLLATE)|(CREATE|DROP)[[:space:]]+INDEX"
+          DB_CONSTRAINT_PATTERNS="(ADD|DROP)[[:space:]]+CONSTRAINT"
+          DATA_CHANGE_PATTERNS="UPDATE[[:space:]]+[a-zA-Z0-9_]+[[:space:]]+SET"
+
+          # 금지 유형 검사 함수
+          check_forbidden_pattern() {
+            local pattern="$1"
+            local reason="$2"
+            local exclude_pattern="$3" # 선택적 파라미터
+
+            local matched
+            if [[ -n "$exclude_pattern" ]]; then
+              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" | grep -viE "$exclude_pattern" || true)
+            else
+              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" || true)
+            fi
+
+            if [[ -n "$matched" ]]; then
+              FORBIDDEN_FOUND=true
+              echo "$matched" | sed "s#^#❌ 금지|$reason|$filename|#" >> $FORBIDDEN_ERRORS_FILE
+            fi
+          }
+
+          # 검토 유형 검사 함수
+          check_review_pattern() {
+            local pattern="$1"
+            local reason="$2"
+            local warning_message="$3"
+            local exclude_pattern="$4" # 선택적 파라미터
+
+            local matched
+            if [[ -n "$exclude_pattern" ]]; then
+              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" | grep -viE "$exclude_pattern" || true)
+            else
+              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" || true)
+            fi
+
+            if [[ -n "$matched" ]]; then
+              echo "::warning file=$file::$warning_message"
+              echo "$matched" | sed "s#^#⚠️ 검토|$reason|$filename|#" >> $WARNING_DETAILS_FILE
+              REVIEW_FOUND=true
+            fi
+          }
+
+          echo "파일별 SQL 검증 시작..."
+
+          while IFS= read -r file; do
+            echo "검사 중: $file"
+
+            # 파일명 추출
+            filename=$(basename "$file" .sql)
+
+            # 주석 제외 SQL 내용 읽기
+            SQL_CONTENT=$(grep -v '^[[:space:]]*--' "$file" || true)
+
+            # --- '금지' 유형 검사 ---
+            check_forbidden_pattern "$FORBIDDEN_PATTERNS" "DROP/TRUNCATE/DROP COLUMN"
+            check_forbidden_pattern "$DELETE_PATTERN" "DELETE without WHERE" "WHERE"
+
+            # --- '검토' 유형 검사 ---
+            check_review_pattern "$SCHEMA_CHANGE_PATTERNS" "스키마 구조 변경" "[검토 필요] 스키마 구조 변경(RENAME, MODIFY, CHANGE) 감지"
+            check_review_pattern "$INDEX_TABLE_CHANGE_PATTERNS" "인덱스/테이블 속성 변경" "[검토 필요] 인덱스/테이블 속성 변경 감지"
+            check_review_pattern "$DB_CONSTRAINT_PATTERNS" "DB 제약조건 변경" "[검토 필요] DB 제약조건 변경 감지"
+            check_review_pattern "$DATA_CHANGE_PATTERNS" "UPDATE WHERE 절 확인" "[검토 필요] UPDATE 구문 WHERE 절 확인 필요" "WHERE"
+          done < changed_files.txt
+
+          # 최종 output 설정
+          if [ "$REVIEW_FOUND" = true ]; then
+            echo "review_warnings_found=true" >> $GITHUB_OUTPUT
+          fi
+
+          # --- 최종 결과 처리 ---
+          if [ "$FORBIDDEN_FOUND" = true ]; then
+            echo "::error::Flyway 스크립트 내 '금지' 유형 SQL 명령어 감지"
+            echo "forbidden_found=true" >> $GITHUB_OUTPUT
+
+            echo "Flyway 스크립트 내 '금지' 유형 SQL 명령어 감지"
+            cat $FORBIDDEN_ERRORS_FILE
+            exit 1
+          else
+            echo "forbidden_found=false" >> $GITHUB_OUTPUT
+            if [ "$REVIEW_FOUND" = true ]; then
+              echo "Flyway 스크립트 내 '검토' 유형 SQL 명령어 감지"
+            else
+              echo "위험/검토 명령어 미발견"
+            fi
+          fi
+
+      - name: Flyway CLI 다운로드
+        if: steps.check_changed_files.outputs.has_changed_files == 'true'
+        run: |
+          echo "Flyway CLI 다운로드 시작..."
+          
+          wget -q https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.8.2/flyway-commandline-11.8.2-linux-x64.tar.gz
+          tar -xzf flyway-commandline-11.8.2-linux-x64.tar.gz
+          chmod +x flyway-11.8.2/flyway
+          
+          echo "FLYWAY_PATH=./flyway-11.8.2" >> $GITHUB_ENV
+          echo "Flyway CLI 다운로드 완료"
+
+      - name: 테스트 유저 생성
+        id: create_user
+        if: steps.check_changed_files.outputs.has_changed_files == 'true'
+        run: |
+          echo "테스트 유저 생성 시작..."
+          
+          FLYWAY_USER="test_api_user"
+          FLYWAY_PASSWORD="test_password"
+          
+          mysql -h 127.0.0.1 -uroot -ptestpw testdb << EOF
+            CREATE USER '${FLYWAY_USER}'@'%' IDENTIFIED BY '${FLYWAY_PASSWORD}';
+          
+            GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, REFERENCES, EXECUTE 
+            ON testdb.* TO '${FLYWAY_USER}'@'%';
+          
+            FLUSH PRIVILEGES;
+          
+            SHOW GRANTS FOR '${FLYWAY_USER}'@'%';
+          EOF
+          
+          echo "flyway_user=${FLYWAY_USER}" >> $GITHUB_OUTPUT
+          echo "flyway_password=${FLYWAY_PASSWORD}" >> $GITHUB_OUTPUT
+          
+          echo "테스트 유저 생성 완료"
+
+      - name: Flyway CLI 기반 마이그레이션 검증 실행
+        id: flyway_migrate
+        if: steps.check_changed_files.outputs.has_changed_files == 'true'
+        continue-on-error: true
+        run: |
+          echo "Flyway 마이그레이션 검증 실행 시작..."
+          
+          if ! ${{ env.FLYWAY_PATH }}/flyway migrate "-url=jdbc:mysql://127.0.0.1:3306/testdb?allowPublicKeyRetrieval=true&useSSL=false" "-user=${{ steps.create_user.outputs.flyway_user }}" "-password=${{ steps.create_user.outputs.flyway_password }}" "-locations=filesystem:application/src/main/resources/db/migration" "-connectRetries=10" > flyway_migration.log 2>&1; then
+            echo "마이그레이션 실패"
+            echo "--- Flyway Log ---"
+            cat flyway_migration.log
+            echo "--------------------"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "마이그레이션 성공"
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 마이그레이션 실패 원인 분석
+        if: steps.flyway_migrate.outputs.status == 'failed'
+        run: |
+          echo "::error::Flyway 마이그레이션 실패"
+          echo ""
+          echo "실패 원인 분석 저장..."
+          
+          echo -e "## 마이그레이션 실패\n\n" > migration_error.txt
+          echo "### 로그 정보" >> migration_error.txt
+          echo '```' >> migration_error.txt
+          tail -100 flyway_migration.log >> migration_error.txt
+          echo '```' >> migration_error.txt
+          
+          echo "실패 원인 분석 저장 완료"
+
+      - name: 마이그레이션 히스토리 확인
+        if: steps.flyway_migrate.outputs.status == 'success'
+        run: |
+          echo "마이그레이션 히스토리 확인 시작..."
+          
+          mysql -h 127.0.0.1 -u${{ steps.create_user.outputs.flyway_user }} -p${{ steps.create_user.outputs.flyway_password }} testdb << 'EOF'
+            SELECT 
+              version, 
+              description, 
+              type, 
+              installed_on, 
+              success 
+            FROM flyway_schema_history 
+            ORDER BY installed_rank DESC 
+            LIMIT 10;
+          EOF
+
+      - name: 검증 결과 코멘트 작성
+        if: always()
+        uses: actions/github-script@v8
+        env:
+          FORBIDDEN_FOUND: ${{ steps.static_analysis.outputs.forbidden_found }}
+          REVIEW_FOUND: ${{ steps.static_analysis.outputs.review_warnings_found }}
+          MIGRATE_STATUS: ${{ steps.flyway_migrate.outputs.status }}
+        with:
+          github-token: ${{ github.TOKEN }}
+          script: |
+            const script = require('./.github/scripts/generate-flyway-report.js');
+            await script({ github, context, core });
+
+      - name: Request changes if validation fail
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ github.TOKEN }}
+          script: |
+            const pull_number = ${{ github.event.pull_request.number }}
+            const updated_title = `[FLYWAY 검증 실패] ${{ github.event.pull_request.title }}`
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pull_number,
+              title: updated_title
+            })
+
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pull_number,
+              event: 'REQUEST_CHANGES',
+              body: 'Flyway 마이그레이션 검증 실패'
+            })
