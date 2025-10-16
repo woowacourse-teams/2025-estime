@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     implementation project(':application')
-    runtimeOnly project(':infrastructure')
+    implementation project(':infrastructure')
     testImplementation project(':core')
 
     // Minimal dependencies - just enough to bootstrap
