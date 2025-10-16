@@ -93,6 +93,13 @@ const useLocalTimeSelection = () => {
     [timeTableCellHover]
   );
 
+  const getCurrentCell = useCallback((event: React.PointerEvent) => {
+    const elementAtPoint = document.elementFromPoint(event.clientX, event.clientY);
+    if (!elementAtPoint) return null;
+    const targetCell = elementAtPoint.closest('.time-table-cell') satisfies HTMLElement | null;
+    return targetCell?.dataset.time;
+  }, []);
+
   const onDragStart = useCallback(
     (event: React.PointerEvent) => {
       cacheDragHitboxes();
@@ -100,10 +107,7 @@ const useLocalTimeSelection = () => {
       const bounds = containerBoundingRectRef.current;
       if (!bounds) return;
 
-      const targetCell = (event.target as HTMLElement).closest(
-        '.time-table-cell'
-      ) as HTMLElement | null;
-      const cellKey = targetCell?.dataset.time;
+      const cellKey = getCurrentCell(event);
       if (!cellKey) return;
 
       addDraggingClass();
@@ -122,7 +126,7 @@ const useLocalTimeSelection = () => {
       updateHoverLabel(cellKey);
       updateCellClasses();
     },
-    [updateCellClasses, addDraggingClass, updateHoverLabel]
+    [updateCellClasses, addDraggingClass, getCurrentCell, updateHoverLabel]
   );
 
   const onDragMove = useCallback(
@@ -133,15 +137,9 @@ const useLocalTimeSelection = () => {
       const pointerX = event.clientX - bounds.left;
       const pointerY = event.clientY - bounds.top;
 
-      const hoveredCell = dragHitboxesRef.current.find(
-        (cell) =>
-          pointerX >= cell.left &&
-          pointerX <= cell.right &&
-          pointerY >= cell.top &&
-          pointerY <= cell.bottom
-      );
+      const hoveredCell = getCurrentCell(event);
 
-      updateHoverLabel(hoveredCell?.key ?? null);
+      if (hoveredCell) updateHoverLabel(hoveredCell);
 
       const selectionRect = {
         left: Math.min(dragStartX.current, pointerX),
@@ -175,7 +173,7 @@ const useLocalTimeSelection = () => {
 
       return didChange;
     },
-    [updateHoverLabel]
+    [updateHoverLabel, getCurrentCell]
   );
 
   const cleanUp = useCallback(() => {
