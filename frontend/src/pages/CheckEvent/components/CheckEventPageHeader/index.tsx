@@ -1,9 +1,10 @@
 import Flex from '../../../../shared/layout/Flex';
-import IClock from '@/assets/icons/IClock';
 import Text from '@/shared/components/Text';
+import IClock from '@/assets/icons/IClock';
+import ShareButton from '../../../../shared/components/Button/ShareButton';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import ShareButton from '../../../../shared/components/Button/ShareButton';
+import Participants from '../Participants/Participants';
 
 type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
   roomSession: string;
@@ -25,7 +26,7 @@ const CheckEventPageHeader = ({
         </Text>
         <ShareButton onClick={handleCopyLinkButtonClick} />
       </Flex>
-      <Flex gap="var(--gap-6)" justify="flex-start" align="center">
+      <Flex gap="var(--gap-6)" justify="space-between" align="center">
         <Flex justify="space-between" align="center" gap="var(--gap-3)">
           <IClock color={theme.colors.text} />
 
@@ -33,6 +34,7 @@ const CheckEventPageHeader = ({
             마감일 : {deadline ? `${deadline.date} ${deadline.time}` : '설정되지 않음'}
           </Text>
         </Flex>
+        <Participants />
       </Flex>
     </Flex>
   );

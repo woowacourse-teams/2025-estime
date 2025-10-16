@@ -1,6 +1,6 @@
+import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
 import * as S from '../Timetable.styled';
-import Text from '@/shared/components/Text';
-import { RefObject, memo } from 'react';
+import { RefObject } from 'react';
 
 interface TimeSlotColumnProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -8,21 +8,26 @@ interface TimeSlotColumnProps {
 }
 
 const TimeSlotColumn = ({ timeColumnRef, dateTimeSlots }: TimeSlotColumnProps) => {
+  const { hoverLabelRef, labelRefs } = useTimetableHoverContext();
+
   return (
     <S.TimeSlotColumn ref={timeColumnRef}>
-      {dateTimeSlots.map((dateTimeSlot) => (
-        <S.GridContainer key={dateTimeSlot}>
-          {dateTimeSlot.endsWith(':00') && (
-            <S.TimeLabel>
-              <Text variant="body" color="text">
-                {dateTimeSlot}
-              </Text>
+      {dateTimeSlots.map(
+        (time) =>
+          time.endsWith(':00') && (
+            <S.TimeLabel
+              key={time}
+              ref={(el) => {
+                labelRefs.current[time] = el;
+              }}
+            >
+              <span>{time}</span>
             </S.TimeLabel>
-          )}
-        </S.GridContainer>
-      ))}
+          )
+      )}
+      <S.HoverLabel ref={hoverLabelRef} />
     </S.TimeSlotColumn>
   );
 };
 
-export default memo(TimeSlotColumn);
+export default TimeSlotColumn;
