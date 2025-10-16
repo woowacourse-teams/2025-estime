@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class RoomDeadlineSchedulerTest {
 
+    private static final RoomSession roomSession = RoomSession.from("testRoomSession");
+
     @Autowired
     private RoomDeadlineScheduler roomDeadlineScheduler;
 
@@ -40,7 +42,7 @@ class RoomDeadlineSchedulerTest {
         // given
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime deadline = now.plusSeconds(3);
-        final Room roomForDeadline = Room.withoutId("Test Room", deadline);
+        final Room roomForDeadline = Room.withoutId("Test Room", roomSession, deadline);
         roomRepository.save(roomForDeadline);
 
         final PlatformNotification notification = PlatformNotification.of(false, true, true);
@@ -67,14 +69,14 @@ class RoomDeadlineSchedulerTest {
         // given
         final LocalDateTime now = LocalDateTime.now();
 
-        final Room room1 = Room.withoutId("Test Room 1", now.plusDays(1));
+        final Room room1 = Room.withoutId("Test Room 1", roomSession, now.plusDays(1));
         roomRepository.save(room1);
-        final Room room2 = Room.withoutId("Test Room 2", now.plusDays(2));
+        final Room room2 = Room.withoutId("Test Room 2", roomSession, now.plusDays(2));
         roomRepository.save(room2);
         roomDeadlineScheduler.initialize();
 
         final LocalDateTime deadline = now.plusSeconds(3);
-        final Room newRoomForDeadline = Room.withoutId("New Test Room", deadline);
+        final Room newRoomForDeadline = Room.withoutId("New Test Room", roomSession, deadline);
         roomRepository.save(newRoomForDeadline);
 
         final PlatformNotification notification = PlatformNotification.of(false, true, true);
@@ -101,7 +103,7 @@ class RoomDeadlineSchedulerTest {
         // given
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime deadline = now.plusHours(1).plusSeconds(3); // 1시간 3초 후
-        final Room room = Room.withoutId("Test Room", deadline);
+        final Room room = Room.withoutId("Test Room", roomSession, deadline);
         roomRepository.save(room);
 
         final PlatformNotification notification = PlatformNotification.of(false, true, true);
@@ -129,7 +131,7 @@ class RoomDeadlineSchedulerTest {
         // given
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime deadline = now.plusSeconds(3);
-        final Room roomWithPlatform = Room.withoutId("Room with Platform", deadline);
+        final Room roomWithPlatform = Room.withoutId("Room with Platform", roomSession, deadline);
         roomRepository.save(roomWithPlatform);
 
         final PlatformNotification notification = PlatformNotification.of(false, true, true);
@@ -156,7 +158,7 @@ class RoomDeadlineSchedulerTest {
         // given
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime deadline = now.plusSeconds(3);
-        final Room roomWithoutPlatform = Room.withoutId("Room no Platform", deadline);
+        final Room roomWithoutPlatform = Room.withoutId("Room no Platform", roomSession, deadline);
         roomRepository.save(roomWithoutPlatform);
 
         // 플랫폼을 등록하지 않음 (연결되지 않은 상태)

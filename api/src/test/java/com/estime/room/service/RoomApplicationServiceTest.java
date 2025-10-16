@@ -1,6 +1,7 @@
 package com.estime.room.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,7 +23,6 @@ import com.estime.room.dto.input.VotesUpdateInput;
 import com.estime.room.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.ParticipantCheckOutput;
-import com.estime.room.dto.output.RoomCreateOutput;
 import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
@@ -41,8 +41,6 @@ import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.RoomSession;
-import com.github.f4b6a3.tsid.Tsid;
-import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -62,6 +60,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class RoomApplicationServiceTest {
+
+    private static final RoomSession roomSession = RoomSession.from("testRoomSession");
 
     @Autowired
     private RoomApplicationService roomApplicationService;
@@ -109,6 +109,7 @@ class RoomApplicationServiceTest {
     void setUp() {
         final Room tempRoom = Room.withoutId(
                 "test",
+                roomSession,
                 LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
         );
         room = roomRepository.save(tempRoom);
@@ -135,11 +136,9 @@ class RoomApplicationServiceTest {
         );
 
         // when
-        final RoomCreateOutput saved = roomApplicationService.createRoom(input);
-
         // then
-        assertThat(isValidSession(saved.session()))
-                .isTrue();
+        assertThatCode(() -> roomApplicationService.createRoom(input))
+                .doesNotThrowAnyException();
     }
 
     @DisplayName("세션을 기반으로 방을 조회할 수 있다.")
@@ -166,7 +165,7 @@ class RoomApplicationServiceTest {
     @Test
     void getRoomByNonexistentSession() {
         // given
-        final Tsid nonexistentSession = TsidCreator.getTsid();
+        final String nonexistentSession = "no";
 
         // when // then
         assertThatThrownBy(() -> roomApplicationService.getRoomBySession(RoomSessionInput.from(nonexistentSession)))
@@ -394,15 +393,8 @@ class RoomApplicationServiceTest {
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(isValidSession(saved.session()))
-                    .isTrue();
-
             softly.assertThat(platformRepository.findByRoomId(room.getId()))
                     .isPresent();
         });
-    }
-
-    private boolean isValidSession(final RoomSession session) {
-        return Tsid.isValid(session.getValue().toString());
     }
 }

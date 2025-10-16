@@ -14,5 +14,4 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework:spring-tx'
-    testImplementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
 }
