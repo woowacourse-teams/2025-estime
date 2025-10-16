@@ -1,6 +1,7 @@
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
 import usePreventScroll from './usePreventScroll';
+import { useTimetableHoverContext } from '../providers/TimetableProvider';
 
 type TimeCellHitbox = {
   key: string;
@@ -13,7 +14,8 @@ type TimeCellHitbox = {
 const useLocalTimeSelection = () => {
   const selectedTimes = useUserAvailability().selectedTimes;
 
-  // 전역 값 복제 → 드래그 중 임시 보관
+  const { timeTableCellHover } = useTimetableHoverContext();
+
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -79,6 +81,18 @@ const useLocalTimeSelection = () => {
     });
   };
 
+  const updateHoverLabel = useCallback(
+    (cellKey: string | null) => {
+      if (!cellKey) {
+        timeTableCellHover(null);
+        return;
+      }
+      const timeText = cellKey.split('T')[1];
+      timeTableCellHover(timeText);
+    },
+    [timeTableCellHover]
+  );
+
   const onDragStart = useCallback(
     (event: React.PointerEvent) => {
       cacheDragHitboxes();
@@ -105,49 +119,64 @@ const useLocalTimeSelection = () => {
         currentWorkingSetRef.current.delete(cellKey);
       }
 
+      updateHoverLabel(cellKey);
       updateCellClasses();
     },
-    [updateCellClasses, addDraggingClass]
+    [updateCellClasses, addDraggingClass, updateHoverLabel]
   );
 
-  const onDragMove = useCallback((event: React.PointerEvent) => {
-    const bounds = containerBoundingRectRef.current;
-    if (!bounds) return;
+  const onDragMove = useCallback(
+    (event: React.PointerEvent) => {
+      const bounds = containerBoundingRectRef.current;
+      if (!bounds) return;
 
-    const pointerX = event.clientX - bounds.left;
-    const pointerY = event.clientY - bounds.top;
+      const pointerX = event.clientX - bounds.left;
+      const pointerY = event.clientY - bounds.top;
 
-    const selectionRect = {
-      left: Math.min(dragStartX.current, pointerX),
-      top: Math.min(dragStartY.current, pointerY),
-      right: Math.max(dragStartX.current, pointerX),
-      bottom: Math.max(dragStartY.current, pointerY),
-    };
+      const hoveredCell = dragHitboxesRef.current.find(
+        (cell) =>
+          pointerX >= cell.left &&
+          pointerX <= cell.right &&
+          pointerY >= cell.top &&
+          pointerY <= cell.bottom
+      );
 
-    let didChange = false;
-    for (const cell of dragHitboxesRef.current) {
-      const overlaps =
-        cell.left < selectionRect.right &&
-        cell.right > selectionRect.left &&
-        cell.top < selectionRect.bottom &&
-        cell.bottom > selectionRect.top;
+      updateHoverLabel(hoveredCell?.key ?? null);
 
-      if (!overlaps) continue;
+      const selectionRect = {
+        left: Math.min(dragStartX.current, pointerX),
+        top: Math.min(dragStartY.current, pointerY),
+        right: Math.max(dragStartX.current, pointerX),
+        bottom: Math.max(dragStartY.current, pointerY),
+      };
 
-      if (selectionModeRef.current === 'add') {
-        if (!currentWorkingSetRef.current.has(cell.key)) {
-          currentWorkingSetRef.current.add(cell.key);
-          didChange = true;
-        }
-      } else {
-        if (currentWorkingSetRef.current.has(cell.key)) {
-          currentWorkingSetRef.current.delete(cell.key);
-          didChange = true;
+      let didChange = false;
+      for (const cell of dragHitboxesRef.current) {
+        const overlaps =
+          cell.left < selectionRect.right &&
+          cell.right > selectionRect.left &&
+          cell.top < selectionRect.bottom &&
+          cell.bottom > selectionRect.top;
+
+        if (!overlaps) continue;
+
+        if (selectionModeRef.current === 'add') {
+          if (!currentWorkingSetRef.current.has(cell.key)) {
+            currentWorkingSetRef.current.add(cell.key);
+            didChange = true;
+          }
+        } else {
+          if (currentWorkingSetRef.current.has(cell.key)) {
+            currentWorkingSetRef.current.delete(cell.key);
+            didChange = true;
+          }
         }
       }
-    }
-    return didChange;
-  }, []);
+
+      return didChange;
+    },
+    [updateHoverLabel]
+  );
 
   const cleanUp = useCallback(() => {
     removeDraggingClass();
@@ -167,10 +196,11 @@ const useLocalTimeSelection = () => {
       cancelrAF();
       flushCellClasses();
       commitSelection();
+      updateHoverLabel(null);
     } finally {
       cleanUp();
     }
-  }, [cancelrAF, flushCellClasses, cleanUp]);
+  }, [cancelrAF, flushCellClasses, cleanUp, updateHoverLabel]);
 
   const handleDragStart = useCallback(
     (e: React.PointerEvent) => {
@@ -211,13 +241,6 @@ const useLocalTimeSelection = () => {
       selectedTimes: new Set(currentWorkingSetRef.current),
     }));
   };
-
-  useEffect(() => {
-    return () => {
-      cancelrAF();
-      cleanUp();
-    };
-  }, [cancelrAF, cleanUp]);
 
   const pointerHandlers = useMemo(
     () => ({
