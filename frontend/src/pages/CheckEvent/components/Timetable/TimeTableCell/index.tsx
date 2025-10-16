@@ -4,7 +4,6 @@ import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { useTheme } from '@emotion/react';
-import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
 
 interface TimeTableCellProps {
   date: string;
@@ -12,8 +11,6 @@ interface TimeTableCellProps {
 }
 
 const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
-  const { timeTableCellHover } = useTimetableHoverContext();
-
   const dateTimeKey = `${date}T${timeText}`;
   const roomStatistics = useRoomStatistics();
   const cellInfo = roomStatistics.statistics.get(dateTimeKey);
@@ -21,38 +18,34 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const theme = useTheme();
   const { isOn } = useGlassPreview();
 
-  const handleEnter = () => timeTableCellHover(timeText);
-
-  const handleMouseOver = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const isDragging = e.currentTarget.closest('.dragging') !== null;
-    if (isDragging) return;
-    if (theme.isMobile) return;
-    if (!isOn) return;
-    if (!cellInfo) {
-      cellDataStore.initialStore();
-    } else {
-      cellDataStore.setState({
-        ...cellInfo,
-        isRecommended,
-        date: FormatManager.formatKoreanDate(date),
-        startTime: timeText,
-        endTime: TimeManager.addMinutes(timeText, 30),
-      });
+
+    if (!isDragging && !theme.isMobile && isOn) {
+      if (!cellInfo) {
+        cellDataStore.initialStore();
+      } else {
+        cellDataStore.setState({
+          ...cellInfo,
+          isRecommended,
+          date: FormatManager.formatKoreanDate(date),
+          startTime: timeText,
+          endTime: TimeManager.addMinutes(timeText, 30),
+        });
+      }
     }
   };
 
-  const handleLeave = () => {
+  const handlePointerLeave = () => {
     cellDataStore.initialStore();
-    timeTableCellHover(null);
   };
 
   return (
     <div
       data-time={dateTimeKey}
       className="time-table-cell"
-      onMouseEnter={handleEnter}
-      onMouseOver={handleMouseOver}
-      onMouseLeave={handleLeave}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
     />
   );
 };
