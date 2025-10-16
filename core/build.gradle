@@ -13,7 +13,6 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
 
     testImplementation 'org.assertj:assertj-core'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 def generatedDir = layout.buildDirectory.dir('generated/querydsl')
