@@ -146,7 +146,7 @@ class RoomApplicationServiceTest {
     void getRoomBySession() {
         // when
         final RoomOutput output = roomApplicationService.getRoomBySession(
-                RoomSessionInput.from(room.getSession().getValue()));
+                RoomSessionInput.from(room.getSession()));
 
         // then
         assertSoftly(softAssertions -> {
@@ -168,7 +168,7 @@ class RoomApplicationServiceTest {
         final String nonexistentSession = "no";
 
         // when // then
-        assertThatThrownBy(() -> roomApplicationService.getRoomBySession(RoomSessionInput.from(nonexistentSession)))
+        assertThatThrownBy(() -> roomApplicationService.getRoomBySession(RoomSessionInput.from(RoomSession.from(nonexistentSession))))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining(DomainTerm.ROOM + " is not exists");
     }
@@ -184,7 +184,7 @@ class RoomApplicationServiceTest {
 
         // when
         final DateTimeSlotStatisticOutput result = roomApplicationService.calculateVoteStatistic(
-                RoomSessionInput.from(room.getSession().getValue()));
+                RoomSessionInput.from(room.getSession()));
 
         // then
         assertSoftly(softly -> {
@@ -209,7 +209,7 @@ class RoomApplicationServiceTest {
 
         // when
         final VotesOutput votesOutput = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
-                VotesFindInput.of(room.getSession().getValue(), participant1.getName().getValue()));
+                VotesFindInput.of(room.getSession(), participant1.getName().getValue()));
 
         // then
         assertSoftly(softly -> {
