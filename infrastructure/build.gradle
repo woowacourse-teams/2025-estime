@@ -8,9 +8,6 @@ dependencies {
     // Configuration processor for @ConfigurationProperties
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // MySQL driver
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
 
