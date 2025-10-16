@@ -1,4 +1,3 @@
-
 import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
 import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
 import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
@@ -6,7 +5,6 @@ import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { useTheme } from '@emotion/react';
 import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
-
 
 interface TimeTableCellProps {
   date: string;
@@ -23,13 +21,10 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const theme = useTheme();
   const { isOn } = useGlassPreview();
 
-  const handleLeave = () => {
-    cellDataStore.initialStore();
-  };
+  const handleEnter = () => timeTableCellHover(timeText);
 
   const handleMouseOver = (e: React.MouseEvent<HTMLDivElement>) => {
     const isDragging = e.currentTarget.closest('.dragging') !== null;
-
     if (isDragging) return;
     if (theme.isMobile) return;
     if (!isOn) return;
@@ -45,17 +40,18 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
       });
     }
   };
-  const handleEnter = () => timeTableCellHover(timeText);
-  const handleLeave = () => timeTableCellHover(null);
 
-
+  const handleLeave = () => {
+    cellDataStore.initialStore();
+    timeTableCellHover(null);
+  };
 
   return (
     <div
       data-time={dateTimeKey}
       className="time-table-cell"
-      onMouseOver={handleMouseOver}
       onMouseEnter={handleEnter}
+      onMouseOver={handleMouseOver}
       onMouseLeave={handleLeave}
     />
   );
