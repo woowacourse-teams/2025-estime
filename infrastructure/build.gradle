@@ -2,11 +2,17 @@ dependencies {
     implementation project(':core')
     compileOnly project(':application')
 
-    // Spring Boot Starters
+    // Spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // Configuration processor for @ConfigurationProperties
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // MySQL driver
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
 
     // API documentation (Swagger)
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
@@ -15,24 +21,9 @@ dependencies {
     implementation 'com.github.napstr:logback-discord-appender:1.0.0'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-metrics:3.4.0'
 
-    // QueryDSL for dynamic queries
-    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
-
-    // MySQL driver
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
     // Discord
-    implementation 'net.dv8tion:JDA:5.6.1'  // Discord
+    implementation 'net.dv8tion:JDA:5.6.1'
 
-    // TSID (for JPA converters)
+    // TSID
     implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
-
-    // Configuration processor for @ConfigurationProperties
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -1,13 +1,9 @@
 dependencies {
     implementation project(':core')
 
-    // Spring Boot starters
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter'
 
     // Spring TX (for @Transactional in services)
     implementation 'org.springframework:spring-tx'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
