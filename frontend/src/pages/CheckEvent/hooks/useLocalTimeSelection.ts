@@ -79,7 +79,7 @@ const useLocalTimeSelection = () => {
     });
   };
 
-  const handleDragStart = useCallback(
+  const onDragStart = useCallback(
     (event: React.PointerEvent) => {
       cacheDragHitboxes();
 
@@ -108,6 +108,50 @@ const useLocalTimeSelection = () => {
       updateCellClasses();
     },
     [updateCellClasses, addDraggingClass]
+  );
+
+  useEffect(() => {
+    currentWorkingSetRef.current = new Set(selectedTimes);
+    updateCellClasses();
+  }, [selectedTimes, updateCellClasses]);
+
+  /** 최종 반영 */
+  const commitSelection = () => {
+    userAvailabilityStore.setState((prev) => ({
+      ...prev,
+      selectedTimes: new Set(currentWorkingSetRef.current),
+    }));
+  };
+
+  const cleanUp = useCallback(() => {
+    removeDraggingClass();
+    dragHitboxesRef.current = [];
+    containerBoundingRectRef.current = null;
+  }, [removeDraggingClass]);
+
+  const cancelrAF = useCallback(() => {
+    if (renderAnimationFrameId.current != null) {
+      cancelAnimationFrame(renderAnimationFrameId.current);
+      renderAnimationFrameId.current = null;
+    }
+  }, []);
+
+  const onDragEnd = useCallback(() => {
+    try {
+      cancelrAF();
+      flushCellClasses();
+      commitSelection();
+    } finally {
+      cleanUp();
+    }
+  }, [cancelrAF, flushCellClasses, cleanUp]);
+
+  const handleDragStart = useCallback(
+    (e: React.PointerEvent) => {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      onDragStart(e);
+    },
+    [onDragStart]
   );
 
   const handleDragMove = useCallback(
@@ -153,41 +197,16 @@ const useLocalTimeSelection = () => {
     [updateCellClasses]
   );
 
-  useEffect(() => {
-    currentWorkingSetRef.current = new Set(selectedTimes);
-    updateCellClasses();
-  }, [selectedTimes, updateCellClasses]);
-
-  /** 최종 반영 */
-  const commitSelection = () => {
-    userAvailabilityStore.setState((prev) => ({
-      ...prev,
-      selectedTimes: new Set(currentWorkingSetRef.current),
-    }));
-  };
-
-  const cleanUp = useCallback(() => {
-    removeDraggingClass();
-    dragHitboxesRef.current = [];
-    containerBoundingRectRef.current = null;
-  }, [removeDraggingClass]);
-
-  const cancelrAF = useCallback(() => {
-    if (renderAnimationFrameId.current != null) {
-      cancelAnimationFrame(renderAnimationFrameId.current);
-      renderAnimationFrameId.current = null;
-    }
-  }, []);
-
-  const handleDragEnd = useCallback(() => {
-    try {
-      cancelrAF();
-      flushCellClasses();
-      commitSelection();
-    } finally {
-      cleanUp();
-    }
-  }, [cancelrAF, flushCellClasses, cleanUp]);
+  const handleDragEnd = useCallback(
+    (e: React.PointerEvent) => {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } finally {
+        onDragEnd();
+      }
+    },
+    [onDragEnd]
+  );
 
   useEffect(() => {
     return () => {
@@ -198,32 +217,11 @@ const useLocalTimeSelection = () => {
 
   const pointerHandlers = useMemo(
     () => ({
-      onPointerDown: (e: React.PointerEvent) => {
-        e.currentTarget.setPointerCapture(e.pointerId);
-        handleDragStart(e);
-      },
+      onPointerDown: handleDragStart,
       onPointerMove: handleDragMove,
-      onPointerUp: (e: React.PointerEvent) => {
-        try {
-          e.currentTarget.releasePointerCapture(e.pointerId);
-        } finally {
-          handleDragEnd();
-        }
-      },
-      onPointerCancel: (e: React.PointerEvent) => {
-        try {
-          e.currentTarget.releasePointerCapture(e.pointerId);
-        } finally {
-          handleDragEnd();
-        }
-      },
-      onLostPointerCapture: (e: React.PointerEvent) => {
-        try {
-          e.currentTarget.releasePointerCapture(e.pointerId);
-        } finally {
-          handleDragEnd();
-        }
-      },
+      onPointerUp: handleDragEnd,
+      onPointerCancel: handleDragEnd,
+      onLostPointerCapture: handleDragEnd,
     }),
     [handleDragStart, handleDragMove, handleDragEnd]
   );
