@@ -26,6 +26,7 @@ const useLocalTimeSelection = () => {
   const containerBoundingRectRef = useRef<DOMRectReadOnly | null>(null);
   const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
   const renderAnimationFrameId = useRef<number | null>(null);
+  const hoverRequestAnimationFrameId = useRef<number | null>(null);
 
   usePreventScroll(containerRef);
 
@@ -81,16 +82,28 @@ const useLocalTimeSelection = () => {
     });
   };
 
-  const updateHoverLabel = useCallback(
-    (cellKey: string | null) => {
-      if (!cellKey) {
-        timeTableCellHover(null);
-        return;
+  const flushHoverLabel = useCallback(
+    (cellKey: string) => {
+      try {
+        if (!cellKey) {
+          timeTableCellHover(null);
+          return;
+        }
+        const timeText = cellKey.split('T')[1];
+        timeTableCellHover(timeText);
+      } finally {
+        hoverRequestAnimationFrameId.current = null;
       }
-      const timeText = cellKey.split('T')[1];
-      timeTableCellHover(timeText);
     },
     [timeTableCellHover]
+  );
+
+  const updateHoverAnimation = useCallback(
+    (cellKey: string) => {
+      if (hoverRequestAnimationFrameId.current != null) return;
+      hoverRequestAnimationFrameId.current = requestAnimationFrame(() => flushHoverLabel(cellKey));
+    },
+    [flushHoverLabel]
   );
 
   const getCurrentCell = useCallback((event: React.PointerEvent) => {
@@ -123,10 +136,10 @@ const useLocalTimeSelection = () => {
         currentWorkingSetRef.current.delete(cellKey);
       }
 
-      updateHoverLabel(cellKey);
       updateCellClasses();
+      updateHoverAnimation(cellKey);
     },
-    [updateCellClasses, addDraggingClass, getCurrentCell, updateHoverLabel]
+    [updateCellClasses, addDraggingClass, getCurrentCell, updateHoverAnimation]
   );
 
   const onDragMove = useCallback(
@@ -139,7 +152,7 @@ const useLocalTimeSelection = () => {
 
       const hoveredCell = getCurrentCell(event);
 
-      if (hoveredCell) updateHoverLabel(hoveredCell);
+      if (hoveredCell) updateHoverAnimation(hoveredCell);
 
       const selectionRect = {
         left: Math.min(dragStartX.current, pointerX),
@@ -173,7 +186,7 @@ const useLocalTimeSelection = () => {
 
       return didChange;
     },
-    [updateHoverLabel, getCurrentCell]
+    [getCurrentCell, updateHoverAnimation]
   );
 
   const cleanUp = useCallback(() => {
@@ -193,12 +206,12 @@ const useLocalTimeSelection = () => {
     try {
       cancelrAF();
       flushCellClasses();
+      flushHoverLabel('');
       commitSelection();
-      updateHoverLabel(null);
     } finally {
       cleanUp();
     }
-  }, [cancelrAF, flushCellClasses, cleanUp, updateHoverLabel]);
+  }, [cancelrAF, flushCellClasses, flushHoverLabel, cleanUp]);
 
   const handleDragStart = useCallback(
     (e: React.PointerEvent) => {
