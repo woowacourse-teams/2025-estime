@@ -3,6 +3,7 @@ package com.estime.room.service;
 import com.estime.exception.NotFoundException;
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomMessageSender;
+import com.estime.port.out.RoomSessionGenerator;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -66,10 +67,12 @@ public class RoomApplicationService {
     private final SlotBatchRepository slotBatchRepository;
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
+    private final RoomSessionGenerator roomSessionGenerator;
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        final Room room = Room.withoutId(input.title(), input.deadline());
+        final RoomSession session = RoomSession.from(roomSessionGenerator.generate());
+        final Room room = Room.withoutId(input.title(), session, input.deadline());
         final Room savedRoom = roomRepository.save(room);
 
         validateAvailableDateSlots(input.availableDateSlots());
@@ -99,7 +102,8 @@ public class RoomApplicationService {
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
         final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
-        final Room room = Room.withoutId(roomCreateInput.title(), roomCreateInput.deadline());
+        final RoomSession session = RoomSession.from(roomSessionGenerator.generate());
+        final Room room = Room.withoutId(roomCreateInput.title(), session, roomCreateInput.deadline());
         final Room savedRoom = roomRepository.save(room);
 
         validateAvailableDateSlots(input.availableDateSlots());

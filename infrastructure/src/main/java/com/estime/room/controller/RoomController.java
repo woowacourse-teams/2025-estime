@@ -1,13 +1,5 @@
 package com.estime.room.controller;
 
-import com.estime.shared.CustomApiResponse;
-import com.estime.room.dto.input.RoomSessionInput;
-import com.estime.room.dto.input.VotesFindInput;
-import com.estime.room.dto.input.VotesOutput;
-import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
-import com.estime.room.dto.output.ParticipantCheckOutput;
-import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.service.RoomApplicationService;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequest;
@@ -19,7 +11,14 @@ import com.estime.room.controller.dto.response.ParticipantVotesResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponse;
-import com.github.f4b6a3.tsid.Tsid;
+import com.estime.room.dto.input.RoomSessionInput;
+import com.estime.room.dto.input.VotesFindInput;
+import com.estime.room.dto.input.VotesOutput;
+import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
+import com.estime.room.dto.output.ParticipantCheckOutput;
+import com.estime.room.dto.output.RoomOutput;
+import com.estime.room.service.RoomApplicationService;
+import com.estime.shared.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +48,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<RoomResponse> getBySession(
-            @PathVariable("session") final Tsid roomSession
+            @PathVariable("session") final String roomSession
     ) {
         final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(roomSession));
         return CustomApiResponse.ok(RoomResponse.from(output));
@@ -57,7 +56,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
-            @PathVariable("session") final Tsid roomSession
+            @PathVariable("session") final String roomSession
     ) {
         final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(
                 RoomSessionInput.from(roomSession));
@@ -66,7 +65,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
-            @PathVariable("session") final Tsid roomSession,
+            @PathVariable("session") final String roomSession,
             @RequestParam("participantName") final String participantName
     ) {
         final VotesOutput output = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
@@ -76,7 +75,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
-            @PathVariable("session") final Tsid roomSession,
+            @PathVariable("session") final String roomSession,
             @RequestBody final ParticipantVotesUpdateRequest request
     ) {
         final VotesOutput output = roomApplicationService.updateParticipantVotes(
@@ -87,7 +86,7 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<ParticipantCheckResponse> createParticipant(
-            @PathVariable("session") final Tsid roomSession,
+            @PathVariable("session") final String roomSession,
             @RequestBody final ParticipantCreateRequest request
     ) {
         final ParticipantCheckOutput output = roomApplicationService.createParticipant(

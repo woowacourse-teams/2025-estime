@@ -8,9 +8,6 @@ dependencies {
     // Spring TX (for @Transactional in services)
     implementation 'org.springframework:spring-tx'
 
-    // TSID (for DTOs and converters)
-    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

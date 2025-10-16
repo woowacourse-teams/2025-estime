@@ -5,7 +5,6 @@ import com.estime.room.dto.input.VotesUpdateInput;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.slot.DateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.f4b6a3.tsid.Tsid;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +18,7 @@ public record ParticipantVotesUpdateRequest(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public VotesUpdateInput toInput(final Tsid roomSession) {
+    public VotesUpdateInput toInput(final String roomSession) {
         return new VotesUpdateInput(RoomSession.from(roomSession),
                 ParticipantName.from(participantName),
                 dateTimeSlots.stream().map(DateTimeSlot::from).toList());

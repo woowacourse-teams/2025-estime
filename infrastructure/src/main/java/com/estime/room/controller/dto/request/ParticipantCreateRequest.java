@@ -1,9 +1,8 @@
 package com.estime.room.controller.dto.request;
 
-import com.estime.room.dto.input.ParticipantCreateInput;
 import com.estime.room.RoomSession;
+import com.estime.room.dto.input.ParticipantCreateInput;
 import com.estime.room.participant.ParticipantName;
-import com.github.f4b6a3.tsid.Tsid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record ParticipantCreateRequest(
@@ -11,7 +10,7 @@ public record ParticipantCreateRequest(
         String participantName
 ) {
 
-    public ParticipantCreateInput toInput(final Tsid roomSession) {
+    public ParticipantCreateInput toInput(final String roomSession) {
         return new ParticipantCreateInput(
                 RoomSession.from(roomSession),
                 ParticipantName.from(participantName)
