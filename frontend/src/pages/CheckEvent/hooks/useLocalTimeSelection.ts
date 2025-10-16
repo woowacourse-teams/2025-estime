@@ -62,7 +62,7 @@ const useLocalTimeSelection = () => {
     renderAnimationFrameId.current = requestAnimationFrame(flushCellClasses);
   }, [flushCellClasses]);
 
-  const cacheDragHitboxes = () => {
+  const cacheDragHitboxes = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
     const containerRect = container.getBoundingClientRect();
@@ -80,7 +80,7 @@ const useLocalTimeSelection = () => {
         bottom: rect.bottom - containerRect.top,
       };
     });
-  };
+  }, []);
 
   const flushHoverLabel = useCallback(
     (cellKey: string) => {
@@ -107,10 +107,11 @@ const useLocalTimeSelection = () => {
   );
 
   const getCurrentCell = useCallback((event: React.PointerEvent) => {
-    const elementAtPoint = document.elementFromPoint(event.clientX, event.clientY);
-    if (!elementAtPoint) return null;
-    const targetCell = elementAtPoint.closest('.time-table-cell') satisfies HTMLElement | null;
-    return targetCell?.dataset.time;
+    const el = document.elementFromPoint(event.clientX, event.clientY);
+    if (!el) return null;
+    const targetCell = el.closest('.time-table-cell') as HTMLElement | null;
+    if (!targetCell) return null;
+    return targetCell.dataset.time;
   }, []);
 
   const onDragStart = useCallback(
@@ -139,8 +140,24 @@ const useLocalTimeSelection = () => {
       updateCellClasses();
       updateHoverAnimation(cellKey);
     },
-    [updateCellClasses, addDraggingClass, getCurrentCell, updateHoverAnimation]
+    [updateCellClasses, addDraggingClass, getCurrentCell, updateHoverAnimation, cacheDragHitboxes]
   );
+
+  const findHoveredCellKey = useCallback((pointerX: number, pointerY: number) => {
+    let hoveredCellKey: string | null = null;
+    for (const cell of dragHitboxesRef.current) {
+      if (
+        pointerX > cell.left &&
+        pointerX < cell.right &&
+        pointerY > cell.top &&
+        pointerY < cell.bottom
+      ) {
+        hoveredCellKey = cell.key;
+        break;
+      }
+    }
+    return hoveredCellKey;
+  }, []);
 
   const onDragMove = useCallback(
     (event: React.PointerEvent) => {
@@ -150,9 +167,9 @@ const useLocalTimeSelection = () => {
       const pointerX = event.clientX - bounds.left;
       const pointerY = event.clientY - bounds.top;
 
-      const hoveredCell = getCurrentCell(event);
+      const cellKey = findHoveredCellKey(pointerX, pointerY);
 
-      if (hoveredCell) updateHoverAnimation(hoveredCell);
+      if (cellKey) updateHoverAnimation(cellKey);
 
       const selectionRect = {
         left: Math.min(dragStartX.current, pointerX),
@@ -186,7 +203,7 @@ const useLocalTimeSelection = () => {
 
       return didChange;
     },
-    [getCurrentCell, updateHoverAnimation]
+    [updateHoverAnimation, findHoveredCellKey]
   );
 
   const cleanUp = useCallback(() => {
@@ -195,23 +212,27 @@ const useLocalTimeSelection = () => {
     containerBoundingRectRef.current = null;
   }, [removeDraggingClass]);
 
-  const cancelrAF = useCallback(() => {
+  const cancelRAF = useCallback(() => {
     if (renderAnimationFrameId.current != null) {
       cancelAnimationFrame(renderAnimationFrameId.current);
       renderAnimationFrameId.current = null;
+    }
+    if (hoverRequestAnimationFrameId.current != null) {
+      cancelAnimationFrame(hoverRequestAnimationFrameId.current);
+      hoverRequestAnimationFrameId.current = null;
     }
   }, []);
 
   const onDragEnd = useCallback(() => {
     try {
-      cancelrAF();
+      cancelRAF();
       flushCellClasses();
       flushHoverLabel('');
       commitSelection();
     } finally {
       cleanUp();
     }
-  }, [cancelrAF, flushCellClasses, flushHoverLabel, cleanUp]);
+  }, [cancelRAF, flushCellClasses, flushHoverLabel, cleanUp]);
 
   const handleDragStart = useCallback(
     (e: React.PointerEvent) => {
@@ -244,6 +265,13 @@ const useLocalTimeSelection = () => {
     currentWorkingSetRef.current = new Set(selectedTimes);
     updateCellClasses();
   }, [selectedTimes, updateCellClasses]);
+
+  useEffect(() => {
+    return () => {
+      cancelRAF();
+      cleanUp();
+    };
+  }, [cancelRAF, cleanUp]);
 
   /** 최종 반영 */
   const commitSelection = () => {
