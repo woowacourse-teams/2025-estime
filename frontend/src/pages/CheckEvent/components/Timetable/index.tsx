@@ -1,6 +1,6 @@
 import * as S from './Timetable.styled';
 import TimeSlotColumn from './TimeSlotColumn';
-import useLocalTimeSelection from '@/pages/CheckEvent/hooks/useLocalTimeSelection';
+import useTimeSelection from '@/pages/CheckEvent/hooks/useTimeSelection';
 import { RefObject } from 'react';
 import HeatmapPreview from '../HeatMapPreview';
 import Wrapper from '@/shared/layout/Wrapper';
@@ -20,7 +20,7 @@ const Timetable = ({
   availableDates,
   showHeatmapPreview,
 }: TimetableProps) => {
-  const { containerRef, pointerHandlers } = useLocalTimeSelection();
+  const { containerRef, pointerHandlers } = useTimeSelection();
 
   return (
     <TimetableHoverProvider dateTimeSlots={dateTimeSlots}>
