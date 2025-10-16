@@ -10,9 +10,9 @@ public record ParticipantCreateRequest(
         String participantName
 ) {
 
-    public ParticipantCreateInput toInput(final String roomSession) {
+    public ParticipantCreateInput toInput(final RoomSession session) {
         return new ParticipantCreateInput(
-                RoomSession.from(roomSession),
+                session,
                 ParticipantName.from(participantName)
         );
     }

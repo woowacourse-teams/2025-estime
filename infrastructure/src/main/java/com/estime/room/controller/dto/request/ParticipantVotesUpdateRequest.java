@@ -18,8 +18,8 @@ public record ParticipantVotesUpdateRequest(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public VotesUpdateInput toInput(final String roomSession) {
-        return new VotesUpdateInput(RoomSession.from(roomSession),
+    public VotesUpdateInput toInput(final RoomSession session) {
+        return new VotesUpdateInput(session,
                 ParticipantName.from(participantName),
                 dateTimeSlots.stream().map(DateTimeSlot::from).toList());
     }

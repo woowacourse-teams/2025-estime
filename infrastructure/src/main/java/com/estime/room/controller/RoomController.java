@@ -1,5 +1,6 @@
 package com.estime.room.controller;
 
+import com.estime.room.RoomSession;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequest;
@@ -48,49 +49,49 @@ public class RoomController implements RoomControllerSpecification {
 
     @Override
     public CustomApiResponse<RoomResponse> getBySession(
-            @PathVariable("session") final String roomSession
+            @PathVariable("session") final RoomSession session
     ) {
-        final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(roomSession));
+        final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(session));
         return CustomApiResponse.ok(RoomResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
-            @PathVariable("session") final String roomSession
+            @PathVariable("session") final RoomSession session
     ) {
         final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(
-                RoomSessionInput.from(roomSession));
+                RoomSessionInput.from(session));
         return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
-            @PathVariable("session") final String roomSession,
+            @PathVariable("session") final RoomSession session,
             @RequestParam("participantName") final String participantName
     ) {
         final VotesOutput output = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
-                VotesFindInput.of(roomSession, participantName));
+                VotesFindInput.of(session, participantName));
         return CustomApiResponse.ok(ParticipantVotesResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
-            @PathVariable("session") final String roomSession,
+            @PathVariable("session") final RoomSession session,
             @RequestBody final ParticipantVotesUpdateRequest request
     ) {
         final VotesOutput output = roomApplicationService.updateParticipantVotes(
-                request.toInput(roomSession));
+                request.toInput(session));
         return CustomApiResponse.ok("Update success",
                 ParticipantVotesUpdateResponse.from(output));
     }
 
     @Override
     public CustomApiResponse<ParticipantCheckResponse> createParticipant(
-            @PathVariable("session") final String roomSession,
+            @PathVariable("session") final RoomSession session,
             @RequestBody final ParticipantCreateRequest request
     ) {
         final ParticipantCheckOutput output = roomApplicationService.createParticipant(
-                request.toInput(roomSession));
+                request.toInput(session));
         return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }

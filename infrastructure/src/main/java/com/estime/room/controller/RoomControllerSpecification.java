@@ -1,5 +1,6 @@
 package com.estime.room.controller;
 
+import com.estime.room.RoomSession;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequest;
@@ -41,33 +42,33 @@ public interface RoomControllerSpecification {
     @Operation(summary = "룸 상세 정보 조회")
     @GetMapping("/{session}")
     CustomApiResponse<RoomResponse> getBySession(
-            @PathVariable("session") String roomSession
+            @PathVariable("session") RoomSession session
     );
 
     @Operation(summary = "일시 기준, 참여자 투표 통계 조회")
     @GetMapping("/{session}/statistics/date-time-slots")
     CustomApiResponse<DateTimeSlotStatisticResponse> getDateTimeSlotStatisticBySession(
-            @PathVariable("session") String roomSession
+            @PathVariable("session") RoomSession session
     );
 
     @Operation(summary = "참여자 기준, 투표 일시 조회")
     @GetMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponse> getParticipantVotesBySessionAndParticipantName(
-            @PathVariable("session") String roomSession,
+            @PathVariable("session") RoomSession session,
             @RequestParam("participantName") String participantName
     );
 
     @Operation(summary = "참여자 제출 시간 수정")
     @PutMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
-            @PathVariable("session") String roomSession,
+            @PathVariable("session") RoomSession session,
             @RequestBody ParticipantVotesUpdateRequest request
     );
 
     @Operation(summary = "새로운 참여자 이름 중복 검증 후 생성")
     @PostMapping("/{session}/participants")
     CustomApiResponse<ParticipantCheckResponse> createParticipant(
-            @PathVariable("session") String roomSession,
+            @PathVariable("session") RoomSession session,
             @RequestBody ParticipantCreateRequest request
     );
 }

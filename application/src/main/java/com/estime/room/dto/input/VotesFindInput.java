@@ -8,9 +8,9 @@ public record VotesFindInput(
         ParticipantName name
 ) {
 
-    public static VotesFindInput of(final String roomSession, final String participantName) {
+    public static VotesFindInput of(final RoomSession session, final String participantName) {
         return new VotesFindInput(
-                RoomSession.from(roomSession),
+                session,
                 ParticipantName.from(participantName)
         );
     }

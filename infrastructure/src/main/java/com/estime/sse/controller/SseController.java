@@ -20,8 +20,8 @@ public class SseController {
     private final SseSubscriptionManager subscriptionManager;
 
     @GetMapping("/rooms/{session}/stream")
-    public SseEmitter stream(@PathVariable("session") final String roomSession) {
-        final SseConnection connection = subscriptionManager.subscribe(RoomSession.from(roomSession));
+    public SseEmitter stream(@PathVariable("session") final RoomSession session) {
+        final SseConnection connection = subscriptionManager.subscribe(session);
         return connection.getEmitter();
     }
 }
