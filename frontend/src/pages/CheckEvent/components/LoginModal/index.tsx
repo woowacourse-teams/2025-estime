@@ -27,7 +27,7 @@ export const LoginModal = ({ handleModalLogin, isLoginLoading }: LoginModalProps
           <Flex align="center" justify="center" gap="var(--gap-6)">
             <Flex.Item flex={1}>
               <S.LoginLabel htmlFor="userid" required>
-                닉네임
+                <Text color="gray40">닉네임</Text>
               </S.LoginLabel>
             </Flex.Item>
             <Flex.Item flex={4}>

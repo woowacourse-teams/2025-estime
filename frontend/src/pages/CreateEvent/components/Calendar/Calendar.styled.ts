@@ -54,11 +54,6 @@ export const ButtonContainer = styled.div`
   justify-content: center;
   gap: var(--gap-4);
 `;
-export const Month = styled.p`
-  font-size: ${({ theme }) => theme.typography.h2.fontSize};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text};
-`;
 
 export const Header = styled.header`
   display: flex;

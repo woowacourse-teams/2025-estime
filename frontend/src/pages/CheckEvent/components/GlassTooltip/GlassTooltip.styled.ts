@@ -77,6 +77,4 @@ export const Participant = styled.span<{ active: boolean }>`
 
   text-decoration-thickness: 2px;
   word-break: keep-all;
-
-  font-size: ${({ theme }) => (theme.isMobile ? '12px' : '14px')};
 `;
