@@ -110,18 +110,44 @@ const useLocalTimeSelection = () => {
     [updateCellClasses, addDraggingClass]
   );
 
-  useEffect(() => {
-    currentWorkingSetRef.current = new Set(selectedTimes);
-    updateCellClasses();
-  }, [selectedTimes, updateCellClasses]);
+  const onDragMove = useCallback((event: React.PointerEvent) => {
+    const bounds = containerBoundingRectRef.current;
+    if (!bounds) return;
 
-  /** 최종 반영 */
-  const commitSelection = () => {
-    userAvailabilityStore.setState((prev) => ({
-      ...prev,
-      selectedTimes: new Set(currentWorkingSetRef.current),
-    }));
-  };
+    const pointerX = event.clientX - bounds.left;
+    const pointerY = event.clientY - bounds.top;
+
+    const selectionRect = {
+      left: Math.min(dragStartX.current, pointerX),
+      top: Math.min(dragStartY.current, pointerY),
+      right: Math.max(dragStartX.current, pointerX),
+      bottom: Math.max(dragStartY.current, pointerY),
+    };
+
+    let didChange = false;
+    for (const cell of dragHitboxesRef.current) {
+      const overlaps =
+        cell.left < selectionRect.right &&
+        cell.right > selectionRect.left &&
+        cell.top < selectionRect.bottom &&
+        cell.bottom > selectionRect.top;
+
+      if (!overlaps) continue;
+
+      if (selectionModeRef.current === 'add') {
+        if (!currentWorkingSetRef.current.has(cell.key)) {
+          currentWorkingSetRef.current.add(cell.key);
+          didChange = true;
+        }
+      } else {
+        if (currentWorkingSetRef.current.has(cell.key)) {
+          currentWorkingSetRef.current.delete(cell.key);
+          didChange = true;
+        }
+      }
+    }
+    return didChange;
+  }, []);
 
   const cleanUp = useCallback(() => {
     removeDraggingClass();
@@ -156,45 +182,10 @@ const useLocalTimeSelection = () => {
 
   const handleDragMove = useCallback(
     (event: React.PointerEvent) => {
-      const bounds = containerBoundingRectRef.current;
-      if (!bounds) return;
-
-      const pointerX = event.clientX - bounds.left;
-      const pointerY = event.clientY - bounds.top;
-
-      const selectionRect = {
-        left: Math.min(dragStartX.current, pointerX),
-        top: Math.min(dragStartY.current, pointerY),
-        right: Math.max(dragStartX.current, pointerX),
-        bottom: Math.max(dragStartY.current, pointerY),
-      };
-
-      let didChange = false;
-      for (const cell of dragHitboxesRef.current) {
-        const overlaps =
-          cell.left < selectionRect.right &&
-          cell.right > selectionRect.left &&
-          cell.top < selectionRect.bottom &&
-          cell.bottom > selectionRect.top;
-
-        if (!overlaps) continue;
-
-        if (selectionModeRef.current === 'add') {
-          if (!currentWorkingSetRef.current.has(cell.key)) {
-            currentWorkingSetRef.current.add(cell.key);
-            didChange = true;
-          }
-        } else {
-          if (currentWorkingSetRef.current.has(cell.key)) {
-            currentWorkingSetRef.current.delete(cell.key);
-            didChange = true;
-          }
-        }
-      }
-
+      const didChange = onDragMove(event);
       if (didChange) updateCellClasses();
     },
-    [updateCellClasses]
+    [onDragMove, updateCellClasses]
   );
 
   const handleDragEnd = useCallback(
@@ -207,6 +198,19 @@ const useLocalTimeSelection = () => {
     },
     [onDragEnd]
   );
+
+  useEffect(() => {
+    currentWorkingSetRef.current = new Set(selectedTimes);
+    updateCellClasses();
+  }, [selectedTimes, updateCellClasses]);
+
+  /** 최종 반영 */
+  const commitSelection = () => {
+    userAvailabilityStore.setState((prev) => ({
+      ...prev,
+      selectedTimes: new Set(currentWorkingSetRef.current),
+    }));
+  };
 
   useEffect(() => {
     return () => {
