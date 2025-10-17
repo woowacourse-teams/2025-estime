@@ -2,7 +2,6 @@ import LoginModal from '@/pages/CheckEvent/components/LoginModal';
 import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
 import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
 import { useCallback } from 'react';
-import { weightCalculateStrategy } from '@/pages/CheckEvent/utils/getWeight';
 import { EntryConfirmModal } from '@/pages/CheckEvent/components/EntryConfirmModal';
 import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
@@ -17,6 +16,7 @@ import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useCheckEventHandlers from './hooks/useCheckEventHandlers';
 import TimetableSection from './sections/TimeTableSection';
 import HeatmapSection from './sections/HeatmapSection';
+import GlassTooltip from './components/GlassTooltip';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -32,7 +32,6 @@ const CheckEventPage = () => {
 
   const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
-    weightCalculateStrategy,
   });
 
   const pagination = useTimeTablePagination({
@@ -93,6 +92,7 @@ const CheckEventPage = () => {
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
               />
+              <GlassTooltip />
             </S.FlipInner>
           </S.FlipCard>
         </Flex>

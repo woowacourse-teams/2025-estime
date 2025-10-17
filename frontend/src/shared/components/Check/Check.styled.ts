@@ -74,8 +74,6 @@ export const Visual = styled.label<{
 `;
 
 export const Label = styled.label`
-  font-size: ${({ theme }) => theme.typography.h1};
-  color: ${({ theme }) => theme.colors.gray70};
   cursor: pointer;
   user-select: none;
 `;
