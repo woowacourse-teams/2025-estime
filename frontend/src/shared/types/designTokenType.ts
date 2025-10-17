@@ -9,7 +9,8 @@ export type CSSPaddingVar =
   | 'var(--padding-8)'
   | 'var(--padding-9)'
   | 'var(--padding-10)'
-  | 'var(--padding-11)';
+  | 'var(--padding-11)'
+  | 'var(--padding-25)';
 
 export type CSSGapVar =
   | 'var(--gap-1)'
