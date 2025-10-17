@@ -23,7 +23,7 @@ export const Container = styled.div<{ show: boolean }>`
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   right: 55px;
-  bottom: 8px;
+  bottom: 4px;
 
   @media (max-width: 740px) {
     width: 250px;
