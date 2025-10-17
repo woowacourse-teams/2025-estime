@@ -22,6 +22,7 @@ interface TimetableSectionProps {
   pagination: TimeTablePaginationReturns;
   buttonName: string;
   handleButtonClick: () => Promise<void>;
+  isSavingUserTime: boolean;
 }
 
 const TimetableSection = ({
@@ -29,6 +30,7 @@ const TimetableSection = ({
   pagination,
   buttonName,
   handleButtonClick,
+  isSavingUserTime,
 }: TimetableSectionProps) => {
   const theme = useTheme();
 
@@ -51,7 +53,12 @@ const TimetableSection = ({
                 <Toggle isOn={glassPreview.isOn} onToggle={glassPreview.toggle} />
               </Flex>
             )}
-            <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
+            <Button
+              color="primary"
+              onClick={handleButtonClick}
+              disabled={isExpired || isSavingUserTime}
+              size="small"
+            >
               <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
                 {buttonName}
               </Text>

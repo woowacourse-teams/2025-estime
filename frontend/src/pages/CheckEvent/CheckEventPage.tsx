@@ -85,6 +85,7 @@ const CheckEventPage = () => {
                 pagination={pagination}
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
+                isSavingUserTime={isSavingUserTime}
               />
               <HeatmapSection
                 roomInfo={roomInfo}
