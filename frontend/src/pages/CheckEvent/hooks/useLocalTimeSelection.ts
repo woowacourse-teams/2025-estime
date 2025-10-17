@@ -2,6 +2,7 @@ import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
 import usePreventScroll from './usePreventScroll';
 import { useTimetableHoverContext } from '../providers/TimetableProvider';
+import { usePaginationStore } from '../stores/paginationStore';
 
 type TimeCellHitbox = {
   key: string;
@@ -15,6 +16,7 @@ const useLocalTimeSelection = () => {
   const selectedTimes = useUserAvailability().selectedTimes;
 
   const { timeTableCellHover } = useTimetableHoverContext();
+  const page = usePaginationStore();
 
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
 
@@ -264,7 +266,7 @@ const useLocalTimeSelection = () => {
   useEffect(() => {
     currentWorkingSetRef.current = new Set(selectedTimes);
     updateCellClasses();
-  }, [selectedTimes, updateCellClasses]);
+  }, [selectedTimes, updateCellClasses, page]);
 
   useEffect(() => {
     return () => {
