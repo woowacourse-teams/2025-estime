@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 public class TsidRoomSessionGenerator implements RoomSessionGenerator {
 
     @Override
-    public String generate() {
-        return TsidCreator.getTsid().toString();
+    public RoomSession generate() {
+        return RoomSession.from(
+                TsidCreator.getTsid().toString());
     }
 }

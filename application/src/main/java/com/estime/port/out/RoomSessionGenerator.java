@@ -1,6 +1,8 @@
 package com.estime.port.out;
 
+import com.estime.room.RoomSession;
+
 public interface RoomSessionGenerator {
 
-    String generate();
+    RoomSession generate();
 }

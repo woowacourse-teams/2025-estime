@@ -71,7 +71,7 @@ public class RoomApplicationService {
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        final RoomSession session = RoomSession.from(roomSessionGenerator.generate());
+        final RoomSession session = roomSessionGenerator.generate();
         final Room room = Room.withoutId(input.title(), session, input.deadline());
         final Room savedRoom = roomRepository.save(room);
 
@@ -102,7 +102,7 @@ public class RoomApplicationService {
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
         final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
-        final RoomSession session = RoomSession.from(roomSessionGenerator.generate());
+        final RoomSession session = roomSessionGenerator.generate();
         final Room room = Room.withoutId(roomCreateInput.title(), session, roomCreateInput.deadline());
         final Room savedRoom = roomRepository.save(room);
 
