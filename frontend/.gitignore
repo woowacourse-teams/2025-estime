@@ -25,3 +25,6 @@ dist-ssr
 .env
 *storybook.log
 storybook-static
+
+cypress/videos
+cypress/screenshots
