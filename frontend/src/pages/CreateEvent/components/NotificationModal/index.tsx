@@ -14,7 +14,7 @@ type CheckedNotification = {
 type OptionId = keyof CheckedNotification;
 
 const NOTIFICATION_DATA = {
-  title: '연결된 디스코드 방에\n 알림을 보낼 수 있습니다.',
+  title: '디스코드 방에 알림을 보낼 수 있습니다.',
   options: [
     { id: 'created', label: '방생성' },
     { id: 'remind', label: '독려' },

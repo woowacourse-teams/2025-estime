@@ -2,6 +2,7 @@ import { ComponentProps, createContext, useContext } from 'react';
 import * as S from './Check.styled';
 import ISuccess from '@/assets/icons/ISuccess';
 import { LIGHT_THEME } from '@/styles/theme';
+import Text from '../Text';
 
 interface BoxProps {
   checked: boolean;
@@ -58,7 +59,9 @@ const Label = ({ children, ...props }: ComponentProps<'label'>) => {
 
   return (
     <S.Label htmlFor={id} {...props}>
-      {children}
+      <Text variant="h3" color="gray70">
+        {children}
+      </Text>
     </S.Label>
   );
 };

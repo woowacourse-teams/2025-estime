@@ -3,9 +3,7 @@ import Modal from '@/shared/components/Modal';
 
 export const LoginLabel = styled.label<{ required?: boolean }>`
   display: block;
-  font-size: ${({ theme }) => theme.typography.body.fontSize};
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.gray40};
+
   margin-bottom: 1.25rem;
   &::after {
     content: ${({ required }) => (required ? "'*'" : "''")};
