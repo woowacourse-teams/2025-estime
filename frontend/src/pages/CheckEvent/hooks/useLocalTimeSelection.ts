@@ -42,7 +42,7 @@ const useLocalTimeSelection = () => {
     container.classList.remove('dragging');
   }, []);
 
-  const flushCellClasses = useCallback(() => {
+  const toggleSelectedCellClasses = useCallback(() => {
     try {
       const container = containerRef.current;
       if (!container) return;
@@ -59,8 +59,8 @@ const useLocalTimeSelection = () => {
 
   const updateCellClasses = useCallback(() => {
     if (renderAnimationFrameId.current != null) return;
-    renderAnimationFrameId.current = requestAnimationFrame(flushCellClasses);
-  }, [flushCellClasses]);
+    renderAnimationFrameId.current = requestAnimationFrame(toggleSelectedCellClasses);
+  }, [toggleSelectedCellClasses]);
 
   const cacheDragHitboxes = useCallback(() => {
     const container = containerRef.current;
@@ -82,7 +82,7 @@ const useLocalTimeSelection = () => {
     });
   }, []);
 
-  const flushHoverLabel = useCallback(
+  const toggleHoverLabel = useCallback(
     (cellKey: string) => {
       try {
         if (!cellKey) {
@@ -101,9 +101,9 @@ const useLocalTimeSelection = () => {
   const updateHoverAnimation = useCallback(
     (cellKey: string) => {
       if (hoverRequestAnimationFrameId.current != null) return;
-      hoverRequestAnimationFrameId.current = requestAnimationFrame(() => flushHoverLabel(cellKey));
+      hoverRequestAnimationFrameId.current = requestAnimationFrame(() => toggleHoverLabel(cellKey));
     },
-    [flushHoverLabel]
+    [toggleHoverLabel]
   );
 
   const getCurrentCell = useCallback((event: React.PointerEvent) => {
@@ -226,13 +226,13 @@ const useLocalTimeSelection = () => {
   const onDragEnd = useCallback(() => {
     try {
       cancelRAF();
-      flushCellClasses();
-      flushHoverLabel('');
+      toggleSelectedCellClasses();
+      toggleHoverLabel('');
       commitSelection();
     } finally {
       cleanUp();
     }
-  }, [cancelRAF, flushCellClasses, flushHoverLabel, cleanUp]);
+  }, [cancelRAF, toggleSelectedCellClasses, toggleHoverLabel, cleanUp]);
 
   const handleDragStart = useCallback(
     (e: React.PointerEvent) => {
