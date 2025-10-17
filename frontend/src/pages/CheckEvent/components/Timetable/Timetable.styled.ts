@@ -9,7 +9,7 @@ export const TimetableContent = styled.div`
 `;
 
 export const TimeSlotColumn = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.gray20};
+  border: 1px solid ${({ theme }) => theme.colors.gray40};
   background-color: ${({ theme }) => theme.colors.background};
   display: flex;
   flex-direction: column;
@@ -41,10 +41,6 @@ export const TimeLabel = styled.div`
   justify-content: center;
   height: 3rem;
   transition: color 0.15s ease-in-out;
-
-  &:nth-of-type(n) {
-    border-top: 1px dashed ${({ theme }) => theme.colors.gray20};
-  }
 
   span {
     color: ${({ theme }) => theme.colors.text};
