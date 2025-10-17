@@ -6,7 +6,7 @@ interface GlassPreviewState {
 }
 
 const initialGlassPreviewState: GlassPreviewState = {
-  isPreviewOn: true,
+  isPreviewOn: false,
 };
 
 const createGlassPreviewStore = () => {
