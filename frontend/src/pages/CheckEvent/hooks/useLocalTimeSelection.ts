@@ -1,7 +1,6 @@
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { useUserAvailability, userAvailabilityStore } from '../stores/userAvailabilityStore';
 import usePreventScroll from './usePreventScroll';
-import { useTimetableHoverContext } from '../providers/TimetableProvider';
 import { usePaginationStore } from '../stores/paginationStore';
 
 type TimeCellHitbox = {
@@ -15,7 +14,6 @@ type TimeCellHitbox = {
 const useLocalTimeSelection = () => {
   const selectedTimes = useUserAvailability().selectedTimes;
 
-  const { timeTableCellHover } = useTimetableHoverContext();
   const page = usePaginationStore();
 
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
@@ -84,30 +82,6 @@ const useLocalTimeSelection = () => {
     });
   }, []);
 
-  const toggleHoverLabel = useCallback(
-    (cellKey: string) => {
-      try {
-        if (!cellKey) {
-          timeTableCellHover(null);
-          return;
-        }
-        const timeText = cellKey.split('T')[1];
-        timeTableCellHover(timeText);
-      } finally {
-        hoverRequestAnimationFrameId.current = null;
-      }
-    },
-    [timeTableCellHover]
-  );
-
-  const updateHoverAnimation = useCallback(
-    (cellKey: string) => {
-      if (hoverRequestAnimationFrameId.current != null) return;
-      hoverRequestAnimationFrameId.current = requestAnimationFrame(() => toggleHoverLabel(cellKey));
-    },
-    [toggleHoverLabel]
-  );
-
   const getCurrentCell = useCallback((event: React.PointerEvent) => {
     const el = document.elementFromPoint(event.clientX, event.clientY);
     if (!el) return null;
@@ -140,73 +114,49 @@ const useLocalTimeSelection = () => {
       }
 
       updateCellClasses();
-      updateHoverAnimation(cellKey);
     },
-    [updateCellClasses, addDraggingClass, getCurrentCell, updateHoverAnimation, cacheDragHitboxes]
+    [updateCellClasses, addDraggingClass, getCurrentCell, cacheDragHitboxes]
   );
 
-  const findHoveredCellKey = useCallback((pointerX: number, pointerY: number) => {
-    let hoveredCellKey: string | null = null;
+  const onDragMove = useCallback((event: React.PointerEvent) => {
+    const bounds = containerBoundingRectRef.current;
+    if (!bounds) return;
+
+    const pointerX = event.clientX - bounds.left;
+    const pointerY = event.clientY - bounds.top;
+
+    const selectionRect = {
+      left: Math.min(dragStartX.current, pointerX),
+      top: Math.min(dragStartY.current, pointerY),
+      right: Math.max(dragStartX.current, pointerX),
+      bottom: Math.max(dragStartY.current, pointerY),
+    };
+
+    let didChange = false;
     for (const cell of dragHitboxesRef.current) {
-      if (
-        pointerX > cell.left &&
-        pointerX < cell.right &&
-        pointerY > cell.top &&
-        pointerY < cell.bottom
-      ) {
-        hoveredCellKey = cell.key;
-        break;
-      }
-    }
-    return hoveredCellKey;
-  }, []);
+      const overlaps =
+        cell.left < selectionRect.right &&
+        cell.right > selectionRect.left &&
+        cell.top < selectionRect.bottom &&
+        cell.bottom > selectionRect.top;
 
-  const onDragMove = useCallback(
-    (event: React.PointerEvent) => {
-      const bounds = containerBoundingRectRef.current;
-      if (!bounds) return;
+      if (!overlaps) continue;
 
-      const pointerX = event.clientX - bounds.left;
-      const pointerY = event.clientY - bounds.top;
-
-      const cellKey = findHoveredCellKey(pointerX, pointerY);
-
-      if (cellKey) updateHoverAnimation(cellKey);
-
-      const selectionRect = {
-        left: Math.min(dragStartX.current, pointerX),
-        top: Math.min(dragStartY.current, pointerY),
-        right: Math.max(dragStartX.current, pointerX),
-        bottom: Math.max(dragStartY.current, pointerY),
-      };
-
-      let didChange = false;
-      for (const cell of dragHitboxesRef.current) {
-        const overlaps =
-          cell.left < selectionRect.right &&
-          cell.right > selectionRect.left &&
-          cell.top < selectionRect.bottom &&
-          cell.bottom > selectionRect.top;
-
-        if (!overlaps) continue;
-
-        if (selectionModeRef.current === 'add') {
-          if (!currentWorkingSetRef.current.has(cell.key)) {
-            currentWorkingSetRef.current.add(cell.key);
-            didChange = true;
-          }
-        } else {
-          if (currentWorkingSetRef.current.has(cell.key)) {
-            currentWorkingSetRef.current.delete(cell.key);
-            didChange = true;
-          }
+      if (selectionModeRef.current === 'add') {
+        if (!currentWorkingSetRef.current.has(cell.key)) {
+          currentWorkingSetRef.current.add(cell.key);
+          didChange = true;
+        }
+      } else {
+        if (currentWorkingSetRef.current.has(cell.key)) {
+          currentWorkingSetRef.current.delete(cell.key);
+          didChange = true;
         }
       }
+    }
 
-      return didChange;
-    },
-    [updateHoverAnimation, findHoveredCellKey]
-  );
+    return didChange;
+  }, []);
 
   const cleanUp = useCallback(() => {
     removeDraggingClass();
@@ -229,16 +179,14 @@ const useLocalTimeSelection = () => {
     try {
       cancelRAF();
       toggleSelectedCellClasses();
-      toggleHoverLabel('');
       commitSelection();
     } finally {
       cleanUp();
     }
-  }, [cancelRAF, toggleSelectedCellClasses, toggleHoverLabel, cleanUp]);
+  }, [cancelRAF, toggleSelectedCellClasses, cleanUp]);
 
   const handleDragStart = useCallback(
     (e: React.PointerEvent) => {
-      e.currentTarget.setPointerCapture(e.pointerId);
       onDragStart(e);
     },
     [onDragStart]
@@ -252,16 +200,9 @@ const useLocalTimeSelection = () => {
     [onDragMove, updateCellClasses]
   );
 
-  const handleDragEnd = useCallback(
-    (e: React.PointerEvent) => {
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } finally {
-        onDragEnd();
-      }
-    },
-    [onDragEnd]
-  );
+  const handleDragEnd = useCallback(() => {
+    onDragEnd();
+  }, [onDragEnd]);
 
   useEffect(() => {
     currentWorkingSetRef.current = new Set(selectedTimes);
