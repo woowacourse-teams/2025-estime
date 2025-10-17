@@ -13,6 +13,10 @@ import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 
+import Toggle from '@/shared/components/Toggle';
+import { useGlassPreview } from '../stores/glassPreviewStore';
+import { useRoomStatistics } from '../stores/roomStatisticsStore';
+
 interface TimetableSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
   pagination: TimeTablePaginationReturns;
@@ -28,17 +32,31 @@ const TimetableSection = ({
 }: TimetableSectionProps) => {
   const theme = useTheme();
 
+  const glassPreview = useGlassPreview();
+
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
+
+  const { participantCount } = useRoomStatistics();
 
   return (
     <S.BackFace ref={pagination.timeTableContainerRef}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={userNameStore.getSnapshot()} mode="save" isExpired={isExpired}>
-          <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
-            <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
-              {buttonName}
-            </Text>
-          </Button>
+          <Flex gap="var(--gap-8)" align="center" justify="flex-end">
+            {participantCount > 0 && (
+              <Flex gap="var(--gap-3)" align="center" justify="center" direction="column">
+                <Text variant="h4" color="text">
+                  전체 시간표
+                </Text>
+                <Toggle isOn={glassPreview.isOn} onToggle={glassPreview.toggle} />
+              </Flex>
+            )}
+            <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
+              <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
+                {buttonName}
+              </Text>
+            </Button>
+          </Flex>
         </TimeTableHeader>
 
         <Flex direction="column" gap="var(--gap-4)">

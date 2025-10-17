@@ -1,0 +1,39 @@
+:root {
+  --gray10: #f4f4f4;
+  --gray20: #c6c6c6;
+  --primary: #8052e1;
+}
+
+.time-table-cell {
+  position: relative;
+  border-top: 1px solid var(--gray20);
+  border-right: 1px solid var(--gray20);
+  /* --gray-10 + 투명도 0.6 */
+  background-color: rgba(244, 244, 244, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-4);
+  height: 1.5rem;
+  width: 100%;
+  user-select: none;
+  touch-action: none;
+}
+
+.time-table-cell:hover {
+  cursor: pointer;
+}
+
+.time-table-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--primary);
+  opacity: 0;
+  transition: opacity 0.15s cubic-bezier(0.2, 0, 0, 1);
+  pointer-events: none;
+}
+
+.time-table-cell.selected::after {
+  opacity: 1;
+}
