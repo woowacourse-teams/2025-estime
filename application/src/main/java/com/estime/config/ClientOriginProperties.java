@@ -7,4 +7,3 @@ public record ClientOriginProperties(
         String client
 ) {
 }
-

@@ -6,24 +6,22 @@ import java.time.LocalDateTime;
 public interface PlatformMessageSender {
 
     void sendDeadlineAlertMessage(
-            final String channelId,
-            final RoomSession session,
-            final String title
+            String channelId,
+            RoomSession session,
+            String title
     );
 
-    void sendTextMessage(final String channelId, final String message);
-
     void sendConnectedRoomCreatedMessage(
-            final String channelId,
-            final RoomSession session,
-            final String title,
-            final LocalDateTime deadline
+            String channelId,
+            RoomSession session,
+            String title,
+            LocalDateTime deadline
     );
 
     void sendReminderMessage(
-            final String channelId,
-            final RoomSession session,
-            final String title,
-            final LocalDateTime deadline
+            String channelId,
+            RoomSession session,
+            String title,
+            LocalDateTime deadline
     );
 }

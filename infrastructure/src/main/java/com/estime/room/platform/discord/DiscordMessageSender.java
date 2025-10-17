@@ -21,6 +21,7 @@ public class DiscordMessageSender implements PlatformMessageSender {
     private final DiscordMessageBuilder discordMessageBuilder;
     private final PlatformShortcutBuilder platformShortcutBuilder;
 
+    @Override
     public void sendDeadlineAlertMessage(
             final String channelId,
             final RoomSession session,
@@ -38,15 +39,7 @@ public class DiscordMessageSender implements PlatformMessageSender {
         sendMessage(channel, message);
     }
 
-    public void sendTextMessage(final String channelId, final String message) {
-        final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
-
-        channel.sendMessage(message).queue();
-    }
-
+    @Override
     public void sendConnectedRoomCreatedMessage(
             final String channelId,
             final RoomSession session,
@@ -67,6 +60,7 @@ public class DiscordMessageSender implements PlatformMessageSender {
         sendMessage(channel, message);
     }
 
+    @Override
     public void sendReminderMessage(
             final String channelId,
             final RoomSession session,
