@@ -14,7 +14,8 @@ import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 
 import Toggle from '@/shared/components/Toggle';
-import useToggleState from '@/shared/hooks/common/useToggleState';
+import { useGlassPreview } from '../stores/glassPreviewStore';
+import { useRoomStatistics } from '../stores/roomStatisticsStore';
 
 interface TimetableSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
@@ -31,22 +32,25 @@ const TimetableSection = ({
 }: TimetableSectionProps) => {
   const theme = useTheme();
 
+  const glassPreview = useGlassPreview();
+
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
-  const toggleHeatmapPreview = useToggleState(true);
+
+  const { participantCount } = useRoomStatistics();
+
   return (
     <S.BackFace ref={pagination.timeTableContainerRef}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={userNameStore.getSnapshot()} mode="save" isExpired={isExpired}>
           <Flex gap="var(--gap-8)" align="center" justify="flex-end">
-            <Flex gap="var(--gap-3)" align="center" justify="center" direction="column">
-              <Text variant="h4" color="text">
-                전체 시간표
-              </Text>
-              <Toggle
-                isOn={toggleHeatmapPreview.isOpen}
-                onToggle={toggleHeatmapPreview.toggleOpen}
-              />
-            </Flex>
+            {participantCount > 0 && (
+              <Flex gap="var(--gap-3)" align="center" justify="center" direction="column">
+                <Text variant="h4" color="text">
+                  전체 시간표
+                </Text>
+                <Toggle isOn={glassPreview.isOn} onToggle={glassPreview.toggle} />
+              </Flex>
+            )}
             <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
               <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
                 {buttonName}
@@ -79,7 +83,6 @@ const TimetableSection = ({
             timeColumnRef={pagination.timeColumnRef}
             dateTimeSlots={roomInfo.availableTimeSlots}
             availableDates={pagination.currentPageDates}
-            showHeatmapPreview={toggleHeatmapPreview.isOpen}
           />
         </Flex>
       </Flex>

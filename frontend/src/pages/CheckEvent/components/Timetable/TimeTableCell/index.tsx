@@ -1,5 +1,9 @@
-import * as S from '../Timetable.styled';
-import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
+import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
+import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
+import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import { FormatManager } from '@/shared/utils/common/FormatManager';
+import { TimeManager } from '@/shared/utils/common/TimeManager';
+import { useTheme } from '@emotion/react';
 
 interface TimeTableCellProps {
   date: string;
@@ -7,19 +11,41 @@ interface TimeTableCellProps {
 }
 
 const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
-  const { timeTableCellHover } = useTimetableHoverContext();
-
   const dateTimeKey = `${date}T${timeText}`;
+  const roomStatistics = useRoomStatistics();
+  const cellInfo = roomStatistics.statistics.get(dateTimeKey);
+  const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
+  const theme = useTheme();
+  const { isOn } = useGlassPreview();
 
-  const handleEnter = () => timeTableCellHover(timeText);
-  const handleLeave = () => timeTableCellHover(null);
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const isDragging = e.currentTarget.closest('.dragging') !== null;
+
+    if (!isDragging && !theme.isMobile && isOn) {
+      if (!cellInfo) {
+        cellDataStore.initialStore();
+      } else {
+        cellDataStore.setState({
+          ...cellInfo,
+          isRecommended,
+          date: FormatManager.formatKoreanDate(date),
+          startTime: timeText,
+          endTime: TimeManager.addMinutes(timeText, 30),
+        });
+      }
+    }
+  };
+
+  const handlePointerLeave = () => {
+    cellDataStore.initialStore();
+  };
 
   return (
-    <S.TimetableCell
-      className="heat-map-cell"
+    <div
       data-time={dateTimeKey}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
+      className="time-table-cell"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
     />
   );
 };

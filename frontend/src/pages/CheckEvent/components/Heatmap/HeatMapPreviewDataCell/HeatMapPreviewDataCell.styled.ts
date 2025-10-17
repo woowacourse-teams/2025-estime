@@ -13,7 +13,7 @@ export const Container = styled.div<{
   height: 1.5rem;
   width: 100%;
   user-select: none;
-  touch-action: manipulation;
+  pointer-events: none;
   overflow: hidden;
 
   background-color: ${({ weight, theme }) =>

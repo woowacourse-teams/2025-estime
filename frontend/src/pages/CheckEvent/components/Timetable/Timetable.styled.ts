@@ -5,6 +5,7 @@ export const TimetableContent = styled.div`
   flex-direction: row;
   width: 100%;
   user-select: none;
+  touch-action: none;
 `;
 
 export const TimeSlotColumn = styled.div`

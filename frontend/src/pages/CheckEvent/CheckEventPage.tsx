@@ -16,6 +16,7 @@ import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
 import useCheckEventHandlers from './hooks/useCheckEventHandlers';
 import TimetableSection from './sections/TimeTableSection';
 import HeatmapSection from './sections/HeatmapSection';
+import GlassTooltip from './components/GlassTooltip';
 
 const CheckEventPage = () => {
   const { roomInfo, session } = useCheckRoomSession();
@@ -91,6 +92,7 @@ const CheckEventPage = () => {
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
               />
+              <GlassTooltip />
             </S.FlipInner>
           </S.FlipCard>
         </Flex>
