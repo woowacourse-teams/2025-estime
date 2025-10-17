@@ -1,3 +1,19 @@
+## 1.5.0 (2025-10-17)
+
+* fix: 페이지네이션 버그 수정 (#666) ([a4f6b19](https://github.com/woowacourse-teams/2025-estime/commit/a4f6b19)), closes [#666](https://github.com/woowacourse-teams/2025-estime/issues/666)
+* fix: 플리커링 현상 해결 (#641) ([f9ee6f9](https://github.com/woowacourse-teams/2025-estime/commit/f9ee6f9)), closes [#641](https://github.com/woowacourse-teams/2025-estime/issues/641)
+* fix: 히트맵 애니메이션 수정 (#603) ([51876d0](https://github.com/woowacourse-teams/2025-estime/commit/51876d0)), closes [#603](https://github.com/woowacourse-teams/2025-estime/issues/603)
+* feat: 고정 glassTooltip 컴포넌트 적용 (#669) ([22999b4](https://github.com/woowacourse-teams/2025-estime/commit/22999b4)), closes [#669](https://github.com/woowacourse-teams/2025-estime/issues/669)
+* feat: 리엑트 컴파일러 도입 (#652) ([2a2b317](https://github.com/woowacourse-teams/2025-estime/commit/2a2b317)), closes [#652](https://github.com/woowacourse-teams/2025-estime/issues/652)
+* feat: 타임테이블 섹션에도 glass를 볼수 있게 추가 (#683) ([e6f96f7](https://github.com/woowacourse-teams/2025-estime/commit/e6f96f7)), closes [#683](https://github.com/woowacourse-teams/2025-estime/issues/683)
+* feat: 히트맵 프리뷰 제작 (#655) ([78ba6d6](https://github.com/woowacourse-teams/2025-estime/commit/78ba6d6)), closes [#655](https://github.com/woowacourse-teams/2025-estime/issues/655)
+* 반응형 rem 기반 typography scale 적용 (#692) ([f199a75](https://github.com/woowacourse-teams/2025-estime/commit/f199a75)), closes [#692](https://github.com/woowacourse-teams/2025-estime/issues/692)
+* 타임테이블 UX 개선 작업 (#680) ([5318d86](https://github.com/woowacourse-teams/2025-estime/commit/5318d86)), closes [#680](https://github.com/woowacourse-teams/2025-estime/issues/680)
+* 투표 참여자 목록 추가 (#667) ([e7ff7c6](https://github.com/woowacourse-teams/2025-estime/commit/e7ff7c6)), closes [#667](https://github.com/woowacourse-teams/2025-estime/issues/667)
+* refactor: 통계 api 변경에 따른 대응 (#659) ([0dc1d68](https://github.com/woowacourse-teams/2025-estime/commit/0dc1d68)), closes [#659](https://github.com/woowacourse-teams/2025-estime/issues/659)
+
+
+
 ## 1.4.0 (2025-10-07)
 
 * refactor: checkEventPage 리펙터 (#635) ([f09872a](https://github.com/woowacourse-teams/2025-estime/commit/f09872a)), closes [#635](https://github.com/woowacourse-teams/2025-estime/issues/635)

@@ -4,8 +4,6 @@ import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
 import { RefObject, useMemo } from 'react';
-import useEventDelegation from '../../hooks/useEventDelegation';
-import Tooltip from '../Tooltip';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -20,9 +18,6 @@ const Heatmap = ({
   availableDates,
   handleBeforeEdit,
 }: HeatmapProps) => {
-  const { currentCellId, containerRef, tooltipRef } = useEventDelegation();
-
-  // 시간 라벨 불필요한 리렌더링 방지를 위해 분리
   const timeSlotNodes = useMemo(
     () =>
       dateTimeSlots.map((timeText) => (
@@ -41,7 +36,7 @@ const Heatmap = ({
 
   return (
     <>
-      <S.HeatMapContent ref={containerRef} onPointerDown={handleBeforeEdit}>
+      <S.HeatMapContent onPointerDown={handleBeforeEdit}>
         <S.TimeSlotColumn ref={timeColumnRef}>{timeSlotNodes}</S.TimeSlotColumn>
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false} maxWidth="100%">
@@ -52,8 +47,6 @@ const Heatmap = ({
           </Wrapper>
         ))}
       </S.HeatMapContent>
-
-      {currentCellId && <Tooltip currentCellId={currentCellId} tooltipRef={tooltipRef} />}
     </>
   );
 };

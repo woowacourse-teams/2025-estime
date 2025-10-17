@@ -1,4 +1,9 @@
-import * as S from './TimeTableCell.styled';
+import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
+import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
+import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import { FormatManager } from '@/shared/utils/common/FormatManager';
+import { TimeManager } from '@/shared/utils/common/TimeManager';
+import { useTheme } from '@emotion/react';
 
 interface TimeTableCellProps {
   date: string;
@@ -7,8 +12,42 @@ interface TimeTableCellProps {
 
 const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const dateTimeKey = `${date}T${timeText}`;
+  const roomStatistics = useRoomStatistics();
+  const cellInfo = roomStatistics.statistics.get(dateTimeKey);
+  const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
+  const theme = useTheme();
+  const { isOn } = useGlassPreview();
 
-  return <S.HeaderCell className="heat-map-cell" data-time={dateTimeKey} />;
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const isDragging = e.currentTarget.closest('.dragging') !== null;
+
+    if (!isDragging && !theme.isMobile && isOn) {
+      if (!cellInfo) {
+        cellDataStore.initialStore();
+      } else {
+        cellDataStore.setState({
+          ...cellInfo,
+          isRecommended,
+          date: FormatManager.formatKoreanDate(date),
+          startTime: timeText,
+          endTime: TimeManager.addMinutes(timeText, 30),
+        });
+      }
+    }
+  };
+
+  const handlePointerLeave = () => {
+    cellDataStore.initialStore();
+  };
+
+  return (
+    <div
+      data-time={dateTimeKey}
+      className="time-table-cell"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    />
+  );
 };
 
 export default TimeTableCell;

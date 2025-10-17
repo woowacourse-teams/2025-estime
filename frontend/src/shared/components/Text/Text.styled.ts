@@ -15,7 +15,7 @@ const getTypographyStyle = (variant: TypographyKey, theme: Theme) => {
   const style = theme.typography[variant];
 
   return `
-      font-size: ${style.fontSize};
+      font-size: calc(${style.fontSize} * var(--font-scale));
       font-weight: ${style.fontWeight};
     `;
 };
