@@ -16,6 +16,7 @@ services:
     networks:
       - monitor_net
     restart: unless-stopped
+    stop_grace_period: 35s
 
   api-green:
     container_name: estime-api-green
@@ -31,6 +32,7 @@ services:
     networks:
       - monitor_net
     restart: unless-stopped
+    stop_grace_period: 35s
 
   alloy:
     image: grafana/alloy:v1.11.0
