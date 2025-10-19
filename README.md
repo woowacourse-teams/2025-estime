@@ -50,3 +50,4 @@
 
 ## 🏭 Architecture
 <img width="4254" height="3181" alt="AWS cloud diagram (Community)" src="https://github.com/user-attachments/assets/95c6bd8b-f8da-471a-927f-087b0dfdd8c6" />
+<img width="4254" height="2849" alt="Estime Backend Infrastructure" src="https://github.com/user-attachments/assets/c3062c7e-3fc5-4078-bcec-88663e523635" />
