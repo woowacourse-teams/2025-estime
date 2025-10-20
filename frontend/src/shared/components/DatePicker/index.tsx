@@ -16,12 +16,13 @@ const DatePicker = ({ isError = false, ...props }: DatePickerProps) => {
         onClick={(e) => e.currentTarget.showPicker()}
         min={new Date().toISOString().split('T')[0]}
         isError={isError}
-        tabIndex={0}
         aria-describedby="dateHint"
-        aria-live="assertive"
         {...props}
       />
-      <S.HintA11y id="dateHint">방향키 위아래로 연, 월, 일을 변경할 수 있습니다.</S.HintA11y>
+      <S.HintA11y id="dateHint">
+        방향키 위아래로 연, 월, 일을 변경할 수 있습니다. 또는 스페이스바를 눌러 달력을 띄울 수
+        있습니다.
+      </S.HintA11y>
     </>
   );
 };
