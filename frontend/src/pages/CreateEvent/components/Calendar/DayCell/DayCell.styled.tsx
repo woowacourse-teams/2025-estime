@@ -26,7 +26,7 @@ const getHoverBackgroundColor = (
 
 export const Container = styled.div<DayCellProps>`
   user-select: none;
-  height: 3rem;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -67,4 +67,7 @@ export const Container = styled.div<DayCellProps>`
     cursor: not-allowed;
     opacity: 0.3;
   `}
+  @media (max-width: 430px) {
+    height: 2rem;
+  }
 `;
