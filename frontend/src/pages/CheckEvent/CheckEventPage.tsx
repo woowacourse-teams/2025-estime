@@ -67,7 +67,7 @@ const CheckEventPage = () => {
       <Wrapper
         maxWidth={1280}
         paddingTop="var(--padding-11)"
-        paddingBottom="var(--padding-11)"
+        paddingBottom="var(--padding-25)"
         paddingLeft="var(--padding-7)"
         paddingRight="var(--padding-7)"
       >
@@ -85,6 +85,7 @@ const CheckEventPage = () => {
                 pagination={pagination}
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
+                isSavingUserTime={isSavingUserTime}
               />
               <HeatmapSection
                 roomInfo={roomInfo}

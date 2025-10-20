@@ -11,6 +11,7 @@ export const Container = styled.div<{ opacity: number }>`
   gap: 15px;
 
   opacity: ${({ opacity }) => opacity};
+  visibility: ${({ opacity }) => (opacity ? 'visible' : 'hidden')};
   transition: opacity 0.2s ease;
 
   border-radius: 20px;

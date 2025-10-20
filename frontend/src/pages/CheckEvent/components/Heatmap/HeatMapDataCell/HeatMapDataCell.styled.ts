@@ -9,8 +9,8 @@ const shimmerSweep = keyframes`
 
 export const Container = styled.div<{ weight: number; isRecommended?: boolean }>`
   position: relative;
-  border-top: 1px solid ${({ theme }) => theme.colors.gray20};
-  border-right: 1px solid ${({ theme }) => theme.colors.gray20};
+  border-top: 1px solid ${({ theme }) => theme.colors.gray40};
+  border-right: 1px solid ${({ theme }) => theme.colors.gray40};
   padding: var(--padding-4);
   height: 1.5rem;
   width: 100%;
