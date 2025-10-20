@@ -8,7 +8,6 @@ export const Button = styled.button`
   line-height: 0;
   display: flex;
   justify-content: flex-end;
-  padding: var(--padding-2);
 
   &:hover {
     cursor: pointer;
@@ -23,30 +22,8 @@ export const Container = styled.div<{ show: boolean }>`
   border-radius: var(--radius-4);
   background: ${({ theme }) => theme.colors.background};
   border: 1px solid ${({ theme }) => theme.colors.primary};
-  right: 70px;
-  bottom: 1px;
-
-  &::before {
-    content: '';
-    position: absolute;
-
-    right: -13px;
-    bottom: 6px;
-    border-left: 13px solid ${({ theme }) => theme.colors.primary};
-    border-top: 13px solid transparent;
-    border-bottom: 13px solid transparent;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-
-    right: -12px;
-    bottom: 7px;
-    border-left: 12px solid ${({ theme }) => theme.colors.background};
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-  }
+  right: 55px;
+  bottom: 4px;
 
   @media (max-width: 740px) {
     width: 250px;
@@ -55,27 +32,11 @@ export const Container = styled.div<{ show: boolean }>`
   @media (max-width: 640px) {
     width: 180px;
     right: 0px;
-    bottom: 45px;
+    bottom: 35px;
+  }
 
-    &::before {
-      right: 30px;
-      bottom: -13px;
-
-      border-left: 13px solid transparent;
-      border-right: 13px solid transparent;
-      border-top: 13px solid ${({ theme }) => theme.colors.primary};
-      border-bottom: 0;
-    }
-
-    &::after {
-      right: 31px;
-      bottom: -12px;
-
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-top: 12px solid ${({ theme }) => theme.colors.background};
-      border-bottom: 0;
-    }
+  @media (max-width: 400px) {
+    width: 160px;
   }
 
   ${({ show }) =>
@@ -90,19 +51,28 @@ export const Container = styled.div<{ show: boolean }>`
 
 export const Header = styled.div`
   width: 100%;
+  max-height: 2.5rem;
   display: flex;
   justify-content: space-between;
-  padding: var(--padding-1) var(--padding-5);
+  padding: var(--padding-5);
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
+
+  @media (max-width: 640px) {
+    max-height: 2rem;
+    padding: var(--padding-3) var(--padding-3);
+  }
 `;
 
 export const Body = styled.div`
   width: 100%;
   padding: var(--padding-5);
-  height: calc(1.5rem * 2 + var(--padding-5));
   display: flex;
   align-items: center;
+
+  @media (max-width: 640px) {
+    padding: var(--padding-3) var(--padding-3);
+  }
 `;
 
 export const NameList = styled.div`

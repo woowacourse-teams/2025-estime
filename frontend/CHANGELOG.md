@@ -1,3 +1,12 @@
+## <small>1.5.1 (2025-10-20)</small>
+
+* test: cypress 초기화 (#710) ([9c4f09d](https://github.com/woowacourse-teams/2025-estime/commit/9c4f09d)), closes [#710](https://github.com/woowacourse-teams/2025-estime/issues/710)
+* hotfix: QA에 발생된 버그 수정 (#700) ([94457f4](https://github.com/woowacourse-teams/2025-estime/commit/94457f4)), closes [#700](https://github.com/woowacourse-teams/2025-estime/issues/700)
+* 시간표 저장하기 방지 및 닉네임 제한, 타임테이블 디자인 변경 (#709) ([7b5bd0b](https://github.com/woowacourse-teams/2025-estime/commit/7b5bd0b)), closes [#709](https://github.com/woowacourse-teams/2025-estime/issues/709)
+* 참여자 리스트 스타일 수정  (#701) ([9ade5f5](https://github.com/woowacourse-teams/2025-estime/commit/9ade5f5)), closes [#701](https://github.com/woowacourse-teams/2025-estime/issues/701)
+
+
+
 ## 1.5.0 (2025-10-17)
 
 * fix: 페이지네이션 버그 수정 (#666) ([a4f6b19](https://github.com/woowacourse-teams/2025-estime/commit/a4f6b19)), closes [#666](https://github.com/woowacourse-teams/2025-estime/issues/666)

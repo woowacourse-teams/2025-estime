@@ -35,7 +35,7 @@ export const LoginModal = ({ handleModalLogin, isLoginLoading }: LoginModalProps
                 <Input
                   id="userid"
                   placeholder="닉네임을 입력해주세요."
-                  maxLength={12}
+                  maxLength={6}
                   autoFocus={true}
                   ref={inputRef}
                   data-autofocus

@@ -1,3 +1,4 @@
+import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
 import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
 import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
 import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
@@ -17,6 +18,7 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const theme = useTheme();
   const { isOn } = useGlassPreview();
+  const { timeTableCellHover } = useTimetableHoverContext();
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const isDragging = e.currentTarget.closest('.dragging') !== null;
@@ -35,15 +37,21 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
       }
     }
   };
+  const handleEnter = () => {
+    if (theme.isMobile) return;
+    timeTableCellHover(timeText);
+  };
 
   const handlePointerLeave = () => {
     cellDataStore.initialStore();
+    timeTableCellHover(null);
   };
 
   return (
     <div
-      data-time={dateTimeKey}
       className="time-table-cell"
+      data-time={dateTimeKey}
+      onMouseEnter={handleEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     />
