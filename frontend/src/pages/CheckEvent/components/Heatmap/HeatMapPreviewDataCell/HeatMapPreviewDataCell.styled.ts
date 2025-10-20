@@ -17,7 +17,7 @@ export const Container = styled.div<{
   overflow: hidden;
 
   background-color: ${({ weight, theme }) =>
-    weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
+    weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.background};
 
   &:hover {
     border: 1.5px dashed ${({ theme }) => theme.colors.gray30};
