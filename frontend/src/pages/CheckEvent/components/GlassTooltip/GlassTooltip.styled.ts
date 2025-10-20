@@ -35,7 +35,7 @@ export const Highlight = styled.div<{ opacity: number }>`
   display: flex;
   align-items: center;
   border-radius: 10px;
-  padding: 10px;
+  padding: ${({ theme }) => (theme.isMobile ? '6px 8px' : '10px')};
   background-color: ${({ theme }) => theme.colors.orange40};
   opacity: ${({ opacity }) => opacity};
 `;
