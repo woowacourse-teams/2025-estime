@@ -22,7 +22,6 @@ const useLocalTimeSelection = () => {
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const selectionModeRef = useRef<'add' | 'remove'>('add');
-  const isDraggingRef = useRef(false);
 
   const containerBoundingRectRef = useRef<DOMRectReadOnly | null>(null);
   const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
@@ -33,14 +32,12 @@ const useLocalTimeSelection = () => {
 
   const addDraggingClass = useCallback(() => {
     const container = containerRef.current;
-    isDraggingRef.current = true;
     if (!container) return;
     container.classList.add('dragging');
   }, []);
 
   const removeDraggingClass = useCallback(() => {
     const container = containerRef.current;
-    isDraggingRef.current = false;
     if (!container) return;
     container.classList.remove('dragging');
   }, []);
@@ -122,8 +119,6 @@ const useLocalTimeSelection = () => {
   );
 
   const onDragMove = useCallback((event: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
-
     const bounds = containerBoundingRectRef.current;
     if (!bounds) return;
 
@@ -181,7 +176,6 @@ const useLocalTimeSelection = () => {
   }, []);
 
   const onDragEnd = useCallback(() => {
-    if (!isDraggingRef.current) return;
     try {
       cancelRAF();
       toggleSelectedCellClasses();
