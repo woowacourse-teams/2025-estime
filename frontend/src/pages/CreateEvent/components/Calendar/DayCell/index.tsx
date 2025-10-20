@@ -5,24 +5,18 @@ export interface DayCellProps {
   day: Date | null;
   today: Date;
   selectedDates: Set<string>;
-  onMouseDown: (date: Date | null) => void;
-  onMouseEnter: (date: Date | null) => void;
-  onMouseUp: () => void;
-  onTouchStart: (date: Date | null) => void;
-  onTouchMove: (e: React.TouchEvent<HTMLDivElement>) => void;
-  onTouchEnd: () => void;
+  onPointerDown: (date: Date | null) => void;
+  onPointerMove: (e: React.PointerEvent<HTMLDivElement>, date: Date | null) => void;
+  onPointerUp: () => void;
 }
 
 const DayCell = ({
   day,
   today,
   selectedDates,
-  onMouseDown,
-  onMouseEnter,
-  onMouseUp,
-  onTouchStart,
-  onTouchMove,
-  onTouchEnd,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
 }: DayCellProps) => {
   const dayState = getDayState({ day, today, selectedDates });
 
@@ -36,12 +30,9 @@ const DayCell = ({
       isSelected={dayState.isSelected}
       isEmpty={dayState.isEmpty}
       isDateBlockedByLimit={dayState.isDateBlockedByLimit}
-      onMouseDown={() => onMouseDown(day)}
-      onMouseEnter={() => onMouseEnter(day)}
-      onMouseUp={onMouseUp}
-      onTouchStart={() => onTouchStart(day)}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
+      onPointerDown={() => onPointerDown(day)}
+      onPointerMove={(e) => onPointerMove(e, day)}
+      onPointerUp={onPointerUp}
     >
       {dayState.dateString}
     </S.Container>

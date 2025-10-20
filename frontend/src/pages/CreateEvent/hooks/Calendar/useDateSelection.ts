@@ -32,7 +32,6 @@ export const useDateSelection = ({
     (date: Date, state: DragState) => {
       const dateString = FormatManager.formatDate(date);
       const newSelectedDates = new Set(selectedDates);
-
       if (state === 'remove') {
         newSelectedDates.delete(dateString);
         setSelectedDates(newSelectedDates);
@@ -62,9 +61,10 @@ export const useDateSelection = ({
     [selectedDates, setSelectedDates, today]
   );
 
-  const onMouseDown = useCallback(
+  const handlePointerDown = useCallback(
     (date: Date | null) => {
       if (!date) return;
+
       const state = determineDragState(date);
 
       setDragState(state);
@@ -75,16 +75,27 @@ export const useDateSelection = ({
     [determineDragState, addRemoveDate]
   );
 
-  const onMouseEnter = useCallback(
-    (date: Date | null) => {
-      if (!draggingRef.current || !date || DateManager.isPast(date, today)) return;
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>, date: Date | null) => {
+      if (!draggingRef.current || !date || DateManager.isPast(date, today) || !containerRef.current)
+        return;
 
-      addRemoveDate(date, dragState);
+      const target = document.elementFromPoint(e.clientX, e.clientY);
+
+      if (target && containerRef.current.contains(target)) {
+        const dateStr = target?.getAttribute('data-date');
+        if (dateStr) {
+          const date = new Date(dateStr);
+          if (!DateManager.isPast(date, today)) {
+            addRemoveDate(date, dragState);
+          }
+        }
+      }
     },
     [today, dragState, addRemoveDate]
   );
 
-  const onMouseUp = useCallback((e?: React.MouseEvent) => {
+  const handlePointerUp = useCallback((e?: React.MouseEvent) => {
     if (!draggingRef.current) return;
 
     if (e) {
@@ -95,11 +106,11 @@ export const useDateSelection = ({
     draggingRef.current = false;
   }, []);
 
-  const onMouseLeave = useCallback(() => {
+  const handlePointerLeave = useCallback(() => {
     if (draggingRef.current) {
-      onMouseUp();
+      handlePointerUp();
     }
-  }, [onMouseUp]);
+  }, [handlePointerUp]);
 
   useEffect(() => {
     const handleGlobalMouseUp = () => {
@@ -117,49 +128,13 @@ export const useDateSelection = ({
     }
   }, [draggingRef]);
 
-  const onTouchStart = useCallback(
-    (date: Date | null) => {
-      onMouseDown(date);
-    },
-    [onMouseDown]
-  );
-
-  const onTouchMove = useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      if (!draggingRef.current || !containerRef.current) return;
-
-      const touch = e.changedTouches[0];
-      const target = document.elementFromPoint(touch.clientX, touch.clientY);
-
-      if (target && containerRef.current.contains(target)) {
-        const dateStr = target?.getAttribute('data-date');
-        console.log(dateStr);
-        if (dateStr) {
-          const date = new Date(dateStr);
-          if (!DateManager.isPast(date, today)) {
-            addRemoveDate(date, dragState);
-          }
-        }
-      }
-    },
-    [dragState, addRemoveDate]
-  );
-
-  const onTouchEnd = useCallback(() => {
-    onMouseUp();
-  }, [onMouseUp]);
-
   return {
     containerRef,
 
-    onMouseDown,
-    onMouseEnter,
-    onMouseUp,
-    onMouseLeave,
-
-    onTouchStart,
-    onTouchMove,
-    onTouchEnd,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerLeave,
 
     reset: () => {
       draggingRef.current = false;

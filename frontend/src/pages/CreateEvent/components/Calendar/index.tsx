@@ -21,13 +21,10 @@ const Calender = () => {
   const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
   const {
     containerRef,
-    onMouseDown,
-    onMouseEnter,
-    onMouseLeave,
-    onMouseUp,
-    onTouchStart,
-    onTouchMove,
-    onTouchEnd,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerLeave,
   } = useDateSelection({
     selectedDates,
     setSelectedDates: onChangeAvailableDateSlots,
@@ -57,7 +54,7 @@ const Calender = () => {
           <Text variant="h4">날짜는 최대 7개까지 선택 가능합니다.</Text>
         </Flex>
         <S.CalendarContainer ref={containerRef}>
-          <S.Grid onMouseLeave={onMouseLeave}>
+          <S.Grid onPointerLeave={handlePointerLeave}>
             {weekdays.map((w) => (
               <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'}>
                 {w}
@@ -70,12 +67,9 @@ const Calender = () => {
                 day={day}
                 today={today}
                 selectedDates={selectedDates}
-                onMouseDown={onMouseDown}
-                onMouseEnter={onMouseEnter}
-                onMouseUp={onMouseUp}
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
               />
             ))}
           </S.Grid>
