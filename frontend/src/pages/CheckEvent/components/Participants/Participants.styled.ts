@@ -84,6 +84,19 @@ export const NameList = styled.div`
   min-width: 0;
   overflow-y: auto;
   word-break: keep-all;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.gray20};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: ${({ theme }) => theme.colors.primary}70;
+  }
 `;
 
 const appear = keyframes`
