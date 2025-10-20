@@ -75,6 +75,10 @@ export const LIGHT_THEME = {
       fontSize: '0.75rem',
       fontWeight: 'regular',
     },
+    mobileGlass: {
+      fontSize: '1.25rem',
+      fontWeight: 'bold',
+    },
   },
 };
 export const DARK_THEME = {
@@ -149,6 +153,10 @@ export const DARK_THEME = {
     caption: {
       fontSize: '0.75rem',
       fontWeight: 'regular',
+    },
+    mobileGlass: {
+      fontSize: '1rem',
+      fontWeight: 'bold',
     },
   },
 };
