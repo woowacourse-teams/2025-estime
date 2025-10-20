@@ -49,8 +49,8 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
 
   return (
     <div
+      className="time-table-cell"
       data-time={dateTimeKey}
-      className={`time-table-cell`}
       onMouseEnter={handleEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
