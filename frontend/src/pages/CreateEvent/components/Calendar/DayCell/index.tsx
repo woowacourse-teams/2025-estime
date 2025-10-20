@@ -8,6 +8,9 @@ export interface DayCellProps {
   onMouseDown: (date: Date | null) => void;
   onMouseEnter: (date: Date | null) => void;
   onMouseUp: () => void;
+  onTouchStart: (date: Date | null) => void;
+  onTouchMove: (e: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchEnd: () => void;
 }
 
 const DayCell = ({
@@ -17,11 +20,15 @@ const DayCell = ({
   onMouseDown,
   onMouseEnter,
   onMouseUp,
+  onTouchStart,
+  onTouchMove,
+  onTouchEnd,
 }: DayCellProps) => {
   const dayState = getDayState({ day, today, selectedDates });
 
   return (
     <S.Container
+      data-date={day}
       isPast={dayState.isPast}
       isSunday={dayState.isSunday}
       isSaturday={dayState.isSaturday}
@@ -32,6 +39,9 @@ const DayCell = ({
       onMouseDown={() => onMouseDown(day)}
       onMouseEnter={() => onMouseEnter(day)}
       onMouseUp={onMouseUp}
+      onTouchStart={() => onTouchStart(day)}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
     >
       {dayState.dateString}
     </S.Container>

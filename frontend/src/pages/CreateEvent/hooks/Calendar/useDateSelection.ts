@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { showToast } from '@/shared/store/toastStore';
@@ -17,6 +17,8 @@ export const useDateSelection = ({
 }: SimpleDragSelectionOptions) => {
   const [dragState, setDragState] = useState<DragState>('add');
   const draggingRef = useRef(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const determineDragState = useCallback(
     (date: Date): DragState => {
@@ -93,78 +95,71 @@ export const useDateSelection = ({
     draggingRef.current = false;
   }, []);
 
-  // 캘린더 영역에서 마우스가 벗어날 때
   const onMouseLeave = useCallback(() => {
     if (draggingRef.current) {
       onMouseUp();
     }
   }, [onMouseUp]);
 
-  // 혹시 event leaking 방지를 위해 넣어 둡니다.
-  // 현재는 없이도 정상 동작합니다.
-  // 모바일 환경에서는 필요 할수 있습니다.
-  // useEffect(() => {
-  //   const handleGlobalMouseUp = () => {
-  //     if (draggingRef.current) {
-  //       draggingRef.current = false;
-  //     }
-  //   };
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (draggingRef.current) {
+        draggingRef.current = false;
+      }
+    };
 
-  //   if (draggingRef.current) {
-  //     document.addEventListener('mouseup', handleGlobalMouseUp);
+    if (draggingRef.current) {
+      document.addEventListener('mouseup', handleGlobalMouseUp);
 
-  //     return () => {
-  //       document.removeEventListener('mouseup', handleGlobalMouseUp);
-  //     };
-  //   }
-  // }, [draggingRef]);
+      return () => {
+        document.removeEventListener('mouseup', handleGlobalMouseUp);
+      };
+    }
+  }, [draggingRef]);
 
-  // 터치 이벤트 지원
-  // const handleTouchStart = useCallback(
-  //   (date: Date | null) => {
-  //     onMouseDown(date);
-  //   },
-  //   [onMouseDown]
-  // );
+  const onTouchStart = useCallback(
+    (date: Date | null) => {
+      onMouseDown(date);
+    },
+    [onMouseDown]
+  );
 
-  // const handleTouchMove = useCallback(
-  //   (
-  //     e: React.TouchEvent,
-  //     containerRef: React.RefObject<{ contains: (element: unknown) => boolean }>
-  //   ) => {
-  //     if (!draggingRef.current || !containerRef.current) return;
+  const onTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      if (!draggingRef.current || !containerRef.current) return;
 
-  //     e.preventDefault();
+      const touch = e.changedTouches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
 
-  //     const touch = e.changedTouches[0];
-  //     const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target && containerRef.current.contains(target)) {
+        const dateStr = target?.getAttribute('data-date');
+        console.log(dateStr);
+        if (dateStr) {
+          const date = new Date(dateStr);
+          if (!DateManager.isPast(date, today)) {
+            addRemoveDate(date, dragState);
+          }
+        }
+      }
+    },
+    [dragState, addRemoveDate]
+  );
 
-  //     if (target && containerRef.current.contains(target)) {
-  //       const dateStr = target?.getAttribute('data-date');
-  //       if (dateStr) {
-  //         const date = new Date(dateStr);
-  //         if (isValidDate(date) || !isItPast(date, today)) {
-  //           addRemoveDate(date, dragState);
-  //         }
-  //       }
-  //     }
-  //   },
-  //   [dragState, addRemoveDate]
-  // );
-
-  // const handleTouchEnd = useCallback(() => {
-  //   onMouseUp();
-  // }, [onMouseUp]);
+  const onTouchEnd = useCallback(() => {
+    onMouseUp();
+  }, [onMouseUp]);
 
   return {
+    containerRef,
+
     onMouseDown,
     onMouseEnter,
     onMouseUp,
     onMouseLeave,
 
-    // handleTouchStart,
-    // handleTouchMove,
-    // handleTouchEnd,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
 
     reset: () => {
       draggingRef.current = false;
