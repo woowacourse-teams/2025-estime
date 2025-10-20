@@ -5,7 +5,7 @@ import Flex from '../Flex';
 const Footer = () => {
   return (
     <S.Container>
-      <Flex direction="column" align="center" gap="var(--gap-8)">
+      <Flex direction="column" align="center" gap="var(--gap-4)">
         <S.Content>
           <S.Links>
             <Text variant="h4">
