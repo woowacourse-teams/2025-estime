@@ -43,7 +43,7 @@ const MobileCreateEventPage = () => {
               <S.ButtonWrapper>
                 <Button color="primary" selected={true} onClick={stepNext}>
                   <Text variant="h4" color="background">
-                    방 만들기
+                    약속 만들기
                   </Text>
                 </Button>
               </S.ButtonWrapper>
@@ -106,7 +106,7 @@ const MobileCreateEventPage = () => {
                 disabled={isRoomCreateLoading}
               >
                 <Text variant="button" color="background">
-                  {isRoomCreateLoading ? '방 생성 중...' : '방 만들기'}
+                  {isRoomCreateLoading ? '방 생성 중...' : '약속 만들기'}
                 </Text>
               </Button>
             </Flex>

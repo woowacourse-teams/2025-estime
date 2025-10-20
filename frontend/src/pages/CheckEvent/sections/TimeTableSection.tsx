@@ -46,12 +46,19 @@ const TimetableSection = ({
         <TimeTableHeader name={userNameStore.getSnapshot()} mode="save" isExpired={isExpired}>
           <Flex gap="var(--gap-8)" align="center" justify="flex-end">
             {participantCount > 0 && (
-              <Flex gap="var(--gap-3)" align="center" justify="center" direction="column">
-                <Text variant="h4" color="text">
-                  전체 시간표
-                </Text>
-                <Toggle isOn={glassPreview.isOn} onToggle={glassPreview.toggle} />
-              </Flex>
+              <S.Toggle>
+                <Flex
+                  gap="var(--gap-3)"
+                  align="center"
+                  justify="center"
+                  direction={theme.isMobile ? 'row' : 'column'}
+                >
+                  <Text variant="h4" color="text">
+                    전체 시간표
+                  </Text>
+                  <Toggle isOn={glassPreview.isOn} onToggle={glassPreview.toggle} />
+                </Flex>
+              </S.Toggle>
             )}
             <Button
               color="primary"
