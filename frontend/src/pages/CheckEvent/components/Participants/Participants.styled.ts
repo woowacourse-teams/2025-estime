@@ -46,6 +46,7 @@ export const Container = styled.div<{ show: boolean }>`
         `
       : css`
           animation: ${disappear} 0.2s ease forwards;
+          pointer-events: none;
         `}
 `;
 
