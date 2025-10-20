@@ -36,15 +36,20 @@ export const TitleSettings = () => {
   return (
     <S.InfoWrapper>
       <S.TextWrapper>
-        <Text variant="h3">제목</Text>
-        <Text variant="h4">참여자들에게 표시될 약속의 제목을 입력해주세요.</Text>
+        <Text variant="h3" tabIndex={0}>
+          제목
+        </Text>
+        <Text variant="h4" tabIndex={0}>
+          참여자들에게 표시될 약속의 제목을 입력해주세요.
+        </Text>
       </S.TextWrapper>
       <S.InputWrapper>
         <Input
-          placeholder="예: 아인슈타임 정기 산악회"
+          placeholder="예: 아인슈타임 회식"
           value={title}
           onChange={(e) => onChangeTitle(e.target.value)}
           maxLength={20}
+          aria-label="약속 제목 입력 필드."
         />
       </S.InputWrapper>
     </S.InfoWrapper>
@@ -67,14 +72,20 @@ export const TimeSettings = () => {
   return (
     <S.InfoWrapper>
       <S.TextWrapper>
-        <Text variant="h3">시간 선택</Text>
-        <Text variant="h4">참여자가 선택할 수 있는 시간의 범위를 설정합니다.</Text>
+        <Text variant="h3" tabIndex={0}>
+          시간 선택
+        </Text>
+        <Text variant="h4" tabIndex={0}>
+          참여자가 선택할 수 있는 시간의 범위를 설정합니다.
+        </Text>
       </S.TextWrapper>
 
       <Flex direction="column" gap="var(--gap-2)">
         <Flex direction="row" gap="var(--gap-4)">
           <S.Label>
-            <Text variant="body">시작 시간</Text>
+            <Text variant="body" tabIndex={0}>
+              시작 시간
+            </Text>
             <TimePicker
               selectedHour={timeRange.startTime}
               selectHour={handleCustomStartClick}
@@ -84,7 +95,9 @@ export const TimeSettings = () => {
             />
           </S.Label>
           <S.Label>
-            <Text variant="body">종료 시간</Text>
+            <Text variant="body" tabIndex={0}>
+              종료 시간
+            </Text>
             <TimePicker
               selectedHour={timeRange.endTime}
               selectHour={handleCustomEndClick}
@@ -116,8 +129,12 @@ export const DeadlineSettings = () => {
   return (
     <S.InfoWrapper>
       <S.TextWrapper>
-        <Text variant="h3">투표 마감 기한</Text>
-        <Text variant="h4">참여자들이 응답할 수 있는 마감 기한을 설정합니다.</Text>
+        <Text variant="h3" tabIndex={0}>
+          투표 마감 기한
+        </Text>
+        <Text variant="h4" tabIndex={0}>
+          참여자들이 응답할 수 있는 마감 기한을 설정합니다.
+        </Text>
       </S.TextWrapper>
       <Flex gap="var(--gap-4)">
         <DatePicker
