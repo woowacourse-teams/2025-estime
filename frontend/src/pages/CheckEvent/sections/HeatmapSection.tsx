@@ -40,7 +40,7 @@ const HeatmapSection = ({
 
     showToast({
       type: 'warning',
-      message: '시간을 등록하려면 "편집하기"를 눌러주세요',
+      message: '시간을 등록하려면 "등록하기"를 눌러주세요',
     });
   };
 

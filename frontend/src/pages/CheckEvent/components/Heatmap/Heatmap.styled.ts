@@ -15,7 +15,7 @@ export const HeatMapContent = styled.div`
 `;
 
 export const TimeSlotColumn = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.gray20};
+  border: 1px solid ${({ theme }) => theme.colors.gray40};
   background-color: ${({ theme }) => theme.colors.background};
   display: flex;
   flex-direction: column;

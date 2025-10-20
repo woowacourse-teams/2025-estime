@@ -21,3 +21,9 @@ export const BackFace = styled(FlipFace)`
   z-index: 1;
   transform: rotateY(180deg);
 `;
+
+export const Toggle = styled.div`
+  position: ${({ theme }) => (theme.isMobile ? 'absolute' : 'relative')};
+  left: ${({ theme }) => (theme.isMobile ? 0 : 'none')};
+  top: ${({ theme }) => (theme.isMobile ? '170%' : 'none')};
+`;

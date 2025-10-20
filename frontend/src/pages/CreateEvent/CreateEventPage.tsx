@@ -39,7 +39,7 @@ const CreateEventPage = () => {
                 disabled={isRoomCreateLoading}
               >
                 <Text variant="button" color="background">
-                  {isRoomCreateLoading ? '생성 중...' : '방 만들기'}
+                  {isRoomCreateLoading ? '생성 중...' : '약속 만들기'}
                 </Text>
               </Button>
             </Flex>
