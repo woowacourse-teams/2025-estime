@@ -17,8 +17,11 @@ import useCheckEventHandlers from './hooks/useCheckEventHandlers';
 import TimetableSection from './sections/TimeTableSection';
 import HeatmapSection from './sections/HeatmapSection';
 import GlassTooltip from './components/GlassTooltip';
+import { useTheme } from '@emotion/react';
 
 const CheckEventPage = () => {
+  const { isMobile } = useTheme();
+
   const { roomInfo, session } = useCheckRoomSession();
 
   const { handleLogin, isLoginLoading } = useUserLogin({
@@ -93,7 +96,7 @@ const CheckEventPage = () => {
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
               />
-              <GlassTooltip />
+              {isMobile ? <GlassTooltip.Mobile /> : <GlassTooltip.Desktop />}
             </S.FlipInner>
           </S.FlipCard>
         </Flex>
