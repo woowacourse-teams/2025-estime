@@ -6,6 +6,7 @@ import HeatmapPreview from '../HeatMapPreview';
 import Wrapper from '@/shared/layout/Wrapper';
 import TimeTableColumn from './TimeTableColumn';
 import TimetableHoverProvider from '../../providers/TimetableProvider';
+import Flex from '@/shared/layout/Flex';
 
 interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -19,14 +20,16 @@ const TimetableContent = ({ timeColumnRef, dateTimeSlots, availableDates }: Time
   return (
     <S.TimetableContent>
       <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
-      <div ref={containerRef} {...pointerHandlers}>
-        {[...availableDates].map((date) => (
-          <Wrapper key={date} maxWidth="100%">
-            <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
-            <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
-          </Wrapper>
-        ))}
-      </div>
+      <Wrapper maxWidth="100%" center={false} ref={containerRef} {...pointerHandlers}>
+        <Flex>
+          {[...availableDates].map((date) => (
+            <Wrapper key={date} maxWidth="100%">
+              <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
+              <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
+            </Wrapper>
+          ))}
+        </Flex>
+      </Wrapper>
     </S.TimetableContent>
   );
 };
