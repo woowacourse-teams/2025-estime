@@ -22,7 +22,7 @@ export const Container = styled.div<{ show: boolean }>`
   border-radius: var(--radius-4);
   background: ${({ theme }) => theme.colors.background};
   border: 1px dashed ${({ theme }) => theme.colors.primary};
-  right: 55px;
+  right: calc(100% + 8px);
   bottom: 4px;
 
   @media (max-width: 740px) {
@@ -69,6 +69,7 @@ export const Body = styled.div`
   padding: var(--padding-5);
   display: flex;
   align-items: center;
+  min-width: 0;
 
   @media (max-width: 640px) {
     padding: var(--padding-3) var(--padding-3);
@@ -79,6 +80,7 @@ export const NameList = styled.div`
   width: 100%;
   line-height: 1.5rem;
   max-height: calc(1.5rem * 2);
+  min-width: 0;
   overflow-y: auto;
   word-break: keep-all;
 `;
