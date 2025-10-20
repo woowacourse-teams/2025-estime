@@ -24,7 +24,7 @@ const HeaderPresets: Record<HeaderMode, Presets> = {
     title: `나의 시간표`,
     description: (name: string, isMobile?: boolean) =>
       isMobile
-        ? `${name}님의 \n 가능한 시간을 드래그 해주세요!`
+        ? `${name}님의 가능한 \n 시간을 드래그 해주세요!`
         : `${name}님의 가능한 시간을 드래그 해주세요!`,
   },
 };
@@ -45,7 +45,7 @@ const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderPro
         <Text variant="h2" color="text">
           {presets.title}
         </Text>
-        <Text variant="body" color="text" style={{ whiteSpace: 'pre-wrap' }}>
+        <Text variant="body" color="text" style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>
           {presets.description(name, theme.isMobile)}
         </Text>
       </Flex>
