@@ -17,14 +17,16 @@ const TimetableContent = ({ timeColumnRef, dateTimeSlots, availableDates }: Time
   const { containerRef, pointerHandlers } = useLocalTimeSelection();
 
   return (
-    <S.TimetableContent ref={containerRef} {...pointerHandlers}>
+    <S.TimetableContent>
       <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
-      {[...availableDates].map((date) => (
-        <Wrapper key={date} maxWidth="100%">
-          <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
-          <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
-        </Wrapper>
-      ))}
+      <div ref={containerRef} {...pointerHandlers}>
+        {[...availableDates].map((date) => (
+          <Wrapper key={date} maxWidth="100%">
+            <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
+            <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
+          </Wrapper>
+        ))}
+      </div>
     </S.TimetableContent>
   );
 };
