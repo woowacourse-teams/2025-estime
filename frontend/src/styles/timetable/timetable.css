@@ -24,6 +24,10 @@
   &:nth-of-type(odd) {
     border-top: 1px dashed var(--gray30);
   }
+
+  &:last-child {
+    border-bottom: 1px solid var(--gray40);
+  }
 }
 
 .time-table-cell:hover {
