@@ -32,7 +32,7 @@ export const Container = styled.div<{ opacity: number }>`
 `;
 
 export const Highlight = styled.div<{ opacity: number }>`
-  display: ${({ theme }) => (theme.isMobile ? 'none' : 'flex')};
+  display: flex;
   align-items: center;
   border-radius: 10px;
   padding: 10px;
