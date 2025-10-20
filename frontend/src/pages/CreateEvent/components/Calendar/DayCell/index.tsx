@@ -32,6 +32,13 @@ const DayCell = ({
       onMouseDown={() => onMouseDown(day)}
       onMouseEnter={() => onMouseEnter(day)}
       onMouseUp={onMouseUp}
+      role={dayState.dateString && 'button'}
+      aria-label={
+        dayState.isSelected
+          ? `${dayState.dateString}일 선택됨`
+          : `${dayState.dateString}일 선택 안되어 있음`
+      }
+      tabIndex={dayState.dateString ? 0 : -1}
     >
       {dayState.dateString}
     </S.Container>
