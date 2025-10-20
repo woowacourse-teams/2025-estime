@@ -214,7 +214,7 @@ const useLocalTimeSelection = () => {
       cancelRAF();
       cleanUp();
     };
-  }, [cancelRAF, cleanUp, onDragEnd]);
+  }, [cancelRAF, cleanUp]);
 
   /** 최종 반영 */
   const commitSelection = () => {
