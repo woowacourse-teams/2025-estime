@@ -7,7 +7,7 @@ export const Container = styled.div<{ isValid: boolean; shouldShake: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-10)' : 'var(--gap-8)')};
+  gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-7)' : 'var(--gap-8)')};
   padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-8)' : 'var(--padding-10)')};
   border-radius: var(--radius-6);
   max-width: 50rem;
