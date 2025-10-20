@@ -21,7 +21,7 @@ export const Container = styled.div<{ show: boolean }>`
   flex-direction: column;
   border-radius: var(--radius-4);
   background: ${({ theme }) => theme.colors.background};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border: 1px dashed ${({ theme }) => theme.colors.primary};
   right: 55px;
   bottom: 4px;
 
@@ -56,7 +56,7 @@ export const Header = styled.div`
   justify-content: space-between;
   padding: var(--padding-5);
   align-items: center;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
+  border-bottom: 1px dashed ${({ theme }) => theme.colors.primary};
 
   @media (max-width: 640px) {
     max-height: 2rem;

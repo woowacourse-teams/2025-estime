@@ -10,7 +10,7 @@ import useToggleState from '@/shared/hooks/common/useToggleState';
 
 const Participants = () => {
   const theme = useTheme();
-  const { isOpen, toggleOpen } = useToggleState();
+  const { isOpen, toggleOpen } = useToggleState(true);
 
   const roomStatistics = useRoomStatistics();
   const hasParticipants = roomStatistics.participantCount > 0;
@@ -34,9 +34,7 @@ const Participants = () => {
         <S.Container show={isOpen}>
           <S.Header>
             <Flex align="center" gap="var(--gap-2)">
-              <Text color="primary" variant="button">
-                투표 참여자
-              </Text>
+              <Text variant="button">투표 참여자</Text>
             </Flex>
             <S.Button onClick={() => toggleOpen()}>
               <IClose color={theme.colors.primary} width={'24'} height={'24'} />
@@ -44,9 +42,7 @@ const Participants = () => {
           </S.Header>
           <S.Body>
             <S.NameList>
-              <Text color="primary" variant="button">
-                {roomStatistics.participants.join(', ')}
-              </Text>
+              <Text variant="body">{roomStatistics.participants.join(', ')}</Text>
             </S.NameList>
           </S.Body>
         </S.Container>
