@@ -20,13 +20,18 @@ const CreateEventPage = () => {
   } = useCreateRoomController();
 
   return (
-    <Wrapper maxWidth={1280} paddingTop="var(--padding-11)" paddingBottom="var(--padding-11)">
-      <Flex justify="space-between" gap="var(--gap-9)">
+    <Wrapper
+      maxWidth={1280}
+      paddingTop="var(--padding-10)"
+      paddingBottom="var(--padding-10)"
+      fullHeight
+    >
+      <Flex justify="space-between" gap="var(--gap-10)">
         <Flex.Item flex={1}>
           <CalendarSettings isValid={isValid.calendar} shouldShake={animation.shake} />
         </Flex.Item>
         <Flex.Item flex={1}>
-          <Flex direction="column" justify="space-between" gap="var(--gap-8)">
+          <Flex direction="column" justify="space-between" gap="var(--gap-6)">
             <BasicSettings isValid={isValid.basic} shouldShake={animation.shake} />
             <Flex justify="flex-end">
               <Button
