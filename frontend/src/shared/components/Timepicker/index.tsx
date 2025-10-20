@@ -3,6 +3,7 @@ import * as S from './Timepicker.styled';
 import IClock from '@/assets/icons/IClock';
 import { useTheme } from '@emotion/react';
 import Text from '../Text';
+import { toAmPmTimeLabel } from '@/shared/utils/toAmPmTimeLabel';
 
 interface TimePickerProps extends ComponentProps<'input'> {
   selectedHour: string | null;
@@ -22,31 +23,40 @@ const TimePicker = ({
   const { colors } = useTheme();
 
   return (
-    <S.Container role="combobox" onClick={toggleOpen}>
-      <S.Wrapper>
-        <S.TimeWrapper>
-          <Text variant="h4" color="gray50">
-            {selectedHour || '00 : 00'}
-          </Text>
-        </S.TimeWrapper>
-        <IClock color={colors.text} />
-      </S.Wrapper>
-      {isOpen && (
-        <S.List role="listbox" isOpen={isOpen}>
-          <S.ListItemWrapper>
-            {hourOptions.map((time) => (
-              <S.ListItem
-                key={time}
-                role="option"
-                onClick={(e) => selectHour(time.replace(/\s/g, ''), e)}
-              >
-                <Text variant="h4"> {time}</Text>
-              </S.ListItem>
-            ))}
-          </S.ListItemWrapper>
-        </S.List>
-      )}
-    </S.Container>
+    <>
+      <S.Container
+        onClick={toggleOpen}
+        tabIndex={0}
+        role="combobox"
+        aria-label={toAmPmTimeLabel(selectedHour)}
+      >
+        <S.Wrapper>
+          <S.TimeWrapper aria-hidden="true">
+            <Text variant="h4" color="gray50">
+              {selectedHour || '00 : 00'}
+            </Text>
+          </S.TimeWrapper>
+          <IClock color={colors.text} />
+        </S.Wrapper>
+        {isOpen && (
+          <S.List role="listbox" isOpen={isOpen}>
+            <S.ListItemWrapper>
+              {hourOptions.map((time) => (
+                <S.ListItem
+                  key={time}
+                  role="option"
+                  onClick={(e) => selectHour(time.replace(/\s/g, ''), e)}
+                  tabIndex={0}
+                  aria-label={toAmPmTimeLabel(time)}
+                >
+                  <Text variant="h4"> {time}</Text>
+                </S.ListItem>
+              ))}
+            </S.ListItemWrapper>
+          </S.List>
+        )}
+      </S.Container>
+    </>
   );
 };
 
