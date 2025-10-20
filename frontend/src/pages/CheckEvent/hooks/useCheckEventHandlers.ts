@@ -76,6 +76,7 @@ const useCheckEventHandlers = ({
         type: 'success',
         message: '시간표 저장이 완료되었습니다!',
       });
+
       // 전역 스토어같은 곳에서 이벤트를 전달 받는다.
       // sse 단에서 새로운 매시지가 올떄가 대기한다.
       //임시로 설정

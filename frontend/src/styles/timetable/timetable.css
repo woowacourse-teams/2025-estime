@@ -1,13 +1,15 @@
 :root {
   --gray10: #f4f4f4;
   --gray20: #c6c6c6;
+  --gray30: #aeaeb2;
+  --gray40: #8e8e93;
   --primary: #8052e1;
 }
 
 .time-table-cell {
   position: relative;
-  border-top: 1px solid var(--gray20);
-  border-right: 1px solid var(--gray20);
+  border-top: 1px solid var(--gray40);
+  border-right: 1px solid var(--gray40);
   /* --gray-10 + 투명도 0.6 */
   background-color: rgba(244, 244, 244, 0.6);
   display: flex;
@@ -18,10 +20,15 @@
   width: 100%;
   user-select: none;
   touch-action: none;
+
+  &:nth-of-type(odd) {
+    border-top: 1px dashed var(--gray30);
+  }
 }
 
 .time-table-cell:hover {
   cursor: pointer;
+  border: 1.5px dashed var(--gray30);
 }
 
 .time-table-cell::after {
