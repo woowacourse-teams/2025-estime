@@ -1,6 +1,6 @@
 import * as S from './Calendar.styled';
-import { weekdays } from '@/constants/calender';
-import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalender';
+import { weekdays } from '@/constants/calendar';
+import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalendar';
 
 import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import DayCell from './DayCell';
