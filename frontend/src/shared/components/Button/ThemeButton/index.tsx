@@ -13,7 +13,14 @@ const ThemeButton = ({ isDark, onToggle }: ThemeButtonProps) => {
   const Icon = isDark ? ISun : IMoon;
 
   return (
-    <S.Container onClick={onToggle}>
+    <S.Container
+      onClick={onToggle}
+      aria-label={
+        isDark
+          ? '라이트와 다크 모드 전환하기 (현재 다크 모드)'
+          : '라이트와 다크 모드 전환하기 (현재 라이트 모드)'
+      }
+    >
       <Icon color={colors.text} />
     </S.Container>
   );

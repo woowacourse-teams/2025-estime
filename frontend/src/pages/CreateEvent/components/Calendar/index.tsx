@@ -36,27 +36,32 @@ const Calender = () => {
       <Flex direction="column" gap="var(--gap-5)">
         <Flex direction="column" gap="var(--gap-4)">
           <S.Header>
-            <Text variant="h2">
+            <Text variant="h2" tabIndex={0} aria-live="polite">
               {current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}
             </Text>
             <S.ButtonContainer>
               <PageArrowButton
                 onClick={prevMonth}
                 disabled={DateManager.isCurrentMonth(current, today)}
+                aria-label={
+                  DateManager.isCurrentMonth(current, today) ? '이전 달. 비활성화' : '이전 달'
+                }
               >
                 <IChevronLeft width={20} height={20} />
               </PageArrowButton>
-              <PageArrowButton onClick={nextMonth}>
+              <PageArrowButton onClick={nextMonth} aria-label="다음 달">
                 <IChevronRight width={20} height={20} />
               </PageArrowButton>
             </S.ButtonContainer>
           </S.Header>
-          <Text variant="h4">날짜는 최대 7개까지 선택 가능합니다.</Text>
+          <Text tabIndex={0} variant="h4">
+            날짜는 최대 7개까지 선택 가능합니다.
+          </Text>
         </Flex>
         <S.CalendarContainer ref={containerRef}>
           <S.Grid onPointerLeave={handlePointerLeave}>
             {weekdays.map((w) => (
-              <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'}>
+              <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'} tabIndex={0}>
                 {w}
               </S.Weekday>
             ))}

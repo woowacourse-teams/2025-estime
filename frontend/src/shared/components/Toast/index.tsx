@@ -39,7 +39,7 @@ const Toast = ({ type, message }: ToastProps) => {
           <StatusIcon type={type} />
           <Text color={`${type}Text`}>{TOAST_TITLE[type]}</Text>
         </S.Header>
-        <S.Body>
+        <S.Body role="alert" aria-live="assertive">
           <Text color={`${type}Text`}>{message}</Text>
         </S.Body>
       </S.Container>
