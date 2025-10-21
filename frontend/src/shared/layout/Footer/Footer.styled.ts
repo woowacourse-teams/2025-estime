@@ -2,18 +2,21 @@ import styled from '@emotion/styled';
 
 export const Container = styled.footer`
   width: 100%;
-  height: 80px;
+  height: 150px;
   background-color: ${({ theme }) => theme.colors.background};
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: 768px) {
+    height: 200px;
+  }
 `;
 
 export const Content = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 var(--padding-8);
+  padding: 0 var(--padding-9);
   display: flex;
   align-items: center;
   justify-content: space-evenly;
