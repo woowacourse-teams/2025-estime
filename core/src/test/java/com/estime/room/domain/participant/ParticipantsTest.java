@@ -8,11 +8,11 @@ import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.Participants;
 import com.estime.shared.exception.NullNotAllowedException;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 class ParticipantsTest {
 
@@ -102,8 +102,14 @@ class ParticipantsTest {
     }
 
     private Participant createParticipant(final Long id, final Long roomId, final String name) {
-        final Participant participant = Participant.withoutId(roomId, ParticipantName.from(name));
-        ReflectionTestUtils.setField(participant, "id", id);
-        return participant;
+        try {
+            final Participant participant = Participant.withoutId(roomId, ParticipantName.from(name));
+            final Field idField = participant.getClass().getSuperclass().getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(participant, id);
+            return participant;
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Failed to set id field", e);
+        }
     }
 }

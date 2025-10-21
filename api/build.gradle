@@ -1,0 +1,16 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+dependencies {
+    implementation project(':application')
+    implementation project(':infrastructure')
+    testImplementation project(':core')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework:spring-tx'
+}
