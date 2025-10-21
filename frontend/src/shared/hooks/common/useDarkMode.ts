@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
-
-interface UseDarkModeOptions {
-  key?: string;
-}
+import { useCallback, useEffect, useState } from 'react';
 
 interface UseDarkModeReturn {
   darkMode: boolean;
   toggleDarkMode: () => void;
-  setDarkMode: (value: boolean) => void;
 }
 
-const DEFAULT_KEY = 'darkMode';
-
-export function useDarkMode(options: UseDarkModeOptions = {}): UseDarkModeReturn {
-  const { key = DEFAULT_KEY } = options;
-
+export function useDarkMode(key: string = 'darkMode'): UseDarkModeReturn {
   const getInitialValue = () => {
     const stored = localStorage.getItem(key);
     if (stored !== null) return stored === 'true';
@@ -39,18 +30,13 @@ export function useDarkMode(options: UseDarkModeOptions = {}): UseDarkModeReturn
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [key]);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = useCallback(() => {
     setDarkModeState((prev) => {
       const next = !prev;
       localStorage.setItem(key, next.toString());
       return next;
     });
-  };
+  }, [key]);
 
-  const setDarkMode = (value: boolean) => {
-    setDarkModeState(value);
-    localStorage.setItem(key, value.toString());
-  };
-
-  return { darkMode, toggleDarkMode, setDarkMode };
+  return { darkMode, toggleDarkMode };
 }
