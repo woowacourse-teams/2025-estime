@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "변경된 Flyway 마이그레이션 파일 목록 탐색 시작..."
 
-          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- 'application/src/main/resources/db/migration/**.sql' \
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- 'infrastructure/src/main/resources/db/migration/**.sql' \
             | grep -E '/(V|R)[0-9_.]+__.*\.sql$' > changed_files.txt || true
 
           if [ ! -s changed_files.txt ]; then
