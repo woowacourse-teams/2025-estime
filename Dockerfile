@@ -9,14 +9,15 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 
-# 소스 코드 복사 (core, application, infrastructure 모듈)
+# 소스 코드 복사
 COPY core core
 COPY application application
 COPY infrastructure infrastructure
+COPY api api
 
 # Gradle 실행 권한 부여 및 애플리케이션 빌드
 RUN chmod +x ./gradlew
-RUN ./gradlew clean :application:bootJar --no-daemon
+RUN ./gradlew clean :api:bootJar --no-daemon
 
 # 런타임 단계 - 실제 실행 환경 (AWS Corretto JRE, 경량화)
 FROM amazoncorretto:21-alpine3.19
@@ -30,7 +31,7 @@ RUN apk add --no-cache curl tzdata && \
     apk del tzdata
 
 # 빌드 단계에서 생성된 JAR 파일 복사
-COPY --from=build /app/application/build/libs/application-*-SNAPSHOT.jar app.jar
+COPY --from=build /app/api/build/libs/api-*-SNAPSHOT.jar app.jar
 
 # 보안을 위한 일반 사용자 생성 및 파일 소유권 변경
 RUN addgroup -g 1001 -S appuser && adduser -S -u 1001 -G appuser appuser
