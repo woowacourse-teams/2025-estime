@@ -11,7 +11,7 @@ const TimeSlotColumn = ({ timeColumnRef, dateTimeSlots }: TimeSlotColumnProps) =
   const { hoverLabelRef, labelRefs } = useTimetableHoverContext();
 
   return (
-    <S.TimeSlotColumn ref={timeColumnRef}>
+    <S.TimeSlotColumn ref={timeColumnRef} aria-hidden={true}>
       {dateTimeSlots.map(
         (time) =>
           time.endsWith(':00') && (
