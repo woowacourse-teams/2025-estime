@@ -10,7 +10,7 @@ const Layout = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
   return (
     <>
       <Header isDark={isDark} toggleTheme={toggleTheme} />
-      <S.Container>
+      <S.Container aria-label="메인 콘텐츠">
         <Outlet />
       </S.Container>
       {!isMobile && <Footer />}
