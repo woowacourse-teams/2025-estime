@@ -131,7 +131,9 @@ function generateReport(forbiddenFound, reviewFound, migrateStatus, core) {
         report += `| 위험 LEVEL | 사유 | 파일 | 대상 SQL |\n`;
         report += `|:----------|:-----|:----|:--------|\n`;
         report += createErrorTable(errors, warnings);
-        report += `\n**이러한 SQL은 프로덕션 데이터를 손실시킬 가능성이 매우 높으므로 수정 필요**\n`;
+        if (forbiddenFound) {
+            report += `\n**이러한 SQL은 프로덕션 데이터를 손실시킬 가능성이 매우 높으므로 수정 필요**\n`;
+        }
     }
 
     // 마이그레이션 실패 섹션
