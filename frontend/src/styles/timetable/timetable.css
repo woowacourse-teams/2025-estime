@@ -11,7 +11,7 @@
   border-top: 1px solid var(--gray40);
   border-right: 1px solid var(--gray40);
   /* --gray-10 + 투명도 0.6 */
-  background-color: rgba(244, 244, 244, 0.6);
+  background-color: rgba(244, 244, 244, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
