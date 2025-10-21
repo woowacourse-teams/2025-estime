@@ -30,7 +30,7 @@ COPY infrastructure infrastructure
 COPY api api
 
 # 애플리케이션 빌드
-RUN ./gradlew :api:bootJar --no-daemon --parallel
+RUN ./gradlew :api:bootJar --no-daemon
 
 # 런타임 단계 - 실제 실행 환경 (AWS Corretto JRE, 경량화)
 FROM amazoncorretto:21-alpine3.19
