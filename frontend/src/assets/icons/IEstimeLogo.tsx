@@ -8,6 +8,7 @@ const IEstimeLogo = ({ color = LIGHT_THEME.colors.primary, ...props }: IconType)
       width="100%"
       height="100%"
       viewBox="0 0 305 58"
+      aria-hidden="true"
       fill={color}
       {...props}
     >
