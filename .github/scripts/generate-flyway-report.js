@@ -17,7 +17,8 @@ const fs = require('node:fs');
  * @property {Object} repo
  * @property {string} repo.owner
  * @property {string} repo.repo
- * @property {number} issue_number
+ * @property {Object} issue
+ * @property {number} issue.number
  */
 
 /**
