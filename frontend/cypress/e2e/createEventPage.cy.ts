@@ -38,3 +38,31 @@ describe('방 생성 플로우', () => {
     });
   });
 });
+describe('날짜 선택 오류 플로우', () => {
+  beforeEach(() => {
+    cy.visit('localhost:3000');
+  });
+
+  it('날짜 7개 이상 선택 시 경고 토스트가 표시된다.', () => {
+    const fixedDate = new Date(2025, 9, 21);
+    cy.clock(fixedDate.getTime(), ['Date']);
+
+    cy.visit('localhost:3000');
+
+    const datesToClick = [21, 22, 23, 24, 25, 26, 27, 28];
+
+    datesToClick.forEach((day) => {
+      cy.get(`[role="button"][aria-label="${day}일 선택 안되어 있음"]`).click();
+    });
+
+    cy.contains('최대 7개의 날짜를 선택할 수 있습니다.').should('be.visible');
+  });
+
+  it('과거 날짜 선택 시 경고 토스트가 표시된다.', () => {
+    const fixedDate = new Date(2025, 9, 21);
+    cy.clock(fixedDate.getTime(), ['Date']);
+    cy.get(`[role="button"][aria-label="${fixedDate.getDate() - 1}일 선택 안되어 있음"]`).click();
+
+    cy.contains('과거 날짜는 선택할 수 없습니다.').should('be.visible');
+  });
+});
