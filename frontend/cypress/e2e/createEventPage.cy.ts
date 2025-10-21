@@ -1,3 +1,5 @@
+import { addMonth, parseYearMonth } from 'cypress/utils/formatDate';
+
 describe('방 생성 플로우', () => {
   beforeEach(() => {
     cy.visit('localhost:3000');
@@ -38,6 +40,51 @@ describe('방 생성 플로우', () => {
     });
   });
 });
+
+describe('달력 월 이동 플로우', () => {
+  beforeEach(() => {
+    cy.visit('localhost:3000');
+  });
+
+  it('">"(다음) 버튼 클릭 시, 다음 달로 이동한다.', () => {
+    cy.get('[data-testid="calendar-yearMonth"]')
+      .invoke('text')
+      .then((textBefore) => {
+        const { year, month } = parseYearMonth(textBefore);
+        const nextMonthDate = addMonth(year, month, 1);
+
+        cy.get('[aria-label="다음 달"]').click();
+
+        cy.get('[data-testid="calendar-yearMonth"]')
+          .invoke('text')
+          .then((textAfter) => {
+            const parsedTextAfter = parseYearMonth(textAfter);
+            expect(parsedTextAfter.year).to.equal(nextMonthDate.year);
+            expect(parsedTextAfter.month).to.equal(nextMonthDate.month);
+          });
+      });
+  });
+
+  it('"<"(이전) 버튼 클릭 시, 이전 달로 이동한다.', () => {
+    cy.get('[aria-label="다음 달"]').click();
+
+    cy.get('[data-testid="calendar-yearMonth"]')
+      .invoke('text')
+      .then((textBefore) => {
+        const { year, month } = parseYearMonth(textBefore);
+        const beforeMonthDate = addMonth(year, month, -1);
+        cy.get('[aria-label="이전 달"]').click();
+        cy.get('[data-testid="calendar-yearMonth"]')
+          .invoke('text')
+          .then((textAfter) => {
+            const parsedTextAfter = parseYearMonth(textAfter);
+            expect(parsedTextAfter.year).to.equal(beforeMonthDate.year);
+            expect(parsedTextAfter.month).to.equal(beforeMonthDate.month);
+          });
+      });
+  });
+});
+
 describe('날짜 선택 오류 플로우', () => {
   beforeEach(() => {
     cy.visit('localhost:3000');
