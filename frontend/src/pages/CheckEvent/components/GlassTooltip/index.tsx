@@ -32,6 +32,7 @@ const GlassTooltip = () => {
       }}
       paddingLeft="var(--padding-11)"
       paddingRight="var(--padding-11)"
+      aria-hidden="true"
     >
       <S.Container opacity={data?.participantNames.length !== 0 ? 1 : 0}>
         <Flex justify="space-between" wrap="wrap" gap="var(--gap-4)">
