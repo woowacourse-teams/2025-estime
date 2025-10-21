@@ -1,20 +1,16 @@
 dependencies {
     // JPA annotations for entities (compile-only, implementation provided by infrastructure)
     compileOnly 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    // Considering removal of the core module's dependency on hibernate
     compileOnly 'org.hibernate.orm:hibernate-core'
     testRuntimeOnly 'org.hibernate.orm:hibernate-core'
 
-    // QueryDSL for Q-classes generation
-    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    // QueryDSL for Q-classes generation (compile-only, implementation provided by infrastructure)
+    // TODO Replace with dependency without security issues
+    compileOnly "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
     annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
-    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-
-    // TSID for domain value objects (RoomSession)
-    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
-
-    testImplementation 'org.assertj:assertj-core'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 def generatedDir = layout.buildDirectory.dir('generated/querydsl')

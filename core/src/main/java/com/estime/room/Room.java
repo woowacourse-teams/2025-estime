@@ -43,6 +43,7 @@ public class Room extends BaseEntity {
 
     public static Room withoutId(
             final String title,
+            final RoomSession session,
             final LocalDateTime deadline
     ) {
         validateTitleAndDeadline(title, deadline);
@@ -50,7 +51,7 @@ public class Room extends BaseEntity {
         validateTitle(trimmedTitle);
         validateDeadline(deadline);
         return new Room(
-                RoomSession.generate(),
+                session,
                 trimmedTitle,
                 deadline
         );
