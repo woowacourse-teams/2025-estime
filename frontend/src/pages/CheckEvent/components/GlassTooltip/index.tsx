@@ -48,10 +48,10 @@ const Mobile = () => {
       <S.Container opacity={data?.participantNames.length !== 0 ? 1 : 0}>
         <Flex justify="space-between" wrap="wrap" gap="var(--gap-4)" align="center">
           <Flex direction="column" align="flex-start" gap="var(--gap-3)" justify="flex-start">
-            <Text variant="mobileGlass" color="gray60">
+            <Text variant="mobileCaption" color="gray60">
               {data?.date}
             </Text>
-            <Text variant="mobileGlass">
+            <Text variant="mobileCaption">
               {data?.startTime} ~ {data?.endTime}
             </Text>
           </Flex>
