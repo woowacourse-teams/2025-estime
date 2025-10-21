@@ -78,17 +78,29 @@ jobs:
             local reason="$2"
             local exclude_pattern="$3" # 선택적 파라미터
 
-            local matched
-            if [[ -n "$exclude_pattern" ]]; then
-              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" | grep -viE "$exclude_pattern" || true)
-            else
-              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" || true)
-            fi
+            # 세미콜론으로 SQL 문 분리하여 각각 검사
+            local sql_statements=$(echo "$SQL_CONTENT" | tr '\n' ' ' | sed 's/;/;\n/g')
 
-            if [[ -n "$matched" ]]; then
-              FORBIDDEN_FOUND=true
-              echo "$matched" | sed "s#^#❌ 금지|$reason|$filename|#" >> $FORBIDDEN_ERRORS_FILE
-            fi
+            while IFS= read -r statement; do
+              [[ -z "$statement" ]] && continue
+
+              local matched=""
+              if [[ -n "$exclude_pattern" ]]; then
+                # 패턴 매칭 후 exclude_pattern이 없는 경우만 선택
+                if echo "$statement" | grep -iqE "$pattern"; then
+                  if ! echo "$statement" | grep -iqE "$exclude_pattern"; then
+                    matched="$statement"
+                  fi
+                fi
+              else
+                matched=$(echo "$statement" | grep -iE "$pattern" || true)
+              fi
+
+              if [[ -n "$matched" ]]; then
+                FORBIDDEN_FOUND=true
+                printf '%s\n' "$matched" | sed '/^[[:space:]]*$/d; s#^#❌ 금지|'"$reason"'|'"$filename"'|#' >> $FORBIDDEN_ERRORS_FILE
+              fi
+            done <<< "$sql_statements"
           }
 
           # 검토 유형 검사 함수
@@ -98,18 +110,30 @@ jobs:
             local warning_message="$3"
             local exclude_pattern="$4" # 선택적 파라미터
 
-            local matched
-            if [[ -n "$exclude_pattern" ]]; then
-              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" | grep -viE "$exclude_pattern" || true)
-            else
-              matched=$(echo "$SQL_CONTENT" | grep -iE "$pattern" || true)
-            fi
+            # 세미콜론으로 SQL 문 분리하여 각각 검사
+            local sql_statements=$(echo "$SQL_CONTENT" | tr '\n' ' ' | sed 's/;/;\n/g')
 
-            if [[ -n "$matched" ]]; then
-              echo "::warning file=$file::$warning_message"
-              echo "$matched" | sed "s#^#⚠️ 검토|$reason|$filename|#" >> $WARNING_DETAILS_FILE
-              REVIEW_FOUND=true
-            fi
+            while IFS= read -r statement; do
+              [[ -z "$statement" ]] && continue
+
+              local matched=""
+              if [[ -n "$exclude_pattern" ]]; then
+                # 패턴 매칭 후 exclude_pattern이 없는 경우만 선택
+                if echo "$statement" | grep -iqE "$pattern"; then
+                  if ! echo "$statement" | grep -iqE "$exclude_pattern"; then
+                    matched="$statement"
+                  fi
+                fi
+              else
+                matched=$(echo "$statement" | grep -iE "$pattern" || true)
+              fi
+
+              if [[ -n "$matched" ]]; then
+                echo "::warning file=$file::$warning_message"
+                printf '%s\n' "$matched" | sed '/^[[:space:]]*$/d; s#^#⚠️ 검토|'"$reason"'|'"$filename"'|#' >> $WARNING_DETAILS_FILE
+                REVIEW_FOUND=true
+              fi
+            done <<< "$sql_statements"
           }
 
           echo "파일별 SQL 검증 시작..."
