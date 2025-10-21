@@ -23,6 +23,7 @@ interface TimetableSectionProps {
   buttonName: string;
   handleButtonClick: () => Promise<void>;
   isSavingUserTime: boolean;
+  isVisible: boolean;
 }
 
 const TimetableSection = ({
@@ -31,6 +32,7 @@ const TimetableSection = ({
   buttonName,
   handleButtonClick,
   isSavingUserTime,
+  isVisible,
 }: TimetableSectionProps) => {
   const theme = useTheme();
 
@@ -41,12 +43,12 @@ const TimetableSection = ({
   const { participantCount } = useRoomStatistics();
 
   return (
-    <S.BackFace ref={pagination.timeTableContainerRef}>
+    <S.BackFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={userNameStore.getSnapshot()} mode="save" isExpired={isExpired}>
           <Flex gap="var(--gap-8)" align="center" justify="flex-end">
             {participantCount > 0 && (
-              <S.Toggle>
+              <S.Toggle aria-hidden={true}>
                 <Flex
                   gap="var(--gap-3)"
                   align="center"
@@ -65,6 +67,7 @@ const TimetableSection = ({
               onClick={handleButtonClick}
               disabled={isExpired || isSavingUserTime}
               size="small"
+              aria-label="클릭시 시간표 저장 모드 변경"
             >
               <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
                 {buttonName}

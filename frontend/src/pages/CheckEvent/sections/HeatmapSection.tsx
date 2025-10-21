@@ -19,6 +19,7 @@ interface HeatmapSectionProps {
   pagination: TimeTablePaginationReturns;
   buttonName: string;
   handleButtonClick: () => Promise<void>;
+  isVisible: boolean;
 }
 
 const HeatmapSection = ({
@@ -26,6 +27,7 @@ const HeatmapSection = ({
   pagination,
   buttonName,
   handleButtonClick,
+  isVisible,
 }: HeatmapSectionProps) => {
   const theme = useTheme();
 
@@ -45,7 +47,7 @@ const HeatmapSection = ({
   };
 
   return (
-    <S.FrontFace ref={pagination.timeTableContainerRef}>
+    <S.FrontFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={roomInfo.title} mode="edit" isExpired={isExpired}>
           <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
