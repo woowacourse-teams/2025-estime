@@ -121,7 +121,7 @@ jobs:
             filename=$(basename "$file" .sql)
 
             # 주석 제외 SQL 내용 읽기
-            SQL_CONTENT=$(grep -v '^[[:space:]]*--' "$file" || true)
+            SQL_CONTENT=$(perl -0777 -pe 's/\/\*.*?\*\///gs; s/--.*$//gm' "$file" || true)
 
             # --- '금지' 유형 검사 ---
             check_forbidden_pattern "$FORBIDDEN_PATTERNS" "DROP/TRUNCATE/DROP COLUMN"
