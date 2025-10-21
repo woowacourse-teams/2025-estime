@@ -16,6 +16,7 @@ dependencies {
 
     // Monitoring & Logging
     implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     // Database migration
