@@ -49,7 +49,7 @@ export const TitleSettings = () => {
           value={title}
           onChange={(e) => onChangeTitle(e.target.value)}
           maxLength={20}
-          aria-label="약속 제목 입력 필드."
+          aria-label="약속 제목 입력 필드"
         />
       </S.InputWrapper>
     </S.InfoWrapper>
