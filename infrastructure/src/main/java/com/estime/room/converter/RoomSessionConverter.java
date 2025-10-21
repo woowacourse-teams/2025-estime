@@ -1,7 +1,6 @@
 package com.estime.room.converter;
 
 import com.estime.room.RoomSession;
-import com.github.f4b6a3.tsid.Tsid;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
@@ -10,11 +9,11 @@ public class RoomSessionConverter implements AttributeConverter<RoomSession, Str
 
     @Override
     public String convertToDatabaseColumn(final RoomSession session) {
-        return session == null ? null : session.getValue().toString();
+        return session == null ? null : session.getValue();
     }
 
     @Override
     public RoomSession convertToEntityAttribute(final String dbData) {
-        return dbData == null ? null : RoomSession.from(Tsid.from(dbData));
+        return dbData == null ? null : RoomSession.from(dbData);
     }
 }

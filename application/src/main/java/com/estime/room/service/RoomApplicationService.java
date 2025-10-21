@@ -1,8 +1,9 @@
 package com.estime.room.service;
 
-import com.estime.common.sse.application.SseService;
 import com.estime.exception.NotFoundException;
-import com.estime.room.platform.discord.DiscordMessageSender;
+import com.estime.port.out.PlatformMessageSender;
+import com.estime.port.out.RoomMessageSender;
+import com.estime.port.out.RoomSessionGenerator;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -57,19 +58,21 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Slf4j
 public class RoomApplicationService {
 
-    private final SseService sseService;
+    private final RoomMessageSender roomMessageSender;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
-    private final DiscordMessageSender discordMessageSender;
+    private final PlatformMessageSender platformMessageSender;
     private final SlotBatchRepository slotBatchRepository;
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
+    private final RoomSessionGenerator roomSessionGenerator;
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        final Room room = Room.withoutId(input.title(), input.deadline());
+        final RoomSession session = roomSessionGenerator.generate();
+        final Room room = Room.withoutId(input.title(), session, input.deadline());
         final Room savedRoom = roomRepository.save(room);
 
         validateAvailableDateSlots(input.availableDateSlots());
@@ -99,7 +102,8 @@ public class RoomApplicationService {
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
         final RoomCreateInput roomCreateInput = input.toRoomCreateInput();
-        final Room room = Room.withoutId(roomCreateInput.title(), roomCreateInput.deadline());
+        final RoomSession session = roomSessionGenerator.generate();
+        final Room room = Room.withoutId(roomCreateInput.title(), session, roomCreateInput.deadline());
         final Room savedRoom = roomRepository.save(room);
 
         validateAvailableDateSlots(input.availableDateSlots());
@@ -124,7 +128,7 @@ public class RoomApplicationService {
                         input.notification()));
 
         if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
-            discordMessageSender.sendConnectedRoomCreatedMessage(
+            platformMessageSender.sendConnectedRoomCreatedMessage(
                     input.channelId(),
                     savedRoom.getSession(),
                     savedRoom.getTitle(),
@@ -201,7 +205,7 @@ public class RoomApplicationService {
             @Override
             public void afterCommit() {
                 try {
-                    sseService.sendMessageByRoomSession(roomSession, "vote-changed");
+                    roomMessageSender.sendMessage(roomSession, "vote-changed");
                 } catch (final Exception e) {
                     log.warn("Failed to send SSE [vote-changed] after commit. roomSession={}", roomSession, e);
                 }

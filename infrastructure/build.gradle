@@ -1,37 +1,34 @@
 dependencies {
     implementation project(':core')
-    compileOnly project(':application')
+    implementation project(':application')
 
-    // Spring Data JPA for repository implementations
+    // Spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // Spring context for @Component, @Configuration
-    implementation 'org.springframework:spring-context'
-
-    // Spring Web for UriComponentsBuilder (PlatformShortcutBuilder)
-    implementation 'org.springframework:spring-web'
-
-    // Spring Boot for ConfigurationProperties
-    implementation 'org.springframework.boot:spring-boot'
-
-    // QueryDSL for dynamic queries
-    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
-
-    // MySQL driver
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
-    // External integrations
-    implementation 'io.micrometer:micrometer-registry-cloudwatch2'  // AWS CloudWatch
-
-    // TSID (for JPA converters)
-    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
-
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     // Configuration processor for @ConfigurationProperties
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
 
+    // API documentation (Swagger)
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
+
+    // Monitoring & Logging
+    implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // Database migration
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+
+    // Discord
+    implementation 'net.dv8tion:JDA:5.6.1'
+
+    // TSID
+    implementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
+
+    // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

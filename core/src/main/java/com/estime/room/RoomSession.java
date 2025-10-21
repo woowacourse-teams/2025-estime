@@ -1,9 +1,6 @@
 package com.estime.room;
 
 import com.estime.shared.Validator;
-import com.github.f4b6a3.tsid.Tsid;
-import com.github.f4b6a3.tsid.TsidCreator;
-import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,20 +9,16 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode
-public class RoomSession implements Serializable {
+public class RoomSession {
 
-    private final Tsid value;
+    private final String value;
 
-    public static RoomSession from(final Tsid roomSession) {
+    public static RoomSession from(final String roomSession) {
         validateNull(roomSession);
         return new RoomSession(roomSession);
     }
 
-    public static RoomSession generate() {
-        return new RoomSession(TsidCreator.getTsid());
-    }
-
-    private static void validateNull(final Tsid roomSession) {
+    private static void validateNull(final String roomSession) {
         Validator.builder()
                 .add("roomSession", roomSession)
                 .validateNull();
@@ -33,6 +26,6 @@ public class RoomSession implements Serializable {
 
     @Override
     public String toString() {
-        return value.toString();
+        return value;
     }
 }
