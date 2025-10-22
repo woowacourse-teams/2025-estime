@@ -3,7 +3,7 @@ import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
 import { roomStatisticsStore, type StatisticItem } from '../stores/roomStatisticsStore';
 import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
-import { useAnnounceContext } from '../providers/AnnounceProvider';
+import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
 
 const useHeatmapStatistics = ({ session }: { session: string }) => {
   const { triggerFetch: getStatistics } = useFetch({

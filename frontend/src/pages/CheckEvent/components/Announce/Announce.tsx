@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { useAnnounceContext } from '../../providers/AnnounceProvider';
+import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
 
 const Announce = () => {
   const { roomInfoAnnounce, statisticsAnnounce } = useAnnounceContext();

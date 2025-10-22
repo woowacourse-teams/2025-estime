@@ -4,7 +4,7 @@ import { lazy, Suspense } from 'react';
 import CreateEventPageSkeleton from '@/pages/CreateEvent/components/Skeleton';
 import CheckEventPageSkeleton from '@/pages/CheckEvent/components/Skeleton';
 import CreditsPageSkeleton from '@/pages/common/CreditsPageSkeleton';
-import AnnounceProvider from '@/pages/CheckEvent/providers/AnnounceProvider';
+import AnnounceProvider from '@/shared/contexts/AnnounceContext';
 
 const isMobile = /android|iphone|ipad|ipod|blackberry|opera mini/i.test(navigator.userAgent);
 

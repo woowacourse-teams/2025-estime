@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from 'react';
-import useAnnounce from '../hooks/Announce/useAnnounce';
+
 import useAriaPolite from '@/shared/hooks/common/useAriaPolite';
 
 interface AnnounceContextType {
@@ -9,7 +9,8 @@ interface AnnounceContextType {
 const AnnounceContext = createContext<AnnounceContextType | null>(null);
 
 const AnnounceProvider = ({ children }: { children: React.ReactNode }) => {
-  const { roomInfoAnnounce, statisticsAnnounce } = useAnnounce();
+  const roomInfoAnnounce = useAriaPolite();
+  const statisticsAnnounce = useAriaPolite();
 
   const memoValue = useMemo(
     () => ({ roomInfoAnnounce, statisticsAnnounce }),

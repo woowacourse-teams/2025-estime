@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useExtractQueryParams } from '../../../shared/hooks/common/useExtractQueryParams';
+import { useExtractQueryParams } from '@/shared/hooks/common/useExtractQueryParams';
 import { getRoomInfo } from '@/apis/room/room';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 import { initialCheckRoomInfo } from '@/constants/initialRoomInfo';
 import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 import useFetch from '@/shared/hooks/common/useFetch';
-import { useAnnounceContext } from '../providers/AnnounceProvider';
+import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
 
 const useCheckRoomSession = () => {
   const session = useExtractQueryParams('id');
