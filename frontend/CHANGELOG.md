@@ -1,3 +1,20 @@
+## 1.6.0 (2025-10-22)
+
+* fix: 다크모드 관련 스타일 수정 (#741) ([cad3d5c](https://github.com/woowacourse-teams/2025-estime/commit/cad3d5c)), closes [#741](https://github.com/woowacourse-teams/2025-estime/issues/741)
+* checkEventPage 접근성 개선 (#733) ([c39b3be](https://github.com/woowacourse-teams/2025-estime/commit/c39b3be)), closes [#733](https://github.com/woowacourse-teams/2025-estime/issues/733)
+* createEventPage E2E 테스트 코드 작성 (#736) ([3b3f599](https://github.com/woowacourse-teams/2025-estime/commit/3b3f599)), closes [#736](https://github.com/woowacourse-teams/2025-estime/issues/736)
+* CreateEventPage 접근성 개선 (#714) ([c234db0](https://github.com/woowacourse-teams/2025-estime/commit/c234db0)), closes [#714](https://github.com/woowacourse-teams/2025-estime/issues/714)
+* fix : QA-UI 수정(모바일-데스크탑) (#727) ([0d5e2f3](https://github.com/woowacourse-teams/2025-estime/commit/0d5e2f3)), closes [#727](https://github.com/woowacourse-teams/2025-estime/issues/727)
+* 다크모드 메인색상 변경 및 스켈레톤 색상 변경 (#740) ([e5ccda4](https://github.com/woowacourse-teams/2025-estime/commit/e5ccda4)), closes [#740](https://github.com/woowacourse-teams/2025-estime/issues/740)
+* 모바일 드래그 문제 수정 (#721) ([8a1d818](https://github.com/woowacourse-teams/2025-estime/commit/8a1d818)), closes [#721](https://github.com/woowacourse-teams/2025-estime/issues/721)
+* 모바일 캘린더 드래그 추가 (#729) ([dfc9a15](https://github.com/woowacourse-teams/2025-estime/commit/dfc9a15)), closes [#729](https://github.com/woowacourse-teams/2025-estime/issues/729)
+* 참여자 리스트 UI 수정  (#725) ([1063708](https://github.com/woowacourse-teams/2025-estime/commit/1063708)), closes [#725](https://github.com/woowacourse-teams/2025-estime/issues/725)
+* style: input 컴포넌트의 폰트도 폰트 사이즈를 따라가게 수정 (#739) ([f150340](https://github.com/woowacourse-teams/2025-estime/commit/f150340)), closes [#739](https://github.com/woowacourse-teams/2025-estime/issues/739)
+* feat: QA-UI 수정(타임테이블) (#726) ([c631194](https://github.com/woowacourse-teams/2025-estime/commit/c631194)), closes [#726](https://github.com/woowacourse-teams/2025-estime/issues/726)
+* design: 히트맵 디자인 수정 (#719) ([cd537ca](https://github.com/woowacourse-teams/2025-estime/commit/cd537ca)), closes [#719](https://github.com/woowacourse-teams/2025-estime/issues/719)
+
+
+
 ## <small>1.5.1 (2025-10-20)</small>
 
 * test: cypress 초기화 (#710) ([9c4f09d](https://github.com/woowacourse-teams/2025-estime/commit/9c4f09d)), closes [#710](https://github.com/woowacourse-teams/2025-estime/issues/710)
