@@ -29,7 +29,7 @@ const HeatmapSection = ({
   handleButtonClick,
   buttonMode,
 }: HeatmapSectionProps) => {
-  const theme = useTheme();
+  const { isMobile } = useTheme();
 
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
@@ -39,6 +39,7 @@ const HeatmapSection = ({
     if (isLoggedIn) return;
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
     if (!cell) return;
+    if (isMobile) return;
 
     showToast({
       type: 'warning',
@@ -64,7 +65,7 @@ const HeatmapSection = ({
           </Button>
         </TimeTableHeader>
         <Flex direction="column" gap="var(--gap-4)">
-          {theme.isMobile && (
+          {isMobile && (
             <Flex gap="var(--gap-3)" justify="flex-end" align="center">
               <PageArrowButton
                 onClick={pagination.handlePagePrev}

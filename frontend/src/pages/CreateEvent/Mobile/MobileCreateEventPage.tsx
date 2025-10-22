@@ -27,7 +27,7 @@ const MobileCreateEventPage = () => {
   const theme = useTheme();
 
   return (
-    <Wrapper maxWidth={430} padding="var(--padding-6)" borderRadius="var(--radius-4)">
+    <Wrapper maxWidth={430} padding="var(--padding-6)" fullHeight>
       <Funnel step={step}>
         <Funnel.Step name="메인 화면">
           <Wrapper
@@ -35,7 +35,7 @@ const MobileCreateEventPage = () => {
             paddingLeft="var(--padding-7)"
             paddingRight="var(--padding-7)"
           >
-            <Flex direction="column" align="center" justify="space-between" gap="var(--gap-12)">
+            <Flex direction="column" align="center" justify="space-between" gap="var(--gap-10)">
               <IEstimeLogo color={theme.colors.primary} />
               <S.LogoWrapper>
                 <IEstimeIcon color={theme.colors.primary} />
