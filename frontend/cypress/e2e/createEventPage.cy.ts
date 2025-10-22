@@ -1,7 +1,13 @@
 import { addMonth, parseYearMonth } from 'cypress/utils/formatDate';
+import { createRoom, disableSSE, getDateTimeSlots, getRoomInfo } from 'cypress/utils/helper';
 
 describe('방 생성 플로우', () => {
   beforeEach(() => {
+    createRoom();
+    getRoomInfo();
+    getDateTimeSlots();
+    disableSSE();
+
     cy.visit('localhost:3000');
   });
 
@@ -11,9 +17,10 @@ describe('방 생성 플로우', () => {
     cy.get(`[role="button"][aria-label="${day}일 선택 안되어 있음"]`).click();
     cy.get('[aria-label="약속 제목 입력 필드"]').type('아인슈타임 회식');
 
-    cy.contains('약속 만들기').click();
+    cy.get('button').contains('약속 만들기').click();
+    cy.wait('@createRoom');
 
-    cy.url().should('include', '/check');
+    cy.url().should('include', '/check?id=123');
     cy.contains('방 생성이 완료되었습니다.').should('be.visible');
   });
 
