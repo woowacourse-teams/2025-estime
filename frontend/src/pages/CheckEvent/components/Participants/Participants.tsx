@@ -36,7 +36,7 @@ const Participants = () => {
             <Flex align="center" gap="var(--gap-2)">
               <Text variant="button">투표 참여자</Text>
             </Flex>
-            <S.Button onClick={() => handleToggleParticipants()}>
+            <S.Button onClick={toggleOpen}>
               <IClose color={theme.colors.primary} width={'24'} height={'24'} />
             </S.Button>
           </S.Header>
