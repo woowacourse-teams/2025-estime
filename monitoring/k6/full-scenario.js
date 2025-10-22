@@ -44,16 +44,16 @@ const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
   ? JSON.parse(__ENV.TEST_ROOMS)
   : [
-      'session-1',
-      'session-2',
-      'session-3',
-      'session-4',
-      'session-5',
-      'session-6',
-      'session-7',
-      'session-8',
-      'session-9',
-      'session-10',
+      '0NAQQNPXKDP3B',
+      '0NAQQP2DKDMVH',
+      '0NAQQPDTFDMKN',
+      '0NAQQPQ07DM0X',
+      '0NAQQQ0MZDQ66',
+      '0NAQQQ9E7DNXN',
+      '0NAQQQNM7DQ5T',
+      '0NAQQQZMVDME2',
+      '0NAQQRGS7DNMA',
+      '0NAQQRWW7DPFG',
     ];
 
 // 시나리오 A: 방 생성
@@ -62,10 +62,10 @@ export function roomCreation() {
 
   group('Room Creation', () => {
     const createPayload = JSON.stringify({
-      title: `성능테스트방_${Date.now()}`,
+      title: `Test_${__VU}`,
       availableDateSlots: generateDateSlots(7),
       availableTimeSlots: generateTimeSlots(),
-      deadline: '2025-12-31T23:59:59',
+      deadline: '2026-12-31T23:30',
     });
 
     const createRes = http.post(`${BASE_URL}/api/v1/rooms`, createPayload, {
@@ -74,11 +74,11 @@ export function roomCreation() {
     });
 
     check(createRes, {
-      'room created': (r) => r.status === 201,
+      'room created': (r) => r.status === 200,
       'response time < 100ms': (r) => r.timings.duration < 100,
     });
 
-    if (createRes.status === 201) {
+    if (createRes.status === 200) {
       const roomSession = JSON.parse(createRes.body).data.session;
       const getRoomRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
         tags: { name: 'GetRoom', api: 'GET_/api/v1/rooms/{session}' },
@@ -126,7 +126,7 @@ export function voteViewing() {
 // 시나리오 C: 투표 참여
 export function voting() {
   const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
-  const participantName = `참가자_${__VU}_${Date.now()}`;
+  const participantName = `User_${__VU}_${Date.now()}`;
 
   group('Voting', () => {
     // 1. 방 정보 조회
@@ -156,7 +156,7 @@ export function voting() {
     );
 
     check(createParticipantRes, {
-      'participant created': (r) => r.status === 201,
+      'participant created': (r) => r.status === 200,
       'response time < 100ms': (r) => r.timings.duration < 100,
     });
 
@@ -210,7 +210,7 @@ export function voting() {
 // 유틸리티 함수
 function generateDateSlots(count) {
   const dates = [];
-  const today = new Date('2025-01-01');
+  const today = new Date('2026-01-01');
   for (let i = 0; i < count; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);

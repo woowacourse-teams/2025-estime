@@ -15,10 +15,10 @@ export default function () {
 
   // 1. 방 생성
   const createPayload = JSON.stringify({
-    title: `성능테스트_사전데이터_방${roomNumber}`,
+    title: `Test ${roomNumber}`,
     availableDateSlots: generateDateSlots(7),
     availableTimeSlots: generateTimeSlots(),
-    deadline: '2025-12-31T23:59:59',
+    deadline: '2026-12-31T23:30',
   });
 
   const createRes = http.post(`${BASE_URL}/api/v1/rooms`, createPayload, {
@@ -26,15 +26,24 @@ export default function () {
   });
 
   check(createRes, {
-    'room created': (r) => r.status === 201,
+    'room created': (r) => r.status === 200,
   });
 
-  if (createRes.status !== 201) {
+  if (createRes.status !== 200) {
     console.error(`Failed to create room ${roomNumber}: ${createRes.status}`);
+    console.error(`Response body: ${createRes.body}`);
     return;
   }
 
-  const roomSession = JSON.parse(createRes.body).data.session;
+  const responseData = JSON.parse(createRes.body);
+  console.log(`Response: ${createRes.body}`);
+
+  if (!responseData.data || !responseData.data.session) {
+    console.error(`No session in response for room ${roomNumber}`);
+    return;
+  }
+
+  const roomSession = responseData.data.session;
   console.log(`✓ Room created: ${roomSession}`);
 
   // 2. 참가자 10~20명 생성 및 투표 추가
@@ -42,7 +51,7 @@ export default function () {
   console.log(`  Adding ${participantCount} participants...`);
 
   for (let i = 0; i < participantCount; i++) {
-    const participantName = `사전참가자_${roomNumber}_${i + 1}`;
+    const participantName = `Participant_R${roomNumber}_${i + 1}`;
 
     // 참가자 생성
     const createParticipantPayload = JSON.stringify({
@@ -57,7 +66,7 @@ export default function () {
       }
     );
 
-    if (participantRes.status === 201) {
+    if (participantRes.status === 200) {
       // 투표 추가
       const votePayload = JSON.stringify({
         participantName: participantName,
@@ -88,7 +97,7 @@ export default function () {
 // 유틸리티 함수
 function generateDateSlots(count) {
   const dates = [];
-  const today = new Date('2025-01-01');
+  const today = new Date('2026-01-01');
   for (let i = 0; i < count; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
