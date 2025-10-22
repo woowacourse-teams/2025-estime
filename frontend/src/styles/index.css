@@ -86,3 +86,7 @@ body {
   white-space: nowrap;
   width: 1px;
 }
+
+body.theme-changing * {
+  transition: none;
+}

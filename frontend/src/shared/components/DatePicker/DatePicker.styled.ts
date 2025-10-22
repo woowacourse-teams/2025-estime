@@ -11,7 +11,7 @@ export const Container = styled.input<{ isError: boolean }>`
   color: ${({ theme }) => theme.colors.gray50};
   font-size: calc(${({ theme }) => theme.typography.h4.fontSize} * var(--font-scale));
   outline: none;
-  color-scheme: ${({ theme }) => (theme.colors.background === '#1C1C1E' ? 'dark' : 'light')};
+  color-scheme: ${({ theme }) => (theme.colors.background === '#1A1E26' ? 'dark' : 'light')};
 
   -webkit-appearance: none;
   appearance: none;

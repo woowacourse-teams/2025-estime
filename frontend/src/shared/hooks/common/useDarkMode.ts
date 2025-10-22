@@ -31,11 +31,16 @@ export function useDarkMode(key: string = 'darkMode'): UseDarkModeReturn {
   }, [key]);
 
   const toggleDarkMode = useCallback(() => {
+    document.body.classList.add('theme-changing');
     setDarkModeState((prev) => {
       const next = !prev;
       localStorage.setItem(key, next.toString());
       return next;
     });
+
+    setTimeout(() => {
+      document.body.classList.remove('theme-changing');
+    }, 100);
   }, [key]);
 
   return { darkMode, toggleDarkMode };
