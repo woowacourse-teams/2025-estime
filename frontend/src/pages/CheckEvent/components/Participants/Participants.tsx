@@ -40,7 +40,7 @@ const Participants = () => {
             <Flex align="center" gap="var(--gap-2)">
               <Text variant="button">투표 참여자</Text>
             </Flex>
-            <S.Button onClick={() => setShow(false)} aria-label="클릭시 투표 참여자 목록 닫기">
+            <S.Button onClick={toggleOpen} aria-label="클릭시 투표 참여자 목록 닫기">
               <IClose color={theme.colors.primary} width={'24'} height={'24'} aria-hidden="true" />
             </S.Button>
           </S.Header>
