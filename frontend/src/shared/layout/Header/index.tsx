@@ -17,7 +17,10 @@ const Header = ({ isDark, toggleTheme }: { isDark: boolean; toggleTheme: () => v
       <S.Content>
         <S.Wrapper>
           <Text variant="h2" color="primary">
-            <S.LogoWrapper onClick={handleClick}>
+            <S.LogoWrapper
+              onClick={handleClick}
+              aria-label="아인슈타임 로고 클릭 시 홈페이지로 이동"
+            >
               <IEstimeLogo />
             </S.LogoWrapper>
           </Text>

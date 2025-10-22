@@ -1,6 +1,6 @@
 import * as S from './Calendar.styled';
-import { weekdays } from '@/constants/calender';
-import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalender';
+import { weekdays } from '@/constants/calendar';
+import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalendar';
 
 import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import DayCell from './DayCell';
@@ -19,7 +19,13 @@ const Calender = () => {
   const today = new Date();
   const selectedDates = useRoomSelector('availableDateSlots');
   const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
-  const { onMouseDown, onMouseEnter, onMouseLeave, onMouseUp } = useDateSelection({
+  const {
+    containerRef,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerLeave,
+  } = useDateSelection({
     selectedDates,
     setSelectedDates: onChangeAvailableDateSlots,
     today,
@@ -30,27 +36,35 @@ const Calender = () => {
       <Flex direction="column" gap="var(--gap-5)">
         <Flex direction="column" gap="var(--gap-4)">
           <S.Header>
-            <Text variant="h2">
-              {current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}
+            <Text variant="h2" tabIndex={0} aria-live="polite" aria-label={'현재 년월'}>
+              {current.toLocaleDateString('ko-KR', {
+                month: 'long',
+                year: 'numeric',
+              })}
             </Text>
             <S.ButtonContainer>
               <PageArrowButton
                 onClick={prevMonth}
                 disabled={DateManager.isCurrentMonth(current, today)}
+                aria-label={
+                  DateManager.isCurrentMonth(current, today) ? '이전 달. 비활성화' : '이전 달'
+                }
               >
                 <IChevronLeft width={20} height={20} />
               </PageArrowButton>
-              <PageArrowButton onClick={nextMonth}>
+              <PageArrowButton onClick={nextMonth} aria-label="다음 달">
                 <IChevronRight width={20} height={20} />
               </PageArrowButton>
             </S.ButtonContainer>
           </S.Header>
-          <Text variant="h4">날짜는 최대 7개까지 선택 가능합니다.</Text>
+          <Text tabIndex={0} variant="h4">
+            날짜는 최대 7개까지 선택 가능합니다.
+          </Text>
         </Flex>
-        <S.CalendarContainer>
-          <S.Grid onMouseLeave={onMouseLeave}>
+        <S.CalendarContainer ref={containerRef}>
+          <S.Grid onPointerLeave={handlePointerLeave}>
             {weekdays.map((w) => (
-              <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'}>
+              <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'} tabIndex={0}>
                 {w}
               </S.Weekday>
             ))}
@@ -61,9 +75,9 @@ const Calender = () => {
                 day={day}
                 today={today}
                 selectedDates={selectedDates}
-                onMouseDown={onMouseDown}
-                onMouseEnter={onMouseEnter}
-                onMouseUp={onMouseUp}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
               />
             ))}
           </S.Grid>

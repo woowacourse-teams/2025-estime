@@ -15,6 +15,12 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
   const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const weight = cellInfo?.weight ?? 0;
+  const participantNames = cellInfo?.participantNames.join(', ');
+  const isParticipantExists = participantNames && participantNames.length > 0;
+  let ariaLabel = '';
+  if (isParticipantExists) {
+    ariaLabel = `${FormatManager.formatKoreanDate(date)} ${timeText} ${participantNames} 참여가능`;
+  }
 
   return (
     <S.Container
@@ -35,6 +41,8 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
         }
       }}
       onMouseLeave={() => cellDataStore.initialStore()}
+      tabIndex={isParticipantExists ? 0 : -1}
+      aria-label={ariaLabel}
     />
   );
 };
