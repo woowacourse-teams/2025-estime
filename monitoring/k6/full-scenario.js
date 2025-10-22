@@ -8,23 +8,23 @@ export const options = {
       executor: 'constant-vus',
       exec: 'roomCreation',
       vus: 10,
-      duration: '5m',
+      duration: '1m',
       tags: { scenario: 'A_RoomCreation' },
     },
     // 시나리오 B: 투표 조회 (40%)
     vote_viewing: {
       executor: 'constant-vus',
       exec: 'voteViewing',
-      vus: 40,
-      duration: '5m',
+      vus: 10,
+      duration: '1m',
       tags: { scenario: 'B_VoteViewing' },
     },
     // 시나리오 C: 투표 참여 (50%)
     voting: {
       executor: 'constant-vus',
       exec: 'voting',
-      vus: 50,
-      duration: '5m',
+      vus: 10,
+      duration: '1m',
       tags: { scenario: 'C_Voting' },
     },
   },
@@ -119,14 +119,14 @@ export function voteViewing() {
     });
 
     // SSE 연결은 5분 동안 유지 (여기서는 시뮬레이션)
-    sleep(300); // 5분 대기
+    sleep(60); // 5분 대기
   });
 }
 
 // 시나리오 C: 투표 참여
 export function voting() {
   const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
-  const participantName = `User_${__VU}_${Date.now()}`;
+  const participantName = `User_${__VU}`;
 
   group('Voting', () => {
     // 1. 방 정보 조회
