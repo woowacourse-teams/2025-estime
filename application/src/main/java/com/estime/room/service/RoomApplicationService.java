@@ -160,8 +160,7 @@ public class RoomApplicationService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        // TODO: participantRepository 에서 Participants를 return 하도록 변경 논의 필요
-        final Participants participants = Participants.from(participantRepository.findAllByIdIn(participantsIds));
+        final Participants participants = participantRepository.findAllByIdIn(participantsIds);
 
         final Map<Long, ParticipantName> idToName = participants.getIdToName();
 
