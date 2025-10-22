@@ -30,8 +30,11 @@ const Calender = () => {
       <Flex direction="column" gap="var(--gap-5)">
         <Flex direction="column" gap="var(--gap-4)">
           <S.Header>
-            <Text variant="h2" tabIndex={0} aria-live="polite" data-testid="calendar-yearMonth">
-              {current.toLocaleDateString('ko-KR', { month: 'long', year: 'numeric' })}
+            <Text variant="h2" tabIndex={0} aria-live="polite" aria-label={'현재 년월'}>
+              {current.toLocaleDateString('ko-KR', {
+                month: 'long',
+                year: 'numeric',
+              })}
             </Text>
             <S.ButtonContainer>
               <PageArrowButton
