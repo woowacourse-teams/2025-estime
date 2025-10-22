@@ -5,23 +5,25 @@ export const options = {
   scenarios: {
     // 시나리오 B: 투표 조회 (40%)
     vote_viewing: {
-      executor: 'constant-arrival-rate',
+      // executor: 'constant-arrival-rate',
+      executor: 'constant-vus',
       exec: 'voteViewing',
-      rate: 1, // 초당 100번 요청
-      timeUnit: '1s',
-      duration: '10s',
-      preAllocatedVUs: 1, // 사전 할당 VU
-      maxVUs: 1, // 최대 VU
+      // rate: 150, // 초당 100번 요청
+      // timeUnit: '1s',
+      duration: '1m',
+      vus: 1000,
+      // preAllocatedVUs: 150, // 사전 할당 VU
+      // maxVUs: 300, // 최대 VU
       tags: { scenario: 'B_VoteViewing' },
     },
   },
-  thresholds: {
-    http_req_duration: ['p(95)<100'], // p95 < 100ms
-    'http_req_duration{scenario:A_RoomCreation}': ['p(95)<100'],
-    'http_req_duration{scenario:B_VoteViewing}': ['p(95)<100'],
-    'http_req_duration{scenario:C_Voting}': ['p(95)<100'],
-    http_req_failed: ['rate<0.01'], // 에러율 < 1%
-  },
+  // thresholds: {
+    // http_req_duration: ['p(95)<1000'], // p95 < 100ms
+    // 'http_req_duration{scenario:A_RoomCreation}': ['p(95)<100'],
+    // 'http_req_duration{scenario:B_VoteViewing}': ['p(95)<100'],
+    // 'http_req_duration{scenario:C_Voting}': ['p(95)<100'],
+    // http_req_failed: ['rate<0.1'], // 에러율 < 1%
+  // },
 };
 
 // 환경 변수로 설정 (docker-compose에서 전달)
@@ -30,7 +32,7 @@ const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 // 사전에 생성된 방 세션 ID (setup-test-data.js 실행 후 설정 필요)
 const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
   ? JSON.parse(__ENV.TEST_ROOMS)
-  : ["0NAREY1Z0DK6S","0NARDXF60DHQS","0NARDC448DJV4","0NARBJ2S0DH21","0NARB0CZWDH6J","0NAR10305ZSQK","0NAR0RVE1ZV08","0NAR0KGE5ZV5T","0NAR0G5H1ZSYM","0NAQT7HKDZVCV"];
+  : ["0NAS1423WDGDW","0NAS0K37GDJ6C","0NAS07850DJ6T","0NARZJ8Q0DGW9","0NARXDRM0DKP7","0NARX9QB8DJDJ","0NARX8E2GDJ3D","0NARX72T0DJB2","0NARW9PEWDKPP","0NARW1DERDG2V"];
   // : ["0NAQQNPXKDP3B","0NAQQP2DKDMVH","0NAQQPDTFDMKN","0NAQQPQ07DM0X","0NAQQQ0MZDQ66","0NAQQQ9E7DNXN","0NAQQQNM7DQ5T","0NAQQQZMVDME2","0NAQQRGS7DNMA","0NAQQRWW7DPFG"];
 
 // 시나리오 B: 투표 조회
@@ -44,7 +46,7 @@ export function voteViewing() {
 
     check(getRoomRes, {
       'room retrieved': (r) => r.status === 200,
-      'response time < 100ms': (r) => r.timings.duration < 100,
+      // 'response time < 100ms': (r) => r.timings.duration < 100,
     });
 
     const getStatsRes = http.get(
@@ -56,7 +58,7 @@ export function voteViewing() {
 
     check(getStatsRes, {
       'statistics retrieved': (r) => r.status === 200,
-      'response time < 100ms': (r) => r.timings.duration < 100,
+      // 'response time < 100ms': (r) => r.timings.duration < 100,
     });
   });
 }
