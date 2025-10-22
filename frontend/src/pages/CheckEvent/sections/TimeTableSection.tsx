@@ -67,7 +67,7 @@ const TimetableSection = ({
               onClick={handleButtonClick}
               disabled={isExpired || isSavingUserTime}
               size="small"
-              aria-label="클릭시 시간표 저장 모드 변경"
+              aria-label="저장"
             >
               <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
                 {buttonName}

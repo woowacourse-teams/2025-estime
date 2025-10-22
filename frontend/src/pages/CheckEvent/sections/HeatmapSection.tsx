@@ -19,7 +19,7 @@ interface HeatmapSectionProps {
   pagination: TimeTablePaginationReturns;
   buttonName: string;
   handleButtonClick: () => Promise<void>;
-  isVisible: boolean;
+  buttonMode: 'register' | 'save' | 'edit';
 }
 
 const HeatmapSection = ({
@@ -27,7 +27,7 @@ const HeatmapSection = ({
   pagination,
   buttonName,
   handleButtonClick,
-  isVisible,
+  buttonMode,
 }: HeatmapSectionProps) => {
   const theme = useTheme();
 
@@ -45,12 +45,19 @@ const HeatmapSection = ({
       message: '시간을 등록하려면 "등록하기"를 눌러주세요',
     });
   };
-
+  const isVisible = buttonMode !== 'save';
+  const ariaLabel = buttonMode === 'register' ? '등록' : '편집';
   return (
     <S.FrontFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible} inert={!isVisible}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={roomInfo.title} mode="edit" isExpired={isExpired}>
-          <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
+          <Button
+            color="primary"
+            onClick={handleButtonClick}
+            disabled={isExpired}
+            size="small"
+            aria-label={ariaLabel}
+          >
             <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
               {buttonName}
             </Text>

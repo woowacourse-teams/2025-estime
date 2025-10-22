@@ -93,7 +93,7 @@ const CheckEventPage = () => {
                 pagination={pagination}
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
-                isVisible={buttonMode !== 'save'}
+                buttonMode={buttonMode}
               />
               <GlassTooltip />
             </S.FlipInner>
