@@ -1,0 +1,11 @@
+{
+  "name": "estime-performance-test",
+  "version": "1.0.0",
+  "description": "SSE load testing for Estime API",
+  "scripts": {
+    "sse-test": "node sse-load-test.js"
+  },
+  "dependencies": {
+    "eventsource": "^2.0.2"
+  }
+}

@@ -1,0 +1,18 @@
+networks:
+  monitor-net:
+    external: true  # 기존 docker-compose.yml의 네트워크 사용
+
+services:
+  k6:
+    image: grafana/k6:0.54.0
+    networks:
+      - monitor-net
+    environment:
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    volumes:
+      - ./k6:/scripts
+      - ./k6/results:/results
+    command: run --out experimental-prometheus-rw /scripts/full-scenario.js
+    depends_on:
+      - prometheus
