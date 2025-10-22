@@ -24,7 +24,7 @@ const HeaderPresets: Record<HeaderMode, Presets> = {
     title: `나의 시간표`,
     description: (name: string, isMobile?: boolean) =>
       isMobile
-        ? `${name}님의 가능한 \n 시간을 드래그 해주세요!`
+        ? `${name}님의 가능한\n시간을 드래그 해주세요!`
         : `${name}님의 가능한 시간을 드래그 해주세요!`,
   },
 };
