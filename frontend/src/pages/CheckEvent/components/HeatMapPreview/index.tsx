@@ -12,7 +12,7 @@ interface HeatmapProps {
 const HeatmapPreview = ({ date, dateTimeSlots }: HeatmapProps) => {
   const { isOn } = useGlassPreview();
   return (
-    <S.Container show={isOn}>
+    <S.Container show={isOn} aria-hidden={true}>
       <Wrapper center={false} maxWidth="100%">
         <TimeTableDay date={date} />
         {dateTimeSlots.map((dateTimeSlot) => (

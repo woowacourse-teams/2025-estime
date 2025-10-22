@@ -6,7 +6,7 @@ export const Container = styled.div<{ isValid: boolean; shouldShake: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--gap-9);
+  gap: var(--gap-6);
   padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-8)' : 'var(--padding-10)')};
   border-radius: var(--radius-6);
   box-shadow: var(--shadow-card);
@@ -24,6 +24,10 @@ export const Container = styled.div<{ isValid: boolean; shouldShake: boolean }>`
     css`
       animation: ${shakeScale} 0.5s ease;
     `}
+
+  @media (max-width: 430px) {
+    height: 480px;
+  }
 `;
 
 export const TextWrapper = styled.div`

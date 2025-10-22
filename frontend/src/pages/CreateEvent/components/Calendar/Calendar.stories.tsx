@@ -14,10 +14,10 @@ function CalendarStoryBridge({ Story, args }: { Story: any; args: any }) {
   const dateSelection = useDateSelection({ selectedDates, setSelectedDates, today });
 
   const mouseHandlers = {
-    onMouseDown: dateSelection.onMouseDown,
-    onMouseEnter: dateSelection.onMouseEnter,
-    onMouseUp: dateSelection.onMouseUp,
-    onMouseLeave: dateSelection.onMouseLeave,
+    onMouseDown: dateSelection.handlePointerDown,
+    onMouseEnter: dateSelection.handlePointerMove,
+    onMouseUp: dateSelection.handlePointerUp,
+    onMouseLeave: dateSelection.handlePointerLeave,
   };
 
   return (

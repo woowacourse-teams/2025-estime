@@ -17,8 +17,13 @@ import useCheckEventHandlers from './hooks/useCheckEventHandlers';
 import TimetableSection from './sections/TimeTableSection';
 import HeatmapSection from './sections/HeatmapSection';
 import GlassTooltip from './components/GlassTooltip';
+import Announce from './components/Announce/Announce';
+import { useTheme } from '@emotion/react';
+
 
 const CheckEventPage = () => {
+  const { isMobile } = useTheme();
+
   const { roomInfo, session } = useCheckRoomSession();
 
   const { handleLogin, isLoginLoading } = useUserLogin({
@@ -56,7 +61,6 @@ const CheckEventPage = () => {
   const onVoteChange = useCallback(async () => {
     console.log('🔄 SSE vote-changed event 확인... fetch중...');
     await fetchRoomStatistics();
-    // 여기서 전역 store에 반영
     console.log('✅ fetch 완료!');
   }, [fetchRoomStatistics]);
 
@@ -86,14 +90,16 @@ const CheckEventPage = () => {
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
                 isSavingUserTime={isSavingUserTime}
+                isVisible={buttonMode === 'save'}
               />
               <HeatmapSection
                 roomInfo={roomInfo}
                 pagination={pagination}
                 buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
+                buttonMode={buttonMode}
               />
-              <GlassTooltip />
+              {isMobile ? <GlassTooltip.Mobile /> : <GlassTooltip.Desktop />}
             </S.FlipInner>
           </S.FlipCard>
         </Flex>
@@ -124,6 +130,7 @@ const CheckEventPage = () => {
       >
         <CopyLinkModal sessionId={session} />
       </Modal>
+      <Announce />
     </>
   );
 };

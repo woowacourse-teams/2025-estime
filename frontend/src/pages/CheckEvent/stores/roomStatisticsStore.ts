@@ -9,10 +9,12 @@ export interface StatisticItem {
   participantNames: string[];
 }
 interface RoomStatisticsStore extends Omit<GetRoomStatisticsResponseType, 'statistic'> {
+  recommendedTime: string[];
   statistics: Map<string, StatisticItem>;
 }
 const createRoomStatisticsStore = () => {
   const store = createStore<RoomStatisticsStore>({
+    recommendedTime: [],
     participantCount: 0,
     participants: [],
     maxVoteCount: 0,

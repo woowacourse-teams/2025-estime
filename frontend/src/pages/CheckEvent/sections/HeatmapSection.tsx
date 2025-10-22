@@ -19,6 +19,7 @@ interface HeatmapSectionProps {
   pagination: TimeTablePaginationReturns;
   buttonName: string;
   handleButtonClick: () => Promise<void>;
+  buttonMode: 'register' | 'save' | 'edit';
 }
 
 const HeatmapSection = ({
@@ -26,8 +27,9 @@ const HeatmapSection = ({
   pagination,
   buttonName,
   handleButtonClick,
+  buttonMode,
 }: HeatmapSectionProps) => {
-  const theme = useTheme();
+  const { isMobile } = useTheme();
 
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
@@ -37,25 +39,33 @@ const HeatmapSection = ({
     if (isLoggedIn) return;
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
     if (!cell) return;
+    if (isMobile) return;
 
     showToast({
       type: 'warning',
       message: '시간을 등록하려면 "등록하기"를 눌러주세요',
     });
   };
-
+  const isVisible = buttonMode !== 'save';
+  const ariaLabel = buttonMode === 'register' ? '등록' : '편집';
   return (
-    <S.FrontFace ref={pagination.timeTableContainerRef}>
+    <S.FrontFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible} inert={!isVisible}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={roomInfo.title} mode="edit" isExpired={isExpired}>
-          <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
+          <Button
+            color="primary"
+            onClick={handleButtonClick}
+            disabled={isExpired}
+            size="small"
+            aria-label={ariaLabel}
+          >
             <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
               {buttonName}
             </Text>
           </Button>
         </TimeTableHeader>
         <Flex direction="column" gap="var(--gap-4)">
-          {theme.isMobile && (
+          {isMobile && (
             <Flex gap="var(--gap-3)" justify="flex-end" align="center">
               <PageArrowButton
                 onClick={pagination.handlePagePrev}

@@ -6,7 +6,16 @@ export const Container = styled.div<WrapperProps>`
   width: 100%;
   margin: ${({ center }) => (center ? '0 auto' : '0')};
   max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth)};
-  height: ${({ fullHeight }) => (fullHeight ? '100vh' : 'auto')};
+  // 5rem은 헤더 높이, 80px은 푸터 높이
+  height: ${({ theme, fullHeight }) => {
+    if (theme.isMobile && fullHeight) {
+      return `calc(100dvh - 5rem)`;
+    }
+    if (fullHeight) {
+      return `calc(100dvh - 5rem - 80px)`;
+    }
+    return 'auto';
+  }};
   background-color: ${({ backgroundColor }) => backgroundColor ?? 'transparent'};
 
   ${({ padding, paddingTop, paddingRight, paddingBottom, paddingLeft }) =>
