@@ -43,7 +43,7 @@ const TimetableSection = ({
   const { participantCount } = useRoomStatistics();
 
   return (
-    <S.BackFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible}>
+    <S.BackFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible} inert={!isVisible}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={userNameStore.getSnapshot()} mode="save" isExpired={isExpired}>
           <Flex gap="var(--gap-8)" align="center" justify="flex-end">

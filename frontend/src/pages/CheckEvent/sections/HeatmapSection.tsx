@@ -47,7 +47,7 @@ const HeatmapSection = ({
   };
 
   return (
-    <S.FrontFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible}>
+    <S.FrontFace ref={pagination.timeTableContainerRef} aria-hidden={!isVisible} inert={!isVisible}>
       <Flex direction="column" gap="var(--gap-8)">
         <TimeTableHeader name={roomInfo.title} mode="edit" isExpired={isExpired}>
           <Button color="primary" onClick={handleButtonClick} disabled={isExpired} size="small">
