@@ -67,4 +67,7 @@ export const Container = styled.div<DayCellProps>`
     cursor: not-allowed;
     opacity: 0.3;
   `}
+  @media (max-width: 430px) {
+    height: 2rem;
+  }
 `;

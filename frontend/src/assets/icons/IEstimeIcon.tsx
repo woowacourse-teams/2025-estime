@@ -5,8 +5,8 @@ const IEstimeIcon = ({ color = LIGHT_THEME.colors.primary, ...props }: IconType)
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="390"
-      height="390"
+      width="280"
+      height="280"
       viewBox="0 0 50 50"
       fill={color}
       {...props}

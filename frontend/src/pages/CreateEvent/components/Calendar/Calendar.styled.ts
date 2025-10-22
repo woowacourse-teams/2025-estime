@@ -14,12 +14,15 @@ export const CalendarContainer = styled.div`
   align-items: center;
   justify-content: center;
   max-height: 670px;
-  padding: ${({ theme }) => (theme.isMobile ? 'var(--padding-7)' : 'var(--padding-9)')};
+  padding: var(--padding-8);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   touch-action: none;
+  @media (max-width: 430px) {
+    padding: var(--padding-4);
+  }
 `;
 
 export const Grid = styled.div`
@@ -28,9 +31,14 @@ export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(${column}, 1fr);
   grid-template-rows: repeat(${row}, 1fr);
-  grid-row-gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-3)' : 'var(--gap-4)')};
-  grid-column-gap: ${({ theme }) => (theme.isMobile ? 'var(--gap-3)' : 'var(--gap-4)')};
+  grid-row-gap: var(--gap-4);
+  grid-column-gap: var(--gap-4);
   text-align: center;
+
+  @media (max-width: 430px) {
+    grid-row-gap: var(--gap-2);
+    grid-column-gap: var(--gap-2);
+  }
 `;
 
 export const Weekday = styled.span<{
@@ -47,13 +55,16 @@ export const Weekday = styled.span<{
     if (isSaturday) return theme.colors.primary;
     return theme.colors.text;
   }};
+  @media (max-width: 430px) {
+    margin-bottom: var(--gap-2);
+  }
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--gap-4);
+  gap: var(--gap-2);
 `;
 
 export const Header = styled.header`
