@@ -21,8 +21,8 @@ export const Container = styled.div<{ show: boolean }>`
   flex-direction: column;
   border-radius: var(--radius-4);
   background: ${({ theme }) => theme.colors.background};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  right: 55px;
+  right: calc(100% + 8px);
+  box-shadow: var(--shadow-card);
   bottom: 4px;
 
   @media (max-width: 740px) {
@@ -46,6 +46,7 @@ export const Container = styled.div<{ show: boolean }>`
         `
       : css`
           animation: ${disappear} 0.2s ease forwards;
+          pointer-events: none;
         `}
 `;
 
@@ -69,6 +70,7 @@ export const Body = styled.div`
   padding: var(--padding-5);
   display: flex;
   align-items: center;
+  min-width: 0;
 
   @media (max-width: 640px) {
     padding: var(--padding-3) var(--padding-3);
@@ -79,8 +81,22 @@ export const NameList = styled.div`
   width: 100%;
   line-height: 1.5rem;
   max-height: calc(1.5rem * 2);
+  min-width: 0;
   overflow-y: auto;
   word-break: keep-all;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.gray20};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: ${({ theme }) => theme.colors.primary}70;
+  }
 `;
 
 const appear = keyframes`

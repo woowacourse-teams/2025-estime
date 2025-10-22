@@ -11,8 +11,8 @@ const ShareButton = ({ onClick }: { onClick: () => void }) => {
     <>
       <Flex gap="var(--gap-6)" align="center">
         <Button color="primary" size="small" onClick={onClick}>
-          <ILink color={theme.colors.primary} />
-          <Text variant="button" color="primary">
+          <ILink color={theme.colors.text} />
+          <Text variant="button" color="text">
             공유하기
           </Text>
         </Button>
