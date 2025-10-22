@@ -81,49 +81,50 @@ export const LIGHT_THEME = {
     },
   },
 };
+
 export const DARK_THEME = {
   colors: {
-    background: '#1C1C1E',
+    background: '#1A1E26',
     text: '#CCCCCC',
 
-    primary: '#9E75EF',
-    secondary: '#F9C287',
+    primary: '#A88CFF',
+    secondary: '#EABF85',
 
     plum30: '#A793BD',
     plum40: '#5D4E84',
     plum50: '#684BA5',
 
-    orange30: '#FFC64C',
-    orange40: '#FFAE00',
+    orange30: '#F7C684',
+    orange40: '#F3AF5D',
 
-    red40: '#7F1E1D',
-    green30: '#27874D',
+    red40: '#FF6B8B',
+    green30: '#60EAD0',
 
     kakao: '#FEE500',
     kakaoLabel: '#191919',
 
-    successBackground: '#D6F0E0',
-    successBorder: '#C0E7D0',
-    successText: '#0D6832',
+    successBackground: '#202B25',
+    successBorder: '#375C47',
+    successText: '#A8F3D1',
 
-    errorBackground: '#F9E1E5',
-    errorBorder: '#F4C8CF',
-    errorText: '#AF233A',
+    errorBackground: '#3B2228',
+    errorBorder: '#6E3B44',
+    errorText: '#FCA5A5',
 
-    warningBackground: '#FBF0DA',
-    warningBorder: '#F9E4BE',
-    warningText: '#73510D',
+    warningBackground: '#413520',
+    warningBorder: '#7A6533',
+    warningText: '#FFD58A',
 
-    gray05: '#17171b',
-    gray10: '#2C2C2E',
-    gray20: '#363639',
-    gray30: '#48484A',
-    gray40: '#636366',
-    gray50: '#8E8E93',
-    gray60: '#AEAEB2',
-    gray70: '#C6C6C6',
-    gray80: '#F4F4F4',
-    gray90: '#F9F9F9',
+    gray05: '#1E212B',
+    gray10: '#252937',
+    gray20: '#2E3240',
+    gray30: '#383D4D',
+    gray40: '#464B5C',
+    gray50: '#636B84',
+    gray60: '#8B92A8',
+    gray70: '#B6BBD0',
+    gray80: '#E1E3ED',
+    gray90: '#F6F7FA',
   },
   typography: {
     h1: {
