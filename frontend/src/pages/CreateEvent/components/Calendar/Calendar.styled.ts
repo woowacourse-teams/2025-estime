@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { column, row } from '@/constants/calender';
+import { column, row } from '@/constants/calendar';
 
 export const Container = styled.div`
   max-width: 100%;
@@ -19,6 +19,7 @@ export const CalendarContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  touch-action: none;
 `;
 
 export const Grid = styled.div`

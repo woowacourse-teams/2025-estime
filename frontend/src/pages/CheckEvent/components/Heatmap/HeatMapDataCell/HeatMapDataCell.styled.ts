@@ -18,6 +18,14 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
   touch-action: manipulation;
   overflow: hidden;
 
+  &:nth-of-type(odd) {
+    border-top: 1px dashed ${({ theme }) => theme.colors.gray40};
+  }
+
+  &:last-child {
+    border-bottom: 1px solid ${({ theme }) => theme.colors.gray40};
+  }
+
   // 기본 요소는 배경색 애니메이션만
   transition: background-color 0.5s ease-in-out;
   background-color: ${({ weight, theme }) =>

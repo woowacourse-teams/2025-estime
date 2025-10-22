@@ -1,23 +1,23 @@
 import * as S from './Participants.styled';
 import { useTheme } from '@emotion/react';
 import Text from '@/shared/components/Text';
-import { useState } from 'react';
 import Flex from '@/shared/layout/Flex';
 import IClose from '@/assets/icons/IClose';
 import IPersonList from '@/assets/icons/IPersonList';
 import Wrapper from '@/shared/layout/Wrapper';
 import { useRoomStatistics } from '../../stores/roomStatisticsStore';
+import useToggleState from '@/shared/hooks/common/useToggleState';
 
 const Participants = () => {
   const theme = useTheme();
-  const [show, setShow] = useState(true);
+  const { isOpen, toggleOpen } = useToggleState(true);
 
   const roomStatistics = useRoomStatistics();
   const hasParticipants = roomStatistics.participantCount > 0;
 
   const handleToggleParticipants = () => {
     if (!hasParticipants) return;
-    setShow(true);
+    toggleOpen();
   };
 
   return (
@@ -35,12 +35,10 @@ const Participants = () => {
         </Flex>
       </S.Button>
       {hasParticipants && (
-        <S.Container show={show}>
+        <S.Container show={isOpen}>
           <S.Header>
             <Flex align="center" gap="var(--gap-2)">
-              <Text color="primary" variant="button">
-                투표 참여자
-              </Text>
+              <Text variant="button">투표 참여자</Text>
             </Flex>
             <S.Button onClick={() => setShow(false)} aria-label="클릭시 투표 참여자 목록 닫기">
               <IClose color={theme.colors.primary} width={'24'} height={'24'} aria-hidden="true" />
