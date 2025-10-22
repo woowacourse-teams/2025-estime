@@ -83,8 +83,8 @@ export const LIGHT_THEME = {
 };
 export const DARK_THEME = {
   colors: {
-    background: '#000000',
-    text: '#FFFFFF',
+    background: '#1C1C1E',
+    text: '#CCCCCC',
 
     primary: '#9E75EF',
     secondary: '#F9C287',
@@ -114,7 +114,7 @@ export const DARK_THEME = {
     warningBorder: '#F9E4BE',
     warningText: '#73510D',
 
-    gray05: '#1C1C1E',
+    gray05: '#17171b',
     gray10: '#2C2C2E',
     gray20: '#363639',
     gray30: '#48484A',

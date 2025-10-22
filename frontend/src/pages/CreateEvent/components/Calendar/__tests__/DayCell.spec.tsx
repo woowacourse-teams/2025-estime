@@ -5,9 +5,9 @@ import { LIGHT_THEME } from '@/styles/theme';
 import DayCell, { DayCellProps } from '../DayCell';
 
 describe('DayCell는', () => {
-  const mockHandleMouseDown = jest.fn();
-  const mockHandleMouseEnter = jest.fn();
-  const mockHandleMouseUp = jest.fn();
+  const mockHandlePointerDown = jest.fn();
+  const mockHandlePointerMove = jest.fn();
+  const mockHandlePointerUp = jest.fn();
 
   // 고정된 "오늘" 날짜 설정
   // today라는 날짜를 고정하여 테스트의 일관성을 유지합니다.
@@ -16,9 +16,9 @@ describe('DayCell는', () => {
   const defaultProps = {
     selectedDates: new Set<string>(),
     today: fixedToday,
-    onMouseDown: mockHandleMouseDown,
-    onMouseEnter: mockHandleMouseEnter,
-    onMouseUp: mockHandleMouseUp,
+    onPointerDown: mockHandlePointerDown,
+    onPointerMove: mockHandlePointerMove,
+    onPointerUp: mockHandlePointerUp,
   };
 
   const renderDayCell = (props: DayCellProps) => {

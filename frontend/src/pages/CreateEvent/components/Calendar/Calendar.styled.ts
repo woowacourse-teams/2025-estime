@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { column, row } from '@/constants/calender';
+import { column, row } from '@/constants/calendar';
 
 export const Container = styled.div`
   max-width: 100%;
@@ -15,7 +15,11 @@ export const CalendarContainer = styled.div`
   justify-content: center;
   max-height: 670px;
   padding: var(--padding-8);
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
   @media (max-width: 430px) {
     padding: var(--padding-4);
   }

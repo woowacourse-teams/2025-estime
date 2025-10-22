@@ -5,23 +5,24 @@ export interface DayCellProps {
   day: Date | null;
   today: Date;
   selectedDates: Set<string>;
-  onMouseDown: (date: Date | null) => void;
-  onMouseEnter: (date: Date | null) => void;
-  onMouseUp: () => void;
+  onPointerDown: (date: Date | null) => void;
+  onPointerMove: (e: React.PointerEvent<HTMLDivElement>, date: Date | null) => void;
+  onPointerUp: () => void;
 }
 
 const DayCell = ({
   day,
   today,
   selectedDates,
-  onMouseDown,
-  onMouseEnter,
-  onMouseUp,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
 }: DayCellProps) => {
   const dayState = getDayState({ day, today, selectedDates });
 
   return (
     <S.Container
+      data-date={day}
       isPast={dayState.isPast}
       isSunday={dayState.isSunday}
       isSaturday={dayState.isSaturday}
@@ -29,9 +30,16 @@ const DayCell = ({
       isSelected={dayState.isSelected}
       isEmpty={dayState.isEmpty}
       isDateBlockedByLimit={dayState.isDateBlockedByLimit}
-      onMouseDown={() => onMouseDown(day)}
-      onMouseEnter={() => onMouseEnter(day)}
-      onMouseUp={onMouseUp}
+      onPointerDown={() => onPointerDown(day)}
+      onPointerMove={(e) => onPointerMove(e, day)}
+      onPointerUp={onPointerUp}
+      role={dayState.dateString && 'button'}
+      aria-label={
+        dayState.isSelected
+          ? `${dayState.dateString}일 선택됨`
+          : `${dayState.dateString}일 선택 안되어 있음`
+      }
+      tabIndex={dayState.dateString ? 0 : -1}
     >
       {dayState.dateString}
     </S.Container>

@@ -14,3 +14,8 @@ export const Container = styled.input<{ isError: boolean }>`
   -webkit-appearance: none;
   appearance: none;
 `;
+
+export const HintA11y = styled.div`
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+`;
