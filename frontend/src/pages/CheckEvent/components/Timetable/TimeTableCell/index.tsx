@@ -50,10 +50,12 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   return (
     <div
       className="time-table-cell"
+      aria-label={`${FormatManager.formatKoreanDate(date)} ${timeText} 선택`}
       data-time={dateTimeKey}
       onMouseEnter={handleEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
+      tabIndex={0}
     />
   );
 };

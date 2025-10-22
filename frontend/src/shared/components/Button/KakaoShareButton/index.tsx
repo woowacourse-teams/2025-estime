@@ -8,7 +8,7 @@ const KakaoShareButton = ({ onClick }: { onClick: () => void }) => {
 
   return (
     <Button color="kakao" selected={true} onClick={onClick}>
-      <IChat />
+      <IChat aria-hidden="true" />
       <Text variant="h4" color="kakaoLabel">
         카카오톡으로 공유하기
       </Text>

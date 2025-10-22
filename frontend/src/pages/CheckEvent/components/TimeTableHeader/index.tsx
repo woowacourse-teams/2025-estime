@@ -45,7 +45,12 @@ const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderPro
         <Text variant="h2" color="text">
           {presets.title}
         </Text>
-        <Text variant="body" color="text" style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>
+        <Text
+          variant="body"
+          color="text"
+          style={{ whiteSpace: 'pre-wrap' }}
+          aria-label={`${presets.title} 설명`}
+        >
           {presets.description(name, theme.isMobile)}
         </Text>
       </Flex>

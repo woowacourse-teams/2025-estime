@@ -11,12 +11,17 @@ const CopyLinkButton = ({ isCopied, onClick }: { isCopied: boolean; onClick: () 
   return (
     <>
       <Flex gap="var(--gap-6)" align="center">
-        <Button color={isCopied ? 'green30' : 'primary'} size="x-small" onClick={onClick}>
+        <Button
+          color={isCopied ? 'green30' : 'primary'}
+          size="x-small"
+          onClick={onClick}
+          aria-label="클릭시 링크 복사"
+        >
           <S.ImageWrapper>
             {isCopied ? (
-              <ICheck color={theme.colors.green30} />
+              <ICheck color={theme.colors.green30} aria-hidden="true" />
             ) : (
-              <ICopy color={theme.colors.primary} />
+              <ICopy color={theme.colors.primary} aria-hidden="true" />
             )}
           </S.ImageWrapper>
         </Button>

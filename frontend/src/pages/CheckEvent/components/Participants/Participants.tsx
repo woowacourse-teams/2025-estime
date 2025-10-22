@@ -25,7 +25,11 @@ const Participants = () => {
       <S.Button onClick={handleToggleParticipants}>
         <Flex justify={'flex-end'} align="center" gap="var(--gap-2)">
           <IPersonList color={theme.colors.primary} />
-          <Text style={{ fontSize: '1.25rem' }} color="primary">
+          <Text
+            style={{ fontSize: '1.25rem' }}
+            color="primary"
+            aria-label={`투표 참여자 수 ${roomStatistics.participantCount}명`}
+          >
             {roomStatistics.participantCount}
           </Text>
         </Flex>
@@ -36,13 +40,15 @@ const Participants = () => {
             <Flex align="center" gap="var(--gap-2)">
               <Text variant="button">투표 참여자</Text>
             </Flex>
-            <S.Button onClick={toggleOpen}>
-              <IClose color={theme.colors.primary} width={'24'} height={'24'} />
+            <S.Button onClick={toggleOpen} aria-label="클릭시 투표 참여자 목록 닫기">
+              <IClose color={theme.colors.primary} width={'24'} height={'24'} aria-hidden="true" />
             </S.Button>
           </S.Header>
           <S.Body>
-            <S.NameList>
-              <Text variant="body">{roomStatistics.participants.join(', ')}</Text>
+            <S.NameList aria-label="투표 참여자 목록">
+              <Text color="primary" variant="button">
+                {roomStatistics.participants.join(', ')}
+              </Text>
             </S.NameList>
           </S.Body>
         </S.Container>

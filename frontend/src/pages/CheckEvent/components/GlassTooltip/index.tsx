@@ -33,6 +33,7 @@ const TooltipWrapper = ({ children, bottom }: { children: React.ReactNode; botto
       }}
       paddingLeft="var(--padding-11)"
       paddingRight="var(--padding-11)"
+      aria-hidden="true"
     >
       {children}
     </Wrapper>,

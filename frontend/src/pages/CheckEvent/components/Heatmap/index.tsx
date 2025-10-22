@@ -37,7 +37,9 @@ const Heatmap = ({
   return (
     <>
       <S.HeatMapContent onPointerDown={handleBeforeEdit}>
-        <S.TimeSlotColumn ref={timeColumnRef}>{timeSlotNodes}</S.TimeSlotColumn>
+        <S.TimeSlotColumn ref={timeColumnRef} aria-hidden={true}>
+          {timeSlotNodes}
+        </S.TimeSlotColumn>
         {[...availableDates].map((date) => (
           <Wrapper key={date} center={false} maxWidth="100%">
             <TimeTableDay date={date} />

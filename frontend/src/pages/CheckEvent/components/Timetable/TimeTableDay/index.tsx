@@ -10,7 +10,7 @@ interface TimeTableDayProps {
 
 const TimeTableDay = ({ date }: TimeTableDayProps) => {
   return (
-    <S.Container>
+    <S.Container aria-hidden={true}>
       <Text variant="body" color="text">
         <Flex direction="column" justify="center" align="center">
           <Text>{date.split('-').slice(1).join('.')}</Text>
