@@ -1,4 +1,4 @@
-import { column, row } from '@/constants/calender';
+import { column, row } from '@/constants/calendar';
 import { DateManager } from '@/shared/utils/common/DateManager';
 
 type Day = Date | null;

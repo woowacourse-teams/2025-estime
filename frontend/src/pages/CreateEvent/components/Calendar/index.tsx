@@ -1,6 +1,6 @@
 import * as S from './Calendar.styled';
-import { weekdays } from '@/constants/calender';
-import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalender';
+import { weekdays } from '@/constants/calendar';
+import { useCalender } from '@/pages/CreateEvent/hooks/Calendar/useCalendar';
 
 import PageArrowButton from '@/shared/components/Button/PageArrowButton';
 import DayCell from './DayCell';
@@ -19,7 +19,13 @@ const Calender = () => {
   const today = new Date();
   const selectedDates = useRoomSelector('availableDateSlots');
   const { current, prevMonth, nextMonth, monthMatrix } = useCalender(today);
-  const { onMouseDown, onMouseEnter, onMouseLeave, onMouseUp } = useDateSelection({
+  const {
+    containerRef,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerLeave,
+  } = useDateSelection({
     selectedDates,
     setSelectedDates: onChangeAvailableDateSlots,
     today,
@@ -52,8 +58,8 @@ const Calender = () => {
             날짜는 최대 7개까지 선택 가능합니다.
           </Text>
         </Flex>
-        <S.CalendarContainer>
-          <S.Grid onMouseLeave={onMouseLeave}>
+        <S.CalendarContainer ref={containerRef}>
+          <S.Grid onPointerLeave={handlePointerLeave}>
             {weekdays.map((w) => (
               <S.Weekday key={w} isSunday={w === '일'} isSaturday={w === '토'} tabIndex={0}>
                 {w}
@@ -66,9 +72,9 @@ const Calender = () => {
                 day={day}
                 today={today}
                 selectedDates={selectedDates}
-                onMouseDown={onMouseDown}
-                onMouseEnter={onMouseEnter}
-                onMouseUp={onMouseUp}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
               />
             ))}
           </S.Grid>
