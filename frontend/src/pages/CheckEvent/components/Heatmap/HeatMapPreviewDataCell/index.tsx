@@ -12,7 +12,7 @@ const HeatmapPreviewDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
   const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
 
   const weight = cellInfo?.weight ?? 0;
-  return <S.Container data-cell-id={`${date}T${timeText}`} weight={weight} />;
+  return <S.Container weight={weight} />;
 };
 
 export default memo(HeatmapPreviewDataCell);
