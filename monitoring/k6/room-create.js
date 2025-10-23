@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check, sleep, group } from 'k6';
+import {check, group} from 'k6';
 
 // 현재 시간을 testid에 포함
 const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, '').replace(/:/g, '-');
@@ -10,117 +10,115 @@ const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, '').replace(/:/g
  * - p95가 500ms를 초과하면 테스트 중단
  */
 export const options = {
-  // 모든 메트릭에 적용되는 공통 태그
-  tags: {
-    testid: `capacity-test-${timestamp}`,
-    test_type: 'capacity',
-  },
+    // 모든 메트릭에 적용되는 공통 태그
+    tags: {
+        testid: `capacity-test-${timestamp}`,
+        test_type: 'capacity',
+    },
 
-  // 점진적 부하 증가 (Breaking Point 탐색)
-  stages: [
-    // Phase 1: Warm-up
-    { duration: '1m', target: 50 },    // 0 → 50 VU (1분)
-    { duration: '30s', target: 50 },    // 50 VU 유지 (2분)
+    // 점진적 부하 증가 (Breaking Point 탐색)
+    stages: [
+        // Phase 1: Warm-up
+        {duration: '1m', target: 50},    // 0 → 50 VU (1분)
+        {duration: '30s', target: 50},    // 50 VU 유지 (2분)
 
-    // Phase 2: 점진적 증가 (각 단계마다 충분한 시간을 두고 관찰)
-    { duration: '2m', target: 100 },   // 50 → 100 VU
-    { duration: '30s', target: 100 },   // 100 VU 유지
+        // Phase 2: 점진적 증가 (각 단계마다 충분한 시간을 두고 관찰)
+        {duration: '2m', target: 100},   // 50 → 100 VU
+        {duration: '30s', target: 100},   // 100 VU 유지
 
-    { duration: '2m', target: 200 },   // 100 → 200 VU
-    { duration: '30s', target: 200 },   // 200 VU 유지
+        {duration: '2m', target: 200},   // 100 → 200 VU
+        {duration: '30s', target: 200},   // 200 VU 유지
 
-    { duration: '2m', target: 300 },   // 200 → 300 VU
-    { duration: '30s', target: 300 },   // 300 VU 유지
+        {duration: '2m', target: 300},   // 200 → 300 VU
+        {duration: '30s', target: 300},   // 300 VU 유지
 
-    { duration: '2m', target: 400 },   // 300 → 400 VU
-    { duration: '30s', target: 400 },   // 400 VU 유지
+        {duration: '2m', target: 400},   // 300 → 400 VU
+        {duration: '30s', target: 400},   // 400 VU 유지
 
-    { duration: '2m', target: 500 },   // 400 → 500 VU
-    { duration: '30s', target: 500 },   // 500 VU 유지
+        {duration: '2m', target: 500},   // 400 → 500 VU
+        {duration: '30s', target: 500},   // 500 VU 유지
 
-    { duration: '2m', target: 600 },   // 500 → 600 VU
-    { duration: '30s', target: 600 },   // 600 VU 유지
+        {duration: '2m', target: 600},   // 500 → 600 VU
+        {duration: '30s', target: 600},   // 600 VU 유지
 
-    { duration: '2m', target: 700 },   // 600 → 700 VU
-    { duration: '30s', target: 700 },   // 700 VU 유지
+        {duration: '2m', target: 700},   // 600 → 700 VU
+        {duration: '30s', target: 700},   // 700 VU 유지
 
-    { duration: '2m', target: 800 },   // 700 → 800 VU
-    { duration: '30s', target: 800 },   // 800 VU 유지
+        {duration: '2m', target: 800},   // 700 → 800 VU
+        {duration: '30s', target: 800},   // 800 VU 유지
 
-    // Phase 3: Cool-down (점진적 감소)
-    { duration: '2m', target: 0 },     // 현재 VU → 0
-  ],
-
-  // 임계값 설정 (하나라도 실패하면 테스트 중단)
-  thresholds: {
-    // HTTP 요청 duration p95가 500ms 초과 시 테스트 실패 및 중단
-    'http_req_duration': [
-      {
-        threshold: 'p(95)<500',  // p95 < 500ms
-        abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
-        delayAbortEval: '1m',     // 테스트 시작 후 1분은 평가 유예 (초기 안정화 시간)
-      },
+        // Phase 3: Cool-down (점진적 감소)
+        {duration: '2m', target: 0},     // 현재 VU → 0
     ],
 
-    // 추가 안전장치: 에러율 5% 초과 시 중단
-    'http_req_failed': [
-      {
-        threshold: 'rate<0.05',   // 에러율 < 5%
-        abortOnFail: true,
-        delayAbortEval: '1m',
-      },
-    ],
+    // 임계값 설정 (하나라도 실패하면 테스트 중단)
+    thresholds: {
+        // HTTP 요청 duration p95가 500ms 초과 시 테스트 실패 및 중단
+        'http_req_duration': [
+            {
+                threshold: 'p(95)<500',  // p95 < 500ms
+                abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
+                delayAbortEval: '10s',     // 테스트 시작 후 1분은 평가 유예 (초기 안정화 시간)
+            },
+        ],
 
-    // 개별 API endpoint별 임계값
-    'http_req_duration{api:POST_/api/v1/rooms}': ['p(95)<500'],
-  },
+        // 추가 안전장치: 에러율 5% 초과 시 중단
+        'http_req_failed': [
+            {
+                threshold: 'rate<0.05',   // 에러율 < 5%
+                abortOnFail: true,
+                delayAbortEval: '10s',     // 테스트 시작 후 1분은 평가 유예 (초기 안정화 시간)
+            },
+        ],
+
+        // 개별 API endpoint별 임계값
+        'http_req_duration{api:POST_/api/v1/rooms}': ['p(95)<500'],
+    },
 };
 
 // 환경 변수로 설정
 const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 
 export default function () {
-  group('Room Creation', () => {
-    const createPayload = JSON.stringify({
-      title: `Test_${__VU}`,
-      availableDateSlots: generateDateSlots(7),
-      availableTimeSlots: generateTimeSlots(),
-      deadline: '2026-12-31T23:30',
-    });
+    group('Room Creation', () => {
+        const createPayload = JSON.stringify({
+            title: `Test_${__VU}`,
+            availableDateSlots: generateDateSlots(7),
+            availableTimeSlots: generateTimeSlots(),
+            deadline: '2026-12-31T23:30',
+        });
 
-    const createRes = http.post(`${BASE_URL}/api/v1/rooms`, createPayload, {
-      headers: { 'Content-Type': 'application/json' },
-      tags: { name: 'CreateRoom', api: 'POST_/api/v1/rooms' },
-    });
-    
-    check(createRes, {
-      'room created': (r) => r.status === 200,
-      'response time OK': (r) => r.timings.duration < 1000, // 개별 요청은 1초 이내
-    });
-  });
+        const createRes = http.post(`${BASE_URL}/api/v1/rooms`, createPayload, {
+            headers: {'Content-Type': 'application/json'},
+            tags: {name: 'CreateRoom', api: 'POST_/api/v1/rooms'},
+        });
 
-  sleep(1); // Think time
+        check(createRes, {
+            'room created': (r) => r.status === 200,
+            'response time OK': (r) => r.timings.duration < 1000, // 개별 요청은 1초 이내
+        });
+    });
 }
 
 // 유틸리티 함수
 function generateDateSlots(count) {
-  const dates = [];
-  const today = new Date('2026-01-01');
-  for (let i = 0; i < count; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    dates.push(date.toISOString().split('T')[0]);
-  }
-  return dates;
+    const dates = [];
+    const today = new Date('2026-01-01');
+    for (let i = 0; i < count; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        dates.push(date.toISOString().split('T')[0]);
+    }
+    return dates;
 }
 
 function generateTimeSlots() {
-  const slots = [];
-  for (let h = 0; h < 24; h++) {
-    slots.push(`${h.toString().padStart(2, '0')}:00`);
-    slots.push(`${h.toString().padStart(2, '0')}:30`);
-  }
-  return slots;
+    const slots = [];
+    for (let h = 0; h < 24; h++) {
+        slots.push(`${h.toString().padStart(2, '0')}:00`);
+        slots.push(`${h.toString().padStart(2, '0')}:30`);
+    }
+    return slots;
 }
 
 /**
