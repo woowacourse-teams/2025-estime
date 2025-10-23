@@ -1,108 +1,118 @@
 import http from 'k6/http';
-import { check, sleep, group } from 'k6';
+import { check, sleep } from 'k6';
 
-// 현재 시간을 testid에 포함 (예: room-select-2025-10-23T10:30:45)
+// 현재 시간을 testid에 포함
 const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, '').replace(/:/g, '-');
 
+/**
+ * 용량 테스트 (Capacity Test)
+ * - 점진적으로 VU를 증가시키면서 서버의 한계점 탐색
+ * - p95가 500ms를 초과하면 테스트 중단
+ */
 export const options = {
   // 모든 메트릭에 적용되는 공통 태그
   tags: {
-    testid: `room-select-${timestamp}`, // 날짜+시간 포함 고유 ID
-    test_type: 'room-select', // 테스트 종류별 필터링용
+    testid: `capacity-test-${timestamp}`,
+    test_type: 'capacity',
   },
 
-  scenarios: {
-    vote_viewing: {
-      executor: 'ramping-vus',
-      exec: 'voteViewing',
-      startVUs: 0, // 0 VU에서 시작
-      stages: [
-        { duration: '10s', target: 200 }, // 10초 동안 0 → 200 VU로 선형 증가
-        { duration: '20s', target: 200 }, // 200 VU 유지(선택)
-        { duration: '10s', target: 0 },   // 램프다운(선택)
-      ],
-      gracefulRampDown: '10s',
-      tags: { scenario: 'B_VoteViewing' },
-    },
+  // 점진적 부하 증가 (Breaking Point 탐색)
+  stages: [
+    { duration: '5m', target: 100 },
+  ],
+
+  // 임계값 설정 (하나라도 실패하면 테스트 중단)
+  thresholds: {
+    // HTTP 요청 duration p95가 500ms 초과 시 테스트 실패 및 중단
+    'http_req_duration': [
+      {
+        threshold: 'p(95)<500',  // p95 < 500ms
+        abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
+        delayAbortEval: '10s',     // 10초는 평가 유예 (초기 안정화 시간)
+      },
+    ],
+
+    // 추가 안전장치: 에러율 5% 초과 시 중단
+    'http_req_failed': [
+      {
+        threshold: 'rate<0.05',   // 에러율 < 5%
+        abortOnFail: true,
+        delayAbortEval: '10s',
+      },
+    ],
+
+    // 개별 API endpoint별 임계값
+    'http_req_duration{api:GET_/api/v1/rooms/{session}}': ['p(95)<500'],
+    'http_req_duration{api:GET_/api/v1/rooms/{session}/statistics}': ['p(95)<500'],
   },
-  // thresholds: {
-    // http_req_duration: ['p(95)<1000'], // p95 < 100ms
-    // 'http_req_duration{scenario:A_RoomCreation}': ['p(95)<100'],
-    // 'http_req_duration{scenario:B_VoteViewing}': ['p(95)<100'],
-    // 'http_req_duration{scenario:C_Voting}': ['p(95)<100'],
-    // http_req_failed: ['rate<0.1'], // 에러율 < 1%
-  // },
 };
 
-// 환경 변수로 설정 (docker-compose에서 전달)
+// 환경 변수로 설정
 const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 
-// 사전에 생성된 방 세션 ID (setup-test-data.js 실행 후 설정 필요)
+// 테스트용 방 세션 ID
 const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
   ? JSON.parse(__ENV.TEST_ROOMS)
-  : ["0NAS1423WDGDW","0NAS0K37GDJ6C","0NAS07850DJ6T","0NARZJ8Q0DGW9","0NARXDRM0DKP7","0NARX9QB8DJDJ","0NARX8E2GDJ3D","0NARX72T0DJB2","0NARW9PEWDKPP","0NARW1DERDG2V"]; // dev용
-  // : ["0NAQQNPXKDP3B","0NAQQP2DKDMVH","0NAQQPDTFDMKN","0NAQQPQ07DM0X","0NAQQQ0MZDQ66","0NAQQQ9E7DNXN","0NAQQQNM7DQ5T","0NAQQQZMVDME2","0NAQQRGS7DNMA","0NAQQRWW7DPFG"]; // 로컬용
+  : [
+      "0NAS1423WDGDW",
+      "0NAS0K37GDJ6C",
+      "0NAS07850DJ6T",
+      "0NARZJ8Q0DGW9",
+      "0NARXDRM0DKP7",
+      "0NARX9QB8DJDJ",
+      "0NARX8E2GDJ3D",
+      "0NARX72T0DJB2",
+      "0NARW9PEWDKPP",
+      "0NARW1DERDG2V"
+    ];
 
-// 시나리오 B: 투표 조회
-export function voteViewing() {
+export default function () {
   const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
 
-  group('Vote Viewing', () => {
-    const getRoomRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
-      tags: { name: 'GetRoom', api: 'GET_/api/v1/rooms/{session}' },
-    });
+  // 1. 방 정보 조회
+  const getRoomRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
+    tags: {
+      name: 'GetRoom',
+      api: 'GET_/api/v1/rooms/{session}',
+    },
+  });
 
-    check(getRoomRes, {
-      'room retrieved': (r) => r.status === 200,
-      // 'response time < 100ms': (r) => r.timings.duration < 100,
-    });
+  check(getRoomRes, {
+    'room retrieved': (r) => r.status === 200,
+    'response time OK': (r) => r.timings.duration < 1000, // 개별 요청은 1초 이내
+  });
 
-    const getStatsRes = http.get(
-      `${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`,
-      {
-        tags: { name: 'GetStatistics', api: 'GET_/api/v1/rooms/{session}/statistics' },
-      }
-    );
+  // 2. 통계 조회
+  const getStatsRes = http.get(
+    `${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`,
+    {
+      tags: {
+        name: 'GetStatistics',
+        api: 'GET_/api/v1/rooms/{session}/statistics',
+      },
+    }
+  );
 
-    check(getStatsRes, {
-      'statistics retrieved': (r) => r.status === 200,
-      // 'response time < 100ms': (r) => r.timings.duration < 100,
-    });
+  check(getStatsRes, {
+    'statistics retrieved': (r) => r.status === 200,
+    'response time OK': (r) => r.timings.duration < 1000,
   });
 }
 
-// 유틸리티 함수
-function generateDateSlots(count) {
-  const dates = [];
-  const today = new Date('2026-01-01');
-  for (let i = 0; i < count; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    dates.push(date.toISOString().split('T')[0]);
-  }
-  return dates;
-}
-
-function generateTimeSlots() {
-  const slots = [];
-  for (let h = 0; h < 24; h++) {
-    slots.push(`${h.toString().padStart(2, '0')}:00`);
-    slots.push(`${h.toString().padStart(2, '0')}:30`);
-  }
-  return slots;
-}
-
-function generateRandomDateTimeSlots() {
-  const dates = generateDateSlots(7);
-  const times = ['10:00', '11:00', '14:00', '15:00', '16:00'];
-  const slots = [];
-  const count = Math.floor(Math.random() * 3) + 3; // 3~5개
-
-  for (let i = 0; i < count; i++) {
-    const date = dates[Math.floor(Math.random() * dates.length)];
-    const time = times[Math.floor(Math.random() * times.length)];
-    slots.push(`${date}T${time}`);
-  }
-
-  return [...new Set(slots)]; // 중복 제거
-}
+/**
+ * 테스트 결과 분석 가이드:
+ *
+ * 1. 테스트가 완료되거나 중단되면:
+ *    - Grafana에서 testid로 필터링
+ *    - Performance Overview 패널에서 VU와 응답시간 상관관계 확인
+ *    - 어느 VU 수준에서 p95가 500ms를 넘었는지 확인
+ *
+ * 2. 용량 판단:
+ *    - 테스트가 중단된 시점의 VU 수 = 최대 처리 가능 동시 사용자 수
+ *    - p95가 400ms 근처를 유지하는 VU 수 = 안전한 운영 용량
+ *
+ * 3. 다음 단계:
+ *    - 병목 구간 식별 (HTTP Latency Timings 패널)
+ *    - 데이터베이스, 네트워크, 애플리케이션 레이어 분석
+ *    - 최적화 후 재테스트
+ */

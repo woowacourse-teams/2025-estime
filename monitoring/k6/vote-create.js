@@ -15,37 +15,28 @@ export const options = {
         testid: `vote-test-${timestamp}`,
         test_type: 'vote',
     },
-
+    
     // 점진적 부하 증가 (Breaking Point 탐색)
     stages: [
         // Phase 1: Warm-up
-        {duration: '1m', target: 50},    // 0 → 50 VU (1분)
-        {duration: '30s', target: 50},    // 50 VU 유지 (2분)
+        {duration: '8m', target: 135},    // 0 → 50 VU (1분)
 
-        // Phase 2: 점진적 증가 (각 단계마다 충분한 시간을 두고 관찰)
-        {duration: '2m', target: 100},   // 50 → 100 VU
-        {duration: '30s', target: 100},   // 100 VU 유지
+        // // Phase 2: 점진적 증가 (각 단계마다 충분한 시간을 두고 관찰)
+        // {duration: '1m', target: 30},   // 50 → 100 VU
 
-        {duration: '2m', target: 200},   // 100 → 200 VU
-        {duration: '30s', target: 200},   // 200 VU 유지
+        // {duration: '1m', target: 45},   // 100 → 200 VU
 
-        {duration: '2m', target: 300},   // 200 → 300 VU
-        {duration: '30s', target: 300},   // 300 VU 유지
+        // {duration: '1m', target: 60},   // 200 → 300 VU
 
-        {duration: '2m', target: 400},   // 300 → 400 VU
-        {duration: '30s', target: 400},   // 400 VU 유지
+        // {duration: '1m', target: 75},   // 300 → 400 VU
 
-        {duration: '2m', target: 500},   // 400 → 500 VU
-        {duration: '30s', target: 500},   // 500 VU 유지
+        // {duration: '1m', target: 90},   // 400 → 500 VU
 
-        {duration: '2m', target: 600},   // 500 → 600 VU
-        {duration: '30s', target: 600},   // 600 VU 유지
+        // {duration: '1m', target: 105},   // 500 → 600 VU
 
-        {duration: '2m', target: 700},   // 600 → 700 VU
-        {duration: '30s', target: 700},   // 700 VU 유지
+        // {duration: '1m', target: 120},   // 600 → 700 VU
 
-        {duration: '2m', target: 800},   // 700 → 800 VU
-        {duration: '30s', target: 800},   // 800 VU 유지
+        // {duration: '1m', target: 135},   // 700 → 800 VU
 
         // Phase 3: Cool-down (점진적 감소)
         {duration: '2m', target: 0},     // 현재 VU → 0
