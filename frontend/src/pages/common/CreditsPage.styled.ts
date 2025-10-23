@@ -57,13 +57,8 @@ export const Image = styled.img`
 `;
 
 export const Link = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: 600;
-  cursor: pointer;
   text-decoration: none;
+  color: inherit;
 `;
 export const Icon = styled.div`
   width: 1.5rem;
