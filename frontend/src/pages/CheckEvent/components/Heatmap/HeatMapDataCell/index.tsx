@@ -4,6 +4,7 @@ import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore
 import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
+import { useTheme } from '@emotion/react';
 
 interface HeatMapDataCellProps {
   date: string;
@@ -11,6 +12,8 @@ interface HeatMapDataCellProps {
 }
 
 const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
+  const { isMobile } = useTheme();
+
   const roomStatistics = useRoomStatistics();
   const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
@@ -22,25 +25,41 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
     ariaLabel = `${FormatManager.formatKoreanDate(date)} ${timeText} ${participantNames} 참여가능`;
   }
 
+  const publishCellInfo = () => {
+    if (!cellInfo) {
+      cellDataStore.initialStore();
+    } else {
+      cellDataStore.setState({
+        ...cellInfo,
+        isRecommended,
+        date: FormatManager.formatKoreanDate(date),
+        startTime: timeText,
+        endTime: TimeManager.addMinutes(timeText, 30),
+      });
+    }
+  };
+
   return (
     <S.Container
       data-cell-id={`${date}T${timeText}`}
       weight={weight}
       isRecommended={isRecommended}
       onMouseOver={() => {
-        if (!cellInfo) {
-          cellDataStore.initialStore();
-        } else {
-          cellDataStore.setState({
-            ...cellInfo,
-            isRecommended,
-            date: FormatManager.formatKoreanDate(date),
-            startTime: timeText,
-            endTime: TimeManager.addMinutes(timeText, 30),
-          });
-        }
+        if (isMobile) return;
+        publishCellInfo();
       }}
-      onMouseLeave={() => cellDataStore.initialStore()}
+      onClick={() => {
+        if (!isMobile) return;
+        publishCellInfo();
+      }}
+      onMouseLeave={(e) => {
+        if (
+          isMobile &&
+          (e.relatedTarget as HTMLElement | null)?.closest('[data-tooltip-participant]')
+        )
+          return;
+        cellDataStore.initialStore();
+      }}
       tabIndex={isParticipantExists ? 0 : -1}
       aria-label={ariaLabel}
     />

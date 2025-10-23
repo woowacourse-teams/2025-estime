@@ -63,7 +63,7 @@ const Mobile = () => {
           </S.Highlight>
         </Flex>
 
-        <S.ParticipantList>
+        <S.ParticipantList data-tooltip-participant>
           {sortedPeople.map(({ name, active }) => (
             <S.Participant key={name} active={active}>
               <Text variant="body">{name}</Text>
