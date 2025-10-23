@@ -105,13 +105,21 @@ export default function () {
 
     group('Voting', () => {
         // 1. 방 정보 조회
-        http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
+        const getRoomRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
             tags: {name: 'GetRoom', api: 'GET_/api/v1/rooms/{session}'},
         });
 
+        check(getRoomRes, {
+            'room retrieved': (r) => r.status === 200,
+        });
+
         // 2. 통계 조회
-        http.get(`${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`, {
+        const getStatsRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`, {
             tags: {name: 'GetStatistics', api: 'GET_/api/v1/rooms/{session}/statistics'},
+        });
+
+        check(getStatsRes, {
+            'statistics retrieved': (r) => r.status === 200,
         });
 
         // 3. 참가자 생성
@@ -134,7 +142,7 @@ export default function () {
         });
 
         // 4. 투표 조회
-        http.get(
+        const getVotesRes = http.get(
             `${BASE_URL}/api/v1/rooms/${roomSession}/votes/participants?participantName=${encodeURIComponent(
                 participantName
             )}`,
@@ -145,6 +153,10 @@ export default function () {
                 },
             }
         );
+
+        check(getVotesRes, {
+            'votes retrieved': (r) => r.status === 200,
+        });
 
         // 5. 투표 등록/수정 (1~3회 반복)
         const voteCount = Math.floor(Math.random() * 3) + 1; // 1~3회
@@ -169,8 +181,12 @@ export default function () {
             });
 
             // 6. 통계 재조회
-            http.get(`${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`, {
+            const reloadStatsRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`, {
                 tags: {name: 'GetStatistics', api: 'GET_/api/v1/rooms/{session}/statistics'},
+            });
+
+            check(reloadStatsRes, {
+                'statistics reloaded': (r) => r.status === 200,
             });
         }
     });
