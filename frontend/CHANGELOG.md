@@ -1,3 +1,10 @@
+## <small>1.6.1 (2025-10-23)</small>
+
+* hotfix: 모바일 Tooltip 동작 개선 및 ParticipantList 스크롤 초기화 처리 (#746) ([747e0ef](https://github.com/woowacourse-teams/2025-estime/commit/747e0ef)), closes [#746](https://github.com/woowacourse-teams/2025-estime/issues/746)
+* fix: 크레딧 페이지 수정 및 이미지 파일 압축 (#744) ([f10f170](https://github.com/woowacourse-teams/2025-estime/commit/f10f170)), closes [#744](https://github.com/woowacourse-teams/2025-estime/issues/744)
+
+
+
 ## 1.6.0 (2025-10-22)
 
 * fix: 다크모드 관련 스타일 수정 (#741) ([cad3d5c](https://github.com/woowacourse-teams/2025-estime/commit/cad3d5c)), closes [#741](https://github.com/woowacourse-teams/2025-estime/issues/741)
