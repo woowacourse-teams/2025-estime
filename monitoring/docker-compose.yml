@@ -3,21 +3,24 @@ networks:
 
 services:
   grafana:
-    image: grafana/grafana:12.1.0
+    image: grafana/grafana:latest
     ports:
       - "${GRAFANA_PORT}:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./configs/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./configs/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
     networks:
       - monitor-net
     restart: unless-stopped
 
   loki:
-    image: grafana/loki:3.5.0
+    image: grafana/loki:latest
     ports:
       - "${LOKI_PORT}:3100"
     volumes:
@@ -29,7 +32,7 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus:v3.5.0
+    image: prom/prometheus:latest
     ports:
       - "${PROMETHEUS_PORT}:9090"
     volumes:
@@ -38,26 +41,36 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--web.enable-remote-write-receiver'
+      - '--storage.tsdb.retention.time=15d'
+      - '--enable-feature=native-histograms'
     networks:
       - monitor-net
     restart: unless-stopped
 
   k6:
-    image: grafana/k6:0.54.0
+    image: grafana/k6:latest
     profiles:
       - test
     networks:
       - monitor-net
     environment:
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
-      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=false
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+      - K6_PROMETHEUS_RW_PUSH_INTERVAL=1s
       - BASE_URL=${BASE_URL:-http://host.docker.internal:8080}
       - TEST_ROOMS=${TEST_ROOMS}
       - K6_SCRIPT=${K6_SCRIPT:-/scripts/full-scenario.js}
     volumes:
       - ./k6:/scripts
       - ./k6/results:/results
-    command: run --out experimental-prometheus-rw ${K6_SCRIPT}
+    command: run --tag testid=test-$(date +%s) --out experimental-prometheus-rw --summary-trend-stats="min,avg,med,max,p(90),p(95),p(99)" ${K6_SCRIPT}
+
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   grafana-data:

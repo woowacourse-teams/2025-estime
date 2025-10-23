@@ -1,19 +1,27 @@
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';
 
+// 현재 시간을 testid에 포함 (예: room-select-2025-10-23T10:30:45)
+const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, '').replace(/:/g, '-');
+
 export const options = {
+  // 모든 메트릭에 적용되는 공통 태그
+  tags: {
+    testid: `room-select-${timestamp}`, // 날짜+시간 포함 고유 ID
+    test_type: 'room-select', // 테스트 종류별 필터링용
+  },
+
   scenarios: {
-    // 시나리오 B: 투표 조회 (40%)
     vote_viewing: {
-      // executor: 'constant-arrival-rate',
-      executor: 'constant-vus',
+      executor: 'ramping-vus',
       exec: 'voteViewing',
-      // rate: 150, // 초당 100번 요청
-      // timeUnit: '1s',
-      duration: '1m',
-      vus: 1000,
-      // preAllocatedVUs: 150, // 사전 할당 VU
-      // maxVUs: 300, // 최대 VU
+      startVUs: 0, // 0 VU에서 시작
+      stages: [
+        { duration: '10s', target: 200 }, // 10초 동안 0 → 200 VU로 선형 증가
+        { duration: '20s', target: 200 }, // 200 VU 유지(선택)
+        { duration: '10s', target: 0 },   // 램프다운(선택)
+      ],
+      gracefulRampDown: '10s',
       tags: { scenario: 'B_VoteViewing' },
     },
   },
@@ -32,8 +40,8 @@ const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 // 사전에 생성된 방 세션 ID (setup-test-data.js 실행 후 설정 필요)
 const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
   ? JSON.parse(__ENV.TEST_ROOMS)
-  : ["0NAS1423WDGDW","0NAS0K37GDJ6C","0NAS07850DJ6T","0NARZJ8Q0DGW9","0NARXDRM0DKP7","0NARX9QB8DJDJ","0NARX8E2GDJ3D","0NARX72T0DJB2","0NARW9PEWDKPP","0NARW1DERDG2V"];
-  // : ["0NAQQNPXKDP3B","0NAQQP2DKDMVH","0NAQQPDTFDMKN","0NAQQPQ07DM0X","0NAQQQ0MZDQ66","0NAQQQ9E7DNXN","0NAQQQNM7DQ5T","0NAQQQZMVDME2","0NAQQRGS7DNMA","0NAQQRWW7DPFG"];
+  : ["0NAS1423WDGDW","0NAS0K37GDJ6C","0NAS07850DJ6T","0NARZJ8Q0DGW9","0NARXDRM0DKP7","0NARX9QB8DJDJ","0NARX8E2GDJ3D","0NARX72T0DJB2","0NARW9PEWDKPP","0NARW1DERDG2V"]; // dev용
+  // : ["0NAQQNPXKDP3B","0NAQQP2DKDMVH","0NAQQPDTFDMKN","0NAQQPQ07DM0X","0NAQQQ0MZDQ66","0NAQQQ9E7DNXN","0NAQQQNM7DQ5T","0NAQQQZMVDME2","0NAQQRGS7DNMA","0NAQQRWW7DPFG"]; // 로컬용
 
 // 시나리오 B: 투표 조회
 export function voteViewing() {
