@@ -5,6 +5,7 @@ import { useRoomStatistics } from '../../stores/roomStatisticsStore';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import Text from '@/shared/components/Text';
+import { useEffect, useRef } from 'react';
 
 const useTooltipData = () => {
   const data = useCellData();
@@ -43,6 +44,14 @@ const TooltipWrapper = ({ children, bottom }: { children: React.ReactNode; botto
 
 const Mobile = () => {
   const { data, sortedPeople } = useTooltipData();
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // data가 바뀔 때마다 scrollTop 초기화
+  useEffect(() => {
+    if (data?.participantNames?.length && listRef.current) {
+      listRef.current.scrollTop = 0;
+    }
+  }, [data?.participantNames]);
 
   return (
     <TooltipWrapper bottom="20px">
@@ -63,7 +72,7 @@ const Mobile = () => {
           </S.Highlight>
         </Flex>
 
-        <S.ParticipantList data-tooltip-participant>
+        <S.ParticipantList ref={listRef} data-tooltip-participant>
           {sortedPeople.map(({ name, active }) => (
             <S.Participant key={name} active={active}>
               <Text variant="body">{name}</Text>
