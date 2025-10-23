@@ -110,7 +110,7 @@ export default function () {
         });
 
         check(getRoomRes, {
-            'room retrieved': (r) => r.status === 200,
+            '[GetRoom] status is 200': (r) => r.status === 200,
         });
 
         // 2. 통계 조회
@@ -119,7 +119,7 @@ export default function () {
         });
 
         check(getStatsRes, {
-            'statistics retrieved': (r) => r.status === 200,
+            '[GetStatistics] status is 200': (r) => r.status === 200,
         });
 
         // 3. 참가자 생성
@@ -137,8 +137,8 @@ export default function () {
         );
 
         check(createParticipantRes, {
-            'participant created': (r) => r.status === 200,
-            'response time < 100ms': (r) => r.timings.duration < 100,
+            '[CreateParticipant] status is 200': (r) => r.status === 200,
+            '[CreateParticipant] response time < 100ms': (r) => r.timings.duration < 100,
         });
 
         // 4. 투표 조회
@@ -155,7 +155,7 @@ export default function () {
         );
 
         check(getVotesRes, {
-            'votes retrieved': (r) => r.status === 200,
+            '[GetParticipantVotes] status is 200': (r) => r.status === 200,
         });
 
         // 5. 투표 등록/수정 (1~3회 반복)
@@ -176,17 +176,17 @@ export default function () {
             );
 
             check(voteRes, {
-                'vote updated': (r) => r.status === 200,
-                'response time < 100ms': (r) => r.timings.duration < 100,
+                '[UpdateVote] status is 200': (r) => r.status === 200,
+                '[UpdateVote] response time < 100ms': (r) => r.timings.duration < 100,
             });
 
             // 6. 통계 재조회
             const reloadStatsRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`, {
-                tags: {name: 'GetStatistics', api: 'GET_/api/v1/rooms/{session}/statistics'},
+                tags: {name: 'ReloadStatistics', api: 'GET_/api/v1/rooms/{session}/statistics'},
             });
 
             check(reloadStatsRes, {
-                'statistics reloaded': (r) => r.status === 200,
+                '[ReloadStatistics] status is 200': (r) => r.status === 200,
             });
         }
     });
