@@ -58,7 +58,7 @@ export const options = {
       {
         threshold: 'p(95)<500',  // p95 < 500ms
         abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
-        delayAbortEval: '1m',     // 테스트 시작 후 1분은 평가 유예 (초기 안정화 시간)
+        delayAbortEval: '1m',     // 1분은 평가 유예 (초기 안정화 시간)
       },
     ],
 
