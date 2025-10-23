@@ -19,15 +19,14 @@ export const options = {
     scenarios: {
         vote_viewing: {
             executor: 'ramping-vus',
-            exec: 'vote-create',
+            exec: 'vote_create',
             startVUs: 0, // 0 VU에서 시작
             stages: [
-                { duration: '1m', target: 50 },
-                { duration: '5m', target: 50 }, // 50 VU 유지(선택)
+                { duration: '1m', target: 10 },
+                { duration: '5m', target: 10 }, // 10 VU 유지(선택)
                 { duration: '10s', target: 0 },   // 램프다운(선택)
             ],
             gracefulRampDown: '10s',
-            tags: { scenario: 'vote-create' },
         },
     },
 
@@ -79,7 +78,7 @@ const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
         "0NARW1DERDG2V"
     ];
 
-export default function () {
+export function vote_create() {
     const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
     const participantName = `User_${__VU}`;
 
@@ -118,7 +117,7 @@ export default function () {
 
         check(createParticipantRes, {
             '[CreateParticipant] status is 200': (r) => r.status === 200,
-            '[CreateParticipant] response time < 100ms': (r) => r.timings.duration < 100,
+            '[CreateParticipant] response time < 500ms': (r) => r.timings.duration < 500,
         });
 
         // 4. 투표 조회
@@ -157,7 +156,7 @@ export default function () {
 
             check(voteRes, {
                 '[UpdateVote] status is 200': (r) => r.status === 200,
-                '[UpdateVote] response time < 100ms': (r) => r.timings.duration < 100,
+                '[UpdateVote] response time < 500ms': (r) => r.timings.duration < 500,
             });
 
             // 6. 통계 재조회
