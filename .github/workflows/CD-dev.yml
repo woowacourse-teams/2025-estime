@@ -78,6 +78,8 @@ jobs:
           tags: |
             ${{ secrets.DEV_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
             ${{ secrets.DEV_IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ secrets.DEV_IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DEV_IMAGE_NAME }}:buildcache,mode=max
 
   deploy:
     runs-on: [ self-hosted, estime-dev ]

@@ -1,9 +1,5 @@
 package com.estime.room.participant;
 
-import com.estime.room.participant.Participant;
-import com.estime.room.participant.ParticipantName;
-import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.participant.QParticipant;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -41,10 +37,10 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository {
     }
 
     @Override
-    public List<Participant> findAllByIdIn(final Set<Long> ids) {
-        return queryFactory.selectFrom(participant)
+    public Participants findAllByIdIn(final Set<Long> ids) {
+        return Participants.from(queryFactory.selectFrom(participant)
                 .where(participant.id.in(ids))
-                .fetch();
+                .fetch());
     }
 
     @Override
