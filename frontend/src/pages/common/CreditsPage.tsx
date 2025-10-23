@@ -35,25 +35,25 @@ const CreditsPage = () => {
       </Wrapper>
       <S.Container>
         {credits.map(({ name, imageUrl, role, github }) => (
-          <S.Person key={name}>
-            <S.Avatar>
-              <S.Image src={imageUrl} alt={name} />
-            </S.Avatar>
-            <Text color="gray90" variant="h3">
-              {name}
-            </Text>
-            <Flex align="center" gap="var(--gap-3)" justify="center">
-              <Text color="gray60" variant="body">
-                {role}
+          <S.Link key={name} href={github} target="_blank" rel="noopener noreferrer">
+            <S.Person key={name}>
+              <S.Avatar>
+                <S.Image src={imageUrl} alt={name} />
+              </S.Avatar>
+              <Text color="gray90" variant="h3">
+                {name}
               </Text>
+              <Flex align="center" gap="var(--gap-3)" justify="center">
+                <Text color="gray60" variant="body">
+                  {role}
+                </Text>
 
-              <S.Link href={github} target="_blank" rel="noopener noreferrer">
                 <S.Icon>
                   <GithubLogo />
                 </S.Icon>
-              </S.Link>
-            </Flex>
-          </S.Person>
+              </Flex>
+            </S.Person>
+          </S.Link>
         ))}
       </S.Container>
     </Wrapper>
