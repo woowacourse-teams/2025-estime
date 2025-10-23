@@ -26,34 +26,6 @@ loki.relabel "add_api_labels" {
     }
 }
 
-prometheus.integration.node_exporter "default" {
-}
-
-prometheus.scrape "node_exporter" {
-    targets    = prometheus.integration.node_exporter.default.targets
-    forward_to = [prometheus.relabel.node_exporter_labels.receiver]
-    scrape_interval = "15s"
-}
-
-prometheus.relabel "node_exporter_labels" {
-    forward_to = [prometheus.remote_write.dev.receiver]
-
-    rule {
-        action       = "replace"
-        target_label = "job"
-        replacement  = "node-exporter-dev"
-    }
-    rule {
-        action       = "replace"
-        target_label = "env"
-        replacement  = "dev"
-    }
-    rule {
-        source_labels = ["__address__"]
-        target_label  = "instance"
-    }
-}
-
 prometheus.scrape "estime_api_metrics" {
     targets = [{
         __address__ = "estime-api:8080",
