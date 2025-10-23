@@ -5,6 +5,7 @@ import ShareButton from '../../../../shared/components/Button/ShareButton';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 import Participants from '../Participants/Participants';
+import * as S from './CheckEventPageHeader.styled';
 
 type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
   roomSession: string;
@@ -20,10 +21,17 @@ const CheckEventPageHeader = ({
 
   return (
     <Flex gap="var(--gap-5)" justify="space-between" direction="column">
-      <Flex gap="var(--gap-6)" align="center">
-        <Text variant="h1" color="primary" tabIndex={0} aria-label={`방 제목 ${title}`}>
-          {title}
-        </Text>
+      <Flex gap={theme.isMobile ? 'var(--gap-6)' : 'var(--gap-4)'} align="center">
+        <S.TitleContainer>
+          <Text
+            variant={theme.isMobile ? 'h2' : 'h1'}
+            color="primary"
+            tabIndex={0}
+            aria-label={`방 제목 ${title}`}
+          >
+            {title}
+          </Text>
+        </S.TitleContainer>
         <ShareButton onClick={handleCopyLinkButtonClick} />
       </Flex>
       <Flex gap="var(--gap-6)" justify="space-between" align="center">
