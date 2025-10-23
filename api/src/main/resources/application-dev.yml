@@ -42,5 +42,4 @@ server:
     threads:
       max: 50
       min-spare: 25
-    accept-count:
-
+    accept-count: 100
