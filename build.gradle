@@ -6,7 +6,7 @@ plugins {
 
 ext {
     springBootVersion = '3.5.3'
-    querydslVersion = '5.1.0'
+    openfeignQuerydslVersion = '7.0'
     tsidVersion = '5.2.6'
 }
 

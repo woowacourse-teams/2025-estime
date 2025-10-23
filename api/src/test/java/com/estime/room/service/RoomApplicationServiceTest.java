@@ -7,16 +7,17 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
-import com.estime.port.out.PlatformMessageSender;
-import com.estime.room.dto.input.DateSlotInput;
-import com.estime.room.dto.input.TimeSlotInput;
-import com.estime.shared.DomainTerm;
 import com.estime.exception.NotFoundException;
-import com.estime.room.exception.UnavailableSlotException;
+import com.estime.port.out.PlatformMessageSender;
+import com.estime.room.Room;
+import com.estime.room.RoomRepository;
+import com.estime.room.RoomSession;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.dto.input.DateSlotInput;
 import com.estime.room.dto.input.ParticipantCreateInput;
 import com.estime.room.dto.input.RoomCreateInput;
 import com.estime.room.dto.input.RoomSessionInput;
+import com.estime.room.dto.input.TimeSlotInput;
 import com.estime.room.dto.input.VotesFindInput;
 import com.estime.room.dto.input.VotesOutput;
 import com.estime.room.dto.input.VotesUpdateInput;
@@ -24,23 +25,22 @@ import com.estime.room.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.Room;
-import com.estime.room.RoomRepository;
+import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.Participant;
-import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.ParticipantName;
+import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
-import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.DateTimeSlot;
+import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
-import com.estime.room.RoomSession;
+import com.estime.room.slot.DateTimeSlot;
+import com.estime.shared.DomainTerm;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -168,7 +168,8 @@ class RoomApplicationServiceTest {
         final String nonexistentSession = "no";
 
         // when // then
-        assertThatThrownBy(() -> roomApplicationService.getRoomBySession(RoomSessionInput.from(RoomSession.from(nonexistentSession))))
+        assertThatThrownBy(() -> roomApplicationService.getRoomBySession(
+                RoomSessionInput.from(RoomSession.from(nonexistentSession))))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining(DomainTerm.ROOM + " is not exists");
     }

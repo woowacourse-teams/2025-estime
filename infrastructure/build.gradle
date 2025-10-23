@@ -9,7 +9,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     // QueryDSL
-    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    implementation "io.github.openfeign.querydsl:querydsl-jpa:${openfeignQuerydslVersion}"
 
     // API documentation (Swagger)
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
