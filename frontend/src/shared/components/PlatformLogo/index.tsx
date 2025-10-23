@@ -1,5 +1,5 @@
-import discordLogo from '@/assets/images/discord.png';
-import slackLogo from '@/assets/images/slack.png';
+import discordLogo from '@/assets/images/discord.webp';
+import slackLogo from '@/assets/images/slack.webp';
 
 interface PlatformLogoProps {
   platformType: 'DISCORD' | 'SLACK';

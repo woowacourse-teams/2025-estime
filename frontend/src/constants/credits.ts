@@ -1,11 +1,12 @@
-import marvinProfile from '@/assets/images/profile/marvin_profile.png';
-import kangSanProfile from '@/assets/images/profile/kang_san_profile.png';
-import hoyyProfile from '@/assets/images/profile/hoyy_profile.png';
-import flintProfile from '@/assets/images/profile/flint_profile.png';
-import dbProfile from '@/assets/images/profile/db_profile.png';
-import jeffProfile from '@/assets/images/profile/jeff_profile.png';
-import riverProfile from '@/assets/images/profile/river_profile.png';
-import happiProfile from '@/assets/images/profile/happi_profile.png';
+import marvinProfile from '@/assets/images/profile/marvin_profile.webp';
+import kangSanProfile from '@/assets/images/profile/kang_san_profile.webp';
+import hoyyProfile from '@/assets/images/profile/hoyy_profile.webp';
+import flintProfile from '@/assets/images/profile/flint_profile.webp';
+import dbProfile from '@/assets/images/profile/db_profile.webp';
+import jeffProfile from '@/assets/images/profile/jeff_profile.webp';
+import riverProfile from '@/assets/images/profile/river_profile.webp';
+import happiProfile from '@/assets/images/profile/happi_profile.webp';
+
 export const credits = [
   {
     name: '해삐',
