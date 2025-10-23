@@ -40,6 +40,6 @@ logging:
 server:
   tomcat:
     threads:
-      max: 50
-      min-spare: 25
-    accept-count: 100
+      max: 15
+      min-spare: 5
+    accept-count: 5
