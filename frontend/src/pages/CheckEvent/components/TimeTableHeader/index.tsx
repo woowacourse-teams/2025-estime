@@ -5,7 +5,7 @@ import Flex from '@/shared/layout/Flex';
 import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
 import Notice from '@/shared/components/Notice';
-import { userNameStore } from '../../stores/userNameStore';
+import { useUserName } from '../../stores/userNameStore';
 
 type HeaderMode = 'edit' | 'save';
 
@@ -39,7 +39,7 @@ interface TimeTableHeaderProps extends ComponentProps<'header'> {
 const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
   const theme = useTheme();
-  const isLoggedIn = userNameStore.getSnapshot().length > 0;
+  const isLoggedIn = useUserName().isLoggedIn;
 
   return (
     <S.Container {...props}>

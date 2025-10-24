@@ -5,6 +5,7 @@ import { CreateUserResponseType } from '@/apis/room/type';
 import { updateUserAvailableTimeType } from '@/apis/time/type';
 import { userAvailabilityStore } from '../stores/userAvailabilityStore';
 import { showToast } from '@/shared/store/toastStore';
+import { userNameStore } from '../stores/userNameStore';
 
 const BUTTON_NAME = {
   register: '등록하기',
@@ -44,6 +45,7 @@ const useCheckEventHandlers = ({
       return;
     }
     await fetchUserAvailableTime();
+    userNameStore.loginComplete();
     modalDispatch('close_login');
     buttonModeDispatch('complete_login');
   };
@@ -53,6 +55,7 @@ const useCheckEventHandlers = ({
       modalDispatch('close_confirm');
       modalDispatch('close_login');
       await fetchUserAvailableTime();
+      userNameStore.loginComplete();
       buttonModeDispatch('complete_login');
     } else {
       modalDispatch('close_confirm');
