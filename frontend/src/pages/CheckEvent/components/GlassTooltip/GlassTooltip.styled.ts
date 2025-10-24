@@ -57,6 +57,7 @@ export const ParticipantList = styled.div<{ isLocked?: boolean | undefined }>`
   touch-action: pan-y;
   pointer-events: ${({ theme, isLocked }) =>
     theme.isMobile ? ' auto' : isLocked ? 'auto' : 'none'};
+  align-content: flex-start;
 
   &::-webkit-scrollbar {
     width: 5px;
