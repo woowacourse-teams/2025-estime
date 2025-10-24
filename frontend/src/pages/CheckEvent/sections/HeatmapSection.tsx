@@ -9,7 +9,6 @@ import Heatmap from '../components/Heatmap';
 import * as S from './Section.styled';
 import { userNameStore } from '../stores/userNameStore';
 import { useTheme } from '@emotion/react';
-import { showToast } from '@/shared/store/toastStore';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
@@ -40,11 +39,6 @@ const HeatmapSection = ({
     const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
     if (!cell) return;
     if (isMobile) return;
-
-    showToast({
-      type: 'warning',
-      message: '시간을 등록하려면 "등록하기"를 눌러주세요',
-    });
   };
   const isVisible = buttonMode !== 'save';
   const ariaLabel = buttonMode === 'register' ? '등록' : '편집';
