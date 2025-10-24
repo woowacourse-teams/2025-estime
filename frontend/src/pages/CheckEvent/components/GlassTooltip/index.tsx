@@ -83,10 +83,10 @@ const Desktop = () => {
       <S.Container opacity={data?.participantNames.length !== 0 ? 1 : 0}>
         <Flex justify="space-between" wrap="wrap" gap="var(--gap-4)">
           <Flex direction="row" align="center" gap="var(--gap-4)">
-            <Text variant="h2" color="gray70">
+            <Text variant="h2" style={{ color: '#2E3240' }}>
               {data?.date}
             </Text>
-            <Text variant="h3">
+            <Text variant="h3" style={{ color: '#1A1E26' }}>
               {data?.startTime} ~ {data?.endTime}
             </Text>
           </Flex>
@@ -101,7 +101,9 @@ const Desktop = () => {
         <S.ParticipantList>
           {sortedPeople.map(({ name, active }) => (
             <S.Participant key={name} active={active}>
-              <Text variant="h4">{name}</Text>
+              <Text variant="h4" style={{ color: '#1A1E26' }}>
+                {name}
+              </Text>
             </S.Participant>
           ))}
         </S.ParticipantList>
