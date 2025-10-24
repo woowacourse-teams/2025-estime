@@ -47,7 +47,6 @@ export const ParticipantList = styled.div<{ isLocked?: boolean | undefined }>`
   gap: ${({ theme }) => (theme.isMobile ? '6px' : '10px')};
   margin-top: 4px;
   overflow-y: auto;
-  min-height: ${({ theme }) => (theme.isMobile ? '100px' : '120px')};
   max-height: ${({ theme }) => (theme.isMobile ? '120px' : 'auto')};
   padding-right: 6px;
   padding-bottom: ${({ theme }) => (theme.isMobile ? '0' : '20px')};

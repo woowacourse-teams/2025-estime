@@ -96,22 +96,22 @@ const Desktop = () => {
   return (
     <TooltipWrapper bottom="100px">
       <S.Container opacity={data?.participantNames.length !== 0 ? 1 : 0}>
-        <Flex justify="space-between" wrap="wrap" gap="var(--gap-4)">
-          <Flex gap="var(--gap-5)">
+        <Flex align="center" justify="space-between" gap="var(--gap-4)">
+          <Flex gap="var(--gap-4)" wrap="wrap" align="center">
+            <Text variant="h2" style={{ color: '#2E3240' }}>
+              {data?.date}
+            </Text>
             <Flex direction="row" align="center" gap="var(--gap-4)">
-              <Text variant="h2" style={{ color: '#2E3240' }}>
-                {data?.date}
-              </Text>
               <Text variant="h3" style={{ color: '#1A1E26' }}>
                 {data?.startTime} ~ {data?.endTime}
               </Text>
-            </Flex>
 
-            <S.Highlight opacity={data?.isRecommended ? 1 : 0}>
-              <Text variant="button" color="gray10">
-                ⭐️ 추천 시간
-              </Text>
-            </S.Highlight>
+              <S.Highlight opacity={data?.isRecommended ? 1 : 0}>
+                <Text variant="button" color="gray10">
+                  ⭐️ 추천 시간
+                </Text>
+              </S.Highlight>
+            </Flex>
           </Flex>
           <S.Button
             data-tooltip-close
