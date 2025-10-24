@@ -45,8 +45,12 @@ const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => 
     if (isMobile) {
       publishCellInfo();
     } else {
+      if (!cellInfo) {
+        cellHoverStore.handleCellHoverUnLock();
+      } else {
+        cellHoverStore.handleCellHoverLock();
+      }
       publishCellInfo();
-      cellHoverStore.handleCellHoverLock();
     }
   };
   return (
