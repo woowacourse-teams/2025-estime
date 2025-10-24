@@ -6,6 +6,7 @@ import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
 import { RefObject, useEffect, useMemo } from 'react';
 import { cellDataStore } from '../../stores/CellDataStore';
 import { useCellHoverState } from '../../stores/CellHoverStore';
+import { useTheme } from '@emotion/react';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -20,9 +21,12 @@ const Heatmap = ({
   availableDates,
   handleBeforeEdit,
 }: HeatmapProps) => {
+  const { isMobile } = useTheme();
+
   const cellHoverState = useCellHoverState();
 
   useEffect(() => {
+    if (isMobile) return;
     const handleOutsideClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       const current = cellDataStore.getSnapshot();
@@ -41,7 +45,7 @@ const Heatmap = ({
 
     document.addEventListener('pointerdown', handleOutsideClick);
     return () => document.removeEventListener('pointerdown', handleOutsideClick);
-  }, []);
+  }, [isMobile]);
 
   const timeSlotNodes = useMemo(
     () =>
