@@ -5,6 +5,7 @@ import Flex from '@/shared/layout/Flex';
 import { ComponentProps } from 'react';
 import { useTheme } from '@emotion/react';
 import Notice from '@/shared/components/Notice';
+import { userNameStore } from '../../stores/userNameStore';
 
 type HeaderMode = 'edit' | 'save';
 
@@ -38,6 +39,7 @@ interface TimeTableHeaderProps extends ComponentProps<'header'> {
 const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderProps) => {
   const presets = HeaderPresets[mode];
   const theme = useTheme();
+  const isLoggedIn = userNameStore.getSnapshot().length > 0;
 
   return (
     <S.Container {...props}>
@@ -55,6 +57,11 @@ const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderPro
         </Text>
       </Flex>
       <Flex gap="var(--gap-8)">
+        <Notice type="warning" show={!isLoggedIn}>
+          <Text variant="body" color="text">
+            {`⚠️ 시간표를 등록하려면 "등록하기"를 눌러주세요.`}
+          </Text>
+        </Notice>
         <Notice type="warning" show={isExpired}>
           <Text variant="body" color="warningText">
             ⚠️ 마감일이 지났어요. 결과를 확인해주세요!
