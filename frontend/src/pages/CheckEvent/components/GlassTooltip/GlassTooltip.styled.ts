@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div<{ opacity: number }>`
   width: 60%;
-  min-height: 150px;
+  height: 200px;
   margin: 0 auto;
   padding: 20px 28px;
 
@@ -40,20 +40,22 @@ export const Highlight = styled.div<{ opacity: number }>`
   opacity: ${({ opacity }) => opacity};
 `;
 
-export const ParticipantList = styled.div`
+export const ParticipantList = styled.div<{ isLocked?: boolean | undefined }>`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: ${({ theme }) => (theme.isMobile ? '6px' : '10px')};
   margin-top: 4px;
   overflow-y: auto;
-  min-height: ${({ theme }) => (theme.isMobile ? '100px' : '120px')};
   max-height: ${({ theme }) => (theme.isMobile ? '120px' : 'auto')};
   padding-right: 6px;
+  padding-bottom: ${({ theme }) => (theme.isMobile ? '0' : '20px')};
+
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-  pointer-events: ${({ theme }) => (theme.isMobile ? ' auto' : 'none')};
+  pointer-events: ${({ theme, isLocked }) =>
+    theme.isMobile ? ' auto' : isLocked ? 'auto' : 'none'};
   align-content: flex-start;
 
   &::-webkit-scrollbar {
@@ -79,4 +81,20 @@ export const Participant = styled.span<{ active: boolean }>`
 
   text-decoration-thickness: 2px;
   word-break: keep-all;
+`;
+
+export const Button = styled.button<{ isLocked: boolean | undefined; opacity: number }>`
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  line-height: 0;
+  display: flex;
+  justify-content: flex-end;
+
+  pointer-events: ${({ isLocked }) => (isLocked ? 'auto' : 'none')};
+  opacity: ${({ opacity }) => opacity};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
