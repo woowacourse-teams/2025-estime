@@ -1,3 +1,10 @@
+## <small>1.6.3 (2025-10-24)</small>
+
+* hotfix: glassTooltip (#755) ([521d3c6](https://github.com/woowacourse-teams/2025-estime/commit/521d3c6)), closes [#755](https://github.com/woowacourse-teams/2025-estime/issues/755)
+* hotfix: glassTooltip, 비로그인시 경고창 (#754) ([09f3ac7](https://github.com/woowacourse-teams/2025-estime/commit/09f3ac7)), closes [#754](https://github.com/woowacourse-teams/2025-estime/issues/754)
+
+
+
 ## <small>1.6.2 (2025-10-24)</small>
 
 * hotfix: glassTooltip lock 로직 추가 (#752) ([3bbbb56](https://github.com/woowacourse-teams/2025-estime/commit/3bbbb56)), closes [#752](https://github.com/woowacourse-teams/2025-estime/issues/752)

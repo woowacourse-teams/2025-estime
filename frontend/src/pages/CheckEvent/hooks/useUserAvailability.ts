@@ -10,7 +10,7 @@ export const useUserAvailability = ({ session }: { session: string }) => {
     context: 'fetchUserAvailableTime',
     requestFn: () =>
       // const name = userNameStore.getSnapshot();
-      getUserAvailableTime(session, userNameStore.getSnapshot()),
+      getUserAvailableTime(session, userNameStore.getSnapshot().name),
   });
 
   const { isLoading: isSavingUserTime, triggerFetch: handleUserAvailabilitySubmit } = useFetch({
@@ -29,7 +29,7 @@ export const useUserAvailability = ({ session }: { session: string }) => {
     const selectedTimesResponse = new Set(userAvailableTimeInfo.dateTimeSlots);
     userAvailabilityStore.setState((prev) => ({
       ...prev,
-      userName: userNameStore.getSnapshot(),
+      userName: userNameStore.getSnapshot().name,
       selectedTimes: selectedTimesResponse,
     }));
   }, [getUserTime]);
