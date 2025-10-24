@@ -54,6 +54,7 @@ export const ParticipantList = styled.div`
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   pointer-events: ${({ theme }) => (theme.isMobile ? ' auto' : 'none')};
+  align-content: flex-start;
 
   &::-webkit-scrollbar {
     width: 5px;
