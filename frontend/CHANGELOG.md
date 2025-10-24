@@ -1,3 +1,12 @@
+## <small>1.6.2 (2025-10-24)</small>
+
+* hotfix: glassTooltip lock 로직 추가 (#752) ([3bbbb56](https://github.com/woowacourse-teams/2025-estime/commit/3bbbb56)), closes [#752](https://github.com/woowacourse-teams/2025-estime/issues/752)
+* design: 모바일일 때 등록하기 경고 메시지 안뜨도록 수정 (#751) ([154eff4](https://github.com/woowacourse-teams/2025-estime/commit/154eff4)), closes [#751](https://github.com/woowacourse-teams/2025-estime/issues/751)
+* 모바일 툴팁 갭 수정  (#750) ([67a8a10](https://github.com/woowacourse-teams/2025-estime/commit/67a8a10)), closes [#750](https://github.com/woowacourse-teams/2025-estime/issues/750)
+* refactor: glasstooltip 택스트 색상 변경 (#749) ([0ee8119](https://github.com/woowacourse-teams/2025-estime/commit/0ee8119)), closes [#749](https://github.com/woowacourse-teams/2025-estime/issues/749)
+
+
+
 ## <small>1.6.1 (2025-10-23)</small>
 
 * hotfix: 모바일 Tooltip 동작 개선 및 ParticipantList 스크롤 초기화 처리 (#746) ([747e0ef](https://github.com/woowacourse-teams/2025-estime/commit/747e0ef)), closes [#746](https://github.com/woowacourse-teams/2025-estime/issues/746)
