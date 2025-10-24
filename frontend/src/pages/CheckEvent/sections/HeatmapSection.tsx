@@ -7,7 +7,6 @@ import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
 import Heatmap from '../components/Heatmap';
 import * as S from './Section.styled';
-import { userNameStore } from '../stores/userNameStore';
 import { useTheme } from '@emotion/react';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
@@ -32,14 +31,6 @@ const HeatmapSection = ({
 
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
-  // 로그인 안했을 때, 토스트 띄우기
-  const handleBeforeEdit = (e: React.PointerEvent<HTMLDivElement>) => {
-    const isLoggedIn = userNameStore.getSnapshot().length > 0;
-    if (isLoggedIn) return;
-    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-cell-id]');
-    if (!cell) return;
-    if (isMobile) return;
-  };
   const isVisible = buttonMode !== 'save';
   const ariaLabel = buttonMode === 'register' ? '등록' : '편집';
   return (
@@ -82,7 +73,6 @@ const HeatmapSection = ({
             timeColumnRef={pagination.timeColumnRef}
             dateTimeSlots={roomInfo.availableTimeSlots}
             availableDates={pagination.currentPageDates}
-            handleBeforeEdit={handleBeforeEdit}
           />
         </Flex>
       </Flex>

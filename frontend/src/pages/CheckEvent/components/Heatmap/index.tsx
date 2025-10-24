@@ -5,22 +5,16 @@ import HeatMapDataCell from './HeatMapDataCell';
 import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
 import { RefObject, useEffect, useMemo } from 'react';
 import { cellDataStore } from '../../stores/CellDataStore';
-import { useCellHoverState } from '../../stores/CellHoverStore';
+import { cellHoverStore, useCellHoverState } from '../../stores/CellHoverStore';
 import { useTheme } from '@emotion/react';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
-  handleBeforeEdit?: (e: React.PointerEvent<HTMLDivElement>) => void;
 }
 
-const Heatmap = ({
-  timeColumnRef,
-  dateTimeSlots,
-  availableDates,
-  handleBeforeEdit,
-}: HeatmapProps) => {
+const Heatmap = ({ timeColumnRef, dateTimeSlots, availableDates }: HeatmapProps) => {
   const { isMobile } = useTheme();
 
   const cellHoverState = useCellHoverState();
@@ -39,7 +33,7 @@ const Heatmap = ({
         target?.closest('[data-cell]')
       )
         return;
-
+      cellHoverStore.handleCellHoverUnLock();
       cellDataStore.initialStore();
     };
 
@@ -65,7 +59,7 @@ const Heatmap = ({
 
   return (
     <>
-      <S.HeatMapContent onPointerDown={handleBeforeEdit}>
+      <S.HeatMapContent>
         <S.TimeSlotColumn ref={timeColumnRef} aria-hidden={true}>
           {timeSlotNodes}
         </S.TimeSlotColumn>

@@ -61,10 +61,10 @@ const Mobile = () => {
       <S.Container opacity={data?.participantNames.length !== 0 ? 1 : 0}>
         <Flex justify="space-between" wrap="wrap" gap="var(--gap-4)" align="center">
           <Flex direction="column" align="flex-start" gap="var(--gap-3)" justify="flex-start">
-            <Text variant="mobileCaption" color="gray60">
+            <Text variant="mobileCaption" style={{ color: '#2E3240' }}>
               {data?.date}
             </Text>
-            <Text variant="mobileCaption">
+            <Text variant="mobileCaption" style={{ color: '#1A1E26' }}>
               {data?.startTime} ~ {data?.endTime}
             </Text>
           </Flex>
@@ -78,7 +78,9 @@ const Mobile = () => {
         <S.ParticipantList ref={listRef} data-tooltip-participant>
           {sortedPeople.map(({ name, active }) => (
             <S.Participant key={name} active={active}>
-              <Text variant="body">{name}</Text>
+              <Text variant="body" style={{ color: '#1A1E26' }}>
+                {name}
+              </Text>
             </S.Participant>
           ))}
         </S.ParticipantList>

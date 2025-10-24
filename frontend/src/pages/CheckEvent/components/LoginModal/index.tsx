@@ -14,7 +14,7 @@ export interface LoginModalProps {
 export const LoginModal = ({ handleModalLogin, isLoginLoading }: LoginModalProps) => {
   const { inputRef } = useEnterKeySubmit({ callback: handleModalLogin });
 
-  const name = useUserName();
+  const name = useUserName().name;
 
   return (
     <S.LoginModalContainer>
@@ -40,12 +40,12 @@ export const LoginModal = ({ handleModalLogin, isLoginLoading }: LoginModalProps
                   ref={inputRef}
                   data-autofocus
                   value={name}
-                  onChange={(e) => userNameStore.setState(e.target.value.trim())}
+                  onChange={(e) => userNameStore.onChangeName(e.target.value.trim())}
                   onPaste={(e) => {
                     const text = e.clipboardData.getData('text');
                     e.preventDefault();
                     const trimmedText = text.split(' ').join('');
-                    userNameStore.setState(trimmedText);
+                    userNameStore.onChangeName(trimmedText);
                   }}
                 />
                 <Text
