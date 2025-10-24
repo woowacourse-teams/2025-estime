@@ -5,13 +5,15 @@ import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { useTheme } from '@emotion/react';
+import { cellHoverStore } from '@/pages/CheckEvent/stores/CellHoverStore';
 
 interface HeatMapDataCellProps {
   date: string;
   timeText: string;
+  isLocked?: boolean;
 }
 
-const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
+const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => {
   const { isMobile } = useTheme();
 
   const roomStatistics = useRoomStatistics();
@@ -39,17 +41,21 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
     }
   };
 
+  const handleClick = () => {
+    if (isMobile) {
+      publishCellInfo();
+    } else {
+      cellHoverStore.handleCellHoverLock();
+    }
+  };
   return (
     <S.Container
+      data-cell
       data-cell-id={`${date}T${timeText}`}
       weight={weight}
       isRecommended={isRecommended}
       onMouseOver={() => {
-        if (isMobile) return;
-        publishCellInfo();
-      }}
-      onClick={() => {
-        if (!isMobile) return;
+        if (isMobile || isLocked) return;
         publishCellInfo();
       }}
       onMouseLeave={(e) => {
@@ -58,8 +64,11 @@ const HeatMapDataCell = ({ date, timeText }: HeatMapDataCellProps) => {
           (e.relatedTarget as HTMLElement | null)?.closest('[data-tooltip-participant]')
         )
           return;
+
+        if (isLocked) return;
         cellDataStore.initialStore();
       }}
+      onClick={handleClick}
       tabIndex={isParticipantExists ? 0 : -1}
       aria-label={ariaLabel}
     />
