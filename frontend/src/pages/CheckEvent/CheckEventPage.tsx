@@ -20,7 +20,6 @@ import GlassTooltip from './components/GlassTooltip';
 import Announce from './components/Announce/Announce';
 import { useTheme } from '@emotion/react';
 
-
 const CheckEventPage = () => {
   const { isMobile } = useTheme();
 
