@@ -42,9 +42,11 @@ const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => 
   };
 
   const handleClick = () => {
-    if (isMobile) return publishCellInfo();
-    publishCellInfo();
-    cellHoverStore.handleCellHoverLock();
+    if (isMobile) {
+      publishCellInfo();
+    } else {
+      cellHoverStore.handleCellHoverLock();
+    }
   };
   return (
     <S.Container
@@ -62,6 +64,7 @@ const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => 
           (e.relatedTarget as HTMLElement | null)?.closest('[data-tooltip-participant]')
         )
           return;
+
         if (isLocked) return;
         cellDataStore.initialStore();
       }}
