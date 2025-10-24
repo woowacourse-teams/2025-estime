@@ -12,15 +12,9 @@ interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
   availableDates: Set<string>;
-  handleBeforeEdit?: (e: React.PointerEvent<HTMLDivElement>) => void;
 }
 
-const Heatmap = ({
-  timeColumnRef,
-  dateTimeSlots,
-  availableDates,
-  handleBeforeEdit,
-}: HeatmapProps) => {
+const Heatmap = ({ timeColumnRef, dateTimeSlots, availableDates }: HeatmapProps) => {
   const { isMobile } = useTheme();
 
   const cellHoverState = useCellHoverState();
@@ -65,7 +59,7 @@ const Heatmap = ({
 
   return (
     <>
-      <S.HeatMapContent onPointerDown={handleBeforeEdit}>
+      <S.HeatMapContent>
         <S.TimeSlotColumn ref={timeColumnRef} aria-hidden={true}>
           {timeSlotNodes}
         </S.TimeSlotColumn>
