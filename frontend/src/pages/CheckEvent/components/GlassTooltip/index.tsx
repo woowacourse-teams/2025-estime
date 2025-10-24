@@ -6,6 +6,9 @@ import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
 import Text from '@/shared/components/Text';
 import { useEffect, useRef } from 'react';
+import IClose from '@/assets/icons/IClose';
+import { useTheme } from '@emotion/react';
+import { cellHoverStore, useCellHoverState } from '../../stores/CellHoverStore';
 
 const useTooltipData = () => {
   const data = useCellData();
@@ -85,29 +88,48 @@ const Mobile = () => {
 };
 
 const Desktop = () => {
+  const theme = useTheme();
   const { data, sortedPeople } = useTooltipData();
+  const cellHoverState = useCellHoverState();
+  const handleGlassTooltipClose = () => cellHoverStore.handleCellHoverUnLock();
 
   return (
     <TooltipWrapper bottom="100px">
       <S.Container opacity={data?.participantNames.length !== 0 ? 1 : 0}>
         <Flex justify="space-between" wrap="wrap" gap="var(--gap-4)">
-          <Flex direction="row" align="center" gap="var(--gap-4)">
-            <Text variant="h2" color="gray70">
-              {data?.date}
-            </Text>
-            <Text variant="h3">
-              {data?.startTime} ~ {data?.endTime}
-            </Text>
-          </Flex>
+          <Flex gap="var(--gap-5)">
+            <Flex direction="row" align="center" gap="var(--gap-4)">
+              <Text variant="h2" color="gray70">
+                {data?.date}
+              </Text>
+              <Text variant="h3">
+                {data?.startTime} ~ {data?.endTime}
+              </Text>
+            </Flex>
 
-          <S.Highlight opacity={data?.isRecommended ? 1 : 0}>
-            <Text variant="button" color="gray10">
-              ⭐️ 추천 시간
-            </Text>
-          </S.Highlight>
+            <S.Highlight opacity={data?.isRecommended ? 1 : 0}>
+              <Text variant="button" color="gray10">
+                ⭐️ 추천 시간
+              </Text>
+            </S.Highlight>
+          </Flex>
+          <S.Button
+            data-tooltip-close
+            onClick={handleGlassTooltipClose}
+            isLocked={cellHoverState}
+            opacity={cellHoverState ? 1 : 0}
+          >
+            <IClose
+              color={theme.colors.gray70}
+              width={'24'}
+              height={'24'}
+              strokeWidth={5}
+              aria-hidden="true"
+            />
+          </S.Button>
         </Flex>
 
-        <S.ParticipantList>
+        <S.ParticipantList isLocked={cellHoverState}>
           {sortedPeople.map(({ name, active }) => (
             <S.Participant key={name} active={active}>
               <Text variant="h4">{name}</Text>

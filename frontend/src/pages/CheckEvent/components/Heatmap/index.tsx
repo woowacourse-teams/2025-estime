@@ -3,7 +3,9 @@ import Text from '@/shared/components/Text';
 import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
 import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
-import { RefObject, useMemo } from 'react';
+import { RefObject, useEffect, useMemo } from 'react';
+import { cellDataStore } from '../../stores/CellDataStore';
+import { useCellHoverState } from '../../stores/CellHoverStore';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
@@ -18,6 +20,29 @@ const Heatmap = ({
   availableDates,
   handleBeforeEdit,
 }: HeatmapProps) => {
+  const cellHoverState = useCellHoverState();
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const current = cellDataStore.getSnapshot();
+      const tooltipVisible = !!current?.participantNames?.length;
+
+      if (!tooltipVisible) return;
+      if (
+        target?.closest('[data-tooltip-close]') ||
+        target?.closest('[data-tooltip-root]') ||
+        target?.closest('[data-cell]')
+      )
+        return;
+
+      cellDataStore.initialStore();
+    };
+
+    document.addEventListener('pointerdown', handleOutsideClick);
+    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+  }, []);
+
   const timeSlotNodes = useMemo(
     () =>
       dateTimeSlots.map((timeText) => (
@@ -44,7 +69,12 @@ const Heatmap = ({
           <Wrapper key={date} center={false} maxWidth="100%">
             <TimeTableDay date={date} />
             {dateTimeSlots.map((timeText) => (
-              <HeatMapDataCell key={`${date}T${timeText}`} date={date} timeText={timeText} />
+              <HeatMapDataCell
+                key={`${date}T${timeText}`}
+                date={date}
+                timeText={timeText}
+                isLocked={cellHoverState}
+              />
             ))}
           </Wrapper>
         ))}
