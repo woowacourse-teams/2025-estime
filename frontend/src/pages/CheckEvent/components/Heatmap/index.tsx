@@ -5,7 +5,7 @@ import HeatMapDataCell from './HeatMapDataCell';
 import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
 import { RefObject, useEffect, useMemo } from 'react';
 import { cellDataStore } from '../../stores/CellDataStore';
-import { useCellHoverState } from '../../stores/CellHoverStore';
+import { cellHoverStore, useCellHoverState } from '../../stores/CellHoverStore';
 import { useTheme } from '@emotion/react';
 
 interface HeatmapProps {
@@ -39,7 +39,7 @@ const Heatmap = ({
         target?.closest('[data-cell]')
       )
         return;
-
+      cellHoverStore.handleCellHoverUnLock();
       cellDataStore.initialStore();
     };
 
