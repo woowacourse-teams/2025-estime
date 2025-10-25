@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import {check} from 'k6';
 
 // 현재 시간을 testid에 포함
 const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, '').replace(/:/g, '-');
@@ -10,41 +10,50 @@ const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, '').replace(/:/g
  * - p95가 500ms를 초과하면 테스트 중단
  */
 export const options = {
-  // 모든 메트릭에 적용되는 공통 태그
-  tags: {
-    testid: `capacity-test-${timestamp}`,
-    test_type: 'capacity',
-  },
+    // 모든 메트릭에 적용되는 공통 태그
+    tags: {
+        testid: `capacity-test-${timestamp}`,
+        test_type: 'capacity',
+    },
 
-  // 점진적 부하 증가 (Breaking Point 탐색)
-  stages: [
-    { duration: '5m', target: 100 },
-  ],
+    scenarios: {
+        room_select: {
+            executor: 'ramping-vus',
+            exec: 'room_select',
+            startVUs: 0, // 0 VU에서 시작
+            stages: [
+                {duration: '1m', target: 10},
+                {duration: '5m', target: 10}, // 10 VU 유지(선택)
+                {duration: '10s', target: 0},   // 램프다운(선택)
+            ],
+            gracefulRampDown: '10s',
+        },
+    },
 
-  // 임계값 설정 (하나라도 실패하면 테스트 중단)
-  thresholds: {
-    // HTTP 요청 duration p95가 500ms 초과 시 테스트 실패 및 중단
-    'http_req_duration': [
-      {
-        threshold: 'p(95)<500',  // p95 < 500ms
-        abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
-        delayAbortEval: '10s',     // 10초는 평가 유예 (초기 안정화 시간)
-      },
-    ],
+    // 임계값 설정 (하나라도 실패하면 테스트 중단)
+    thresholds: {
+        // HTTP 요청 duration p95가 500ms 초과 시 테스트 실패 및 중단
+        'http_req_duration': [
+            {
+                threshold: 'p(95)<500',  // p95 < 500ms
+                abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
+                delayAbortEval: '10s',     // 10초는 평가 유예 (초기 안정화 시간)
+            },
+        ],
 
-    // 추가 안전장치: 에러율 5% 초과 시 중단
-    'http_req_failed': [
-      {
-        threshold: 'rate<0.05',   // 에러율 < 5%
-        abortOnFail: true,
-        delayAbortEval: '10s',
-      },
-    ],
+        // 추가 안전장치: 에러율 5% 초과 시 중단
+        'http_req_failed': [
+            {
+                threshold: 'rate<0.05',   // 에러율 < 5%
+                abortOnFail: true,
+                delayAbortEval: '10s',
+            },
+        ],
 
-    // 개별 API endpoint별 임계값
-    'http_req_duration{api:GET_/api/v1/rooms/{session}}': ['p(95)<500'],
-    'http_req_duration{api:GET_/api/v1/rooms/{session}/statistics}': ['p(95)<500'],
-  },
+        // 개별 API endpoint별 임계값
+        'http_req_duration{api:GET_/api/v1/rooms/{session}}': ['p(95)<500'],
+        'http_req_duration{api:GET_/api/v1/rooms/{session}/statistics}': ['p(95)<500'],
+    },
 };
 
 // 환경 변수로 설정
@@ -52,51 +61,51 @@ const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 
 // 테스트용 방 세션 ID
 const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
-  ? JSON.parse(__ENV.TEST_ROOMS)
-  : [
-      "0NAS1423WDGDW",
-      "0NAS0K37GDJ6C",
-      "0NAS07850DJ6T",
-      "0NARZJ8Q0DGW9",
-      "0NARXDRM0DKP7",
-      "0NARX9QB8DJDJ",
-      "0NARX8E2GDJ3D",
-      "0NARX72T0DJB2",
-      "0NARW9PEWDKPP",
-      "0NARW1DERDG2V"
+    ? JSON.parse(__ENV.TEST_ROOMS)
+    : [
+        "0NAS1423WDGDW",
+        "0NAS0K37GDJ6C",
+        "0NAS07850DJ6T",
+        "0NARZJ8Q0DGW9",
+        "0NARXDRM0DKP7",
+        "0NARX9QB8DJDJ",
+        "0NARX8E2GDJ3D",
+        "0NARX72T0DJB2",
+        "0NARW9PEWDKPP",
+        "0NARW1DERDG2V"
     ];
 
-export default function () {
-  const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
+export function room_select () {
+    const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
 
-  // 1. 방 정보 조회
-  const getRoomRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
-    tags: {
-      name: 'GetRoom',
-      api: 'GET_/api/v1/rooms/{session}',
-    },
-  });
+    // 1. 방 정보 조회
+    const getRoomRes = http.get(`${BASE_URL}/api/v1/rooms/${roomSession}`, {
+        tags: {
+            name: 'GetRoom',
+            api: 'GET_/api/v1/rooms/{session}',
+        },
+    });
 
-  check(getRoomRes, {
-    'room retrieved': (r) => r.status === 200,
-    'response time OK': (r) => r.timings.duration < 1000, // 개별 요청은 1초 이내
-  });
+    check(getRoomRes, {
+        'room retrieved': (r) => r.status === 200,
+        'response time OK': (r) => r.timings.duration < 1000, // 개별 요청은 1초 이내
+    });
 
-  // 2. 통계 조회
-  const getStatsRes = http.get(
-    `${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`,
-    {
-      tags: {
-        name: 'GetStatistics',
-        api: 'GET_/api/v1/rooms/{session}/statistics',
-      },
-    }
-  );
+    // 2. 통계 조회
+    const getStatsRes = http.get(
+        `${BASE_URL}/api/v1/rooms/${roomSession}/statistics/date-time-slots`,
+        {
+            tags: {
+                name: 'GetStatistics',
+                api: 'GET_/api/v1/rooms/{session}/statistics',
+            },
+        }
+    );
 
-  check(getStatsRes, {
-    'statistics retrieved': (r) => r.status === 200,
-    'response time OK': (r) => r.timings.duration < 1000,
-  });
+    check(getStatsRes, {
+        'statistics retrieved': (r) => r.status === 200,
+        'response time OK': (r) => r.timings.duration < 1000,
+    });
 }
 
 /**

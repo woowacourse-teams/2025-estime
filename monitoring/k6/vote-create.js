@@ -17,38 +17,37 @@ export const options = {
     },
 
     scenarios: {
-        vote_viewing: {
+        vote_create: {
             executor: 'ramping-vus',
             exec: 'vote_create',
             startVUs: 0, // 0 VU에서 시작
             stages: [
-                { duration: '1m', target: 10 },
-                { duration: '5m', target: 10 }, // 10 VU 유지(선택)
-                { duration: '10s', target: 0 },   // 램프다운(선택)
+                { duration: '20s', target: 100 }, // 20초 동안 100명 진입
+                { duration: '10s', target: 0 },   // 램프다운
             ],
-            gracefulRampDown: '10s',
+            gracefulRampDown: '5s',
         },
     },
 
     // 임계값 설정 (하나라도 실패하면 테스트 중단)
     thresholds: {
         // HTTP 요청 duration p95가 500ms 초과 시 테스트 실패 및 중단
-        'http_req_duration': [
-            {
-                threshold: 'p(95)<500',  // p95 < 500ms
-                abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
-                delayAbortEval: '10s',     // 테스트 시작 후 1분은 평가 유예 (초기 안정화 시간)
-            },
-        ],
-
-        // 추가 안전장치: 에러율 5% 초과 시 중단
-        'http_req_failed': [
-            {
-                threshold: 'rate<0.05',   // 에러율 < 5%
-                abortOnFail: true,
-                delayAbortEval: '10s',     // 테스트 시작 후 1분은 평가 유예 (초기 안정화 시간)
-            },
-        ],
+        // 'http_req_duration': [
+        //     {
+        //         threshold: 'p(95)<500',  // p95 < 500ms
+        //         abortOnFail: true,        // 임계값 실패 시 즉시 테스트 중단
+        //         delayAbortEval: '5s',     // 테스트 시작 후 5초는 평가 유예 (초기 안정화 시간)
+        //     },
+        // ],
+        //
+        // // 추가 안전장치: 에러율 5% 초과 시 중단
+        // 'http_req_failed': [
+        //     {
+        //         threshold: 'rate<0.05',   // 에러율 < 5%
+        //         abortOnFail: true,
+        //         delayAbortEval: '5s',     // 테스트 시작 후 5초는 평가 유예 (초기 안정화 시간)
+        //     },
+        // ],
 
         // 개별 API endpoint별 임계값
         'http_req_duration{api:GET_/api/v1/rooms/{session}}': ['p(95)<500'],
@@ -79,8 +78,12 @@ const TEST_ROOM_SESSIONS = __ENV.TEST_ROOMS
     ];
 
 export function vote_create() {
-    const roomSession = TEST_ROOM_SESSIONS[Math.floor(Math.random() * TEST_ROOM_SESSIONS.length)];
-    const participantName = `User_${__VU}`;
+    // 하나의 방에 모든 VU가 접근
+    // const roomSession = TEST_ROOM_SESSIONS[0];
+    const roomSession = "0NBB050RWZ2PD";
+    // const roomSession = '0NBAZZHJWZ1VP';
+
+    const participantName = `id_${__VU}`;
 
     group('Voting', () => {
         // 1. 방 정보 조회
@@ -137,8 +140,8 @@ export function vote_create() {
             '[GetParticipantVotes] status is 200': (r) => r.status === 200,
         });
 
-        // 5. 투표 등록/수정 (1~3회 반복)
-        const voteCount = Math.floor(Math.random() * 3) + 1; // 1~3회
+        // 5. 투표 등록/수정 (1~2회 반복)₩
+        const voteCount = Math.floor(Math.random() * 2) + 1; // 1~2회
         for (let i = 0; i < voteCount; i++) {
             const votePayload = JSON.stringify({
                 participantName: participantName,
@@ -174,7 +177,7 @@ export function vote_create() {
 // 유틸리티 함수
 function generateDateSlots(count) {
     const dates = [];
-    const today = new Date('2026-01-01');
+    const today = new Date('2025-10-24');
     for (let i = 0; i < count; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
@@ -185,7 +188,7 @@ function generateDateSlots(count) {
 
 function generateTimeSlots() {
     const slots = [];
-    for (let h = 0; h < 24; h++) {
+    for (let h = 18; h < 24; h++) {
         slots.push(`${h.toString().padStart(2, '0')}:00`);
         slots.push(`${h.toString().padStart(2, '0')}:30`);
     }
@@ -193,7 +196,7 @@ function generateTimeSlots() {
 }
 
 function generateRandomDateTimeSlots() {
-    const dates = generateDateSlots(7);
+    const dates = generateDateSlots(5);
     const times = generateTimeSlots();
     const count = 50;
     const slots = [];

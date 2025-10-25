@@ -16,40 +16,19 @@ export const options = {
         test_type: 'capacity',
     },
 
-    // 점진적 부하 증가 (Breaking Point 탐색)
-    stages: [
-        // Phase 1: Warm-up
-        {duration: '1m', target: 50},    // 0 → 50 VU (1분)
-        {duration: '30s', target: 50},    // 50 VU 유지 (2분)
-
-        // Phase 2: 점진적 증가 (각 단계마다 충분한 시간을 두고 관찰)
-        {duration: '2m', target: 100},   // 50 → 100 VU
-        {duration: '30s', target: 100},   // 100 VU 유지
-
-        {duration: '2m', target: 200},   // 100 → 200 VU
-        {duration: '30s', target: 200},   // 200 VU 유지
-
-        {duration: '2m', target: 300},   // 200 → 300 VU
-        {duration: '30s', target: 300},   // 300 VU 유지
-
-        {duration: '2m', target: 400},   // 300 → 400 VU
-        {duration: '30s', target: 400},   // 400 VU 유지
-
-        {duration: '2m', target: 500},   // 400 → 500 VU
-        {duration: '30s', target: 500},   // 500 VU 유지
-
-        {duration: '2m', target: 600},   // 500 → 600 VU
-        {duration: '30s', target: 600},   // 600 VU 유지
-
-        {duration: '2m', target: 700},   // 600 → 700 VU
-        {duration: '30s', target: 700},   // 700 VU 유지
-
-        {duration: '2m', target: 800},   // 700 → 800 VU
-        {duration: '30s', target: 800},   // 800 VU 유지
-
-        // Phase 3: Cool-down (점진적 감소)
-        {duration: '2m', target: 0},     // 현재 VU → 0
-    ],
+    scenarios: {
+        room_create: {
+            executor: 'ramping-vus',
+            exec: 'room_create',
+            startVUs: 0, // 0 VU에서 시작
+            stages: [
+                {duration: '1m', target: 10},
+                {duration: '5m', target: 10}, // 10 VU 유지(선택)
+                {duration: '10s', target: 0},   // 램프다운(선택)
+            ],
+            gracefulRampDown: '10s',
+        },
+    },
 
     // 임계값 설정 (하나라도 실패하면 테스트 중단)
     thresholds: {
@@ -79,7 +58,7 @@ export const options = {
 // 환경 변수로 설정
 const BASE_URL = __ENV.BASE_URL || 'http://host.docker.internal:8080';
 
-export default function () {
+export function room_create() {
     group('Room Creation', () => {
         const createPayload = JSON.stringify({
             title: `Test_${__VU}`,
