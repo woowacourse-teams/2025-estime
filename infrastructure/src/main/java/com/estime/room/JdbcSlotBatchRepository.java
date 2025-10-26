@@ -1,6 +1,5 @@
 package com.estime.room;
 
-import com.estime.room.SlotBatchRepository;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableTimeSlot;
 import java.sql.Time;
