@@ -1,8 +1,5 @@
 package com.estime.room.platform;
 
-import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformRepository;
-import com.estime.room.platform.QPlatform;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

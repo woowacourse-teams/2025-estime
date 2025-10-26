@@ -8,9 +8,7 @@ dependencies {
     testRuntimeOnly 'org.hibernate.orm:hibernate-core'
 
     // QueryDSL for Q-classes generation (compile-only, implementation provided by infrastructure)
-    // TODO Replace with dependency without security issues
-    compileOnly "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
-    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+    annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${openfeignQuerydslVersion}:jpa"
 }
 
 def generatedDir = layout.buildDirectory.dir('generated/querydsl')
