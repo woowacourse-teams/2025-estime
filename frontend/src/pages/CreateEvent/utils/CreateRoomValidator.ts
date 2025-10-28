@@ -1,8 +1,11 @@
 import { getRoomInfo } from '@/pages/CreateEvent/store/createRoomStore';
+import { DateManager } from '@/shared/utils/common/DateManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 
 export const checkTimeRangeValid = () =>
   TimeManager.isValidRange(getRoomInfo().time.startTime, getRoomInfo().time.endTime);
+
+const checkDeadlineValid = () => !DateManager.IsPastDeadline(getRoomInfo().deadline);
 
 export const checkCalendarReady = () => getRoomInfo().availableDateSlots.size > 0;
 
@@ -13,6 +16,7 @@ export const checkBasicReady = () => {
     getRoomInfo().time.endTime.trim() !== '' &&
     checkTimeRangeValid() &&
     getRoomInfo().deadline.date.trim() !== '' &&
-    getRoomInfo().deadline.time.trim() !== ''
+    getRoomInfo().deadline.time.trim() !== '' &&
+    checkDeadlineValid()
   );
 };
