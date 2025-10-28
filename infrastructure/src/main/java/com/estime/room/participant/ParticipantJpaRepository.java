@@ -11,5 +11,5 @@ public interface ParticipantJpaRepository extends JpaRepository<Participant, Lon
             value = "INSERT IGNORE INTO participant (room_id, name, active) VALUES (?1, ?2, ?3)",
             nativeQuery = true
     )
-    int saveIgnore(Long roomId, String name, boolean active);
+    int saveIfNotExists(Long roomId, String name, boolean active);
 }

@@ -8,7 +8,7 @@ public interface ParticipantRepository {
 
     Participant save(Participant participant);
 
-    int saveIgnore(Participant participant);
+    int saveIfNotExists(Participant participant);
 
     boolean existsByRoomIdAndName(Long roomId, ParticipantName name);
 

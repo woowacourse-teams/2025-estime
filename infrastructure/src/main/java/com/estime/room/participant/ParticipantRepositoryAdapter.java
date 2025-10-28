@@ -21,8 +21,8 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository {
     }
 
     @Override
-    public int saveIgnore(final Participant participant) {
-        return jpaRepository.saveIgnore(participant.getRoomId(), participant.getName().getValue(), true);
+    public int saveIfNotExists(final Participant participant) {
+        return jpaRepository.saveIfNotExists(participant.getRoomId(), participant.getName().getValue(), true);
     }
 
     @Override

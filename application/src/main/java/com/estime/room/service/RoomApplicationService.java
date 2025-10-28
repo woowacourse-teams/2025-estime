@@ -238,7 +238,7 @@ public class RoomApplicationService {
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
 
-        final int affected = participantRepository.saveIgnore(input.toEntity(roomId));
+        final int affected = participantRepository.saveIfNotExists(input.toEntity(roomId));
         final boolean isDuplicateName = affected == 0;
         return ParticipantCheckOutput.from(isDuplicateName);
     }
