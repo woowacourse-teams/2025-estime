@@ -238,12 +238,8 @@ public class RoomApplicationService {
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
 
-        final boolean isDuplicateName = participantRepository.existsByRoomIdAndName(roomId, input.name());
-        if (!isDuplicateName) {
-            participantRepository.save(input.toEntity(roomId));
-        }
-
-        return ParticipantCheckOutput.from(isDuplicateName);
+        final int affected = participantRepository.saveIgnore(input.toEntity(roomId));
+        return ParticipantCheckOutput.from(affected == 0);
     }
 
     private Room obtainRoomBySession(final RoomSession session) {
