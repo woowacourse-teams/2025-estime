@@ -239,7 +239,8 @@ public class RoomApplicationService {
         room.ensureDeadlineNotPassed(LocalDateTime.now());
 
         final int affected = participantRepository.saveIgnore(input.toEntity(roomId));
-        return ParticipantCheckOutput.from(affected == 0);
+        final boolean isDuplicateName = affected == 0;
+        return ParticipantCheckOutput.from(isDuplicateName);
     }
 
     private Room obtainRoomBySession(final RoomSession session) {
