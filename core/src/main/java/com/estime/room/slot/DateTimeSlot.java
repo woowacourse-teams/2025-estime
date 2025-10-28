@@ -40,18 +40,6 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         }
     }
 
-    public LocalDate getDate() {
-        return startAt.toLocalDate();
-    }
-
-    public LocalTime getTime() {
-        return startAt.toLocalTime();
-    }
-
-    public boolean isBefore(final LocalDateTime other) {
-        return startAt.isBefore(other);
-    }
-
     @Override
     public int compareTo(final DateTimeSlot other) {
         return this.startAt.compareTo(other.startAt);
