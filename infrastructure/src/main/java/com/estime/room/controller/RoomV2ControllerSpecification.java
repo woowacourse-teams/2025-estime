@@ -10,31 +10,31 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Room V2 API", description = "압축 슬롯 기반 투표 API")
+@Tag(name = "Room V2 API", description = "룸 API V2 (compact)")
 @RequestMapping("/api/v2/rooms")
 public interface RoomV2ControllerSpecification {
 
-    @Operation(summary = "투표 업데이트")
-    @PostMapping("/{session}/votes")
-    CustomApiResponse<ParticipantVotesResponseV2> updateVotes(
-            @PathVariable("session") RoomSession session,
-            @RequestBody ParticipantVotesUpdateRequestV2 request
+    @Operation(summary = "일시 기준, 참여자 투표 통계 조회 (compact)")
+    @GetMapping("/{session}/statistics/date-time-slots")
+    CustomApiResponse<VoteStatisticResponseV2> getDateTimeSlotStatisticBySession(
+            @PathVariable("session") RoomSession session
     );
 
-    @Operation(summary = "참가자 투표 조회")
+    @Operation(summary = "참여자 기준, 투표 일시 조회 (compact)")
     @GetMapping("/{session}/votes")
-    CustomApiResponse<ParticipantVotesResponseV2> getVotes(
+    CustomApiResponse<ParticipantVotesResponseV2> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") RoomSession session,
             @RequestParam("participantName") String participantName
     );
 
-    @Operation(summary = "투표 통계 조회")
-    @GetMapping("/{session}/statistics")
-    CustomApiResponse<VoteStatisticResponseV2> getStatistics(
-            @PathVariable("session") RoomSession session
+    @Operation(summary = "참여자 제출 시간 수정 (compact)")
+    @PutMapping("/{session}/votes/participants")
+    CustomApiResponse<ParticipantVotesResponseV2> updateParticipantVotes(
+            @PathVariable("session") RoomSession session,
+            @RequestBody ParticipantVotesUpdateRequestV2 request
     );
 }
