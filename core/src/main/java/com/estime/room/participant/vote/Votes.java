@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -54,12 +53,6 @@ public class Votes {
                     .add(element.participantId());
         }
         return statistic;
-    }
-
-    public Set<DateTimeSlot> calculateUniqueStartAts() {
-        return elements.stream()
-                .map(Vote::dateTimeSlot)
-                .collect(Collectors.toSet());
     }
 
     public List<Vote> getSortedVotes() {
