@@ -12,7 +12,7 @@ public record ParticipantVotesResponseV2(
 
     public static ParticipantVotesResponseV2 from(final CompactVotesOutput output) {
         final List<Integer> slotCodes = output.votes().stream()
-                .map(vote -> vote.dateTimeSlot().getEncoded())
+                .map(vote -> vote.getCompactDateTimeSlot().getEncoded())
                 .toList();
 
         return new ParticipantVotesResponseV2(slotCodes);

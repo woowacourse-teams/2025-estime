@@ -32,7 +32,7 @@ public class CompactVotes {
 
     private static void validateDuplicate(final List<CompactVote> votes) {
         final long uniqueCount = votes.stream()
-                .map(CompactVote::dateTimeSlot)
+                .map(CompactVote::getCompactDateTimeSlot)
                 .distinct()
                 .count();
 
@@ -50,14 +50,14 @@ public class CompactVotes {
     public Map<CompactDateTimeSlot, Set<Long>> calculateStatistic() {
         return elements.stream()
                 .collect(Collectors.groupingBy(
-                        CompactVote::dateTimeSlot,
-                        Collectors.mapping(CompactVote::participantId, Collectors.toSet())
+                        CompactVote::getCompactDateTimeSlot,
+                        Collectors.mapping(CompactVote::getParticipantId, Collectors.toSet())
                 ));
     }
 
     public List<CompactVote> getSortedVotes() {
         return elements.stream()
-                .sorted(Comparator.comparing(CompactVote::dateTimeSlot))
+                .sorted(Comparator.comparing(CompactVote::getCompactDateTimeSlot))
                 .toList();
     }
 

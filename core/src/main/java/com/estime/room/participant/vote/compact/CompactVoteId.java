@@ -20,17 +20,17 @@ public class CompactVoteId implements Serializable {
 
     private Long participantId;
 
-    private CompactDateTimeSlot dateTimeSlot;
+    private CompactDateTimeSlot compactDateTimeSlot;
 
     public static CompactVoteId of(final Long participantId, final CompactDateTimeSlot dateTimeSlot) {
         validateNull(participantId, dateTimeSlot);
         return new CompactVoteId(participantId, dateTimeSlot);
     }
 
-    private static void validateNull(final Long participantId, final CompactDateTimeSlot dateTimeSlot) {
+    private static void validateNull(final Long participantId, final CompactDateTimeSlot compactDateTimeSlot) {
         Validator.builder()
                 .add("participantId", participantId)
-                .add("dateTimeSlot", dateTimeSlot)
+                .add("compactDateTimeSlot", compactDateTimeSlot)
                 .validateNull();
     }
 }

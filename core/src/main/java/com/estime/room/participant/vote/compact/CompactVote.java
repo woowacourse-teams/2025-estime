@@ -33,11 +33,11 @@ public class CompactVote {
         return new CompactVote(CompactVoteId.of(participantId, compactDateTimeSlot));
     }
 
-    public Long participantId() {
+    public Long getParticipantId() {
         return id.getParticipantId();
     }
 
-    public CompactDateTimeSlot dateTimeSlot() {
-        return id.getDateTimeSlot();
+    public CompactDateTimeSlot getCompactDateTimeSlot() {
+        return id.getCompactDateTimeSlot();
     }
 }
