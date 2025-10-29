@@ -42,6 +42,12 @@ public class CompactVotes {
         }
     }
 
+    public CompactVotes subtract(final CompactVotes other) {
+        final Set<CompactVote> removed = new HashSet<>(this.elements);
+        removed.removeAll(other.elements);
+        return new CompactVotes(removed);
+    }
+
     public Map<CompactDateTimeSlot, Set<Long>> calculateStatistic() {
         return votes.stream()
                 .collect(Collectors.groupingBy(
