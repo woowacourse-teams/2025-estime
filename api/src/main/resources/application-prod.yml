@@ -15,6 +15,12 @@ spring:
   flyway:
     enabled: true
 
+  datasource:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
 url:
   origin:
     client: ${URL_ORIGIN_CLIENT}
@@ -22,3 +28,10 @@ url:
 logging:
   discord:
     webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
+
+server:
+  tomcat:
+    threads:
+      max: 15
+      min-spare: 5
+    accept-count: 5
