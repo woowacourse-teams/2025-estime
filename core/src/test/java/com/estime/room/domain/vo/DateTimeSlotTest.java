@@ -66,8 +66,8 @@ class DateTimeSlotTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThat(now.isBefore(thirtyMinutesLater.getStartAt())).isTrue();
-            softly.assertThat(thirtyMinutesLater.isBefore(now.getStartAt())).isFalse();
+            softly.assertThat(now.getStartAt().isBefore(thirtyMinutesLater.getStartAt())).isTrue();
+            softly.assertThat(thirtyMinutesLater.getStartAt().isBefore(now.getStartAt())).isFalse();
         });
     }
 
