@@ -25,7 +25,7 @@ public class CompactVoteRepositoryAdapter implements CompactVoteRepository {
 
     @Override
     public CompactVotes saveAll(final CompactVotes votes) {
-        return CompactVotes.from(jpaRepository.saveAll(votes.getVotes()));
+        return CompactVotes.from(jpaRepository.saveAll(votes.getElements()));
     }
 
     @Override

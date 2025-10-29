@@ -3,40 +3,39 @@ package com.estime.room.participant.vote.compact;
 import com.estime.room.participant.vote.exception.DuplicateNotAllowedException;
 import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.shared.DomainTerm;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-import java.util.*;
+import com.estime.shared.Validator;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
-@EqualsAndHashCode
-@ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompactVotes {
 
-    private final Set<CompactVote> votes;
+    private final Set<CompactVote> elements;
 
-    private CompactVotes(final Set<CompactVote> votes) {
-        this.votes = votes;
-    }
-
-    public static CompactVotes from(final Set<CompactVote> votes) {
+    public static CompactVotes from(final List<CompactVote> votes) {
         validateDuplicate(votes);
+        validateNull(votes);
         return new CompactVotes(new HashSet<>(votes));
     }
 
-    public static CompactVotes from(final List<CompactVote> votes) {
-        return from(new HashSet<>(votes));
+    private static void validateNull(final List<CompactVote> votes) {
+        Validator.builder()
+                .add("votes", votes)
+                .validateNull();
     }
 
-    public static CompactVotes empty() {
-        return new CompactVotes(new HashSet<>());
-    }
-
-    private static void validateDuplicate(final Set<CompactVote> votes) {
+    private static void validateDuplicate(final List<CompactVote> votes) {
         final long uniqueCount = votes.stream()
                 .map(CompactVote::dateTimeSlot)
                 .distinct()
                 .count();
+
         if (uniqueCount != votes.size()) {
             throw new DuplicateNotAllowedException(DomainTerm.VOTES);
         }
@@ -49,40 +48,34 @@ public class CompactVotes {
     }
 
     public Map<CompactDateTimeSlot, Set<Long>> calculateStatistic() {
-        return votes.stream()
+        return elements.stream()
                 .collect(Collectors.groupingBy(
                         CompactVote::dateTimeSlot,
                         Collectors.mapping(CompactVote::participantId, Collectors.toSet())
                 ));
     }
 
-    public Set<CompactDateTimeSlot> calculateUniqueStartAts() {
-        return votes.stream()
-                .map(CompactVote::dateTimeSlot)
-                .collect(Collectors.toSet());
-    }
-
     public List<CompactVote> getSortedVotes() {
-        return votes.stream()
+        return elements.stream()
                 .sorted(Comparator.comparing(CompactVote::dateTimeSlot))
                 .toList();
     }
 
-    public Set<CompactVote> getVotes() {
-        return new HashSet<>(votes);
+    public Set<CompactVote> getElements() {
+        return new HashSet<>(elements);
     }
 
     public List<CompactVoteId> getVoteIds() {
-        return votes.stream()
+        return elements.stream()
                 .map(CompactVote::getId)
                 .toList();
     }
 
     public int size() {
-        return votes.size();
+        return elements.size();
     }
 
     public boolean isEmpty() {
-        return votes.isEmpty();
+        return elements.isEmpty();
     }
 }
