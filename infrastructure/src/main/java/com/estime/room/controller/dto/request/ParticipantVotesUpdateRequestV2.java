@@ -1,5 +1,8 @@
 package com.estime.room.controller.dto.request;
 
+import com.estime.room.RoomSession;
+import com.estime.room.dto.input.CompactVoteUpdateInput;
+import com.estime.room.participant.ParticipantName;
 import com.estime.room.slot.CompactDateTimeSlot;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -22,9 +25,11 @@ public record ParticipantVotesUpdateRequestV2(
                 .toList();
     }
 
-    public void validate() {
-        if (slotCodes == null || slotCodes.isEmpty()) {
-            throw new IllegalArgumentException("slotCodes must be provided");
-        }
+    public CompactVoteUpdateInput toInput(final RoomSession session) {
+        return new CompactVoteUpdateInput(
+                session,
+                ParticipantName.from(participantName),
+                toCompactSlots()
+        );
     }
 }

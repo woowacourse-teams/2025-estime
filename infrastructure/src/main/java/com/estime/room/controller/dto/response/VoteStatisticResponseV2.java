@@ -1,11 +1,9 @@
 package com.estime.room.controller.dto.response;
 
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public record VoteStatisticResponseV2(
         @Schema(description = "총 참가자 수")
@@ -25,34 +23,31 @@ public record VoteStatisticResponseV2(
             @Schema(description = "투표율 (%)")
             double percentage,
 
-            @Schema(description = "투표한 참가자 ID 목록")
-            List<Long> participantIds
+            @Schema(description = "투표한 참가자 이름 목록")
+            List<String> participantNames
     ) {
     }
 
-    public static VoteStatisticResponseV2 from(
-            Map<CompactDateTimeSlot, Set<Long>> statistic,
-            int totalParticipants
-    ) {
-        List<SlotStatisticV2> statistics = statistic.entrySet().stream()
-                .map(entry -> {
-                    CompactDateTimeSlot slot = entry.getKey();
-                    Set<Long> participantIds = entry.getValue();
-                    int voteCount = participantIds.size();
-                    double percentage = totalParticipants > 0
-                            ? (double) voteCount / totalParticipants * 100
+    public static VoteStatisticResponseV2 from(final CompactDateTimeSlotStatisticOutput output) {
+        final List<SlotStatisticV2> statistics = output.statistic().stream()
+                .map(stat -> {
+                    final int voteCount = stat.participantNames().size();
+                    final double percentage = output.participantCount() > 0
+                            ? (double) voteCount / output.participantCount() * 100
                             : 0.0;
 
                     return new SlotStatisticV2(
-                            slot.getEncoded(),
+                            stat.dateTimeSlot().getEncoded(),
                             voteCount,
                             percentage,
-                            participantIds.stream().sorted().toList()
+                            stat.participantNames().stream()
+                                    .map(name -> name.getValue())
+                                    .toList()
                     );
                 })
                 .sorted((a, b) -> Integer.compare(a.slotCode, b.slotCode))
                 .toList();
 
-        return new VoteStatisticResponseV2(totalParticipants, statistics);
+        return new VoteStatisticResponseV2(output.participantCount(), statistics);
     }
 }
