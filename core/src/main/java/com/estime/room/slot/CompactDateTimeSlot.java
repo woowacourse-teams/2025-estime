@@ -1,12 +1,12 @@
 package com.estime.room.slot;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * 압축된 날짜/시간 슬롯 (20비트)
@@ -37,6 +37,16 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
         return new CompactDateTimeSlot(encoded);
     }
 
+    public static CompactDateTimeSlot from(final LocalDate date, final LocalTime time) {
+        if (time.getMinute() != 0 && time.getMinute() != 30) {
+            throw new IllegalArgumentException("시간은 30분 단위여야 합니다: " + time);
+        }
+
+        final long dayOffset = ChronoUnit.DAYS.between(EPOCH, date);
+        final int timeSlotIndex = (time.getHour() * 60 + time.getMinute()) / (int) DateTimeSlot.UNIT.toMinutes();
+        return new CompactDateTimeSlot((int) ((dayOffset << 8) | timeSlotIndex));
+    }
+
     @Override
     public int compareTo(final CompactDateTimeSlot other) {
         return Integer.compare(this.encoded, other.encoded);
@@ -48,7 +58,7 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
         final int timeSlotIndex = encoded & 0xFF;
 
         final LocalDate date = EPOCH.plusDays(dayOffset);
-        final int totalMinutes = timeSlotIndex * 30;
+        final int totalMinutes = timeSlotIndex * (int) DateTimeSlot.UNIT.toMinutes();
         final LocalTime time = LocalTime.of(totalMinutes / 60, totalMinutes % 60);
 
         return String.format("%s %s (%d)", date, time, encoded);
