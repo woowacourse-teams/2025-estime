@@ -8,6 +8,8 @@ public interface ParticipantRepository {
 
     Participant save(Participant participant);
 
+    int saveIfNotExists(Participant participant);
+
     boolean existsByRoomIdAndName(Long roomId, ParticipantName name);
 
     Optional<Long> findIdByRoomIdAndName(Long roomId, ParticipantName name);
