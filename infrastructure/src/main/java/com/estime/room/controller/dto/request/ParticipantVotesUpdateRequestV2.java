@@ -5,14 +5,14 @@ import com.estime.room.dto.input.CompactVoteUpdateInput;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.slot.CompactDateTimeSlot;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
 
 public record ParticipantVotesUpdateRequestV2(
         @Schema(example = "메이토")
         String participantName,
 
-        @Schema(description = "압축된 슬롯 코드 배열", example = "[28, 3603, 25647]")
+        @Schema(description = "압축된 슬롯 코드 배열 (EPOCH: 2025-10-24)",
+                example = "[17682, 17683, 17684, 17685, 17686, 17687, 17688, 17689, 17938, 17939, 17940, 17941, 17942, 17943, 17944, 17945]")
         List<Integer> slotCodes
 ) {
 

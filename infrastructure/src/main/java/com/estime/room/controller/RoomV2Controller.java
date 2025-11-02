@@ -36,7 +36,7 @@ public class RoomV2Controller implements RoomV2ControllerSpecification {
         final CompactVotesOutput output = compactRoomApplicationService.updateParticipantVotes(
                 request.toInput(session));
         return CustomApiResponse.ok(
-                "투표가 업데이트되었습니다",
+                "Update success",
                 ParticipantVotesResponseV2.from(output)
         );
     }
