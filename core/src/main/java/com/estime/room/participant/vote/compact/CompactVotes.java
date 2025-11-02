@@ -32,7 +32,6 @@ public class CompactVotes {
 
     private static void validateDuplicate(final List<CompactVote> votes) {
         final long uniqueCount = votes.stream()
-                .map(CompactVote::getCompactDateTimeSlot)
                 .distinct()
                 .count();
 
