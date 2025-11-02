@@ -12,5 +12,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework:spring-tx'
+    testImplementation 'net.dv8tion:JDA:5.6.1'
+    testImplementation "com.github.f4b6a3:tsid-creator:${tsidVersion}"
 }
