@@ -27,6 +27,8 @@ import java.util.List;
 @DisplayName("V1 vs V2 성능 벤치마크")
 class V1V2PerformanceBenchmarkTest {
 
+    private static final boolean PRINT_ENABLED = false;
+
     private static final int WARMUP_ITERATIONS = 1000;
     private static final int BENCHMARK_ITERATIONS = 10_000;
 
@@ -39,9 +41,11 @@ class V1V2PerformanceBenchmarkTest {
     @Test
     @DisplayName("객체 생성 속도 비교")
     void compareObjectCreationSpeed() {
-        System.out.println("\n========================================");
-        System.out.println("1. 객체 생성 속도 비교");
-        System.out.println("========================================");
+        if (PRINT_ENABLED) {
+            System.out.println("\n========================================");
+            System.out.println("1. 객체 생성 속도 비교");
+            System.out.println("========================================");
+        }
 
         // Warmup
         for (int i = 0; i < WARMUP_ITERATIONS; i++) {
@@ -69,9 +73,11 @@ class V1V2PerformanceBenchmarkTest {
     @Test
     @DisplayName("메모리 사용량 비교 (객체 크기)")
     void compareMemoryUsage() {
-        System.out.println("\n========================================");
-        System.out.println("2. 메모리 사용량 비교");
-        System.out.println("========================================");
+        if (PRINT_ENABLED) {
+            System.out.println("\n========================================");
+            System.out.println("2. 메모리 사용량 비교");
+            System.out.println("========================================");
+        }
 
         // V1: Vote (참가자 ID + LocalDateTime)
         final long v1ObjectSize = estimateObjectSize(
@@ -85,61 +91,28 @@ class V1V2PerformanceBenchmarkTest {
                 CompactDateTimeSlot.from(START_DATE, LocalTime.of(9, 0))  // CompactDateTimeSlot
         );
 
-        System.out.printf("V1 (Vote) 객체 크기:        ~%d bytes%n", v1ObjectSize);
-        System.out.printf("V2 (CompactVote) 객체 크기: ~%d bytes%n", v2ObjectSize);
-        System.out.printf("절감:                        %d bytes (%.1f%%)%n",
-                v1ObjectSize - v2ObjectSize,
-                (1 - (double) v2ObjectSize / v1ObjectSize) * 100);
-        System.out.println();
-        System.out.printf("336 슬롯 × 10명 기준:%n");
-        System.out.printf("V1 총 메모리: ~%,d bytes (%.2f KB)%n", v1ObjectSize * TOTAL_SLOTS * 10, v1ObjectSize * TOTAL_SLOTS * 10 / 1024.0);
-        System.out.printf("V2 총 메모리: ~%,d bytes (%.2f KB)%n", v2ObjectSize * TOTAL_SLOTS * 10, v2ObjectSize * TOTAL_SLOTS * 10 / 1024.0);
-        System.out.println("========================================");
-    }
-
-    @Test
-    @DisplayName("toString() 직렬화 속도 비교")
-    void compareSerializationSpeed() {
-        System.out.println("\n========================================");
-        System.out.println("3. toString() 직렬화 속도 비교");
-        System.out.println("========================================");
-
-        final DateTimeSlot v1Slot = createV1DateTimeSlot(START_DATE, LocalTime.of(14, 30));
-        final CompactDateTimeSlot v2Slot = CompactDateTimeSlot.from(START_DATE, LocalTime.of(14, 30));
-
-        // Warmup
-        for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-            v1Slot.toString();
-            v2Slot.toString();
+        if (PRINT_ENABLED) {
+            System.out.printf("V1 (Vote) 객체 크기:        ~%d bytes%n", v1ObjectSize);
+            System.out.printf("V2 (CompactVote) 객체 크기: ~%d bytes%n", v2ObjectSize);
+            System.out.printf("절감:                        %d bytes (%.1f%%)%n",
+                    v1ObjectSize - v2ObjectSize,
+                    (1 - (double) v2ObjectSize / v1ObjectSize) * 100);
+            System.out.println();
+            System.out.printf("336 슬롯 × 10명 기준:%n");
+            System.out.printf("V1 총 메모리: ~%,d bytes (%.2f KB)%n", v1ObjectSize * TOTAL_SLOTS * 10, v1ObjectSize * TOTAL_SLOTS * 10 / 1024.0);
+            System.out.printf("V2 총 메모리: ~%,d bytes (%.2f KB)%n", v2ObjectSize * TOTAL_SLOTS * 10, v2ObjectSize * TOTAL_SLOTS * 10 / 1024.0);
+            System.out.println("========================================");
         }
-
-        // V1: LocalDateTime.toString()
-        final long v1Start = System.nanoTime();
-        for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-            v1Slot.toString();
-        }
-        final long v1Duration = System.nanoTime() - v1Start;
-
-        // V2: 디코딩 + 포맷팅
-        final long v2Start = System.nanoTime();
-        for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-            v2Slot.toString();
-        }
-        final long v2Duration = System.nanoTime() - v2Start;
-
-        System.out.printf("V1 toString() 결과: %s%n", v1Slot);
-        System.out.printf("V2 toString() 결과: %s%n", v2Slot);
-        System.out.println();
-
-        printResult("toString() 직렬화", v1Duration, v2Duration);
     }
 
     @Test
     @DisplayName("컬렉션 연산 속도 비교 (정렬, 필터링)")
     void compareCollectionOperations() {
-        System.out.println("\n========================================");
-        System.out.println("4. 컬렉션 연산 속도 비교");
-        System.out.println("========================================");
+        if (PRINT_ENABLED) {
+            System.out.println("\n========================================");
+            System.out.println("4. 컬렉션 연산 속도 비교");
+            System.out.println("========================================");
+        }
 
         final List<Vote> v1List = createV1Votes(TOTAL_SLOTS);
         final List<CompactVote> v2List = createV2Votes(TOTAL_SLOTS);
@@ -170,9 +143,11 @@ class V1V2PerformanceBenchmarkTest {
     @Test
     @DisplayName("통계 계산 속도 비교 (Map 그룹핑)")
     void compareStatisticsCalculation() {
-        System.out.println("\n========================================");
-        System.out.println("5. 통계 계산 속도 비교");
-        System.out.println("========================================");
+        if (PRINT_ENABLED) {
+            System.out.println("\n========================================");
+            System.out.println("5. 통계 계산 속도 비교");
+            System.out.println("========================================");
+        }
 
         // 10명의 참가자가 336개 슬롯에 투표
         final List<Vote> v1List = new ArrayList<>();
@@ -190,8 +165,10 @@ class V1V2PerformanceBenchmarkTest {
             }
         }
 
-        System.out.printf("테스트 데이터: 참가자 10명 × 슬롯 %d개 = 총 %,d개 투표%n", TOTAL_SLOTS, v1List.size());
-        System.out.println();
+        if (PRINT_ENABLED) {
+            System.out.printf("테스트 데이터: 참가자 10명 × 슬롯 %d개 = 총 %,d개 투표%n", TOTAL_SLOTS, v1List.size());
+            System.out.println();
+        }
 
         // Warmup
         for (int i = 0; i < 100; i++) {
@@ -267,6 +244,10 @@ class V1V2PerformanceBenchmarkTest {
     }
 
     private void printResult(final String operation, final long v1Nanos, final long v2Nanos) {
+        if (!PRINT_ENABLED) {
+            return;
+        }
+
         final double v1Millis = v1Nanos / 1_000_000.0;
         final double v2Millis = v2Nanos / 1_000_000.0;
         final double speedup = (double) v1Nanos / v2Nanos;
