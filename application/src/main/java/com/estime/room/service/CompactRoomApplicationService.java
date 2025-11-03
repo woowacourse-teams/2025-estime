@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,6 +123,7 @@ public class CompactRoomApplicationService {
             final RoomSession session,
             final List<CompactDateTimeSlot> dateTimeSlots
     ) {
+        // TODO getter 개선 필요
         final Set<LocalDate> availableDates = availableDateSlotRepository.findByRoomId(roomId).stream()
                 .map(AvailableDateSlot::getStartAt)
                 .collect(Collectors.toSet());
@@ -131,18 +131,13 @@ public class CompactRoomApplicationService {
                 .map(AvailableTimeSlot::getStartAt)
                 .collect(Collectors.toSet());
 
-        final Set<CompactDateTimeSlot> availableCompactDateTimeSlots = new HashSet<>();
-        for (final LocalDate availableDate : availableDates) {
-            for (final LocalTime availableTime : availableTimes) {
-                availableCompactDateTimeSlots.add(CompactDateTimeSlot.from(availableDate, availableTime));
-            }
-        }
-
         for (final CompactDateTimeSlot dateTimeSlot : dateTimeSlots) {
-            if (availableCompactDateTimeSlots.contains(dateTimeSlot)) {
-                continue;
+            final LocalDate date = dateTimeSlot.getStartAtLocalDate();
+            final LocalTime time = dateTimeSlot.getStartAtLocalTime();
+
+            if (!availableDates.contains(date) || !availableTimes.contains(time)) {
+                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, dateTimeSlot);
             }
-            throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, dateTimeSlot);
         }
     }
 

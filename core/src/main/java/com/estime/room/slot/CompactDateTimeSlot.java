@@ -47,6 +47,17 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
         return new CompactDateTimeSlot((int) ((dayOffset << 8) | timeSlotIndex));
     }
 
+    public LocalDate getStartAtLocalDate() {
+        final int dayOffset = (encoded >> 8) & 0xFFF;
+        return EPOCH.plusDays(dayOffset);
+    }
+
+    public LocalTime getStartAtLocalTime() {
+        final int timeSlotIndex = encoded & 0xFF;
+        final int totalMinutes = timeSlotIndex * (int) DateTimeSlot.UNIT.toMinutes();
+        return LocalTime.of(totalMinutes / 60, totalMinutes % 60);
+    }
+
     @Override
     public int compareTo(final CompactDateTimeSlot other) {
         return Integer.compare(this.encoded, other.encoded);
@@ -54,13 +65,8 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
 
     @Override
     public String toString() {
-        final int dayOffset = (encoded >> 8) & 0xFFF;
-        final int timeSlotIndex = encoded & 0xFF;
-
-        final LocalDate date = EPOCH.plusDays(dayOffset);
-        final int totalMinutes = timeSlotIndex * (int) DateTimeSlot.UNIT.toMinutes();
-        final LocalTime time = LocalTime.of(totalMinutes / 60, totalMinutes % 60);
-
+        final LocalDate date = getStartAtLocalDate();
+        final LocalTime time = getStartAtLocalTime();
         return String.format("%s %s (%d)", date, time, encoded);
     }
 }
