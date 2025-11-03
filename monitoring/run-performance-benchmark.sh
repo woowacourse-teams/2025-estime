@@ -11,18 +11,18 @@ echo ""
 OUTPUT_FILE="monitoring/performance-benchmark-results.txt"
 
 # 테스트 실행
-./gradlew :api:cleanTest :api:test --tests "V1V2PerformanceBenchmarkTest" > /tmp/benchmark.log 2>&1
+./gradlew :core:cleanTest :core:test --tests "V1V2PerformanceBenchmarkTest" > /tmp/benchmark.log 2>&1
 
 # 테스트 리포트 확인
 echo "테스트 완료!"
 echo ""
 echo "결과 확인:"
-echo "  - HTML 리포트: api/build/reports/tests/test/index.html"
-echo "  - XML 결과: api/build/test-results/test/"
+echo "  - HTML 리포트: core/build/reports/tests/test/index.html"
+echo "  - XML 결과: core/build/test-results/test/"
 echo ""
 
 # HTML 리포트 열기 (macOS)
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "HTML 리포트를 브라우저에서 열고 있습니다..."
-    open api/build/reports/tests/test/index.html
+    open core/build/reports/tests/test/index.html
 fi
