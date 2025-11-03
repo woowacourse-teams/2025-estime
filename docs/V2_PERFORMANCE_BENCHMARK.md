@@ -217,17 +217,17 @@ V2: 78.75 KB
 
 ```bash
 # 벤치마크 실행
-./gradlew :api:test --tests "V1V2PerformanceBenchmarkTest"
+./gradlew :core:test --tests "V1V2PerformanceBenchmarkTest"
 
 # HTML 리포트 확인
-open api/build/reports/tests/test/index.html
+open core/build/reports/tests/test/index.html
 
 # 5회 평균 측정 (신뢰도 향상)
 /tmp/run-benchmark-5times.sh
 ```
 
 **테스트 코드**:
-- `api/src/test/java/com/estime/room/V1V2PerformanceBenchmarkTest.java`
+- `core/src/test/java/com/estime/room/benchmark/V1V2PerformanceBenchmarkTest.java`
 
 **테스트 데이터 생성**:
 - `monitoring/full-week-test-data.sql` (7일 × 48슬롯 × 10명 = 3,360개 투표)
