@@ -21,8 +21,14 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository {
     }
 
     @Override
+    public int saveIfNotExists(final Participant participant) {
+        return jpaRepository.saveIfNotExists(participant.getRoomId(), participant.getName().getValue(), true);
+    }
+
+    @Override
     public boolean existsByRoomIdAndName(final Long roomId, final ParticipantName name) {
-        return queryFactory.selectFrom(participant)
+        return queryFactory.select(participant.id)
+                .from(participant)
                 .where(participant.roomId.eq(roomId)
                         .and(participant.name.eq(name)))
                 .fetchOne() != null;
