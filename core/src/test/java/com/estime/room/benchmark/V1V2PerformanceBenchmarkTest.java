@@ -90,8 +90,8 @@ class V1V2PerformanceBenchmarkTest {
         // V2: CompactVote (참가자 ID + int)
         final long v2ObjectSize = estimateObjectSize(
                 8L,  // participant_id (Long)
-                CompactDateTimeSlot.from(START_DATE, LocalTime.of(9, 0))  // CompactDateTimeSlot
-        );
+                CompactDateTimeSlot.from(LocalDateTime.of(START_DATE, LocalTime.of(9, 0))  // CompactDateTimeSlot
+                ));
 
         if (PRINT_ENABLED) {
             System.out.printf("V1 (Vote) 객체 크기:        ~%d bytes%n", v1ObjectSize);
@@ -162,7 +162,7 @@ class V1V2PerformanceBenchmarkTest {
                     final LocalTime time = LocalTime.of(slotIndex / 2, (slotIndex % 2) * 30);
 
                     v1List.add(Vote.of(participantId, createV1DateTimeSlot(date, time)));
-                    v2List.add(CompactVote.of(participantId, CompactDateTimeSlot.from(date, time)));
+                    v2List.add(CompactVote.of(participantId, CompactDateTimeSlot.from(LocalDateTime.of(date, time))));
                 }
             }
         }
@@ -218,7 +218,7 @@ class V1V2PerformanceBenchmarkTest {
             final int slotIndex = i % SLOTS_PER_DAY;
             final LocalDate date = START_DATE.plusDays(day);
             final LocalTime time = LocalTime.of(slotIndex / 2, (slotIndex % 2) * 30);
-            votes.add(CompactVote.of(1L, CompactDateTimeSlot.from(date, time)));
+            votes.add(CompactVote.of(1L, CompactDateTimeSlot.from(LocalDateTime.of(date, time))));
         }
         return votes;
     }

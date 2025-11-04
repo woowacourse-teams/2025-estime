@@ -87,7 +87,7 @@ class CompactRoomApplicationServiceTest {
     void calculateVoteStatistic() {
         // given
         final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), slot1));
         compactVoteRepository.save(CompactVote.of(participant2.getId(), slot1));
 
@@ -110,7 +110,7 @@ class CompactRoomApplicationServiceTest {
     void getParticipantVotesBySessionAndParticipantName() {
         // given
         final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), slot1));
 
         // when
@@ -130,11 +130,11 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_complex() {
         // given
         final CompactDateTimeSlot slotToRemove = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         final CompactDateTimeSlot slotToKeep = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 30));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
         final CompactDateTimeSlot slotToAdd = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(11, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
 
         compactVoteRepository.save(CompactVote.of(participant1.getId(), slotToRemove));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), slotToKeep));
@@ -164,16 +164,16 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_replaceAll() {
         // given
         final CompactDateTimeSlot initialSlot1 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         final CompactDateTimeSlot initialSlot2 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 30));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), initialSlot1));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), initialSlot2));
 
         final CompactDateTimeSlot newSlot1 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(11, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
         final CompactDateTimeSlot newSlot2 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(11, 30));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 30)));
         final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(), participant1.getName(),
                 List.of(newSlot1, newSlot2));
 
@@ -194,7 +194,7 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_removeAll() {
         // given
         final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), slot1));
 
         final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(), participant1.getName(),
@@ -216,7 +216,7 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_noChange() {
         // given
         final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         compactVoteRepository.save(CompactVote.of(participant1.getId(), slot1));
 
         final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(), participant1.getName(),
@@ -238,7 +238,7 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_withUnavailableDate() {
         // given
         final CompactDateTimeSlot unavailableSlot = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(2), LocalTime.of(10, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(10, 0)));
         final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(), participant1.getName(),
                 List.of(unavailableSlot));
 
@@ -253,7 +253,7 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_withUnavailableTime() {
         // given
         final CompactDateTimeSlot unavailableSlot = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(1), LocalTime.of(12, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(12, 0)));
         final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(), participant1.getName(),
                 List.of(unavailableSlot));
 
@@ -268,7 +268,7 @@ class CompactRoomApplicationServiceTest {
     void updateParticipantVotes_withUnavailableDateAndTime() {
         // given
         final CompactDateTimeSlot unavailableSlot = CompactDateTimeSlot.from(
-                LocalDate.now().plusDays(2), LocalTime.of(12, 0));
+                LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
         final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(), participant1.getName(),
                 List.of(unavailableSlot));
 
