@@ -1,5 +1,6 @@
 package com.estime.room.slot;
 
+import com.estime.room.slot.exception.CompactDateTimeSlotOutOfRangeException;
 import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.DomainTerm;
@@ -37,6 +38,9 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
     private final int encoded;
 
     public static CompactDateTimeSlot from(final int encoded) {
+        if (encoded < 0 || encoded > 0xFFFFF) {
+            throw new CompactDateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, encoded);
+        }
         return new CompactDateTimeSlot(encoded);
     }
 
@@ -51,7 +55,8 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
         }
 
         final long dayOffset = ChronoUnit.DAYS.between(EPOCH, date);
-        final int timeSlotIndex = (time.getHour() * 60 + time.getMinute()) / (int) DateTimeSlot.UNIT.toMinutes();
+        final int timeSlotIndex =
+                (time.getHour() * 60 + time.getMinute()) / (int) DateTimeSlot.UNIT.toMinutes();
         return new CompactDateTimeSlot((int) ((dayOffset << 8) | timeSlotIndex));
     }
 
