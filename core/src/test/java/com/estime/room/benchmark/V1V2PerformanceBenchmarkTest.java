@@ -6,6 +6,7 @@ import com.estime.room.participant.vote.compact.CompactVote;
 import com.estime.room.participant.vote.compact.CompactVotes;
 import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +25,11 @@ import java.util.List;
  * - 직렬화/역직렬화 속도
  * - 컬렉션 연산 속도
  */
+@Disabled
 @DisplayName("V1 vs V2 성능 벤치마크")
 class V1V2PerformanceBenchmarkTest {
 
-    private static final boolean PRINT_ENABLED = false;
+    private static final boolean PRINT_ENABLED = true;
 
     private static final int WARMUP_ITERATIONS = 1000;
     private static final int BENCHMARK_ITERATIONS = 10_000;
