@@ -1,5 +1,8 @@
 package com.estime.room.slot;
 
+import com.estime.room.slot.exception.InvalidTimeDetailException;
+import com.estime.room.slot.exception.SlotNotDivideException;
+import com.estime.shared.DomainTerm;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -38,8 +41,13 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
     }
 
     public static CompactDateTimeSlot from(final LocalDate date, final LocalTime time) {
+        // TODO VO를 입력받으면 좋을 것 같다
         if (time.getMinute() != 0 && time.getMinute() != 30) {
-            throw new IllegalArgumentException("시간은 30분 단위여야 합니다: " + time);
+            throw new SlotNotDivideException(DomainTerm.TIME_SLOT, time);
+        }
+
+        if (time.getSecond() != 0 || time.getNano() != 0) {
+            throw new InvalidTimeDetailException(DomainTerm.TIME_SLOT, time);
         }
 
         final long dayOffset = ChronoUnit.DAYS.between(EPOCH, date);
