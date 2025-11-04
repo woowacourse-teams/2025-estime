@@ -1,12 +1,11 @@
 package com.estime.room.slot;
 
+import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.DomainTerm;
 import com.estime.shared.Validator;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -36,7 +35,11 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
     private static void validateStartAt(final LocalDateTime startAt) {
         if (startAt.getMinute() != 0 && startAt.getMinute() != UNIT.toMinutes()) {
-            throw new SlotNotDivideException(DomainTerm.DATE_TIME_SLOT, startAt);
+            throw new SlotNotDivideException(DomainTerm.TIME_SLOT, startAt);
+        }
+
+        if (startAt.getSecond() != 0 || startAt.getNano() != 0) {
+            throw new InvalidTimeDetailException(DomainTerm.TIME_SLOT, startAt);
         }
     }
 

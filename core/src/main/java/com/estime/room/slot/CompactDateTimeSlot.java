@@ -4,7 +4,9 @@ import com.estime.room.slot.exception.CompactDateTimeSlotOutOfRangeException;
 import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.DomainTerm;
+import com.estime.shared.Validator;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import lombok.AccessLevel;
@@ -44,20 +46,29 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
         return new CompactDateTimeSlot(encoded);
     }
 
-    public static CompactDateTimeSlot from(final LocalDate date, final LocalTime time) {
-        // TODO VO를 입력받으면 좋을 것 같다
-        if (time.getMinute() != 0 && time.getMinute() != 30) {
-            throw new SlotNotDivideException(DomainTerm.TIME_SLOT, time);
-        }
+    public static CompactDateTimeSlot from(final LocalDateTime startAt) {
+        validateNull(startAt);
+        validateStartAt(startAt);
 
-        if (time.getSecond() != 0 || time.getNano() != 0) {
-            throw new InvalidTimeDetailException(DomainTerm.TIME_SLOT, time);
-        }
-
-        final long dayOffset = ChronoUnit.DAYS.between(EPOCH, date);
-        final int timeSlotIndex =
-                (time.getHour() * 60 + time.getMinute()) / (int) DateTimeSlot.UNIT.toMinutes();
+        final long dayOffset = ChronoUnit.DAYS.between(EPOCH, startAt);
+        final int timeSlotIndex = (startAt.getHour() * 60 + startAt.getMinute()) / (int) DateTimeSlot.UNIT.toMinutes();
         return new CompactDateTimeSlot((int) ((dayOffset << 8) | timeSlotIndex));
+    }
+
+    private static void validateStartAt(final LocalDateTime startAt) {
+        if (startAt.getMinute() != 0 && startAt.getMinute() != AvailableTimeSlot.UNIT.toMinutes()) {
+            throw new SlotNotDivideException(DomainTerm.TIME_SLOT, startAt);
+        }
+
+        if (startAt.getSecond() != 0 || startAt.getNano() != 0) {
+            throw new InvalidTimeDetailException(DomainTerm.TIME_SLOT, startAt);
+        }
+    }
+
+    private static void validateNull(final LocalDateTime startAt) {
+        Validator.builder()
+                .add("startAt", startAt)
+                .validateNull();
     }
 
     public LocalDate getStartAtLocalDate() {
