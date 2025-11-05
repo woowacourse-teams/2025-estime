@@ -13,7 +13,7 @@ public record ParticipantVotesUpdateRequest(
         @Schema(example = "메이토")
         String participantName,
 
-        @Schema(example = "[\"2026-01-01T09:00\", \"2026-01-01T10:00\"]")
+        @Schema(example = "[\"2026-01-01T09:00\", \"2026-01-01T09:30\", \"2026-01-01T10:00\", \"2026-01-01T10:30\", \"2026-01-01T11:00\", \"2026-01-01T11:30\", \"2026-01-01T12:00\", \"2026-01-01T12:30\", \"2026-01-02T09:00\", \"2026-01-02T09:30\", \"2026-01-02T10:00\", \"2026-01-02T10:30\", \"2026-01-02T11:00\", \"2026-01-02T11:30\", \"2026-01-02T12:00\", \"2026-01-02T12:30\"]")
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
         List<LocalDateTime> dateTimeSlots
 ) {
