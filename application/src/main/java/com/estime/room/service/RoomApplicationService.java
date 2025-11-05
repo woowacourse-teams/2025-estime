@@ -224,8 +224,8 @@ public class RoomApplicationService {
                 .collect(Collectors.toSet());
 
         for (final DateTimeSlot dateTimeSlot : dateTimeSlots) {
-            if (!availableDates.contains(dateTimeSlot.getStartAt().toLocalDate()) || !availableTimes.contains(
-                    dateTimeSlot.getStartAt().toLocalTime())) {
+            if (!availableDates.contains(dateTimeSlot.getStartAt().toLocalDate()) ||
+                    !availableTimes.contains(dateTimeSlot.getStartAt().toLocalTime())) {
                 throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, dateTimeSlot);
             }
         }
