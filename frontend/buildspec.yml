@@ -8,7 +8,8 @@ phases:
   pre_build:
     commands:
       - echo "=== Pre-Build ==="
-      - echo "Resolved SHA (short): ${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}"
+      - export COMMIT_HASH=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}
+      - 'echo "Resolved SHA (short): ${COMMIT_HASH}"'
 
   install:
     commands:
