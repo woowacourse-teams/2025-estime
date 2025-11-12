@@ -1,24 +1,19 @@
 import { getRoomInfo } from '@/pages/CreateEvent/store/createRoomStore';
-import { DateManager } from '@/shared/utils/common/DateManager';
 import { getKoreanParticle } from '@/shared/utils/common/hangul';
-import { TimeManager } from '@/shared/utils/common/TimeManager';
+import { hasDateSlots, isValidDeadline, isValidTimeRange, isValidTitle } from './roomValidator';
 
-export const checkTimeRangeValid = () =>
-  TimeManager.isValidRange(getRoomInfo().time.startTime, getRoomInfo().time.endTime);
+export const checkTitleReady = () => isValidTitle(getRoomInfo().title);
 
-export const checkDeadlineValid = () =>
-  getRoomInfo().deadline.date.trim() !== '' &&
-  getRoomInfo().deadline.time.trim() !== '' &&
-  !DateManager.IsPastDeadline(getRoomInfo().deadline);
+export const checkTimeRangeValid = () => {
+  const { startTime, endTime } = getRoomInfo().time;
+  return isValidTimeRange(startTime, endTime);
+};
 
-export const checkCalendarReady = () => getRoomInfo().availableDateSlots.size > 0;
+export const checkTimeReady = () => checkTimeRangeValid();
 
-export const checkTitleReady = () => getRoomInfo().title.trim() !== '';
+export const checkDeadlineValid = () => isValidDeadline(getRoomInfo().deadline);
 
-export const checkTimeReady = () =>
-  getRoomInfo().time.startTime.trim() !== '' &&
-  getRoomInfo().time.endTime.trim() !== '' &&
-  checkTimeRangeValid();
+export const checkCalendarReady = () => hasDateSlots(getRoomInfo().availableDateSlots);
 
 export const checkBasicReady = () => {
   return checkTitleReady() && checkTimeReady() && checkDeadlineValid();
