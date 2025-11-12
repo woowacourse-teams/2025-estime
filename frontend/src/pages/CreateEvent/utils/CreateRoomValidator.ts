@@ -1,6 +1,11 @@
 import { getRoomInfo } from '@/pages/CreateEvent/store/createRoomStore';
 import { getKoreanParticle } from '@/shared/utils/common/hangul';
-import { hasDateSlots, isValidDeadline, isValidTimeRange, isValidTitle } from './roomValidator';
+import {
+  hasDateSlots,
+  isValidDeadline,
+  isValidTimeRange,
+  isValidTitle,
+} from '@/shared/utils/roomValidator';
 
 export const checkTitleReady = () => isValidTitle(getRoomInfo().title);
 
