@@ -49,7 +49,7 @@ const TimetableHoverProvider = ({
     const top = `calc(24px + ${(dateTimeSlotsRef.current.indexOf(nextLabelTime) / 2) * 3}rem)`;
 
     hoverLabel.textContent = nextLabelTime;
-    hoverLabel.style.top = top;
+    hoverLabel.style.transform = `translateY(${top})`;
     hoverLabel.classList.add('visible');
 
     const startLabel = labelRefs.current?.[hoveredTime];

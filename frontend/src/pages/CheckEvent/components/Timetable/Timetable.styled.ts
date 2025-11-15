@@ -63,6 +63,7 @@ export const HoverLabel = styled.div`
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   text-align: center;
   height: 3rem;
   line-height: 3rem;
