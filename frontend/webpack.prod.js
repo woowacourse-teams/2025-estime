@@ -8,6 +8,13 @@ import InjectGTMPlugin from './build/plugins/InjectGTMPlugin.js';
 export default merge(common, {
   mode: 'production',
   devtool: 'source-map',
+
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
   module: {
     rules: [
       {
