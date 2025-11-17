@@ -4,6 +4,9 @@ import common from './webpack.common.js';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import InjectGTMPlugin from './build/plugins/InjectGTMPlugin.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
 
 export default merge(common, {
   mode: 'production',
