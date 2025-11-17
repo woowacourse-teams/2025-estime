@@ -1,3 +1,11 @@
+## <small>1.6.4 (2025-11-17)</small>
+
+* chore: buildspec 파일 수정 (#769) ([c4fff74](https://github.com/woowacourse-teams/2025-estime/commit/c4fff74)), closes [#769](https://github.com/woowacourse-teams/2025-estime/issues/769)
+* chore: buildspec 파일 수정 (#770) ([07ce2ca](https://github.com/woowacourse-teams/2025-estime/commit/07ce2ca)), closes [#770](https://github.com/woowacourse-teams/2025-estime/issues/770)
+* 패키지 매니저 pnpm으로 마이그레이션 (#768) ([04d4827](https://github.com/woowacourse-teams/2025-estime/commit/04d4827)), closes [#768](https://github.com/woowacourse-teams/2025-estime/issues/768)
+
+
+
 ## <small>1.6.3 (2025-10-24)</small>
 
 * hotfix: glassTooltip (#755) ([521d3c6](https://github.com/woowacourse-teams/2025-estime/commit/521d3c6)), closes [#755](https://github.com/woowacourse-teams/2025-estime/issues/755)
