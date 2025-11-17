@@ -17,12 +17,10 @@ phases:
       - 'echo "Resolved SHA (short): ${COMMIT_HASH}"'
 
   install:
-    runtime-versions:
-      nodejs: 22
     commands:
       - echo "=== Install Dependencies ==="
       - cd frontend
-      - corepack enable # ← npm install -g pnpm 대체
+      - npm install -g pnpm
       - pnpm install --frozen-lockfile
 
   build:
