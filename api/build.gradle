@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation project(':application')
     implementation project(':infrastructure')
     testImplementation project(':core')
 
