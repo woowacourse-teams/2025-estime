@@ -19,6 +19,8 @@ phases:
       - 'echo "Resolved SHA (short): ${COMMIT_HASH}"'
 
   install:
+    runtime-versions:
+      nodejs: 22
     commands:
       - echo "=== Install Dependencies ==="
       - cd frontend
