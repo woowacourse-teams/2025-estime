@@ -9,6 +9,7 @@ cache:
     - 'frontend/node_modules/**/*'
     - '/root/.local/share/pnpm/store/**/*'
     - '/root/.npm/_cacache/**/*' # pnpm 캐싱
+    - 'frontend/node_modules/.cache/**/*'
 
 phases:
   pre_build:
@@ -18,8 +19,6 @@ phases:
       - 'echo "Resolved SHA (short): ${COMMIT_HASH}"'
 
   install:
-    runtime-versions:
-      nodejs: 22
     commands:
       - echo "=== Install Dependencies ==="
       - cd frontend
