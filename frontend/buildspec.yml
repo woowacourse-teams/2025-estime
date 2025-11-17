@@ -9,7 +9,6 @@ cache:
     - 'frontend/node_modules/**/*'
     - '/root/.local/share/pnpm/store/**/*'
     - '/root/.npm/_cacache/**/*' # pnpm 캐싱
-    - 'frontend/node_modules/.cache/**/*'
 
 phases:
   pre_build:
