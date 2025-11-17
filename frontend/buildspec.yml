@@ -4,6 +4,11 @@ env:
   exported-variables:
     - COMMIT_HASH
 
+cache:
+  paths:
+    - 'frontend/node_modules/**/*'
+    - '/root/.local/share/pnpm/store/**/*'
+
 phases:
   pre_build:
     commands:
