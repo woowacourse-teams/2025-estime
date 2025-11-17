@@ -11,19 +11,30 @@ jobs:
     name: Chromatic Deployment
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./frontend
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Cache node_modules
-        uses: actions/cache@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          path: ./frontend/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('./frontend/package-lock.json') }}
+          version: 9
+          run_install: false
 
-      - run: npm ci
-        working-directory: ./frontend
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run Chromatic
         id: chromatic
