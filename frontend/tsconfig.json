@@ -23,7 +23,7 @@
     "module": "ESNext",
 
     // Node 방식의 모듈 탐색 규칙 사용
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
 
     // *.json 파일도 import 가능
     "resolveJsonModule": true,
