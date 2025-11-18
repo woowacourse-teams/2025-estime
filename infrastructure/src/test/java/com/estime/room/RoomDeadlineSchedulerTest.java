@@ -90,11 +90,82 @@ class RoomDeadlineSchedulerTest {
         ));
 
         // when
-        roomDeadlineScheduler.pollNewRooms();
+        roomDeadlineScheduler.pollNewRoomsAt(now);
         roomDeadlineScheduler.processTaskQueueAt(newDeadline.plusSeconds(1)); // 시간 이동
 
         // then
         assertThat(testPlatformMessageSender.getSentMessages())
+                .anyMatch(msg -> msg.contains("DeadlineAlert"));
+    }
+
+    @DisplayName("폴링 시 마감이 지난 방은 스케줄링에 추가하지 않는다")
+    @Test
+    void pollNewRooms_doesNotAddExpiredRooms() {
+        // given
+        final LocalDateTime now = LocalDateTime.now();
+        final Room existingRoom = Room.withoutId("Existing Room", roomSession, now.plusDays(1));
+        roomRepository.save(existingRoom);
+        roomDeadlineScheduler.initialize();
+
+        // 마감이 폴링 기준 시간보다 이전인 방 생성
+        final LocalDateTime pastDeadline = now.plusMinutes(10);
+        final Room newRoom = Room.withoutId("New Room", RoomSession.from("newSession"), pastDeadline);
+        roomRepository.save(newRoom);
+
+        final PlatformNotification notification = PlatformNotification.of(false, true, true);
+        platformRepository.save(Platform.withoutId(
+                newRoom.getId(),
+                PlatformType.DISCORD,
+                "test-channel-past",
+                notification
+        ));
+
+        // when - 폴링 시점을 방의 마감 이후로 설정
+        final LocalDateTime pollingTime = pastDeadline.plusMinutes(5);
+        roomDeadlineScheduler.pollNewRoomsAt(pollingTime);
+        roomDeadlineScheduler.processTaskQueueAt(pollingTime.plusMinutes(10));
+
+        // then - 새로 추가된 방에 대한 알림이 없어야 함
+        assertThat(testPlatformMessageSender.getSentMessages()).isEmpty();
+    }
+
+    @DisplayName("폴링 시 리마인더 시간이 지났지만 마감은 남은 방은 마감 알림만 스케줄링한다")
+    @Test
+    void pollNewRooms_addsOnlyDeadlineTaskWhenReminderTimePassed() {
+        // given
+        final LocalDateTime now = LocalDateTime.now();
+        final Room existingRoom = Room.withoutId("Existing Room", roomSession, now.plusDays(1));
+        roomRepository.save(existingRoom);
+        roomDeadlineScheduler.initialize();
+
+        // 마감이 1시간 10분 후인 방 생성 (리마인더는 10분 후)
+        final LocalDateTime deadline = now.plusMinutes(70);
+        final Room newRoom = Room.withoutId("New Room", RoomSession.from("newSession"), deadline);
+        roomRepository.save(newRoom);
+
+        final PlatformNotification notification = PlatformNotification.of(false, true, true);
+        platformRepository.save(Platform.withoutId(
+                newRoom.getId(),
+                PlatformType.DISCORD,
+                "test-channel-reminder",
+                notification
+        ));
+
+        // when - 폴링 시점을 리마인더 시간 이후로 설정 (마감 30분 전)
+        final LocalDateTime pollingTime = deadline.minusMinutes(30);
+        roomDeadlineScheduler.pollNewRoomsAt(pollingTime);
+
+        // 리마인더 시간에는 알림이 없어야 함
+        final LocalDateTime reminderTime = deadline.minusHours(1);
+        roomDeadlineScheduler.processTaskQueueAt(reminderTime.plusSeconds(1));
+        assertThat(testPlatformMessageSender.getSentMessages()).isEmpty();
+
+        // 마감 시간에는 알림이 와야 함
+        roomDeadlineScheduler.processTaskQueueAt(deadline.plusSeconds(1));
+
+        // then
+        assertThat(testPlatformMessageSender.getSentMessages())
+                .hasSize(1)
                 .anyMatch(msg -> msg.contains("DeadlineAlert"));
     }
 
