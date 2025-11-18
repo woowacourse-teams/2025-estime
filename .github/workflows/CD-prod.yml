@@ -11,31 +11,6 @@ jobs:
     outputs:
       short_sha: ${{ steps.set_short_sha.outputs.short_sha }}
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: testpw
-          MYSQL_DATABASE: testdb
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd "mysqladmin ping -h localhost"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      SPRING_PROFILES_ACTIVE: prod
-
-      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/testdb
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: testpw
-
-      URL_ORIGIN_CLIENT: ${{ secrets.URL_ORIGIN_PROD }}
-
-      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
