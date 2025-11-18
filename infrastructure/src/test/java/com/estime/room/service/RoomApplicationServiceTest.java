@@ -22,6 +22,7 @@ import com.estime.room.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomOutput;
+import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
@@ -29,7 +30,9 @@ import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
+import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformNotification;
+import com.estime.room.platform.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.slot.AvailableDateSlot;
@@ -167,7 +170,7 @@ class RoomApplicationServiceTest {
         assertThatThrownBy(() -> roomApplicationService.getRoomBySession(
                 RoomSessionInput.from(RoomSession.from(nonexistentSession))))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining(DomainTerm.ROOM + " is not exists");
+                .hasMessageContaining(DomainTerm.ROOM.name() + " is not exists");
     }
 
     @DisplayName("투표 통계를 계산한다.")
@@ -365,7 +368,7 @@ class RoomApplicationServiceTest {
         // when & then
         assertThatThrownBy(() -> roomApplicationService.updateParticipantVotes(input))
                 .isInstanceOf(UnavailableSlotException.class)
-                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " is outside the available range");
     }
 
     @DisplayName("플랫폼과 연결된 방 생성을 할 수 있다")
@@ -390,6 +393,98 @@ class RoomApplicationServiceTest {
         assertSoftly(softly -> {
             softly.assertThat(platformRepository.findByRoomId(room.getId()))
                     .isPresent();
+        });
+    }
+
+    @DisplayName("과거 날짜 슬롯으로 방을 생성하면 PastNotAllowedException이 발생한다")
+    @Test
+    void createRoom_withPastDateSlot() {
+        // given
+        final RoomCreateInput input = new RoomCreateInput(
+                "title",
+                List.of(new DateSlotInput(LocalDate.now().minusDays(1))),
+                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
+                LocalDateTime.now().plusYears(1)
+        );
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.createRoom(input))
+                .isInstanceOf(PastNotAllowedException.class)
+                .hasMessageContaining(DomainTerm.DATE_SLOT.name() + " cannot be past");
+    }
+
+    @DisplayName("플랫폼과 연결된 방 생성 시 과거 날짜 슬롯이면 PastNotAllowedException이 발생한다")
+    @Test
+    void createConnectedRoom_withPastDateSlot() {
+        // given
+        final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
+                "title",
+                List.of(new DateSlotInput(LocalDate.now().minusDays(1))),
+                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
+                LocalDateTime.now().plusYears(1),
+                PlatformType.DISCORD,
+                "testChannelId",
+                PlatformNotification.of(false, false, false)
+        );
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.createConnectedRoom(input))
+                .isInstanceOf(PastNotAllowedException.class)
+                .hasMessageContaining(DomainTerm.DATE_SLOT.name() + " cannot be past");
+    }
+
+    @DisplayName("존재하지 않는 참여자의 투표를 조회하면 NotFoundException이 발생한다")
+    @Test
+    void getParticipantVotes_withNonexistentParticipant() {
+        // given
+        final VotesFindInput input = VotesFindInput.of(room.getSession(), "nonexistent");
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.getParticipantVotesBySessionAndParticipantName(input))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining(DomainTerm.PARTICIPANT.name() + " is not exists");
+    }
+
+    @DisplayName("존재하지 않는 참여자의 투표를 업데이트하면 NotFoundException이 발생한다")
+    @Test
+    void updateParticipantVotes_withNonexistentParticipant() {
+        // given
+        final DateTimeSlot slot = DateTimeSlot.from(
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        final VotesUpdateInput input = new VotesUpdateInput(room.getSession(),
+                ParticipantName.from("nonexistent"), List.of(slot));
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.updateParticipantVotes(input))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining(DomainTerm.PARTICIPANT.name() + " is not exists");
+    }
+
+    @DisplayName("플랫폼과 연결된 방 생성 시 CREATED 알림이 활성화되어 있으면 메시지를 전송한다")
+    @Test
+    void createConnectedRoom_withCreatedNotificationEnabled() {
+        // given
+        final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
+                "title",
+                List.of(new DateSlotInput(LocalDate.now().plusDays(1))),
+                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
+                LocalDateTime.now().plusYears(1),
+                PlatformType.DISCORD,
+                "testChannelId",
+                PlatformNotification.of(true, false, false) // CREATED 알림 활성화
+        );
+
+        // when
+        final ConnectedRoomCreateOutput saved = roomApplicationService.createConnectedRoom(input);
+        final Room createdRoom = roomRepository.findBySession(saved.session()).orElseThrow();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(platformRepository.findByRoomId(createdRoom.getId()))
+                    .isPresent();
+            final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
+            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED))
+                    .isTrue();
         });
     }
 }
