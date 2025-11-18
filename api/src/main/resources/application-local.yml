@@ -3,7 +3,6 @@ spring:
     activate:
       on-profile: local
     import:
-      - application-common.yml
       - optional:file:.env.local[.properties]
 
   jpa:
