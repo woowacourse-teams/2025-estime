@@ -78,10 +78,13 @@ public class RoomDeadlineScheduler {
 
     @Scheduled(cron = "0 */5 * * * *")
     public void processTaskQueue() {
-        final LocalDateTime now = LocalDateTime.now();
-        log.debug("Processing task queue at {}. Current queue size: {}", now, taskQueue.size());
+        processTaskQueueAt(LocalDateTime.now());
+    }
 
-        while (!taskQueue.isEmpty() && !taskQueue.peek().executionTime().isAfter(now)) {
+    public void processTaskQueueAt(final LocalDateTime currentTime) {
+        log.debug("Processing task queue at {}. Current queue size: {}", currentTime, taskQueue.size());
+
+        while (!taskQueue.isEmpty() && !taskQueue.peek().executionTime().isAfter(currentTime)) {
             final NotificationTask task = taskQueue.poll();
             log.info("Processing task: {} for roomId: {}", task.taskType(), task.roomId());
 
