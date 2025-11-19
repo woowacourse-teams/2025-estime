@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '3.5.3' apply false
     id 'io.spring.dependency-management' version '1.1.7' apply false
 }
@@ -22,12 +23,17 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'jacoco'
     apply plugin: 'io.spring.dependency-management'
 
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
         }
+    }
+
+    jacoco {
+        toolVersion = "0.8.14"
     }
 
     dependencyManagement {
@@ -56,5 +62,38 @@ subprojects {
     tasks.named('test') {
         useJUnitPlatform()
         workingDir = rootDir
+        finalizedBy tasks.named('jacocoTestReport')
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
+    }
+}
+
+tasks.register('jacocoAggregatedReport', JacocoReport) {
+    dependsOn subprojects*.test
+
+    def sourceDirs = files(subprojects*.sourceSets.main.allSource.srcDirs)
+    def classDirs = files(subprojects*.sourceSets.main.output)
+        .asFileTree.matching {
+            exclude '**/dto/**', '**/config/**', '**/*Application.class', '**/Q*.class'
+        }
+
+    // 존재하는 exec 파일만 수집
+    def execFiles = files(subprojects.collect { project ->
+        project.tasks.test.extensions.getByType(JacocoTaskExtension).destinationFile
+    }).filter { it.exists() }
+
+    sourceDirectories.setFrom(sourceDirs)
+    classDirectories.setFrom(classDirs)
+    executionData.setFrom(execFiles)
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(true)
     }
 }
