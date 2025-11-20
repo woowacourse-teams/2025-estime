@@ -46,7 +46,7 @@ const CheckEventPageHeader = ({
         </Flex>
         <Participants />
       </Flex>
-      <Notice show={isExpired} type={'warning'} maxWidth={theme.isMobile ? '100%' : '16rem'}>
+      <Notice show={isExpired} type={'warning'} maxWidth={theme.isMobile ? '100%' : '18rem'}>
         <Text color="warningText">⚠️ 마감일이 지났어요. 결과를 확인해주세요!</Text>
       </Notice>
     </Flex>
