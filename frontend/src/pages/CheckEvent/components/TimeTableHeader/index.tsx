@@ -58,7 +58,7 @@ const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderPro
       </Flex>
       <Flex gap="var(--gap-8)">
         {!theme.isMobile && (
-          <Notice type="warning" show={!isLoggedIn}>
+          <Notice type="warning" show={!isLoggedIn && !isExpired}>
             <Text variant="body" color="text">
               {`⚠️ 시간표를 등록하려면 "등록하기"를 눌러주세요.`}
             </Text>
