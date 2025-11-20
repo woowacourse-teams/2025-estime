@@ -64,12 +64,6 @@ const TimeTableHeader = ({ name, mode, isExpired, ...props }: TimeTableHeaderPro
             </Text>
           </Notice>
         )}
-
-        <Notice type="warning" show={isExpired}>
-          <Text variant="body" color="warningText">
-            ⚠️ 마감일이 지났어요. 결과를 확인해주세요!
-          </Text>
-        </Notice>
         {props.children}
       </Flex>
     </S.Container>

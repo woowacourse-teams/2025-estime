@@ -2,9 +2,11 @@ import Flex from '../../../../shared/layout/Flex';
 import Text from '@/shared/components/Text';
 import IClock from '@/assets/icons/IClock';
 import ShareButton from '../../../../shared/components/Button/ShareButton';
+import Notice from '@/shared/components/Notice';
+import Participants from '../Participants/Participants';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import Participants from '../Participants/Participants';
+import { DateManager } from '@/shared/utils/common/DateManager';
 import * as S from './CheckEventPageHeader.styled';
 
 type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
@@ -18,6 +20,7 @@ const CheckEventPageHeader = ({
   handleCopyLinkButtonClick,
 }: CheckEventPageHeaderProps) => {
   const theme = useTheme();
+  const isExpired = DateManager.IsPastDeadline(deadline);
 
   return (
     <Flex gap="var(--gap-5)" justify="space-between" direction="column">
@@ -43,6 +46,9 @@ const CheckEventPageHeader = ({
         </Flex>
         <Participants />
       </Flex>
+      <Notice show={isExpired} type={'warning'} maxWidth={theme.isMobile ? '100%' : '16rem'}>
+        <Text color="warningText">⚠️ 마감일이 지났어요. 결과를 확인해주세요!</Text>
+      </Notice>
     </Flex>
   );
 };
