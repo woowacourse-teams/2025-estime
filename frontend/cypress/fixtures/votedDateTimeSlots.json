@@ -1,0 +1,420 @@
+{
+  "code": 200,
+  "success": true,
+  "message": null,
+  "data": {
+    "participantCount": 3,
+    "participants": ["테스트1", "테스트2", "테스트3"],
+    "maxVoteCount": 3,
+    "statistic": [
+      {
+        "dateTimeSlot": "2025-10-22T00:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T00:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T01:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T01:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T02:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T02:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T03:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T03:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T04:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T04:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T05:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T05:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T06:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T06:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T07:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T07:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-22T08:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T00:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T00:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T01:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T01:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T02:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T02:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T03:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T03:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T04:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T04:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T05:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T05:30",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T06:00",
+        "voteCount": 3,
+        "weight": 1,
+        "participantNames": ["테스트1", "테스트2", "테스트3"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T06:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T07:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T07:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-23T08:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T00:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T00:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T01:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T01:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T02:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T02:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T03:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T03:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T04:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T04:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T05:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T05:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T06:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T06:30",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T07:00",
+        "voteCount": 2,
+        "weight": 0.67,
+        "participantNames": ["테스트1", "테스트2"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T07:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-24T08:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T00:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T00:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T01:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T01:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T02:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T02:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T03:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T03:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T04:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T04:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T05:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T05:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T06:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T06:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T07:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T07:30",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      },
+      {
+        "dateTimeSlot": "2025-10-25T08:00",
+        "voteCount": 1,
+        "weight": 0.33,
+        "participantNames": ["테스트1"]
+      }
+    ]
+  }
+}

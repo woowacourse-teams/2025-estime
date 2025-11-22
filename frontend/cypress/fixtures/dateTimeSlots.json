@@ -1,0 +1,11 @@
+{
+  "code": 200,
+  "success": true,
+  "message": null,
+  "data": {
+    "participantCount": 0,
+    "participants": [],
+    "maxVoteCount": 0,
+    "statistic": []
+  }
+}
