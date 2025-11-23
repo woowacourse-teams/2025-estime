@@ -14,6 +14,7 @@ public class TestContainersConfig {
         return new MySQLContainer<>("mysql:8.0")
                 .withDatabaseName("testdb")
                 .withUsername("testuser")
-                .withPassword("testpw");
+                .withPassword("testpw")
+                .withReuse(true);
     }
 }
