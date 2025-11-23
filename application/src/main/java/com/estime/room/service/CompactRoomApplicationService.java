@@ -1,5 +1,6 @@
 package com.estime.room.service;
 
+import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
 import com.estime.port.out.RoomMessageSender;
 import com.estime.room.Room;
@@ -33,6 +34,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -50,6 +53,7 @@ public class CompactRoomApplicationService {
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
 
+    @Cacheable(value = CacheNames.COMPACT_VOTE_STATISTIC, key = "#input.session()", sync = true)
     @Transactional(readOnly = true)
     public CompactDateTimeSlotStatisticOutput calculateVoteStatistic(final RoomSessionInput input) {
         final Long roomId = obtainRoomIdBySession(input.session());
@@ -89,6 +93,7 @@ public class CompactRoomApplicationService {
         return CompactVotesOutput.from(input.name(), votes);
     }
 
+    @CacheEvict(value = CacheNames.COMPACT_VOTE_STATISTIC, key = "#input.session()")
     @Transactional
     public CompactVotesOutput updateParticipantVotes(final CompactVoteUpdateInput input) {
         final Room room = obtainRoomBySession(input.session());
