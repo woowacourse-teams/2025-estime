@@ -10,6 +10,12 @@ import com.estime.TestApplication;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
+import com.estime.room.TsidRoomSessionGenerator;
+import com.estime.room.controller.dto.request.ConnectedRoomCreateRequest;
+import com.estime.room.controller.dto.request.ConnectedRoomCreateRequest.PlatformNotificationRequest;
+import com.estime.room.controller.dto.request.ParticipantCreateRequest;
+import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequest;
+import com.estime.room.controller.dto.request.RoomCreateRequest;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
@@ -17,7 +23,6 @@ import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
-import com.estime.room.TsidRoomSessionGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
@@ -86,22 +91,17 @@ class RoomControllerTest {
     void createRoom() throws Exception {
         // given
         final LocalDateTime deadline = LocalDateTime.now().plusDays(7).withSecond(0).withNano(0);
-        final String requestBody = """
-                {
-                    "title": "New Room",
-                    "availableDateSlots": ["%s"],
-                    "availableTimeSlots": ["10:00", "14:00"],
-                    "deadline": "%s"
-                }
-                """.formatted(
-                LocalDate.now().plusDays(1),
+        final RoomCreateRequest request = new RoomCreateRequest(
+                "New Room",
+                List.of(LocalDate.now().plusDays(1)),
+                List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
                 deadline
         );
 
         // when & then
         mockMvc.perform(post("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.session").exists());
     }
@@ -143,16 +143,12 @@ class RoomControllerTest {
     @Test
     void createParticipant() throws Exception {
         // given
-        final String requestBody = """
-                {
-                    "participantName": "gangsan"
-                }
-                """;
+        final ParticipantCreateRequest request = new ParticipantCreateRequest("gangsan");
 
         // when & then
         mockMvc.perform(post("/api/v1/rooms/{session}/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.isDuplicateName").value(false));
     }
@@ -163,16 +159,12 @@ class RoomControllerTest {
         // given
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
-        final String requestBody = """
-                {
-                    "participantName": "gangsan"
-                }
-                """;
+        final ParticipantCreateRequest request = new ParticipantCreateRequest("gangsan");
 
         // when & then
         mockMvc.perform(post("/api/v1/rooms/{session}/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.isDuplicateName").value(true));
     }
@@ -208,21 +200,17 @@ class RoomControllerTest {
     @Test
     void updateParticipantVotes() throws Exception {
         // given
-        final Participant participant = participantRepository.save(
-                Participant.withoutId(room.getId(), ParticipantName.from("gangsan"))
-        );
+        participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
-        final String requestBody = """
-                {
-                    "participantName": "gangsan",
-                    "dateTimeSlots": ["%s"]
-                }
-                """.formatted(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
+                "gangsan",
+                List.of(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)))
+        );
 
         // when & then
         mockMvc.perform(put("/api/v1/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Update success"))
                 .andExpect(jsonPath("$.data.participantName").value("gangsan"))
@@ -233,21 +221,17 @@ class RoomControllerTest {
     @Test
     void updateParticipantVotes_invalidSlot() throws Exception {
         // given
-        final Participant participant = participantRepository.save(
-                Participant.withoutId(room.getId(), ParticipantName.from("gangsan"))
-        );
+        participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
-        final String requestBody = """
-                {
-                    "participantName": "gangsan",
-                    "dateTimeSlots": ["%s"]
-                }
-                """.formatted(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(20, 0)));
+        final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
+                "gangsan",
+                List.of(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(20, 0)))
+        );
 
         // when & then
         mockMvc.perform(put("/api/v1/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
@@ -257,25 +241,20 @@ class RoomControllerTest {
     @Test
     void createConnectedRoom() throws Exception {
         // given
-        final String requestBody = """
-                {
-                    "title": "Connected Room",
-                    "availableDateSlots": ["%s"],
-                    "availableTimeSlots": ["10:00", "14:00"],
-                    "deadline": "%s",
-                    "platformType": "DISCORD",
-                    "channelId": "test-channel",
-                    "notification": {"created": true, "remind": false, "deadline": false}
-                }
-                """.formatted(
-                LocalDate.now().plusDays(1),
-                LocalDateTime.now().plusDays(7).withSecond(0).withNano(0)
+        final ConnectedRoomCreateRequest request = new ConnectedRoomCreateRequest(
+                "Connected Room",
+                List.of(LocalDate.now().plusDays(1)),
+                List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
+                LocalDateTime.now().plusDays(7).withSecond(0).withNano(0),
+                "DISCORD",
+                "test-channel",
+                new PlatformNotificationRequest(true, false, false)
         );
 
         // when & then
         mockMvc.perform(post("/api/v1/rooms/connected")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.session").exists())
                 .andExpect(jsonPath("$.data.platformType").value("DISCORD"));
@@ -285,17 +264,15 @@ class RoomControllerTest {
     @Test
     void updateParticipantVotes_participantNotFound() throws Exception {
         // given
-        final String requestBody = """
-                {
-                    "participantName": "NonExistent",
-                    "dateTimeSlots": ["%s"]
-                }
-                """.formatted(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
+                "NonExistent",
+                List.of(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)))
+        );
 
         // when & then
         mockMvc.perform(put("/api/v1/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
@@ -324,22 +301,17 @@ class RoomControllerTest {
     void createRoom_pastDate() throws Exception {
         // given
         final LocalDateTime deadline = LocalDateTime.now().plusDays(7).withSecond(0).withNano(0);
-        final String requestBody = """
-                {
-                    "title": "Past Room",
-                    "availableDateSlots": ["%s"],
-                    "availableTimeSlots": ["10:00"],
-                    "deadline": "%s"
-                }
-                """.formatted(
-                LocalDate.now().minusDays(1),
+        final RoomCreateRequest request = new RoomCreateRequest(
+                "Past Room",
+                List.of(LocalDate.now().minusDays(1)),
+                List.of(LocalTime.of(10, 0)),
                 deadline
         );
 
         // when & then
         mockMvc.perform(post("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
@@ -349,18 +321,17 @@ class RoomControllerTest {
     @Test
     void createRoom_invalidRequest() throws Exception {
         // given
-        final String requestBody = """
-                {
-                    "title": "",
-                    "availableDateSlots": [],
-                    "availableTimeSlots": []
-                }
-                """;
+        final RoomCreateRequest request = new RoomCreateRequest(
+                "",
+                List.of(),
+                List.of(),
+                null
+        );
 
         // when & then
         mockMvc.perform(post("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));

@@ -9,6 +9,8 @@ import com.estime.TestApplication;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
+import com.estime.room.TsidRoomSessionGenerator;
+import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
@@ -17,12 +19,12 @@ import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.CompactDateTimeSlot;
-import com.estime.room.TsidRoomSessionGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -148,17 +150,15 @@ class RoomV2ControllerTest {
         final LocalDateTime dateTime = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0));
         final int slotCode = CompactDateTimeSlot.from(dateTime).getEncoded();
 
-        final String requestBody = """
-                {
-                    "participantName": "gangsan",
-                    "slotCodes": [%d]
-                }
-                """.formatted(slotCode);
+        final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
+                "gangsan",
+                List.of(slotCode)
+        );
 
         // when & then
         mockMvc.perform(put("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Update success"))
                 .andExpect(jsonPath("$.data.slotCodes").isArray());
@@ -174,17 +174,15 @@ class RoomV2ControllerTest {
         final LocalDateTime invalidDateTime = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(20, 0));
         final int invalidSlotCode = CompactDateTimeSlot.from(invalidDateTime).getEncoded();
 
-        final String requestBody = """
-                {
-                    "participantName": "gangsan",
-                    "slotCodes": [%d]
-                }
-                """.formatted(invalidSlotCode);
+        final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
+                "gangsan",
+                List.of(invalidSlotCode)
+        );
 
         // when & then
         mockMvc.perform(put("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
@@ -197,17 +195,15 @@ class RoomV2ControllerTest {
         final LocalDateTime dateTime = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0));
         final int slotCode = CompactDateTimeSlot.from(dateTime).getEncoded();
 
-        final String requestBody = """
-                {
-                    "participantName": "NonExistent",
-                    "slotCodes": [%d]
-                }
-                """.formatted(slotCode);
+        final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
+                "NonExistent",
+                List.of(slotCode)
+        );
 
         // when & then
         mockMvc.perform(put("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
@@ -219,17 +215,15 @@ class RoomV2ControllerTest {
         // given
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
-        final String requestBody = """
-                {
-                    "participantName": "gangsan",
-                    "slotCodes": []
-                }
-                """;
+        final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
+                "gangsan",
+                List.of()
+        );
 
         // when & then
         mockMvc.perform(put("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.slotCodes").isEmpty());
     }
