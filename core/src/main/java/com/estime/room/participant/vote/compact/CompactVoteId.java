@@ -1,14 +1,15 @@
-package com.estime.room.participant.vote;
+package com.estime.room.participant.vote.compact;
 
-import com.estime.room.slot.DateTimeSlot;
+import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.shared.Validator;
 import jakarta.persistence.Embeddable;
-import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 import lombok.ToString;
 
 @Embeddable
@@ -17,21 +18,21 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class VoteId implements Serializable {
+public class CompactVoteId implements Serializable {
 
     private Long participantId;
 
-    private DateTimeSlot dateTimeSlot;
+    private CompactDateTimeSlot compactDateTimeSlot;
 
-    public static VoteId of(final Long participantId, final DateTimeSlot dateTimeSlot) {
+    public static CompactVoteId of(final Long participantId, final CompactDateTimeSlot dateTimeSlot) {
         validateNull(participantId, dateTimeSlot);
-        return new VoteId(participantId, dateTimeSlot);
+        return new CompactVoteId(participantId, dateTimeSlot);
     }
 
-    private static void validateNull(final Long participantId, final DateTimeSlot dateTimeSlot) {
+    private static void validateNull(final Long participantId, final CompactDateTimeSlot compactDateTimeSlot) {
         Validator.builder()
                 .add("participantId", participantId)
-                .add("dateTimeSlot", dateTimeSlot)
+                .add("compactDateTimeSlot", compactDateTimeSlot)
                 .validateNull();
     }
 }

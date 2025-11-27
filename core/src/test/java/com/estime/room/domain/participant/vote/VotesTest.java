@@ -93,29 +93,6 @@ class VotesTest {
         });
     }
 
-    @DisplayName("calculateUniqueStartAts 메소드로 중복 없는 시작 시간을 계산한다.")
-    @Test
-    void calculateUniqueStartAts() {
-        // given
-        final LocalDateTime now = getValidDateTime();
-        final DateTimeSlot slot1 = DateTimeSlot.from(now);
-        final DateTimeSlot slot2 = DateTimeSlot.from(now); // Same start time
-        final DateTimeSlot slot3 = DateTimeSlot.from(now.plusDays(1));
-        final Vote vote1 = Vote.of(1L, slot1);
-        final Vote vote2 = Vote.of(2L, slot2);
-        final Vote vote3 = Vote.of(3L, slot3);
-        final Votes votes = Votes.from(List.of(vote1, vote2, vote3));
-
-        // when
-        final Set<DateTimeSlot> uniqueStartAts = votes.calculateUniqueStartAts();
-
-        // then
-        assertSoftly(softly -> {
-            assertThat(uniqueStartAts).hasSize(2);
-            assertThat(uniqueStartAts).contains(slot1, slot3);
-        });
-    }
-
     @DisplayName("isEmpty와 isNotEmpty 메소드가 올바르게 동작한다.")
     @Test
     void isEmpty_and_isNotEmpty() {
