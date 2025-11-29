@@ -1,15 +1,13 @@
-package com.estime.room.service;
+package com.estime.room;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.estime.TestApplication;
 import com.estime.cache.CacheNames;
 import com.estime.port.out.RoomSessionGenerator;
-import com.estime.room.Room;
-import com.estime.room.RoomRepository;
-import com.estime.room.RoomSession;
 import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesUpdateInput;
 import com.estime.room.participant.Participant;
@@ -17,6 +15,7 @@ import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
+import com.estime.room.service.RoomApplicationService;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
@@ -36,10 +35,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
+@SpringBootTest(classes = TestApplication.class)
+@ActiveProfiles("test")
 class VoteStatisticCacheTest {
 
     @Autowired
