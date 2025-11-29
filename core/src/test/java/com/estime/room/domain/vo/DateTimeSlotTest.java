@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.slot.DateTimeSlot;
+import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.exception.NullNotAllowedException;
 import java.time.LocalDateTime;
@@ -84,5 +85,82 @@ class DateTimeSlotTest {
             softly.assertThat(thirtyMinutesLater.compareTo(now)).isPositive();
             softly.assertThat(now.compareTo(now)).isZero();
         });
+    }
+
+    @DisplayName("초가 0이 아닌 시간으로 생성 시 예외 발생")
+    @Test
+    void from_withNonZeroSecond() {
+        // given: 14:00:30
+        final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 30);
+
+        // when & then
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
+                .isInstanceOf(InvalidTimeDetailException.class);
+    }
+
+    @DisplayName("나노초가 0이 아닌 시간으로 생성 시 예외 발생")
+    @Test
+    void from_withNonZeroNano() {
+        // given: 14:00:00.000000001
+        final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 0, 1);
+
+        // when & then
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
+                .isInstanceOf(InvalidTimeDetailException.class);
+    }
+
+    @DisplayName("equals와 hashCode 검증")
+    @Test
+    void testEquals() {
+        // given
+        final LocalDateTime time = LocalDateTime.of(2025, 10, 24, 14, 0);
+        final DateTimeSlot slot1 = DateTimeSlot.from(time);
+        final DateTimeSlot slot2 = DateTimeSlot.from(time);
+
+        // when & then
+        assertSoftly(softly -> {
+            softly.assertThat(slot1).isEqualTo(slot2);
+            softly.assertThat(slot1).hasSameHashCodeAs(slot2);
+        });
+    }
+
+    @DisplayName("toString 검증")
+    @Test
+    void testToString() {
+        // given
+        final LocalDateTime time = LocalDateTime.of(2025, 10, 24, 14, 30);
+        final DateTimeSlot slot = DateTimeSlot.from(time);
+
+        // when
+        final String result = slot.toString();
+
+        // then
+        assertThat(result).contains("2025-10-24T14:30");
+    }
+
+    @DisplayName("23:30 (하루의 마지막 30분 슬롯)으로 생성 성공")
+    @Test
+    void from_lastSlotOfDay() {
+        // given: 23:30
+        final LocalDateTime lastSlot = LocalDateTime.of(2025, 10, 24, 23, 30);
+
+        // when
+        final DateTimeSlot slot = DateTimeSlot.from(lastSlot);
+
+        // then
+        assertThat(slot.getStartAt()).isEqualTo(lastSlot);
+    }
+
+    @DisplayName("00:00 (하루의 첫 슬롯)으로 생성 성공")
+    @Test
+    void from_firstSlotOfDay() {
+        // given: 00:00
+        final LocalDateTime firstSlot = LocalDateTime.of(2025, 10, 24, 0, 0);
+
+        // when
+        final DateTimeSlot slot = DateTimeSlot.from(firstSlot);
+
+        // then
+        assertThat(slot.getStartAt()).isEqualTo(firstSlot);
     }
 }
