@@ -3,6 +3,8 @@ package com.estime.room.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.TestApplication;
+import com.estime.exception.NotFoundException;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -33,9 +35,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
+@SpringBootTest(classes = TestApplication.class)
+@ActiveProfiles("test")
 @Transactional
 class CompactRoomApplicationServiceTest {
 
@@ -245,7 +249,7 @@ class CompactRoomApplicationServiceTest {
         // when & then
         assertThatThrownBy(() -> compactRoomApplicationService.updateParticipantVotes(input))
                 .isInstanceOf(UnavailableSlotException.class)
-                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " is outside the available range");
     }
 
     @DisplayName("사용 불가능한 CompactDateTimeSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다. - 시간이 범위 밖")
@@ -260,7 +264,7 @@ class CompactRoomApplicationServiceTest {
         // when & then
         assertThatThrownBy(() -> compactRoomApplicationService.updateParticipantVotes(input))
                 .isInstanceOf(UnavailableSlotException.class)
-                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " is outside the available range");
     }
 
     @DisplayName("사용 불가능한 CompactDateTimeSlot으로 투표를 업데이트하면 UnavailableSlotException이 발생한다. - 날짜와 시간 둘 다 범위 밖")
@@ -275,6 +279,45 @@ class CompactRoomApplicationServiceTest {
         // when & then
         assertThatThrownBy(() -> compactRoomApplicationService.updateParticipantVotes(input))
                 .isInstanceOf(UnavailableSlotException.class)
-                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT + " is outside the available range");
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " is outside the available range");
+    }
+
+    @DisplayName("존재하지 않는 세션으로 투표 통계를 조회하면 NotFoundException이 발생한다")
+    @Test
+    void calculateVoteStatistic_withNonexistentSession() {
+        // given
+        final RoomSessionInput input = RoomSessionInput.from(RoomSession.from("nonexistent"));
+
+        // when & then
+        assertThatThrownBy(() -> compactRoomApplicationService.calculateVoteStatistic(input))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining(DomainTerm.ROOM.name() + " is not exists");
+    }
+
+    @DisplayName("존재하지 않는 참여자의 투표를 조회하면 NotFoundException이 발생한다")
+    @Test
+    void getParticipantVotes_withNonexistentParticipant() {
+        // given
+        final VotesFindInput input = VotesFindInput.of(room.getSession(), "nonexistent");
+
+        // when & then
+        assertThatThrownBy(() -> compactRoomApplicationService.getParticipantVotesBySessionAndParticipantName(input))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining(DomainTerm.PARTICIPANT.name() + " is not exists");
+    }
+
+    @DisplayName("존재하지 않는 참여자의 투표를 업데이트하면 NotFoundException이 발생한다")
+    @Test
+    void updateParticipantVotes_withNonexistentParticipant() {
+        // given
+        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(
+                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        final CompactVoteUpdateInput input = new CompactVoteUpdateInput(room.getSession(),
+                ParticipantName.from("nonexistent"), List.of(slot));
+
+        // when & then
+        assertThatThrownBy(() -> compactRoomApplicationService.updateParticipantVotes(input))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining(DomainTerm.PARTICIPANT.name() + " is not exists");
     }
 }

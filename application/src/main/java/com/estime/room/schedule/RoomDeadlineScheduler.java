@@ -5,6 +5,7 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.platform.PlatformRepository;
 import jakarta.annotation.PostConstruct;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RoomDeadlineScheduler {
 
-    private static final int REMINDER_HOURS_BEFORE_DEADLINE = 1;
+    private static final Duration REMINDER_BEFORE_DEADLINE = Duration.ofHours(1);
 
     private final RoomRepository roomRepository;
     private final PlatformRepository platformRepository;
@@ -48,13 +49,16 @@ public class RoomDeadlineScheduler {
 
     @Scheduled(cron = "0 */5 * * * *")
     public void pollNewRooms() {
+        pollNewRoomsAt(LocalDateTime.now());
+    }
+
+    public void pollNewRoomsAt(final LocalDateTime referenceTime) {
         final Long currentLastId = lastCheckedRoomId.get();
         final List<Room> newRooms;
-        final LocalDateTime now = LocalDateTime.now();
 
         if (currentLastId == null) {
             log.warn("No last checked ID found, re-initializing from all rooms.");
-            newRooms = roomRepository.findAllByDeadlineAfter(now);
+            newRooms = roomRepository.findAllByDeadlineAfter(referenceTime);
         } else {
             log.info("Polling for new rooms with ID greater than {}.", currentLastId);
             newRooms = roomRepository.findAllByIdGreaterThanOrderByIdAsc(currentLastId);
@@ -65,7 +69,7 @@ public class RoomDeadlineScheduler {
         }
 
         log.info("Found {} new rooms to schedule.", newRooms.size());
-        populateQueueWithTasks(newRooms, now);
+        populateQueueWithTasks(newRooms, referenceTime);
 
         newRooms.stream()
                 .map(Room::getId)
@@ -78,22 +82,40 @@ public class RoomDeadlineScheduler {
 
     @Scheduled(cron = "0 */5 * * * *")
     public void processTaskQueue() {
-        final LocalDateTime now = LocalDateTime.now();
-        log.debug("Processing task queue at {}. Current queue size: {}", now, taskQueue.size());
+        processTaskQueueAt(LocalDateTime.now());
+    }
 
-        while (!taskQueue.isEmpty() && !taskQueue.peek().executionTime().isAfter(now)) {
+    public void processTaskQueueAt(final LocalDateTime currentTime) {
+        log.debug("Processing task queue at {}. Current queue size: {}", currentTime, taskQueue.size());
+
+        while (hasTaskDueBy(currentTime)) {
             final NotificationTask task = taskQueue.poll();
-            log.info("Processing task: {} for roomId: {}", task.taskType(), task.roomId());
-
-            if (platformRepository.findByRoomId(task.roomId()).isEmpty()) {
-                log.debug("Skipping notification for roomId: {} - no platform connected", task.roomId());
-                continue;
+            if (task == null) {
+                break; // 동시성 문제로 큐가 비었을 수 있음
             }
+            processTask(task);
+        }
+    }
 
-            switch (task.taskType()) {
-                case NotificationTaskType.REMIND -> notificationService.sendReminderNotification(task.roomId());
-                case NotificationTaskType.DEADLINE -> notificationService.sendDeadlineAlert(task.roomId());
-            }
+    private boolean hasTaskDueBy(final LocalDateTime currentTime) {
+        if (taskQueue.isEmpty()) {
+            return false;
+        }
+        final NotificationTask nextTask = taskQueue.peek();
+        return nextTask.executionTime().isBefore(currentTime) || nextTask.executionTime().equals(currentTime);
+    }
+
+    private void processTask(final NotificationTask task) {
+        log.info("Processing task: {} for roomId: {}", task.taskType(), task.roomId());
+
+        if (platformRepository.findByRoomId(task.roomId()).isEmpty()) {
+            log.debug("Skipping notification for roomId: {} - no platform connected", task.roomId());
+            return;
+        }
+
+        switch (task.taskType()) {
+            case NotificationTaskType.REMIND -> notificationService.sendReminderNotification(task.roomId());
+            case NotificationTaskType.DEADLINE -> notificationService.sendDeadlineAlert(task.roomId());
         }
     }
 
@@ -110,7 +132,7 @@ public class RoomDeadlineScheduler {
 
             taskQueue.add(new NotificationTask(room.getId(), deadline, NotificationTaskType.DEADLINE));
 
-            final LocalDateTime reminderTime = deadline.minusHours(REMINDER_HOURS_BEFORE_DEADLINE);
+            final LocalDateTime reminderTime = deadline.minus(REMINDER_BEFORE_DEADLINE);
             if (reminderTime.isAfter(referenceTime)) {
                 taskQueue.add(
                         new NotificationTask(room.getId(), reminderTime, NotificationTaskType.REMIND));
