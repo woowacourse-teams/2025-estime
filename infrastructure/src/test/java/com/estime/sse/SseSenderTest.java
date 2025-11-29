@@ -2,6 +2,7 @@ package com.estime.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.RoomSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,9 +46,10 @@ class SseSenderTest {
         sseSender.broadcast(session, "broadcast-message");
 
         // then: 모든 연결이 여전히 저장되어 있음
-        assertThat(sseConnectionManager.findAll(session))
-                .hasSize(2)
-                .contains(connection1, connection2);
+        assertSoftly(softly -> {
+            softly.assertThat(sseConnectionManager.findAll(session)).hasSize(2);
+            softly.assertThat(sseConnectionManager.findAll(session)).contains(connection1, connection2);
+        });
     }
 
     @DisplayName("broadcast() - 연결이 없는 세션에 브로드캐스트해도 예외가 발생하지 않는다")

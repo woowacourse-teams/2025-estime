@@ -1,6 +1,7 @@
 package com.estime.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.RoomSession;
 import java.util.List;
@@ -29,8 +30,10 @@ class SseConnectionManagerTest {
         final SseConnection saved = sseConnectionManager.save(session, connection);
 
         // then
-        assertThat(saved).isEqualTo(connection);
-        assertThat(sseConnectionManager.findAll(session)).contains(connection);
+        assertSoftly(softly -> {
+            softly.assertThat(saved).isEqualTo(connection);
+            softly.assertThat(sseConnectionManager.findAll(session)).contains(connection);
+        });
     }
 
     @DisplayName("save() - 같은 세션에 여러 연결을 저장할 수 있다")
@@ -46,8 +49,10 @@ class SseConnectionManagerTest {
 
         // then
         final List<SseConnection> connections = sseConnectionManager.findAll(session);
-        assertThat(connections).hasSize(2);
-        assertThat(connections).containsExactlyInAnyOrder(connection1, connection2);
+        assertSoftly(softly -> {
+            softly.assertThat(connections).hasSize(2);
+            softly.assertThat(connections).containsExactlyInAnyOrder(connection1, connection2);
+        });
     }
 
     @DisplayName("findAll() - 세션의 모든 연결을 조회한다")
@@ -63,8 +68,10 @@ class SseConnectionManagerTest {
         final List<SseConnection> connections = sseConnectionManager.findAll(session);
 
         // then
-        assertThat(connections).hasSize(2);
-        assertThat(connections).containsExactlyInAnyOrder(connection1, connection2);
+        assertSoftly(softly -> {
+            softly.assertThat(connections).hasSize(2);
+            softly.assertThat(connections).containsExactlyInAnyOrder(connection1, connection2);
+        });
     }
 
     @DisplayName("findAll() - 존재하지 않는 세션 조회 시 빈 리스트를 반환한다")
@@ -142,14 +149,18 @@ class SseConnectionManagerTest {
         sseConnectionManager.save(session2, connection2);
 
         // then
-        assertThat(sseConnectionManager.findAll(session1)).containsExactly(connection1);
-        assertThat(sseConnectionManager.findAll(session2)).containsExactly(connection2);
+        assertSoftly(softly -> {
+            softly.assertThat(sseConnectionManager.findAll(session1)).containsExactly(connection1);
+            softly.assertThat(sseConnectionManager.findAll(session2)).containsExactly(connection2);
+        });
 
         // when: session1 연결 삭제
         sseConnectionManager.delete(session1, connection1);
 
         // then: session2는 영향받지 않음
-        assertThat(sseConnectionManager.findAll(session1)).isEmpty();
-        assertThat(sseConnectionManager.findAll(session2)).containsExactly(connection2);
+        assertSoftly(softly -> {
+            softly.assertThat(sseConnectionManager.findAll(session1)).isEmpty();
+            softly.assertThat(sseConnectionManager.findAll(session2)).containsExactly(connection2);
+        });
     }
 }
