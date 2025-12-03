@@ -45,11 +45,10 @@ const CheckEventPage = () => {
   const {
     buttonMode,
     buttonName,
-    modal,
+    modalControl,
     handleButtonClick,
     handleLoginModalButtonClick,
     handleConfirmModalButtonClick,
-    handleModalClick,
   } = useCheckEventHandlers({
     handleLogin,
     fetchUserAvailableTime,
@@ -79,7 +78,7 @@ const CheckEventPage = () => {
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
-            handleCopyLinkButtonClick={() => handleModalClick('open_copylink')}
+            handleCopyLinkButtonClick={modalControl.openCopyLink}
           />
           <S.FlipCard>
             <S.FlipInner isFlipped={buttonMode === 'save'}>
@@ -104,7 +103,7 @@ const CheckEventPage = () => {
         </Flex>
       </Wrapper>
 
-      <Modal isOpen={modal.login} position="center" onClose={() => handleModalClick('close_login')}>
+      <Modal isOpen={modalControl.modal.login} position="center" onClose={modalControl.closeLogin}>
         <LoginModal
           handleModalLogin={handleLoginModalButtonClick}
           isLoginLoading={isLoginLoading || isSavingUserTime}
@@ -112,9 +111,9 @@ const CheckEventPage = () => {
       </Modal>
 
       <Modal
-        isOpen={modal.entryConfirm}
+        isOpen={modalControl.modal.entryConfirm}
         position="center"
-        onClose={() => handleConfirmModalButtonClick('N')}
+        onClose={modalControl.closeConfirm}
       >
         <EntryConfirmModal
           onConfirm={() => handleConfirmModalButtonClick('Y')}
@@ -123,9 +122,9 @@ const CheckEventPage = () => {
       </Modal>
 
       <Modal
-        isOpen={modal.copyLink}
+        isOpen={modalControl.modal.copyLink}
         position="center"
-        onClose={() => handleModalClick('close_copylink')}
+        onClose={modalControl.closeCopyLink}
       >
         <CopyLinkModal sessionId={session} />
       </Modal>
