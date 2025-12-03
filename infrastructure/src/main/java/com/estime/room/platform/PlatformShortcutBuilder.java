@@ -13,7 +13,7 @@ public class PlatformShortcutBuilder {
     private final ClientOriginProperties properties;
 
     public String buildConnectedRoomCreateUrl(final PlatformType type, final String channelId) {
-        return UriComponentsBuilder.fromUriString(properties.client())
+        return UriComponentsBuilder.fromUriString(properties.prod())
                 .queryParam("platformType", type.name())
                 .queryParam("channelId", channelId)
                 .build()
@@ -21,7 +21,7 @@ public class PlatformShortcutBuilder {
     }
 
     public String buildConnectedRoomUrl(final RoomSession session) {
-        return UriComponentsBuilder.fromUriString(properties.client())
+        return UriComponentsBuilder.fromUriString(properties.prod())
                 .path("check")
                 .queryParam("id", session.toString())
                 .build()
