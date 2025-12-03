@@ -3,7 +3,6 @@ spring:
     activate:
       on-profile: prod
     import:
-      - application-common.yml
       - optional:file:.env.prod[.properties]
 
   jpa:
@@ -23,7 +22,9 @@ spring:
 
 url:
   origin:
-    client: ${URL_ORIGIN_CLIENT}
+    prod: ${URL_ORIGIN_PROD}
+    dev: ${URL_ORIGIN_DEV}
+    local: ${URL_ORIGIN_LOCAL}
 
 logging:
   discord:

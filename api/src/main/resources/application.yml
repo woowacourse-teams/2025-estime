@@ -5,3 +5,4 @@ spring:
       local: [ common, local ]
       dev: [ common, dev ]
       prod: [ common, prod ]
+      test: [ test ]
