@@ -2,6 +2,17 @@ import { useCallback, useState } from 'react';
 
 type modalTypeKey = 'Login' | 'EntryConfirm' | 'CopyLink';
 type Modals = Record<modalTypeKey, boolean>;
+
+interface ModalState {
+  open: () => void;
+  close: () => void;
+  isOpen: boolean;
+}
+export interface ModalHelperType {
+  login: ModalState;
+  confirm: ModalState;
+  copyLink: ModalState;
+}
 const useModalControl = () => {
   const [modals, setModals] = useState<Modals>({
     Login: false,
@@ -21,7 +32,7 @@ const useModalControl = () => {
       close: () => handleCloseModal('Login'),
       isOpen: modals.Login,
     },
-    entryConfirm: {
+    confirm: {
       open: () => handleOpenModal('EntryConfirm'),
       close: () => handleCloseModal('EntryConfirm'),
       isOpen: modals.EntryConfirm,
@@ -32,10 +43,7 @@ const useModalControl = () => {
       isOpen: modals.CopyLink,
     },
   };
-  return {
-    modals,
-    modalHelpers,
-  };
+  return modalHelpers;
 };
 
 export default useModalControl;
