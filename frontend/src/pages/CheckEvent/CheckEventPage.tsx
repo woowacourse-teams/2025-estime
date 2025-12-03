@@ -93,8 +93,8 @@ const CheckEventPage = () => {
                 roomInfo={roomInfo}
                 pagination={pagination}
                 buttonName={buttonName}
-                handleButtonClick={handleButtonClick}
                 buttonMode={buttonMode}
+                handleButtonClick={handleButtonClick}
               />
               {isMobile ? <GlassTooltip.Mobile /> : <GlassTooltip.Desktop />}
             </S.FlipInner>
