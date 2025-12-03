@@ -1,53 +1,45 @@
-import { CreateUserResponseType } from '@/apis/room/type';
+import type { CreateUserResponseType } from '@/apis/room/type';
 import { userNameStore } from '../../stores/userNameStore';
+import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
 
 interface RegisterFlowDeps {
-  handleLogin: () => Promise<CreateUserResponseType>;
-  fetchUserAvailableTime: () => Promise<void>;
-  openLogin: () => void;
-  closeLogin: () => void;
-  openConfirm: () => void;
-  closeConfirm: () => void;
+  performLogin: () => Promise<CreateUserResponseType>;
   onComplete: () => void;
+  loadUserAvailability: () => Promise<void>;
+  modalHelpers: ModalHelperType;
 }
 
 const useRegisterFlow = ({
-  handleLogin,
-  fetchUserAvailableTime,
-  openLogin,
-  closeLogin,
-  openConfirm,
-  closeConfirm,
+  performLogin,
+  loadUserAvailability,
   onComplete,
+  modalHelpers,
 }: RegisterFlowDeps) => {
+  const { login, confirm } = modalHelpers;
   const execute = () => {
-    openLogin();
+    login.open();
   };
 
   const handleLoginSubmit = async () => {
-    const data = await handleLogin();
+    const data = await performLogin();
 
     if (data.isDuplicateName) {
-      openConfirm();
+      confirm.open();
       return;
     }
 
-    await fetchUserAvailableTime();
+    await loadUserAvailability();
     userNameStore.loginComplete();
-    closeLogin();
+    login.close();
     onComplete();
   };
 
-  const handleConfirmResponse = async (type: 'Y' | 'N') => {
-    if (type === 'Y') {
-      closeConfirm();
-      closeLogin();
-      await fetchUserAvailableTime();
-      userNameStore.loginComplete();
-      onComplete();
-    } else {
-      closeConfirm();
-    }
+  const handleConfirmResponse = async () => {
+    confirm.close();
+    login.close();
+    await loadUserAvailability();
+    userNameStore.loginComplete();
+    onComplete();
   };
 
   return {
