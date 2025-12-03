@@ -21,7 +21,7 @@ interface TimetableSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
   pagination: TimeTablePaginationReturns;
   buttonName: string;
-  handleButtonClick: () => Promise<void>;
+  handleButtonClick: () => Promise<void> | void;
   isSavingUserTime: boolean;
   isVisible: boolean;
 }

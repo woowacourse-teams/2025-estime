@@ -11,13 +11,14 @@ import { useTheme } from '@emotion/react';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import type { FlowMode } from '../hooks/useCheckEventHandlers';
 
 interface HeatmapSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
   pagination: TimeTablePaginationReturns;
   buttonName: string;
-  handleButtonClick: () => Promise<void>;
-  buttonMode: 'register' | 'save' | 'edit';
+  handleButtonClick: () => Promise<void> | void;
+  buttonMode: FlowMode;
 }
 
 const HeatmapSection = ({
