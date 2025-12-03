@@ -50,7 +50,7 @@ export const Default: Story = {
           position="center"
           onClose={() => setIsLoginModalOpen(false)}
         >
-          <LoginModal handleModalLogin={() => {}} isLoginLoading={false} />
+          <LoginModal onSubmit={() => {}} isPending={false} />
         </Modal>
       </Flex>
     );
@@ -76,7 +76,7 @@ export const PreOpenModal: Story = {
           position="center"
           onClose={() => setIsLoginModalOpen(false)}
         >
-          <LoginModal handleModalLogin={() => {}} isLoginLoading={false} />
+          <LoginModal onSubmit={() => {}} isPending={false} />
         </Modal>
       </Flex>
     );
