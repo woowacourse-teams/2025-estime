@@ -1,42 +1,38 @@
 import { useState } from 'react';
 import { CreateUserResponseType } from '@/apis/room/type';
 import { updateUserAvailableTimeType } from '@/apis/time/type';
-import useModalControl from './useModalControl';
 import useRegisterFlow from './Flows/useRegisterFlow';
 import useSaveFlow from './Flows/useSaveFlow';
 import useEditFlow from './Flows/useEditFlow';
+import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
 
 export type FlowMode = 'register' | 'save' | 'edit';
 
 interface CheckEventHandlersDeps {
-  handleLogin: () => Promise<CreateUserResponseType>;
-  fetchUserAvailableTime: () => Promise<void>;
-  handleUserAvailabilitySubmit: () => Promise<updateUserAvailableTimeType | undefined>;
+  loadUserAvailability: () => Promise<void>;
+  performLogin: () => Promise<CreateUserResponseType>;
+  performUserSubmit: () => Promise<updateUserAvailableTimeType | undefined>;
   pageReset: () => void;
+  modalHelpers: ModalHelperType;
 }
 
 const useCheckEventHandlers = ({
-  handleLogin,
-  fetchUserAvailableTime,
-  handleUserAvailabilitySubmit,
+  loadUserAvailability,
+  performLogin,
+  performUserSubmit,
   pageReset,
+  modalHelpers,
 }: CheckEventHandlersDeps) => {
   const [mode, setMode] = useState<FlowMode>('register');
-
-  const modalControl = useModalControl();
-
   const registerFlow = useRegisterFlow({
-    handleLogin,
-    fetchUserAvailableTime,
-    openLogin: modalControl.openLogin,
-    closeLogin: modalControl.closeLogin,
-    openConfirm: modalControl.openConfirm,
-    closeConfirm: modalControl.closeConfirm,
+    modalHelpers,
+    performLogin,
+    loadUserAvailability,
     onComplete: () => setMode('save'),
   });
 
   const saveFlow = useSaveFlow({
-    handleUserAvailabilitySubmit,
+    performUserSubmit,
     pageReset,
     onComplete: () => setMode('edit'),
   });
@@ -56,12 +52,9 @@ const useCheckEventHandlers = ({
   return {
     buttonMode: mode,
     buttonName: currentStrategy.label,
-
-    modalControl,
-
     handleButtonClick: currentStrategy.execute,
-    handleLoginModalButtonClick: registerFlow.handleLoginSubmit,
-    handleConfirmModalButtonClick: registerFlow.handleConfirmResponse,
+    handleLogin: registerFlow.handleLoginSubmit,
+    handleConfirm: registerFlow.handleConfirmResponse,
   };
 };
 
