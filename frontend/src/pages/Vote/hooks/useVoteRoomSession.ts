@@ -7,7 +7,7 @@ import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
 
-const useCheckRoomSession = () => {
+const useVoteRoomSession = () => {
   const session = useExtractQueryParams('id');
   const { triggerFetch: getRoomSession } = useFetch({
     context: 'fetchSession',
@@ -52,4 +52,4 @@ const useCheckRoomSession = () => {
   return { roomInfo, session };
 };
 
-export default useCheckRoomSession;
+export default useVoteRoomSession;

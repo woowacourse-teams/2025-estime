@@ -11,7 +11,7 @@ import { useTheme } from '@emotion/react';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
-import type { FlowMode } from '../hooks/useCheckEventHandlers';
+import type { FlowMode } from '../hooks/useVotePageHandlers';
 
 interface HeatmapSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };

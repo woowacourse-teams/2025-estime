@@ -7,18 +7,18 @@ import Participants from '../Participants/Participants';
 import { useTheme } from '@emotion/react';
 import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
 import { DateManager } from '@/shared/utils/common/DateManager';
-import * as S from './CheckEventPageHeader.styled';
+import * as S from './VotePageHeader.styled';
 
-type CheckEventPageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
+type VotePageHeaderProps = Pick<RoomInfo, 'deadline' | 'title'> & {
   roomSession: string;
   handleCopyLinkButtonClick: () => void;
 };
 
-const CheckEventPageHeader = ({
+const VotePageHeader = ({
   deadline,
   title,
   handleCopyLinkButtonClick,
-}: CheckEventPageHeaderProps) => {
+}: VotePageHeaderProps) => {
   const theme = useTheme();
   const isExpired = DateManager.IsPastDeadline(deadline);
 
@@ -53,4 +53,4 @@ const CheckEventPageHeader = ({
   );
 };
 
-export default CheckEventPageHeader;
+export default VotePageHeader;

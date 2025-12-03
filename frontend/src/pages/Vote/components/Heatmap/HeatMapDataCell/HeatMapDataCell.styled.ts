@@ -1,4 +1,4 @@
-import { hexToRgba } from '@/pages/CheckEvent/utils/getCellColor';
+import { hexToRgba } from '@/pages/Vote/utils/getCellColor';
 import { keyframes, css } from '@emotion/react';
 import styled from '@emotion/styled';
 

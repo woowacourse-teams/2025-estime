@@ -1,6 +1,6 @@
 import * as S from './HeatMapPreviewDataCell.styled';
 import { memo } from 'react';
-import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import { useRoomStatistics } from '@/pages/Vote/stores/roomStatisticsStore';
 
 interface HeatMapDataCellProps {
   date: string;

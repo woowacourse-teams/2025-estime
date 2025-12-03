@@ -1,6 +1,6 @@
 import * as S from './Timetable.styled';
 import TimeSlotColumn from './TimeSlotColumn';
-import useLocalTimeSelection from '@/pages/CheckEvent/hooks/useLocalTimeSelection';
+import useLocalTimeSelection from '@/pages/Vote/hooks/useLocalTimeSelection';
 import { RefObject } from 'react';
 import HeatmapPreview from '../HeatMapPreview';
 import Wrapper from '@/shared/layout/Wrapper';

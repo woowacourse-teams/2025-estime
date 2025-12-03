@@ -1,19 +1,19 @@
-import LoginModal from '@/pages/CheckEvent/components/LoginModal';
-import useUserAvailability from '@/pages/CheckEvent/hooks/useUserAvailability';
-import CheckEventPageHeader from '@/pages/CheckEvent/components/CheckEventPageHeader';
+import LoginModal from '@/pages/Vote/components/LoginModal';
+import useUserAvailability from '@/pages/Vote/hooks/useUserAvailability';
+import VotePageHeader from '@/pages/Vote/components/VotePageHeader';
 import { useCallback } from 'react';
-import { EntryConfirmModal } from '@/pages/CheckEvent/components/EntryConfirmModal';
+import { EntryConfirmModal } from '@/pages/Vote/components/EntryConfirmModal';
 import Modal from '@/shared/components/Modal';
-import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
-import useSSE from '@/pages/CheckEvent/hooks/useSSE';
-import useHeatmapStatistics from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
+import CopyLinkModal from '@/pages/Vote/components/CopyLinkModal';
+import useSSE from '@/pages/Vote/hooks/useSSE';
+import useHeatmapStatistics from '@/pages/Vote/hooks/useHeatmapStatistics';
 import useUserLogin from './hooks/useUserLogin';
 import useTimeTablePagination from './hooks/useTimeTablePagination';
 import Wrapper from '@/shared/layout/Wrapper';
 import Flex from '@/shared/layout/Flex';
-import * as S from './CheckEventPage.styled';
-import useCheckRoomSession from '@/pages/CheckEvent/hooks/useCheckRoomSession';
-import useCheckEventHandlers from './hooks/useCheckEventHandlers';
+import * as S from './VotePage.styled';
+import useVoteRoomSession from '@/pages/Vote/hooks/useVoteRoomSession';
+import useVotePageHandlers from './hooks/useVotePageHandlers';
 import TimetableSection from './sections/TimeTableSection';
 import HeatmapSection from './sections/HeatmapSection';
 import GlassTooltip from './components/GlassTooltip';
@@ -21,10 +21,10 @@ import Announce from './components/Announce/Announce';
 import { useTheme } from '@emotion/react';
 import useModalControl from '@/shared/hooks/Modal/useModalControl';
 
-const CheckEventPage = () => {
+const VotePage = () => {
   const { isMobile } = useTheme();
 
-  const { roomInfo, session } = useCheckRoomSession();
+  const { roomInfo, session } = useVoteRoomSession();
 
   const { performLogin, isLoginLoading } = useUserLogin({
     session,
@@ -45,7 +45,7 @@ const CheckEventPage = () => {
   const modalHelpers = useModalControl();
 
   const { buttonMode, buttonName, handleButtonClick, handleLogin, handleConfirm } =
-    useCheckEventHandlers({
+    useVotePageHandlers({
       loadUserAvailability,
       performLogin,
       performUserSubmit,
@@ -73,7 +73,7 @@ const CheckEventPage = () => {
         paddingRight="var(--padding-7)"
       >
         <Flex direction="column" gap="var(--gap-6)">
-          <CheckEventPageHeader
+          <VotePageHeader
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
@@ -130,4 +130,4 @@ const CheckEventPage = () => {
   );
 };
 
-export default CheckEventPage;
+export default VotePage;

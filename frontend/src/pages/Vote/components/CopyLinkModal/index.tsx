@@ -12,7 +12,7 @@ export interface CopyLinkModalProps {
 }
 export const CopyLinkModal = ({ sessionId }: CopyLinkModalProps) => {
   const [isCopied, setIsCopied] = useState(false);
-  const link = `${process.env.DOMAIN_URL}/check?id=${sessionId}`;
+  const link = `${process.env.DOMAIN_URL}/vote?id=${sessionId}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link);

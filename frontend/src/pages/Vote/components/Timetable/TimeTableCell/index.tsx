@@ -1,7 +1,7 @@
-import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
-import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
-import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
-import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import { useTimetableHoverContext } from '@/pages/Vote/providers/TimetableProvider';
+import { cellDataStore } from '@/pages/Vote/stores/CellDataStore';
+import { useGlassPreview } from '@/pages/Vote/stores/glassPreviewStore';
+import { useRoomStatistics } from '@/pages/Vote/stores/roomStatisticsStore';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { useTheme } from '@emotion/react';

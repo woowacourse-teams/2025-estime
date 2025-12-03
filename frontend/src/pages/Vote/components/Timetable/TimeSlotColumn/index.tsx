@@ -1,4 +1,4 @@
-import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/TimetableProvider';
+import { useTimetableHoverContext } from '@/pages/Vote/providers/TimetableProvider';
 import * as S from '../Timetable.styled';
 import { RefObject } from 'react';
 

@@ -22,7 +22,7 @@ const useCreateRoomController = () => {
     const session = await roomInfoSubmit();
     if (session) {
       showToast({ type: 'success', message: '방 생성이 완료되었습니다.' });
-      navigate(`/check?id=${session}`, { replace: true });
+      navigate(`/vote?id=${session}`, { replace: true });
     } else {
       setIsRoomCreateLoading(false);
     }

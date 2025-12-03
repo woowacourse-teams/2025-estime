@@ -2,7 +2,7 @@ import Wrapper from '@/shared/layout/Wrapper';
 import Text from '@/shared/components/Text';
 import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
-import TimeTableDay from '@/pages/CheckEvent/components/Timetable/TimeTableDay';
+import TimeTableDay from '@/pages/Vote/components/Timetable/TimeTableDay';
 import { RefObject, useEffect, useMemo } from 'react';
 import { cellDataStore } from '../../stores/CellDataStore';
 import { cellHoverStore, useCellHoverState } from '../../stores/CellHoverStore';

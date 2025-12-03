@@ -1,10 +1,10 @@
 import Flex from '@/shared/layout/Flex';
 import Wrapper from '@/shared/layout/Wrapper';
-import * as S from './CheckEventPageSkeleton.styled';
+import * as S from './VotePageSkeleton.styled';
 import { useTheme } from '@emotion/react';
 import { SkeletonBox } from '@/shared/components/Skeleton/SkeletonBox';
 
-const CheckEventPageSkeleton = () => {
+const VotePageSkeleton = () => {
   const theme = useTheme();
 
   return (
@@ -52,4 +52,4 @@ const CheckEventPageSkeleton = () => {
   );
 };
 
-export default CheckEventPageSkeleton;
+export default VotePageSkeleton;

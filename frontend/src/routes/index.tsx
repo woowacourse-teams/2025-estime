@@ -2,7 +2,7 @@ import RootElement from '@/RootElement';
 import LoadingSpinner from '@/shared/components/Spinner';
 import { lazy, Suspense } from 'react';
 import CreateEventPageSkeleton from '@/pages/CreateEvent/components/Skeleton';
-import CheckEventPageSkeleton from '@/pages/CheckEvent/components/Skeleton';
+import VotePageSkeleton from '@/pages/Vote/components/Skeleton';
 import CreditsPageSkeleton from '@/pages/common/CreditsPageSkeleton';
 import AnnounceProvider from '@/shared/contexts/AnnounceContext';
 
@@ -12,7 +12,7 @@ const MobileCreateEventPage = lazy(
   () => import('@/pages/CreateEvent/Mobile/MobileCreateEventPage')
 );
 const CreateEventPage = lazy(() => import('@/pages/CreateEvent/CreateEventPage'));
-const CheckEventPage = lazy(() => import('../pages/CheckEvent/CheckEventPage'));
+const VotePage = lazy(() => import('../pages/Vote/VotePage'));
 const CreditsPage = lazy(() => import('@/pages/common/CreditsPage'));
 const Error404Page = lazy(() => import('@/pages/common/Error404Page'));
 
@@ -35,11 +35,11 @@ const appRoutes = [
         ),
       },
       {
-        path: 'check',
+        path: 'vote',
         element: (
-          <Suspense fallback={<CheckEventPageSkeleton />}>
+          <Suspense fallback={<VotePageSkeleton />}>
             <AnnounceProvider>
-              <CheckEventPage />
+              <VotePage />
             </AnnounceProvider>
           </Suspense>
         ),

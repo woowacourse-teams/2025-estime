@@ -2,7 +2,7 @@ import * as S from './HeatmapPreview.styled';
 import Wrapper from '@/shared/layout/Wrapper';
 import TimeTableDay from '../Timetable/TimeTableDay';
 import HeatMapPreviewDataCell from '../Heatmap/HeatMapPreviewDataCell';
-import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
+import { useGlassPreview } from '@/pages/Vote/stores/glassPreviewStore';
 
 interface HeatmapProps {
   dateTimeSlots: string[];

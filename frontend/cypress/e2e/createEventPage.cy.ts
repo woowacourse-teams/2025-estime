@@ -20,7 +20,7 @@ describe('방 생성 플로우', () => {
     cy.get('button').contains('약속 만들기').click();
     cy.wait('@createRoom');
 
-    cy.url().should('include', '/check?id=123');
+    cy.url().should('include', '/vote?id=123');
     cy.contains('방 생성이 완료되었습니다.').should('be.visible');
   });
 

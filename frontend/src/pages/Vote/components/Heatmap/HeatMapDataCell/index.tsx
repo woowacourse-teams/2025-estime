@@ -1,11 +1,11 @@
 import * as S from './HeatMapDataCell.styled';
 import { memo } from 'react';
-import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
-import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
+import { useRoomStatistics } from '@/pages/Vote/stores/roomStatisticsStore';
+import { cellDataStore } from '@/pages/Vote/stores/CellDataStore';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { useTheme } from '@emotion/react';
-import { cellHoverStore } from '@/pages/CheckEvent/stores/CellHoverStore';
+import { cellHoverStore } from '@/pages/Vote/stores/CellHoverStore';
 
 interface HeatMapDataCellProps {
   date: string;
