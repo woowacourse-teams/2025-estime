@@ -26,6 +26,10 @@ url:
     dev: ${URL_ORIGIN_DEV}
     local: ${URL_ORIGIN_LOCAL}
 
+springdoc:
+  swagger-ui:
+    path: /docs
+
 logging:
   discord:
     webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
