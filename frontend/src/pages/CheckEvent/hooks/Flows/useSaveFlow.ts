@@ -1,4 +1,4 @@
-import { updateUserAvailableTimeType } from '@/apis/time/type';
+import type { updateUserAvailableTimeType } from '@/apis/time/type';
 import { showToast } from '@/shared/store/toastStore';
 import { userAvailabilityStore } from '../../stores/userAvailabilityStore';
 
