@@ -8,7 +8,7 @@ import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
 
 export type FlowMode = 'register' | 'save' | 'edit';
 
-interface CheckEventHandlersDeps {
+interface CheckEventHandlersParams {
   loadUserAvailability: () => Promise<void>;
   performLogin: () => Promise<CreateUserResponseType>;
   performUserSubmit: () => Promise<updateUserAvailableTimeType | undefined>;
@@ -22,10 +22,14 @@ const useCheckEventHandlers = ({
   performUserSubmit,
   pageReset,
   modalHelpers,
-}: CheckEventHandlersDeps) => {
+}: CheckEventHandlersParams) => {
   const [mode, setMode] = useState<FlowMode>('register');
+
+  const { login, confirm } = modalHelpers;
+
   const registerFlow = useRegisterFlow({
-    modalHelpers,
+    loginModal: login,
+    confirmModal: confirm,
     performLogin,
     loadUserAvailability,
     onComplete: () => setMode('save'),
