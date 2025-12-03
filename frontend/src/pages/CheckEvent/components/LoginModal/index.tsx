@@ -8,11 +8,11 @@ import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
 import { useUserName, userNameStore } from '../../stores/userNameStore';
 
 export interface LoginModalProps {
-  handleModalLogin: () => void;
-  isLoginLoading: boolean;
+  onSubmit: () => void;
+  isPending: boolean;
 }
-export const LoginModal = ({ handleModalLogin, isLoginLoading }: LoginModalProps) => {
-  const { inputRef } = useEnterKeySubmit({ callback: handleModalLogin });
+export const LoginModal = ({ onSubmit, isPending }: LoginModalProps) => {
+  const { inputRef } = useEnterKeySubmit({ callback: onSubmit });
 
   const name = useUserName().name;
 
@@ -63,12 +63,12 @@ export const LoginModal = ({ handleModalLogin, isLoginLoading }: LoginModalProps
             <Button
               color={name.trim().length > 0 ? 'primary' : 'plum40'}
               selected={true}
-              onClick={handleModalLogin}
-              disabled={!name.trim() || isLoginLoading}
+              onClick={onSubmit}
+              disabled={!name.trim() || isPending}
               data-ga-id="submit-button"
             >
               <Text variant="button" color="background">
-                {isLoginLoading ? '입장 중...' : '입장하기'}
+                {isPending ? '입장 중...' : '입장하기'}
               </Text>
             </Button>
           </Flex.Item>
