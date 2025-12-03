@@ -3,15 +3,15 @@ import { useCallback, useState } from 'react';
 type modalTypeKey = 'Login' | 'EntryConfirm' | 'CopyLink';
 type Modals = Record<modalTypeKey, boolean>;
 
-interface ModalState {
+export interface ModalControls {
   open: () => void;
   close: () => void;
   isOpen: boolean;
 }
 export interface ModalHelperType {
-  login: ModalState;
-  confirm: ModalState;
-  copyLink: ModalState;
+  login: ModalControls;
+  confirm: ModalControls;
+  copyLink: ModalControls;
 }
 const useModalControl = () => {
   const [modals, setModals] = useState<Modals>({

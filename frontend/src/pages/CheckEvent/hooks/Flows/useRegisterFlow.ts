@@ -1,42 +1,42 @@
 import type { CreateUserResponseType } from '@/apis/room/type';
+import type { ModalControls } from '@/shared/hooks/Modal/useModalControl';
 import { userNameStore } from '../../stores/userNameStore';
-import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
-
 interface RegisterFlowDeps {
   performLogin: () => Promise<CreateUserResponseType>;
   onComplete: () => void;
   loadUserAvailability: () => Promise<void>;
-  modalHelpers: ModalHelperType;
+  loginModal: ModalControls;
+  confirmModal: ModalControls;
 }
 
 const useRegisterFlow = ({
   performLogin,
   loadUserAvailability,
   onComplete,
-  modalHelpers,
+  loginModal,
+  confirmModal,
 }: RegisterFlowDeps) => {
-  const { login, confirm } = modalHelpers;
   const execute = () => {
-    login.open();
+    loginModal.open();
   };
 
   const handleLoginSubmit = async () => {
     const data = await performLogin();
 
     if (data.isDuplicateName) {
-      confirm.open();
+      confirmModal.open();
       return;
     }
 
     await loadUserAvailability();
     userNameStore.loginComplete();
-    login.close();
+    loginModal.close();
     onComplete();
   };
 
   const handleConfirmResponse = async () => {
-    confirm.close();
-    login.close();
+    confirmModal.close();
+    loginModal.close();
     await loadUserAvailability();
     userNameStore.loginComplete();
     onComplete();

@@ -1,8 +1,8 @@
-interface EditFlowDeps {
+interface EditFlowParams {
   onComplete: () => void;
 }
 
-const useEditFlow = ({ onComplete }: EditFlowDeps) => {
+const useEditFlow = ({ onComplete }: EditFlowParams) => {
   const execute = () => {
     onComplete();
   };
