@@ -6,8 +6,8 @@ export type LoginData = {
   name: string;
 };
 const useUserLogin = ({ session }: { session: string }) => {
-  const { isLoading: isLoginLoading, triggerFetch: handleLogin } = useFetch({
-    context: 'handleLogin',
+  const { isLoading: isLoginLoading, triggerFetch: performLogin } = useFetch({
+    context: 'performLogin',
     requestFn: async () => {
       const name = userNameStore.getSnapshot().name;
       return await joinUser(session, {
@@ -17,7 +17,7 @@ const useUserLogin = ({ session }: { session: string }) => {
   });
 
   return {
-    handleLogin,
+    performLogin,
     isLoginLoading,
   };
 };

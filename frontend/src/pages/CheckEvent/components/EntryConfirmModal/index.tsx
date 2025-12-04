@@ -4,14 +4,14 @@ import Flex from '@/shared/layout/Flex';
 import Button from '@/shared/components/Button';
 import * as S from './EntryConfirmModal.styled';
 import useEnterKeySubmit from '@/shared/hooks/common/useEnterKeySubmit';
+import { useModalContext } from '@/shared/contexts/ModalContext';
 
 export interface EntryConfirmModalProps {
-  onConfirm: () => void;
-  onCancel: () => void;
+  onConfirm: () => Promise<void>;
 }
-export const EntryConfirmModal = ({ onConfirm, onCancel }: EntryConfirmModalProps) => {
+export const EntryConfirmModal = ({ onConfirm }: EntryConfirmModalProps) => {
   const { buttonRef } = useEnterKeySubmit({ callback: onConfirm });
-
+  const { onClose } = useModalContext();
   return (
     <S.EntryConfirmModalContainer>
       <Modal.Content>
@@ -36,7 +36,7 @@ export const EntryConfirmModal = ({ onConfirm, onCancel }: EntryConfirmModalProp
                   예
                 </Text>
               </Button>
-              <Button color={'primary'} onClick={onCancel}>
+              <Button color={'primary'} onClick={onClose}>
                 <Text variant="button" color="primary">
                   아니오
                 </Text>

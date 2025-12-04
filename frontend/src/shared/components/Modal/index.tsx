@@ -5,7 +5,6 @@ import { ModalContext } from '@/shared/contexts/ModalContext';
 import Text from '@/shared/components/Text';
 import FocusTrap from './FocusTrap';
 import IClose from '@/assets/icons/IClose';
-import useEscapeClose from '@/shared/hooks/Modal/useEscapeClose';
 
 export interface ModalProps extends PropsWithChildren {
   isOpen: boolean;
@@ -32,12 +31,6 @@ function Modal({
   shouldCloseOnOverlayAction = true,
   children,
 }: ModalProps) {
-  useEscapeClose({
-    isOpen,
-    onClose,
-    shouldCloseOnOverlayAction,
-  });
-
   if (!isOpen) return null;
 
   return createPortal(

@@ -19,20 +19,20 @@ import HeatmapSection from './sections/HeatmapSection';
 import GlassTooltip from './components/GlassTooltip';
 import Announce from './components/Announce/Announce';
 import { useTheme } from '@emotion/react';
+import useModalControl from '@/shared/hooks/Modal/useModalControl';
 
 const CheckEventPage = () => {
   const { isMobile } = useTheme();
 
   const { roomInfo, session } = useCheckRoomSession();
 
-  const { handleLogin, isLoginLoading } = useUserLogin({
+  const { performLogin, isLoginLoading } = useUserLogin({
     session,
   });
 
-  const { handleUserAvailabilitySubmit, fetchUserAvailableTime, isSavingUserTime } =
-    useUserAvailability({
-      session,
-    });
+  const { performUserSubmit, loadUserAvailability, isSavingUserTime } = useUserAvailability({
+    session,
+  });
 
   const { fetchRoomStatistics } = useHeatmapStatistics({
     session,
@@ -42,20 +42,17 @@ const CheckEventPage = () => {
     availableDates: roomInfo.availableDateSlots,
   });
 
-  const {
-    buttonMode,
-    buttonName,
-    modal,
-    handleButtonClick,
-    handleLoginModalButtonClick,
-    handleConfirmModalButtonClick,
-    handleModalClick,
-  } = useCheckEventHandlers({
-    handleLogin,
-    fetchUserAvailableTime,
-    handleUserAvailabilitySubmit,
+  const modalHelpers = useModalControl();
+
+  const { buttonMode, handleButtonClick, handleLogin, handleConfirm } = useCheckEventHandlers({
+    loadUserAvailability,
+    performLogin,
+    performUserSubmit,
     pageReset: pagination.pageReset,
+    modalHelpers,
   });
+
+  const isEntering = isLoginLoading || isSavingUserTime;
 
   const onVoteChange = useCallback(async () => {
     console.log('🔄 SSE vote-changed event 확인... fetch중...');
@@ -79,14 +76,13 @@ const CheckEventPage = () => {
             deadline={roomInfo.deadline}
             title={roomInfo.title}
             roomSession={roomInfo.roomSession}
-            handleCopyLinkButtonClick={() => handleModalClick('open_copylink')}
+            handleCopyLinkButtonClick={modalHelpers.copyLink.open}
           />
           <S.FlipCard>
             <S.FlipInner isFlipped={buttonMode === 'save'}>
               <TimetableSection
                 roomInfo={roomInfo}
                 pagination={pagination}
-                buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
                 isSavingUserTime={isSavingUserTime}
                 isVisible={buttonMode === 'save'}
@@ -94,38 +90,34 @@ const CheckEventPage = () => {
               <HeatmapSection
                 roomInfo={roomInfo}
                 pagination={pagination}
-                buttonName={buttonName}
-                handleButtonClick={handleButtonClick}
                 buttonMode={buttonMode}
+                handleButtonClick={handleButtonClick}
               />
               {isMobile ? <GlassTooltip.Mobile /> : <GlassTooltip.Desktop />}
             </S.FlipInner>
           </S.FlipCard>
         </Flex>
       </Wrapper>
-
-      <Modal isOpen={modal.login} position="center" onClose={() => handleModalClick('close_login')}>
-        <LoginModal
-          handleModalLogin={handleLoginModalButtonClick}
-          isLoginLoading={isLoginLoading || isSavingUserTime}
-        />
-      </Modal>
-
       <Modal
-        isOpen={modal.entryConfirm}
+        isOpen={modalHelpers.confirm.isOpen}
         position="center"
-        onClose={() => handleConfirmModalButtonClick('N')}
+        onClose={modalHelpers.confirm.close}
       >
-        <EntryConfirmModal
-          onConfirm={() => handleConfirmModalButtonClick('Y')}
-          onCancel={() => handleConfirmModalButtonClick('N')}
-        />
+        <EntryConfirmModal onConfirm={handleConfirm} />
       </Modal>
 
       <Modal
-        isOpen={modal.copyLink}
+        isOpen={modalHelpers.login.isOpen}
         position="center"
-        onClose={() => handleModalClick('close_copylink')}
+        onClose={modalHelpers.login.close}
+      >
+        <LoginModal onSubmit={handleLogin} isPending={isEntering} />
+      </Modal>
+
+      <Modal
+        isOpen={modalHelpers.copyLink.isOpen}
+        position="center"
+        onClose={modalHelpers.copyLink.close}
       >
         <CopyLinkModal sessionId={session} />
       </Modal>

@@ -7,14 +7,14 @@ import { userAvailabilityStore } from '../stores/userAvailabilityStore';
 
 export const useUserAvailability = ({ session }: { session: string }) => {
   const { triggerFetch: getUserTime } = useFetch({
-    context: 'fetchUserAvailableTime',
+    context: 'getUserAvailableTime',
     requestFn: () =>
       // const name = userNameStore.getSnapshot();
       getUserAvailableTime(session, userNameStore.getSnapshot().name),
   });
 
-  const { isLoading: isSavingUserTime, triggerFetch: handleUserAvailabilitySubmit } = useFetch({
-    context: 'handleUserAvailabilitySubmit',
+  const { isLoading: isSavingUserTime, triggerFetch: performUserSubmit } = useFetch({
+    context: 'performUserSubmit',
     requestFn: () =>
       updateUserAvailableTime(
         session,
@@ -22,7 +22,7 @@ export const useUserAvailability = ({ session }: { session: string }) => {
       ),
   });
 
-  const fetchUserAvailableTime = useCallback(async () => {
+  const loadUserAvailability = useCallback(async () => {
     const userAvailableTimeInfo = await getUserTime();
     if (userAvailableTimeInfo === undefined) return;
 
@@ -35,8 +35,8 @@ export const useUserAvailability = ({ session }: { session: string }) => {
   }, [getUserTime]);
 
   return {
-    handleUserAvailabilitySubmit,
-    fetchUserAvailableTime,
+    performUserSubmit,
+    loadUserAvailability,
     isSavingUserTime,
   };
 };

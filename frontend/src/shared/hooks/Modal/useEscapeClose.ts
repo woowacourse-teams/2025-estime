@@ -1,25 +1,23 @@
 import { useEffect } from 'react';
+import type { ModalTypeKey } from './useModalControl';
 
 interface useEscapeCloseProps {
-  isOpen: boolean;
-  onClose?: () => void;
-  shouldCloseOnOverlayAction?: boolean;
+  modalStack: ModalTypeKey[];
+  closeModal: (key: ModalTypeKey) => void;
 }
 
-const useEscapeClose = ({ isOpen, onClose, shouldCloseOnOverlayAction }: useEscapeCloseProps) => {
+const useEscapeClose = ({ modalStack, closeModal }: useEscapeCloseProps) => {
   useEffect(() => {
-    if (!isOpen || !shouldCloseOnOverlayAction || !onClose) return;
-
-    const keyDownHandler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && modalStack.length > 0) {
+        const topModal = modalStack[modalStack.length - 1];
+        closeModal(topModal);
+      }
     };
 
-    document.addEventListener('keydown', keyDownHandler);
-
-    return () => {
-      document.removeEventListener('keydown', keyDownHandler);
-    };
-  }, [isOpen, onClose, shouldCloseOnOverlayAction]);
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [modalStack, closeModal]);
 };
 
 export default useEscapeClose;
