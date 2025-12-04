@@ -16,6 +16,10 @@ interface CheckEventHandlersParams {
   modalHelpers: ModalHelperType;
 }
 
+type FlowStrategy = {
+  execute: () => Promise<void> | void;
+};
+
 const useCheckEventHandlers = ({
   loadUserAvailability,
   performLogin,
@@ -45,7 +49,7 @@ const useCheckEventHandlers = ({
     onComplete: () => setMode('save'),
   });
 
-  const flowStrategies = {
+  const flowStrategies: Record<FlowMode, FlowStrategy> = {
     register: registerFlow,
     save: saveFlow,
     edit: editFlow,
@@ -55,7 +59,6 @@ const useCheckEventHandlers = ({
 
   return {
     buttonMode: mode,
-    buttonName: currentStrategy.label,
     handleButtonClick: currentStrategy.execute,
     handleLogin: registerFlow.handleLoginSubmit,
     handleConfirm: registerFlow.handleConfirmResponse,
