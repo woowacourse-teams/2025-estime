@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { CreateUserResponseType } from '@/apis/room/type';
-import { updateUserAvailableTimeType } from '@/apis/time/type';
+import type { CreateUserResponseType } from '@/apis/room/type';
+import type { updateUserAvailableTimeType } from '@/apis/time/type';
+import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
 import useRegisterFlow from './Flows/useRegisterFlow';
 import useSaveFlow from './Flows/useSaveFlow';
 import useEditFlow from './Flows/useEditFlow';
-import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
 
 export type FlowMode = 'register' | 'save' | 'edit';
 
