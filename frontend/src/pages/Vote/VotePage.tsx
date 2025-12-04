@@ -44,14 +44,13 @@ const VotePage = () => {
 
   const modalHelpers = useModalControl();
 
-  const { buttonMode, buttonName, handleButtonClick, handleLogin, handleConfirm } =
-    useVotePageHandlers({
-      loadUserAvailability,
-      performLogin,
-      performUserSubmit,
-      pageReset: pagination.pageReset,
-      modalHelpers,
-    });
+  const { buttonMode, handleButtonClick, handleLogin, handleConfirm } = useVotePageHandlers({
+    loadUserAvailability,
+    performLogin,
+    performUserSubmit,
+    pageReset: pagination.pageReset,
+    modalHelpers,
+  });
 
   const isEntering = isLoginLoading || isSavingUserTime;
 
@@ -84,7 +83,6 @@ const VotePage = () => {
               <TimetableSection
                 roomInfo={roomInfo}
                 pagination={pagination}
-                buttonName={buttonName}
                 handleButtonClick={handleButtonClick}
                 isSavingUserTime={isSavingUserTime}
                 isVisible={buttonMode === 'save'}
@@ -92,7 +90,6 @@ const VotePage = () => {
               <HeatmapSection
                 roomInfo={roomInfo}
                 pagination={pagination}
-                buttonName={buttonName}
                 buttonMode={buttonMode}
                 handleButtonClick={handleButtonClick}
               />

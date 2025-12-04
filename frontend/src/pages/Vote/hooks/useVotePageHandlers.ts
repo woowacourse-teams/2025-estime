@@ -8,6 +8,10 @@ import type { ModalHelperType } from '@/shared/hooks/Modal/useModalControl';
 
 export type FlowMode = 'register' | 'save' | 'edit';
 
+type FlowStrategy = {
+  execute: () => Promise<void> | void;
+};
+
 interface VotePageHandlersParams {
   loadUserAvailability: () => Promise<void>;
   performLogin: () => Promise<CreateUserResponseType>;
@@ -45,7 +49,7 @@ const useVotePageHandlers = ({
     onComplete: () => setMode('save'),
   });
 
-  const flowStrategies = {
+  const flowStrategies: Record<FlowMode, FlowStrategy> = {
     register: registerFlow,
     save: saveFlow,
     edit: editFlow,
@@ -55,7 +59,6 @@ const useVotePageHandlers = ({
 
   return {
     buttonMode: mode,
-    buttonName: currentStrategy.label,
     handleButtonClick: currentStrategy.execute,
     handleLogin: registerFlow.handleLoginSubmit,
     handleConfirm: registerFlow.handleConfirmResponse,

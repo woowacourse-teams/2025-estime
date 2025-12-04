@@ -8,7 +8,6 @@ const useEditFlow = ({ onComplete }: EditFlowParams) => {
   };
 
   return {
-    label: '수정하기',
     execute,
   };
 };
