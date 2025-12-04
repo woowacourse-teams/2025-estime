@@ -98,6 +98,13 @@ const CheckEventPage = () => {
           </S.FlipCard>
         </Flex>
       </Wrapper>
+      <Modal
+        isOpen={modalHelpers.confirm.isOpen}
+        position="center"
+        onClose={modalHelpers.confirm.close}
+      >
+        <EntryConfirmModal onConfirm={handleConfirm} />
+      </Modal>
 
       <Modal
         isOpen={modalHelpers.login.isOpen}
@@ -105,14 +112,6 @@ const CheckEventPage = () => {
         onClose={modalHelpers.login.close}
       >
         <LoginModal onSubmit={handleLogin} isPending={isEntering} />
-      </Modal>
-
-      <Modal
-        isOpen={modalHelpers.confirm.isOpen}
-        position="center"
-        onClose={modalHelpers.confirm.close}
-      >
-        <EntryConfirmModal onConfirm={handleConfirm} />
       </Modal>
 
       <Modal
