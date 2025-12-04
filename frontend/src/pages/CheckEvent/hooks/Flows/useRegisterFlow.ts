@@ -43,7 +43,6 @@ const useRegisterFlow = ({
   };
 
   return {
-    label: '등록하기',
     execute,
     handleLoginSubmit,
     handleConfirmResponse,

@@ -27,7 +27,6 @@ const useSaveFlow = ({ performUserSubmit, pageReset, onComplete }: SaveFlowParam
   };
 
   return {
-    label: '저장하기',
     execute,
   };
 };

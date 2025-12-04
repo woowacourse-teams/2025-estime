@@ -20,7 +20,6 @@ import { useRoomStatistics } from '../stores/roomStatisticsStore';
 interface TimetableSectionProps {
   roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
   pagination: TimeTablePaginationReturns;
-  buttonName: string;
   handleButtonClick: () => Promise<void> | void;
   isSavingUserTime: boolean;
   isVisible: boolean;
@@ -29,7 +28,6 @@ interface TimetableSectionProps {
 const TimetableSection = ({
   roomInfo,
   pagination,
-  buttonName,
   handleButtonClick,
   isSavingUserTime,
   isVisible,
@@ -70,7 +68,7 @@ const TimetableSection = ({
               aria-label="저장"
             >
               <Text variant="button" color={isExpired ? 'gray50' : 'text'}>
-                {buttonName}
+                저장하기
               </Text>
             </Button>
           </Flex>
