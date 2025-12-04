@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
+import useEscapeClose from './useEscapeClose';
 
-type modalTypeKey = 'Login' | 'EntryConfirm' | 'CopyLink';
-type Modals = Record<modalTypeKey, boolean>;
+export type ModalTypeKey = 'Login' | 'EntryConfirm' | 'CopyLink';
 
 export interface ModalControls {
   open: () => void;
@@ -13,36 +13,41 @@ export interface ModalHelperType {
   confirm: ModalControls;
   copyLink: ModalControls;
 }
+
 const useModalControl = () => {
-  const [modals, setModals] = useState<Modals>({
-    Login: false,
-    EntryConfirm: false,
-    CopyLink: false,
-  });
-  const handleOpenModal = useCallback((key: modalTypeKey) => {
-    setModals((prev) => ({ ...prev, [key]: true }));
-  }, []);
-  const handleCloseModal = useCallback((key: modalTypeKey) => {
-    setModals((prev) => ({ ...prev, [key]: false }));
+  const [modalStack, setModalStack] = useState<ModalTypeKey[]>([]);
+
+  const openModal = useCallback((key: ModalTypeKey) => {
+    setModalStack((prev) => {
+      if (prev.includes(key)) return prev;
+      return [...prev, key];
+    });
   }, []);
 
-  const modalHelpers = {
+  const closeModal = useCallback((key: ModalTypeKey) => {
+    setModalStack((prev) => prev.filter((k) => k !== key));
+  }, []);
+
+  useEscapeClose({ modalStack, closeModal });
+
+  const modalHelpers: ModalHelperType = {
     login: {
-      open: () => handleOpenModal('Login'),
-      close: () => handleCloseModal('Login'),
-      isOpen: modals.Login,
+      open: () => openModal('Login'),
+      close: () => closeModal('Login'),
+      isOpen: modalStack.includes('Login'),
     },
     confirm: {
-      open: () => handleOpenModal('EntryConfirm'),
-      close: () => handleCloseModal('EntryConfirm'),
-      isOpen: modals.EntryConfirm,
+      open: () => openModal('EntryConfirm'),
+      close: () => closeModal('EntryConfirm'),
+      isOpen: modalStack.includes('EntryConfirm'),
     },
     copyLink: {
-      open: () => handleOpenModal('CopyLink'),
-      close: () => handleCloseModal('CopyLink'),
-      isOpen: modals.CopyLink,
+      open: () => openModal('CopyLink'),
+      close: () => closeModal('CopyLink'),
+      isOpen: modalStack.includes('CopyLink'),
     },
   };
+
   return modalHelpers;
 };
 
