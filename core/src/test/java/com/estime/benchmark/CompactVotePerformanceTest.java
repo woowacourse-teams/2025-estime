@@ -11,8 +11,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
+import java.util.Random;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,11 +25,9 @@ import org.junit.jupiter.api.Test;
  * <p>
  * 측정 항목:
  * - 객체 생성 속도
- * - 메모리 사용량 (객체 크기)
  * - 컬렉션 연산 속도 (정렬)
  * - 통계 계산 속도 (Map 그룹핑)
  */
-@Disabled
 @DisplayName("CompactVote 성능 벤치마크")
 class CompactVotePerformanceTest {
 
@@ -43,25 +43,48 @@ class CompactVotePerformanceTest {
     private static final int SLOTS_PER_DAY = 48;
     private static final int TOTAL_SLOTS = DAYS * SLOTS_PER_DAY;
 
+    // 테스트 데이터: 10명 참여자, 각 200개 슬롯 투표 = 2,000개 투표
+    private static final int PARTICIPANT_COUNT = 10;
+    private static final int VOTES_PER_PARTICIPANT = 200;
+    private static final int TOTAL_VOTES = PARTICIPANT_COUNT * VOTES_PER_PARTICIPANT;
+
+    // 미리 계산된 슬롯 인덱스 (참여자별 200개)
+    private List<List<Integer>> participantSlotIndices;
+
+    @BeforeEach
+    void setUp() {
+        // 각 참여자별로 336개 슬롯 중 200개를 미리 선택
+        final Random random = new Random(42);
+        participantSlotIndices = new ArrayList<>();
+
+        for (int p = 0; p < PARTICIPANT_COUNT; p++) {
+            final List<Integer> allSlots = new ArrayList<>();
+            for (int i = 0; i < TOTAL_SLOTS; i++) {
+                allSlots.add(i);
+            }
+            Collections.shuffle(allSlots, random);
+            participantSlotIndices.add(allSlots.subList(0, VOTES_PER_PARTICIPANT));
+        }
+    }
+
     @Test
     @DisplayName("객체 생성 속도 비교")
     void compareObjectCreationSpeed() {
-        printSectionHeader("객체 생성 속도 비교");
+        printSectionHeader("객체 생성 속도 비교", TOTAL_VOTES, BENCHMARK_ITERATIONS);
 
         // Warmup
         Object blackhole = null;
         for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-            blackhole = createVotes(1);
-            blackhole = createCompactVotes(1);
+            blackhole = createAllVotes();
+            blackhole = createAllCompactVotes();
         }
 
         // Vote: LocalDateTime 기반
         final BenchmarkResult voteResult = measurePerformance(() -> {
             Object result = null;
             for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = createVotes(TOTAL_SLOTS);
+                result = createAllVotes();
             }
-            // 결과 소비 (최적화 방지)
             if (result == null) {
                 throw new AssertionError();
             }
@@ -71,15 +94,13 @@ class CompactVotePerformanceTest {
         final BenchmarkResult compactResult = measurePerformance(() -> {
             Object result = null;
             for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = createCompactVotes(TOTAL_SLOTS);
+                result = createAllCompactVotes();
             }
-            // 결과 소비 (최적화 방지)
             if (result == null) {
                 throw new AssertionError();
             }
         });
 
-        // blackhole 사용 (최적화 방지)
         if (blackhole == null) {
             throw new AssertionError();
         }
@@ -88,49 +109,16 @@ class CompactVotePerformanceTest {
     }
 
     @Test
-    @DisplayName("메모리 사용량 비교 (객체 크기)")
-    void compareMemoryUsage() {
-        printSectionHeader("메모리 사용량 비교 (객체 크기)");
-
-        // Vote (참가자 ID + LocalDateTime)
-        final long voteSize = estimateObjectSize(
-                8L,  // participant_id (Long)
-                createDateTimeSlot(START_DATE, LocalTime.of(9, 0))  // DateTimeSlot
-        );
-
-        // CompactVote (참가자 ID + int)
-        final long compactVoteSize = estimateObjectSize(
-                8L,  // participant_id (Long)
-                CompactDateTimeSlot.from(LocalDateTime.of(START_DATE, LocalTime.of(9, 0))  // CompactDateTimeSlot
-                ));
-
-        if (PRINT_ENABLED) {
-            System.out.printf("Vote 객체 크기:        ~%d bytes%n", voteSize);
-            System.out.printf("CompactVote 객체 크기: ~%d bytes%n", compactVoteSize);
-            System.out.printf("절감:                  %d bytes (%.1f%%)%n",
-                    voteSize - compactVoteSize,
-                    (1 - (double) compactVoteSize / voteSize) * 100);
-            System.out.println();
-            System.out.printf("336 슬롯 × 10명 기준:%n");
-            System.out.printf("Vote 총 메모리:        ~%,d bytes (%.2f KB)%n", voteSize * TOTAL_SLOTS * 10,
-                    voteSize * TOTAL_SLOTS * 10 / 1024.0);
-            System.out.printf("CompactVote 총 메모리: ~%,d bytes (%.2f KB)%n", compactVoteSize * TOTAL_SLOTS * 10,
-                    compactVoteSize * TOTAL_SLOTS * 10 / 1024.0);
-            System.out.println("========================================");
-        }
-    }
-
-    @Test
     @DisplayName("컬렉션 연산 속도 비교 (정렬)")
     void compareCollectionOperations() {
-        printSectionHeader("컬렉션 연산 속도 비교 (정렬)");
+        printSectionHeader("컬렉션 연산 속도 비교 (정렬)", TOTAL_VOTES, BENCHMARK_ITERATIONS);
 
-        final List<Vote> voteList = createVotes(TOTAL_SLOTS);
-        final List<CompactVote> compactVoteList = createCompactVotes(TOTAL_SLOTS);
+        final List<Vote> voteList = createAllVotes();
+        final List<CompactVote> compactVoteList = createAllCompactVotes();
 
         // Warmup
         Object blackhole = null;
-        for (int i = 0; i < WARMUP_ITERATIONS / 10; i++) {
+        for (int i = 0; i < WARMUP_ITERATIONS; i++) {
             blackhole = Votes.from(voteList).getSortedVotes();
             blackhole = CompactVotes.from(compactVoteList).getSortedVotes();
         }
@@ -138,7 +126,7 @@ class CompactVotePerformanceTest {
         // Vote: LocalDateTime 비교
         final BenchmarkResult voteResult = measurePerformance(() -> {
             Object result = null;
-            for (int i = 0; i < BENCHMARK_ITERATIONS / 10; i++) {
+            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
                 result = Votes.from(voteList).getSortedVotes();
             }
             if (result == null) {
@@ -149,7 +137,7 @@ class CompactVotePerformanceTest {
         // CompactVote: int 비교
         final BenchmarkResult compactResult = measurePerformance(() -> {
             Object result = null;
-            for (int i = 0; i < BENCHMARK_ITERATIONS / 10; i++) {
+            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
                 result = CompactVotes.from(compactVoteList).getSortedVotes();
             }
             if (result == null) {
@@ -167,32 +155,14 @@ class CompactVotePerformanceTest {
     @Test
     @DisplayName("통계 계산 속도 비교 (Map 그룹핑)")
     void compareStatisticsCalculation() {
-        printSectionHeader("통계 계산 속도 비교 (Map 그룹핑)");
+        printSectionHeader("통계 계산 속도 비교 (Map 그룹핑)", TOTAL_VOTES, BENCHMARK_ITERATIONS);
 
-        // 10명의 참가자가 336개 슬롯에 투표
-        final List<Vote> voteList = new ArrayList<>();
-        final List<CompactVote> compactVoteList = new ArrayList<>();
-
-        for (long participantId = 1; participantId <= 10; participantId++) {
-            for (int day = 0; day < DAYS; day++) {
-                for (int slotIndex = 0; slotIndex < SLOTS_PER_DAY; slotIndex++) {
-                    final LocalDate date = START_DATE.plusDays(day);
-                    final LocalTime time = LocalTime.of(slotIndex / 2, (slotIndex % 2) * 30);
-
-                    voteList.add(Vote.of(participantId, createDateTimeSlot(date, time)));
-                    compactVoteList.add(CompactVote.of(participantId, CompactDateTimeSlot.from(LocalDateTime.of(date, time))));
-                }
-            }
-        }
-
-        if (PRINT_ENABLED) {
-            System.out.printf("테스트 데이터: 참가자 10명 × 슬롯 %d개 = 총 %,d개 투표%n", TOTAL_SLOTS, voteList.size());
-            System.out.println();
-        }
+        final List<Vote> voteList = createAllVotes();
+        final List<CompactVote> compactVoteList = createAllCompactVotes();
 
         // Warmup
         Object blackhole = null;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < WARMUP_ITERATIONS; i++) {
             blackhole = Votes.from(voteList).calculateStatistic();
             blackhole = CompactVotes.from(compactVoteList).calculateStatistic();
         }
@@ -200,7 +170,7 @@ class CompactVotePerformanceTest {
         // Vote: LocalDateTime 키로 그룹핑
         final BenchmarkResult voteResult = measurePerformance(() -> {
             Object result = null;
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
                 result = Votes.from(voteList).calculateStatistic();
             }
             if (result == null) {
@@ -211,7 +181,7 @@ class CompactVotePerformanceTest {
         // CompactVote: int 키로 그룹핑
         final BenchmarkResult compactResult = measurePerformance(() -> {
             Object result = null;
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
                 result = CompactVotes.from(compactVoteList).calculateStatistic();
             }
             if (result == null) {
@@ -230,50 +200,36 @@ class CompactVotePerformanceTest {
     // Helper Methods
     // ========================================
 
-    private List<Vote> createVotes(final int count) {
-        final List<Vote> votes = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            final int day = i / SLOTS_PER_DAY;
-            final int slotIndex = i % SLOTS_PER_DAY;
-            final LocalDate date = START_DATE.plusDays(day);
-            final LocalTime time = LocalTime.of(slotIndex / 2, (slotIndex % 2) * 30);
-            votes.add(Vote.of(1L, createDateTimeSlot(date, time)));
-        }
-        return votes;
-    }
-
-    private List<CompactVote> createCompactVotes(final int count) {
-        final List<CompactVote> votes = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            final int day = i / SLOTS_PER_DAY;
-            final int slotIndex = i % SLOTS_PER_DAY;
-            final LocalDate date = START_DATE.plusDays(day);
-            final LocalTime time = LocalTime.of(slotIndex / 2, (slotIndex % 2) * 30);
-            votes.add(CompactVote.of(1L, CompactDateTimeSlot.from(LocalDateTime.of(date, time))));
-        }
-        return votes;
-    }
-
-    private DateTimeSlot createDateTimeSlot(final LocalDate date, final LocalTime time) {
-        return DateTimeSlot.from(LocalDateTime.of(date, time));
-    }
-
-    private long estimateObjectSize(final Object... fields) {
-        long size = 12; // 객체 헤더 (최소)
-        for (final Object field : fields) {
-            if (field instanceof Long) {
-                size += 8;
-            } else if (field instanceof Integer) {
-                size += 4;
-            } else if (field instanceof DateTimeSlot) {
-                size += 8; // LocalDateTime (2개 long)
-            } else if (field instanceof CompactDateTimeSlot) {
-                size += 4; // int
-            } else {
-                size += 8; // 레퍼런스
+    private List<Vote> createAllVotes() {
+        final List<Vote> votes = new ArrayList<>(TOTAL_VOTES);
+        for (int participantIndex = 0; participantIndex < PARTICIPANT_COUNT; participantIndex++) {
+            final long participantId = participantIndex + 1;
+            for (final int slotIndex : participantSlotIndices.get(participantIndex)) {
+                final LocalDateTime dateTime = slotIndexToDateTime(slotIndex);
+                votes.add(Vote.of(participantId, DateTimeSlot.from(dateTime)));
             }
         }
-        return size;
+        return votes;
+    }
+
+    private List<CompactVote> createAllCompactVotes() {
+        final List<CompactVote> votes = new ArrayList<>(TOTAL_VOTES);
+        for (int participantIndex = 0; participantIndex < PARTICIPANT_COUNT; participantIndex++) {
+            final long participantId = participantIndex + 1;
+            for (final int slotIndex : participantSlotIndices.get(participantIndex)) {
+                final LocalDateTime dateTime = slotIndexToDateTime(slotIndex);
+                votes.add(CompactVote.of(participantId, CompactDateTimeSlot.from(dateTime)));
+            }
+        }
+        return votes;
+    }
+
+    private LocalDateTime slotIndexToDateTime(final int slotIndex) {
+        final int day = slotIndex / SLOTS_PER_DAY;
+        final int slotOfDay = slotIndex % SLOTS_PER_DAY;
+        final LocalDate date = START_DATE.plusDays(day);
+        final LocalTime time = LocalTime.of(slotOfDay / 2, (slotOfDay % 2) * 30);
+        return LocalDateTime.of(date, time);
     }
 
     private BenchmarkResult measurePerformance(final Runnable benchmark) {
@@ -295,13 +251,14 @@ class CompactVotePerformanceTest {
         return new BenchmarkResult(measurements);
     }
 
-    private void printSectionHeader(final String title) {
+    private void printSectionHeader(final String title, final int dataCount, final int iterations) {
         if (!PRINT_ENABLED) {
             return;
         }
 
         System.out.println("\n========================================");
         System.out.println(title);
+        System.out.printf("기준: %,d건, %,d회 반복%n", dataCount, iterations);
         System.out.println("========================================");
     }
 
