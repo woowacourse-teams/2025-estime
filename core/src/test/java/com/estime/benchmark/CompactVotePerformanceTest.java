@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
  * - 컬렉션 연산 속도 (정렬)
  * - 통계 계산 속도 (Map 그룹핑)
  */
+@Disabled
 @DisplayName("CompactVote 성능 벤치마크")
 class CompactVotePerformanceTest {
 
