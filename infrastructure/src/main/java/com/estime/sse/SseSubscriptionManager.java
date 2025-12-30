@@ -1,6 +1,7 @@
 package com.estime.sse;
 
 import com.estime.room.RoomSession;
+import com.estime.room.event.ConnectedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class SseSubscriptionManager {
     public SseConnection subscribe(final RoomSession session) {
         final SseConnection connection = sseConnectionManager.save(session, SseConnection.init(session));
         setupLifeCycle(session, connection);
-        sseSender.send(connection, "connected");
+        sseSender.send(connection, new ConnectedEvent());
         return connection;
     }
 
