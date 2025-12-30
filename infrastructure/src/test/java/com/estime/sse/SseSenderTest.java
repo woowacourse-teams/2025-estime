@@ -1,10 +1,11 @@
 package com.estime.sse;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.RoomSession;
+import com.estime.room.event.ConnectedEvent;
+import com.estime.room.event.VotesUpdatedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,15 +26,15 @@ class SseSenderTest {
         connection = SseConnection.init(session);
     }
 
-    @DisplayName("send() - SSE 연결에 메시지를 전송한다")
+    @DisplayName("send() - SSE 연결에 이벤트를 전송한다")
     @Test
     void send() {
         // when & then: IOException이 발생하지 않으면 정상 전송
-        assertThatCode(() -> sseSender.send(connection, "test-message"))
+        assertThatCode(() -> sseSender.send(connection, new ConnectedEvent()))
                 .doesNotThrowAnyException();
     }
 
-    @DisplayName("broadcast() - 세션의 모든 연결에 메시지를 브로드캐스트한다")
+    @DisplayName("broadcast() - 세션의 모든 연결에 이벤트를 브로드캐스트한다")
     @Test
     void broadcast() {
         // given
@@ -43,7 +44,7 @@ class SseSenderTest {
         sseConnectionManager.save(session, connection2);
 
         // when
-        sseSender.broadcast(session, "broadcast-message");
+        sseSender.broadcast(session, new VotesUpdatedEvent("test-participant"));
 
         // then: 모든 연결이 여전히 저장되어 있음
         assertSoftly(softly -> {
@@ -56,7 +57,7 @@ class SseSenderTest {
     @Test
     void broadcast_noConnections() {
         // when & then: 예외 발생하지 않음
-        assertThatCode(() -> sseSender.broadcast(session, "broadcast-message"))
+        assertThatCode(() -> sseSender.broadcast(session, new VotesUpdatedEvent("test-participant")))
                 .doesNotThrowAnyException();
     }
 }
