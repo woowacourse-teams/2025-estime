@@ -3,7 +3,7 @@ package com.estime.room.controller;
 import com.estime.room.RoomSession;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
 import com.estime.room.controller.dto.response.ParticipantVotesResponseV2;
-import com.estime.room.controller.dto.response.VoteStatisticResponseV2;
+import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponseV2;
 import com.estime.shared.CustomApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -20,12 +20,12 @@ public interface RoomV2ControllerSpecification {
 
     @Operation(summary = "일시 기준, 참여자 투표 통계 조회 (compact)")
     @GetMapping("/{session}/statistics/date-time-slots")
-    CustomApiResponse<VoteStatisticResponseV2> getDateTimeSlotStatisticBySession(
+    CustomApiResponse<DateTimeSlotStatisticResponseV2> getDateTimeSlotStatisticBySession(
             @PathVariable("session") RoomSession session
     );
 
     @Operation(summary = "참여자 기준, 투표 일시 조회 (compact)")
-    @GetMapping("/{session}/votes")
+    @GetMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponseV2> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") RoomSession session,
             @RequestParam("participantName") String participantName
