@@ -90,7 +90,9 @@ class RoomV2ControllerTest {
         // when & then
         mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", roomSession.getValue()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalParticipants").exists())
+                .andExpect(jsonPath("$.data.participantCount").exists())
+                .andExpect(jsonPath("$.data.participants").isArray())
+                .andExpect(jsonPath("$.data.maxVoteCount").exists())
                 .andExpect(jsonPath("$.data.statistics").isArray());
     }
 
