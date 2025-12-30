@@ -25,7 +25,7 @@ public interface RoomV2ControllerSpecification {
     );
 
     @Operation(summary = "참여자 기준, 투표 일시 조회 (compact)")
-    @GetMapping("/{session}/votes")
+    @GetMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponseV2> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") RoomSession session,
             @RequestParam("participantName") String participantName
