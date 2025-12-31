@@ -3,7 +3,7 @@ package com.estime.room.controller;
 import com.estime.room.RoomSession;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
 import com.estime.room.controller.dto.response.ParticipantVotesResponseV2;
-import com.estime.room.controller.dto.response.VoteStatisticResponseV2;
+import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponseV2;
 import com.estime.room.dto.input.CompactVotesOutput;
 import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesFindInput;
@@ -20,12 +20,12 @@ public class RoomV2Controller implements RoomV2ControllerSpecification {
     private final CompactRoomApplicationService compactRoomApplicationService;
 
     @Override
-    public CustomApiResponse<VoteStatisticResponseV2> getDateTimeSlotStatisticBySession(
+    public CustomApiResponse<DateTimeSlotStatisticResponseV2> getDateTimeSlotStatisticBySession(
             @PathVariable("session") final RoomSession session
     ) {
         final CompactDateTimeSlotStatisticOutput output = compactRoomApplicationService.calculateVoteStatistic(
                 RoomSessionInput.from(session));
-        return CustomApiResponse.ok(VoteStatisticResponseV2.from(output));
+        return CustomApiResponse.ok(DateTimeSlotStatisticResponseV2.from(output));
     }
 
     @Override

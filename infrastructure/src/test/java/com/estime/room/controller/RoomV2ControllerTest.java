@@ -90,7 +90,9 @@ class RoomV2ControllerTest {
         // when & then
         mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", roomSession.getValue()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalParticipants").exists())
+                .andExpect(jsonPath("$.data.participantCount").exists())
+                .andExpect(jsonPath("$.data.participants").isArray())
+                .andExpect(jsonPath("$.data.maxVoteCount").exists())
                 .andExpect(jsonPath("$.data.statistics").isArray());
     }
 
@@ -117,24 +119,24 @@ class RoomV2ControllerTest {
                 .andExpect(jsonPath("$.success").value(false));
     }
 
-    @DisplayName("GET /api/v2/rooms/{session}/votes - Compact 참여자의 투표를 조회한다")
+    @DisplayName("GET /api/v2/rooms/{session}/votes/participants - Compact 참여자의 투표를 조회한다")
     @Test
     void getParticipantVotes() throws Exception {
         // given
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
         // when & then
-        mockMvc.perform(get("/api/v2/rooms/{session}/votes", roomSession.getValue())
+        mockMvc.perform(get("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .param("participantName", "gangsan"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.slotCodes").isArray());
     }
 
-    @DisplayName("GET /api/v2/rooms/{session}/votes - 존재하지 않는 참여자 조회 시 404 에러")
+    @DisplayName("GET /api/v2/rooms/{session}/votes/participants - 존재하지 않는 참여자 조회 시 404 에러")
     @Test
     void getParticipantVotes_notFound() throws Exception {
         // when & then
-        mockMvc.perform(get("/api/v2/rooms/{session}/votes", roomSession.getValue())
+        mockMvc.perform(get("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .param("participantName", "NonExistent"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
