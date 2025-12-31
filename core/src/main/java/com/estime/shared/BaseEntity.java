@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import java.time.Instant;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,6 +28,14 @@ public abstract class BaseEntity {
 
     @Column(name = "active", nullable = false)
     protected boolean active = true;
+
+    @Column(name = "created_at", nullable = false)
+    protected Instant createdAt;
+
+    @PrePersist
+    void prePersist() {
+        this.createdAt = Instant.now();
+    }
 
     // 프록시 객체를 고려한 타입 비교 + id 비교
     @Override
@@ -52,5 +62,3 @@ public abstract class BaseEntity {
         return Objects.hash(id);
     }
 }
-
-
