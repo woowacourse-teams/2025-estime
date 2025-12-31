@@ -3,6 +3,7 @@ package com.estime.room.controller.dto.response;
 import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
 import com.estime.room.participant.ParticipantName;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Comparator;
 import java.util.List;
 
 public record DateTimeSlotStatisticResponseV2(
@@ -35,7 +36,7 @@ public record DateTimeSlotStatisticResponseV2(
                                     .toList()
                     );
                 })
-                .sorted()
+                .sorted(Comparator.comparingInt(DateTimeSlotVotesResponseV2::slotCode))
                 .toList();
 
         return new DateTimeSlotStatisticResponseV2(

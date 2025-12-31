@@ -19,6 +19,8 @@ import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.participant.vote.compact.CompactVote;
+import com.estime.room.participant.vote.compact.CompactVoteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
@@ -61,6 +63,9 @@ class RoomV2ControllerTest {
     private AvailableTimeSlotRepository availableTimeSlotRepository;
 
     @Autowired
+    private CompactVoteRepository compactVoteRepository;
+
+    @Autowired
     private TsidRoomSessionGenerator roomSessionGenerator;
 
     private Room room;
@@ -78,6 +83,7 @@ class RoomV2ControllerTest {
         availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
         availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
         availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(14, 0)));
+        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(18, 0)));
     }
 
     @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - Compact 투표 통계를 조회한다")
@@ -228,5 +234,33 @@ class RoomV2ControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.slotCodes").isEmpty());
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - 통계가 slotCode 오름차순으로 정렬된다")
+    @Test
+    void getDateTimeSlotStatistic_sortedBySlotCode() throws Exception {
+        // given: 참여자 2명 생성
+        final Participant participant1 = participantRepository.save(
+                Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
+        final Participant participant2 = participantRepository.save(
+                Participant.withoutId(room.getId(), ParticipantName.from("jeffrey")));
+
+        final LocalDate date = LocalDate.now().plusDays(1);
+
+        // 역순으로 투표 저장 (18:00, 14:00, 10:00)
+        final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)));
+        final CompactDateTimeSlot slot2 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)));
+        final CompactDateTimeSlot slot3 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
+
+        compactVoteRepository.save(CompactVote.of(participant1.getId(), slot1));
+        compactVoteRepository.save(CompactVote.of(participant1.getId(), slot2));
+        compactVoteRepository.save(CompactVote.of(participant2.getId(), slot3));
+
+        // when & then: slotCode가 오름차순으로 정렬되어야 함
+        mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.statistics[0].slotCode").value(slot3.getEncoded())) // 10:00
+                .andExpect(jsonPath("$.data.statistics[1].slotCode").value(slot2.getEncoded())) // 14:00
+                .andExpect(jsonPath("$.data.statistics[2].slotCode").value(slot1.getEncoded())); // 18:00
     }
 }
