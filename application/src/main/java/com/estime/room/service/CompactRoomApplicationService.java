@@ -2,10 +2,11 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.port.out.RoomMessageSender;
+import com.estime.port.out.RoomEventSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.CompactVoteUpdateInput;
 import com.estime.room.dto.input.CompactVotesOutput;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -46,7 +47,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Slf4j
 public class CompactRoomApplicationService {
 
-    private final RoomMessageSender roomMessageSender;
+    private final RoomEventSender roomEventSender;
     private final CompactVoteRepository compactVoteRepository;
     private final ParticipantRepository participantRepository;
     private final RoomRepository roomRepository;
@@ -109,13 +110,14 @@ public class CompactRoomApplicationService {
         compactVoteRepository.saveAll(updatedVotes.subtract(originVotes));
 
         final RoomSession roomSession = room.getSession();
+        final String participantName = input.name().getValue();
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
                 try {
-                    roomMessageSender.sendMessage(roomSession, "vote-changed");
+                    roomEventSender.sendEvent(roomSession, new VotesUpdatedEvent(participantName));
                 } catch (final Exception e) {
-                    log.warn("Failed to send SSE [vote-changed] after commit. roomSession={}", roomSession, e);
+                    log.warn("Failed to send SSE [votes-updated] after commit. roomSession={}", roomSession, e);
                 }
             }
         });
