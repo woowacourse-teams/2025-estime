@@ -10,7 +10,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -80,5 +82,9 @@ public class Room extends BaseEntity {
         if (deadline.isBefore(currentDateTime)) {
             throw new DeadlineOverdueException(session, deadline, currentDateTime);
         }
+    }
+
+    public Instant getDeadline(final ZoneId zoneId) {
+        return deadline.atZone(zoneId).toInstant();
     }
 }
