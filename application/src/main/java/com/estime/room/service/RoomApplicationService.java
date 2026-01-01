@@ -2,9 +2,12 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
+import com.estime.notification.NotificationOutboxRepository;
+import com.estime.notification.PlatformNotificationOutbox;
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomMessageSender;
 import com.estime.port.out.RoomSessionGenerator;
+import com.estime.port.out.TimeProvider;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -71,6 +74,8 @@ public class RoomApplicationService {
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
     private final RoomSessionGenerator roomSessionGenerator;
+    private final NotificationOutboxRepository notificationOutboxRepository;
+    private final TimeProvider timeProvider;
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
@@ -130,12 +135,18 @@ public class RoomApplicationService {
                         input.channelId(),
                         input.notification()));
 
-        if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
-            platformMessageSender.sendConnectedRoomCreatedMessage(
-                    input.channelId(),
-                    savedRoom.getSession(),
-                    savedRoom.getTitle(),
-                    savedRoom.getDeadline());
+        for (final PlatformNotificationType type : PlatformNotificationType.values()) {
+            if (platform.getNotification().shouldNotifyFor(type)) {
+                notificationOutboxRepository.save(
+                        PlatformNotificationOutbox.of(
+                                savedRoom.getId(),
+                                platform.getChannelId(),
+                                type,
+                                savedRoom.getCreatedAt(),
+                                savedRoom.getDeadline(timeProvider.zone())
+                        )
+                );
+            }
         }
 
         return ConnectedRoomCreateOutput.from(savedRoom.getSession(), platform.getType());
