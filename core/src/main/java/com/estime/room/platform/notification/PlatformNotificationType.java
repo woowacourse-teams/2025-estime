@@ -8,16 +8,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum PlatformNotificationType {
-    CREATED(
+    CREATION(
             "방 생성",
             (createdAt, deadlineAt) -> createdAt
     ),
-    REMIND(
+    REMINDER(
             "투표 독려",
             (createdAt, deadlineAt) -> deadlineAt.minus(Duration.ofHours(1))
 
     ),
-    SOLVED(
+    DEADLINE(
             "투표 마감",
             (createdAt, deadlineAt) -> deadlineAt
     );

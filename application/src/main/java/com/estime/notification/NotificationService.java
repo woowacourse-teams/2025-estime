@@ -44,7 +44,7 @@ public class NotificationService {
     }
 
     @Transactional(readOnly = true)
-    public void sendDeadlineAlert(final Long roomId) {
+    public void sendDeadlineNotification(final Long roomId) {
         log.info("Preparing DEADLINE ALERT for room: {}", roomId);
         try {
             final Room room = roomRepository.findById(roomId)
