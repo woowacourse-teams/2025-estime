@@ -30,10 +30,6 @@ public class DiscordMessageSender implements PlatformMessageSender {
             final String title
     ) {
         final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
-
         final MessageCreateData message = discordMessageBuilder.buildDeadlineAlertMessage(
                 platformShortcutBuilder.buildConnectedRoomUrl(session),
                 title
@@ -49,16 +45,11 @@ public class DiscordMessageSender implements PlatformMessageSender {
             final LocalDateTime deadline
     ) {
         final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
-
         final MessageCreateData message = discordMessageBuilder.buildConnectedRoomCreatedMessage(
                 platformShortcutBuilder.buildConnectedRoomUrl(session),
                 title,
                 deadline
         );
-
         sendMessage(channel, message);
     }
 
@@ -70,10 +61,6 @@ public class DiscordMessageSender implements PlatformMessageSender {
             final LocalDateTime deadline
     ) {
         final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
-
         final MessageCreateData message = discordMessageBuilder.buildReminderMessage(
                 platformShortcutBuilder.buildConnectedRoomUrl(session),
                 title,
@@ -85,7 +72,7 @@ public class DiscordMessageSender implements PlatformMessageSender {
     private TextChannel getChannel(final String channelId) {
         final TextChannel channel = jda.getTextChannelById(channelId);
         if (channel == null) {
-            log.warn("Discord channel not found: id={}", channelId);
+            throw new IllegalStateException("Discord channel not found: id=" + channelId);
         }
         return channel;
     }
