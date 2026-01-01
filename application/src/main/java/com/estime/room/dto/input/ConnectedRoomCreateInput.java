@@ -1,6 +1,6 @@
 package com.estime.room.dto.input;
 
-import com.estime.room.platform.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotification;
 import com.estime.room.platform.PlatformType;
 import java.time.LocalDateTime;
 import java.util.List;

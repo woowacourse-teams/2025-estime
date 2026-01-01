@@ -3,6 +3,8 @@ package com.estime.room.platform;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
