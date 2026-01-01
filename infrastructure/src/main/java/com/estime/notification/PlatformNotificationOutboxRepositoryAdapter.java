@@ -1,6 +1,8 @@
 package com.estime.notification;
 
 import com.estime.outbox.OutboxStatus;
+import com.estime.room.platform.notification.PlatformNotificationOutbox;
+import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.LockModeType;
 import java.time.Instant;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationOutboxRepositoryAdapter implements NotificationOutboxRepository {
+public class PlatformNotificationOutboxRepositoryAdapter implements PlatformNotificationOutboxRepository {
 
     private static final QPlatformNotificationOutbox outbox = QPlatformNotificationOutbox.platformNotificationOutbox;
 

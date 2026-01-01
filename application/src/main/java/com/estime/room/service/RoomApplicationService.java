@@ -2,8 +2,8 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.notification.NotificationOutboxRepository;
-import com.estime.notification.PlatformNotificationOutbox;
+import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
+import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomMessageSender;
 import com.estime.port.out.RoomSessionGenerator;
@@ -34,7 +34,7 @@ import com.estime.room.participant.Participants;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformNotificationType;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
@@ -74,7 +74,7 @@ public class RoomApplicationService {
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
     private final RoomSessionGenerator roomSessionGenerator;
-    private final NotificationOutboxRepository notificationOutboxRepository;
+    private final PlatformNotificationOutboxRepository platformNotificationOutboxRepository;
     private final TimeProvider timeProvider;
 
     @Transactional
@@ -137,7 +137,7 @@ public class RoomApplicationService {
 
         for (final PlatformNotificationType type : PlatformNotificationType.values()) {
             if (platform.getNotification().shouldNotifyFor(type)) {
-                notificationOutboxRepository.save(
+                platformNotificationOutboxRepository.save(
                         PlatformNotificationOutbox.of(
                                 savedRoom.getId(),
                                 platform.getChannelId(),

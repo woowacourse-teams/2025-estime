@@ -1,4 +1,4 @@
-package com.estime.room.platform;
+package com.estime.room.platform.notification;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

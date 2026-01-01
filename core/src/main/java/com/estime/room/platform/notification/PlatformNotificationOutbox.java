@@ -1,7 +1,6 @@
-package com.estime.notification;
+package com.estime.room.platform.notification;
 
 import com.estime.outbox.Outbox;
-import com.estime.room.platform.PlatformNotificationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,4 +1,4 @@
-package com.estime.room.platform;
+package com.estime.room.platform.notification;
 
 import java.time.Duration;
 import java.time.Instant;

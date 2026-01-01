@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.estime.TestApplication;
 import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotification;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.schedule.RoomDeadlineScheduler;
