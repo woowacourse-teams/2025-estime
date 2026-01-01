@@ -99,15 +99,15 @@ class NotificationServiceTest {
         then(platformMessageSender).shouldHaveNoInteractions();
     }
 
-    @DisplayName("sendDeadlineAlert() - 마감 알림을 전송한다")
+    @DisplayName("sendDeadlineNotification() - 마감 알림을 전송한다")
     @Test
-    void sendDeadlineAlert() {
+    void sendDeadlineNotification() {
         // given
         given(roomRepository.findById(roomId)).willReturn(Optional.of(room));
         given(platformRepository.findByRoomId(roomId)).willReturn(Optional.of(platform));
 
         // when
-        notificationService.sendDeadlineAlert(roomId);
+        notificationService.sendDeadlineNotification(roomId);
 
         // then
         then(platformMessageSender).should().sendDeadlineAlertMessage(
@@ -118,28 +118,28 @@ class NotificationServiceTest {
         then(platformMessageSender).shouldHaveNoMoreInteractions();
     }
 
-    @DisplayName("sendDeadlineAlert() - 방이 존재하지 않으면 알림을 전송하지 않는다")
+    @DisplayName("sendDeadlineNotification() - 방이 존재하지 않으면 알림을 전송하지 않는다")
     @Test
-    void sendDeadlineAlert_roomNotFound() {
+    void sendDeadlineNotification_roomNotFound() {
         // given
         given(roomRepository.findById(roomId)).willReturn(Optional.empty());
 
         // when
-        notificationService.sendDeadlineAlert(roomId);
+        notificationService.sendDeadlineNotification(roomId);
 
         // then
         then(platformMessageSender).shouldHaveNoInteractions();
     }
 
-    @DisplayName("sendDeadlineAlert() - 플랫폼이 존재하지 않으면 알림을 전송하지 않는다")
+    @DisplayName("sendDeadlineNotification() - 플랫폼이 존재하지 않으면 알림을 전송하지 않는다")
     @Test
-    void sendDeadlineAlert_platformNotFound() {
+    void sendDeadlineNotification_platformNotFound() {
         // given
         given(roomRepository.findById(roomId)).willReturn(Optional.of(room));
         given(platformRepository.findByRoomId(roomId)).willReturn(Optional.empty());
 
         // when
-        notificationService.sendDeadlineAlert(roomId);
+        notificationService.sendDeadlineNotification(roomId);
 
         // then
         then(platformMessageSender).shouldHaveNoInteractions();

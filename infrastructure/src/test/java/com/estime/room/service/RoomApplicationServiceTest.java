@@ -483,7 +483,7 @@ class RoomApplicationServiceTest {
             softly.assertThat(platformRepository.findByRoomId(createdRoom.getId()))
                     .isPresent();
             final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
-            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED))
+            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATION))
                     .isTrue();
         });
     }

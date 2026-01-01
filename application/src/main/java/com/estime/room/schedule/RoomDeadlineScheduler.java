@@ -115,7 +115,7 @@ public class RoomDeadlineScheduler {
 
         switch (task.taskType()) {
             case NotificationTaskType.REMIND -> notificationService.sendReminderNotification(task.roomId());
-            case NotificationTaskType.DEADLINE -> notificationService.sendDeadlineAlert(task.roomId());
+            case NotificationTaskType.DEADLINE -> notificationService.sendDeadlineNotification(task.roomId());
         }
     }
 
