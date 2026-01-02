@@ -10,5 +10,5 @@ public interface PlatformNotificationOutboxRepository {
 
     Optional<PlatformNotificationOutbox> find(Long id);
 
-    List<PlatformNotificationOutbox> findPendingForUpdate(Instant now, int limit);
+    List<PlatformNotificationOutbox> findDuePendingForUpdate(Instant now, int limit);
 }

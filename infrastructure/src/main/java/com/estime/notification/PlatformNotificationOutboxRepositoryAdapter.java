@@ -31,7 +31,7 @@ public class PlatformNotificationOutboxRepositoryAdapter implements PlatformNoti
     }
 
     @Override
-    public List<PlatformNotificationOutbox> findPendingForUpdate(
+    public List<PlatformNotificationOutbox> findDuePendingForUpdate(
             final Instant now,
             final int limit
     ) {
