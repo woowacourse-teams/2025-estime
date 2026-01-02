@@ -10,7 +10,7 @@ public record ConnectedRoomCreateInput(
         List<DateSlotInput> availableDateSlots,
         List<TimeSlotInput> availableTimeSlots,
         LocalDateTime deadline,
-        PlatformType type,
+        PlatformType platformType,
         String channelId,
         PlatformNotification notification
 ) {
