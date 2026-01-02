@@ -2,8 +2,6 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
-import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomMessageSender;
 import com.estime.port.out.RoomSessionGenerator;
@@ -34,8 +32,10 @@ import com.estime.room.participant.Participants;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
-import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
+import com.estime.room.platform.notification.PlatformNotificationOutbox;
+import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
@@ -131,7 +131,7 @@ public class RoomApplicationService {
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
                         savedRoom.getId(),
-                        input.type(),
+                        input.platformType(),
                         input.channelId(),
                         input.notification()));
 
@@ -140,12 +140,11 @@ public class RoomApplicationService {
                 platformNotificationOutboxRepository.save(
                         PlatformNotificationOutbox.of(
                                 savedRoom.getId(),
+                                input.platformType(),
                                 platform.getChannelId(),
                                 type,
                                 savedRoom.getCreatedAt(),
-                                savedRoom.getDeadline(timeProvider.zone())
-                        )
-                );
+                                savedRoom.getDeadline(timeProvider.zone())));
             }
         }
 

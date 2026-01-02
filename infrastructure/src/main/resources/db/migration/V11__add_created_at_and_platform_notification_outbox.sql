@@ -19,6 +19,7 @@ CREATE TABLE platform_notification_outbox
 (
     id                         BIGINT                                                NOT NULL AUTO_INCREMENT,
     room_id                    BIGINT                                                NOT NULL,
+    platform_type              ENUM ('DISCORD')                                      NOT NULL,
     channel_id                 VARCHAR(255)                                          NOT NULL,
     platform_notification_type ENUM ('CREATED', 'REMIND', 'SOLVED')                  NOT NULL,
     status                     ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED') NOT NULL,
