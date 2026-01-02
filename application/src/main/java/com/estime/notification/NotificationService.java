@@ -22,45 +22,46 @@ public class NotificationService {
     private final PlatformMessageSender platformMessageSender;
 
     @Transactional(readOnly = true)
+    public void sendCreationNotification(final Long roomId) {
+        final Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
+        final Platform platform = platformRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
+
+        platformMessageSender.sendConnectedRoomCreatedMessage(
+                platform.getChannelId(),
+                room.getSession(),
+                room.getTitle(),
+                room.getDeadline()
+        );
+    }
+
+    @Transactional(readOnly = true)
     public void sendReminderNotification(final Long roomId) {
-        log.info("Preparing REMINDER notification for room: {}", roomId);
-        try {
-            final Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
-            final Platform platform = platformRepository.findByRoomId(roomId)
-                    .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
+        final Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
+        final Platform platform = platformRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            platformMessageSender.sendReminderMessage(
-                    platform.getChannelId(),
-                    room.getSession(),
-                    room.getTitle(),
-                    room.getDeadline()
-            );
-            log.info("Successfully sent REMINDER for room {}", roomId);
-
-        } catch (final Exception e) {
-            log.error("Failed to send reminder for room: {}", roomId, e);
-        }
+        platformMessageSender.sendReminderMessage(
+                platform.getChannelId(),
+                room.getSession(),
+                room.getTitle(),
+                room.getDeadline()
+        );
     }
 
     @Transactional(readOnly = true)
     public void sendDeadlineNotification(final Long roomId) {
-        log.info("Preparing DEADLINE ALERT for room: {}", roomId);
-        try {
-            final Room room = roomRepository.findById(roomId)
-                    .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
-            final Platform platform = platformRepository.findByRoomId(roomId)
-                    .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
+        final Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, roomId));
+        final Platform platform = platformRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
-            platformMessageSender.sendDeadlineAlertMessage(
-                    platform.getChannelId(),
-                    room.getSession(),
-                    room.getTitle()
-            );
-            log.info("Successfully sent DEADLINE ALERT for room {}", roomId);
-
-        } catch (final Exception e) {
-            log.error("Failed to send deadline alert for room: {}", roomId, e);
-        }
+        platformMessageSender.sendDeadlineAlertMessage(
+                platform.getChannelId(),
+                room.getSession(),
+                room.getTitle()
+        );
     }
 }

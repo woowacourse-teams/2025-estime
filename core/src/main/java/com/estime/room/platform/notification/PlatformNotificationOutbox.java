@@ -47,7 +47,7 @@ public class PlatformNotificationOutbox extends Outbox {
             final Long roomId,
             final PlatformType platformType,
             final String channelId,
-            final PlatformNotificationType type,
+            final PlatformNotificationType platformNotificationType,
             final Instant createdAt,
             final Instant deadlineAt
     ) {
@@ -55,8 +55,8 @@ public class PlatformNotificationOutbox extends Outbox {
                 roomId,
                 platformType,
                 channelId,
-                type,
-                type.scheduledAt(createdAt, deadlineAt)
+                platformNotificationType,
+                platformNotificationType.scheduledAt(createdAt, deadlineAt)
         );
     }
 }
