@@ -4,6 +4,7 @@ import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomEventSender;
+import com.estime.port.out.RoomMessageSender;
 import com.estime.port.out.RoomSessionGenerator;
 import com.estime.port.out.TimeProvider;
 import com.estime.room.Room;
@@ -70,7 +71,6 @@ public class RoomApplicationService {
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
-    private final PlatformMessageSender platformMessageSender;
     private final SlotBatchRepository slotBatchRepository;
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
