@@ -1,4 +1,4 @@
-package com.estime.notification;
+package com.estime.room.notification;
 
 import com.estime.outbox.Outbox;
 import com.estime.outbox.OutboxHandler;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlatformNotificationOutboxHandler extends OutboxHandler<PlatformNotificationOutbox> {
 
     private final PlatformNotificationOutboxRepository repository;
-    private final NotificationService notificationService;
+    private final PlatformNotificationService platformNotificationService;
 
     @Override
     @Transactional
@@ -30,10 +30,6 @@ public class PlatformNotificationOutboxHandler extends OutboxHandler<PlatformNot
 
     @Override
     public void process(final PlatformNotificationOutbox outbox) {
-        switch (outbox.getPlatformNotificationType()) {
-            case CREATION -> notificationService.sendCreationNotification(outbox.getRoomId());
-            case REMINDER -> notificationService.sendReminderNotification(outbox.getRoomId());
-            case DEADLINE -> notificationService.sendDeadlineNotification(outbox.getRoomId());
-        }
+        platformNotificationService.sendNotification(outbox.getRoomId(), outbox.getPlatformNotificationType());
     }
 }
