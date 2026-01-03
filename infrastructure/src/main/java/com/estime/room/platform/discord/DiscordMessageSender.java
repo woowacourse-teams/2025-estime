@@ -4,6 +4,7 @@ import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.RoomSession;
 import com.estime.room.platform.PlatformMessage;
 import com.estime.room.platform.PlatformShortcutBuilder;
+import com.estime.room.platform.PlatformType;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,11 @@ public class DiscordMessageSender implements PlatformMessageSender {
     private final JDA jda;
     private final DiscordMessageBuilder discordMessageBuilder;
     private final PlatformShortcutBuilder platformShortcutBuilder;
+
+    @Override
+    public PlatformType getPlatformType() {
+        return PlatformType.DISCORD;
+    }
 
     @Override
     public void sendDeadlineAlertMessage(

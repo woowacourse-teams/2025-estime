@@ -6,8 +6,10 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformRepository;
+import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.shared.DomainTerm;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class PlatformNotificationService {
 
     private final RoomRepository roomRepository;
     private final PlatformRepository platformRepository;
-    private final PlatformMessageSender platformMessageSender;
+    private final Map<PlatformType, PlatformMessageSender> platformMessageSenders;
 
     @Transactional(readOnly = true)
     public void sendNotification(
@@ -32,20 +34,22 @@ public class PlatformNotificationService {
         final Platform platform = platformRepository.findByRoomId(roomId)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.PLATFORM, roomId));
 
+        final PlatformMessageSender sender = platformMessageSenders.get(platform.getType());
+
         switch (type) {
-            case CREATION -> platformMessageSender.sendConnectedRoomCreatedMessage(
+            case CREATION -> sender.sendConnectedRoomCreatedMessage(
                     platform.getChannelId(),
                     room.getSession(),
                     room.getTitle(),
                     room.getDeadline()
             );
-            case REMINDER -> platformMessageSender.sendReminderMessage(
+            case REMINDER -> sender.sendReminderMessage(
                     platform.getChannelId(),
                     room.getSession(),
                     room.getTitle(),
                     room.getDeadline()
             );
-            case DEADLINE -> platformMessageSender.sendDeadlineAlertMessage(
+            case DEADLINE -> sender.sendDeadlineAlertMessage(
                     platform.getChannelId(),
                     room.getSession(),
                     room.getTitle()
