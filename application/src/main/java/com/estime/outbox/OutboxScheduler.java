@@ -1,6 +1,6 @@
 package com.estime.outbox;
 
-import com.estime.notification.PlatformNotificationOutboxHandler;
+import com.estime.room.notification.PlatformNotificationOutboxHandler;
 import com.estime.port.out.TimeProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

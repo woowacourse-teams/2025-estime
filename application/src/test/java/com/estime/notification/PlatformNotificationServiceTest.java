@@ -8,8 +8,10 @@ import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
+import com.estime.room.notification.PlatformNotificationService;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
 import java.time.LocalDateTime;
@@ -23,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class NotificationServiceTest {
+class PlatformNotificationServiceTest {
 
     private final Long roomId = 1L;
     @Mock
@@ -33,7 +35,7 @@ class NotificationServiceTest {
     @Mock
     private PlatformMessageSender platformMessageSender;
     @InjectMocks
-    private NotificationService notificationService;
+    private PlatformNotificationService platformNotificationService;
     private Room room;
     private Platform platform;
 
@@ -52,15 +54,15 @@ class NotificationServiceTest {
         );
     }
 
-    @DisplayName("sendReminderNotification() - 리마인더 알림을 전송한다")
+    @DisplayName("sendNotification(REMINDER) - 리마인더 알림을 전송한다")
     @Test
-    void sendReminderNotification() {
+    void sendNotification_reminder() {
         // given
         given(roomRepository.findById(roomId)).willReturn(Optional.of(room));
         given(platformRepository.findByRoomId(roomId)).willReturn(Optional.of(platform));
 
         // when
-        notificationService.sendReminderNotification(roomId);
+        platformNotificationService.sendNotification(roomId, PlatformNotificationType.REMINDER);
 
         // then
         then(platformMessageSender).should().sendReminderMessage(
@@ -72,42 +74,15 @@ class NotificationServiceTest {
         then(platformMessageSender).shouldHaveNoMoreInteractions();
     }
 
-    @DisplayName("sendReminderNotification() - 방이 존재하지 않으면 알림을 전송하지 않는다")
+    @DisplayName("sendNotification(DEADLINE) - 마감 알림을 전송한다")
     @Test
-    void sendReminderNotification_roomNotFound() {
-        // given
-        given(roomRepository.findById(roomId)).willReturn(Optional.empty());
-
-        // when
-        notificationService.sendReminderNotification(roomId);
-
-        // then
-        then(platformMessageSender).shouldHaveNoInteractions();
-    }
-
-    @DisplayName("sendReminderNotification() - 플랫폼이 존재하지 않으면 알림을 전송하지 않는다")
-    @Test
-    void sendReminderNotification_platformNotFound() {
-        // given
-        given(roomRepository.findById(roomId)).willReturn(Optional.of(room));
-        given(platformRepository.findByRoomId(roomId)).willReturn(Optional.empty());
-
-        // when
-        notificationService.sendReminderNotification(roomId);
-
-        // then
-        then(platformMessageSender).shouldHaveNoInteractions();
-    }
-
-    @DisplayName("sendDeadlineNotification() - 마감 알림을 전송한다")
-    @Test
-    void sendDeadlineNotification() {
+    void sendNotification_deadline() {
         // given
         given(roomRepository.findById(roomId)).willReturn(Optional.of(room));
         given(platformRepository.findByRoomId(roomId)).willReturn(Optional.of(platform));
 
         // when
-        notificationService.sendDeadlineNotification(roomId);
+        platformNotificationService.sendNotification(roomId, PlatformNotificationType.DEADLINE);
 
         // then
         then(platformMessageSender).should().sendDeadlineAlertMessage(
@@ -118,30 +93,23 @@ class NotificationServiceTest {
         then(platformMessageSender).shouldHaveNoMoreInteractions();
     }
 
-    @DisplayName("sendDeadlineNotification() - 방이 존재하지 않으면 알림을 전송하지 않는다")
+    @DisplayName("sendNotification(CREATION) - 생성 알림을 전송한다")
     @Test
-    void sendDeadlineNotification_roomNotFound() {
-        // given
-        given(roomRepository.findById(roomId)).willReturn(Optional.empty());
-
-        // when
-        notificationService.sendDeadlineNotification(roomId);
-
-        // then
-        then(platformMessageSender).shouldHaveNoInteractions();
-    }
-
-    @DisplayName("sendDeadlineNotification() - 플랫폼이 존재하지 않으면 알림을 전송하지 않는다")
-    @Test
-    void sendDeadlineNotification_platformNotFound() {
+    void sendNotification_creation() {
         // given
         given(roomRepository.findById(roomId)).willReturn(Optional.of(room));
-        given(platformRepository.findByRoomId(roomId)).willReturn(Optional.empty());
+        given(platformRepository.findByRoomId(roomId)).willReturn(Optional.of(platform));
 
         // when
-        notificationService.sendDeadlineNotification(roomId);
+        platformNotificationService.sendNotification(roomId, PlatformNotificationType.CREATION);
 
         // then
-        then(platformMessageSender).shouldHaveNoInteractions();
+        then(platformMessageSender).should().sendConnectedRoomCreatedMessage(
+                eq("test-channel-id"),
+                eq(room.getSession()),
+                eq("Test Room"),
+                eq(room.getDeadline())
+        );
+        then(platformMessageSender).shouldHaveNoMoreInteractions();
     }
 }
