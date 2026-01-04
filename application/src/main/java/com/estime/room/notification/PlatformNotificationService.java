@@ -13,7 +13,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -24,7 +23,6 @@ public class PlatformNotificationService {
     private final PlatformRepository platformRepository;
     private final Map<PlatformType, PlatformMessageSender> platformMessageSenders;
 
-    @Transactional(readOnly = true)
     public void sendNotification(
             final Long roomId,
             final PlatformNotificationType type
