@@ -21,7 +21,7 @@ CREATE TABLE platform_notification_outbox
     room_id                    BIGINT                                                NOT NULL,
     platform_type              ENUM ('DISCORD')                                      NOT NULL,
     channel_id                 VARCHAR(255)                                          NOT NULL,
-    platform_notification_type ENUM ('CREATED', 'REMIND', 'SOLVED')                  NOT NULL,
+    platform_notification_type ENUM ('CREATION', 'REMINDER', 'DEADLINE')              NOT NULL,
     status                     ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED') NOT NULL,
     scheduled_at               DATETIME(6)                                           NOT NULL,
     retry_count                INT                                                   NOT NULL DEFAULT 0,
