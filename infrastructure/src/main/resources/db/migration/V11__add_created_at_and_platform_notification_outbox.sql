@@ -26,10 +26,11 @@ CREATE TABLE platform_notification_outbox
     scheduled_at               DATETIME(6)                                           NOT NULL,
     retry_count                INT                                                   NOT NULL DEFAULT 0,
     created_at                 DATETIME(6)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at                 DATETIME(6)                                           NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     active                     BOOLEAN                                               NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id),
     INDEX idx_outbox_status_scheduled_at (status, scheduled_at),
-    INDEX idx_outbox_room_id (room_id)
+    INDEX idx_outbox_status_updated_at (status, updated_at)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;

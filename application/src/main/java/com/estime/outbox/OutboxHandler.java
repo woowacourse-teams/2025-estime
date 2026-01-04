@@ -27,6 +27,20 @@ public abstract class OutboxHandler<T extends Outbox> {
     );
 
     /**
+     * Stale PROCESSING 상태의 Outbox를 복구
+     * <p>
+     * 서버 다운 등으로 PROCESSING 상태로 남아있는 Outbox를 PENDING 또는 FAILED로 변경합니다. STALE_THRESHOLD 이상 PROCESSING 상태인 레코드를 대상으로 합니다.
+     *
+     * @param now       현재 시각 (now - STALE_THRESHOLD 이전에 업데이트된 레코드를 조회)
+     * @param batchSize 한 번에 처리할 Outbox 개수
+     */
+    @Transactional
+    public abstract void recoverStaleProcessing(
+            Instant now,
+            int batchSize
+    );
+
+    /**
      * 실제 작업 수행
      * <p>
      * 이미 PROCESSING 상태인 Outbox에 대해 비즈니스 로직을 실행합니다. 외부 API 호출 등이 포함될 수 있으므로 트랜잭션 없이 실행됩니다.
