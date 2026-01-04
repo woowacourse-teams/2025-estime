@@ -1,20 +1,23 @@
 package com.estime.outbox;
 
-import java.time.Instant;
+import com.estime.port.out.TimeProvider;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class OutboxProcessingOrchestrator {
+
+    private final TimeProvider timeProvider;
 
     public <T extends Outbox> void processOutboxes(
             final OutboxHandler<T> handler,
-            final Instant now,
             final int batchSize
     ) {
-        final List<T> outboxes = handler.claimPendingOutboxes(now, batchSize);
+        final List<T> outboxes = handler.claimPendingOutboxes(timeProvider.now(), batchSize);
 
         for (final T outbox : outboxes) {
             processOutbox(handler, outbox);
@@ -27,10 +30,10 @@ public class OutboxProcessingOrchestrator {
     ) {
         try {
             handler.process(outbox);
-            handler.markAsCompleted(outbox);
+            handler.markAsCompleted(outbox, timeProvider.now());
         } catch (final Exception e) {
             log.error("Failed to process outbox: id={}", outbox.getId(), e);
-            handler.markAsFailed(outbox);
+            handler.markAsFailed(outbox, timeProvider.now());
         }
     }
 }

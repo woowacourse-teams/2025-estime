@@ -27,7 +27,7 @@ public class PlatformNotificationOutboxHandler extends OutboxHandler<PlatformNot
             final int batchSize
     ) {
         final List<PlatformNotificationOutbox> outboxes = repository.findDuePendingForUpdate(now, batchSize);
-        outboxes.forEach(Outbox::markAsProcessing);
+        outboxes.forEach(outbox -> outbox.markAsProcessing(now));
         return outboxes;
     }
 

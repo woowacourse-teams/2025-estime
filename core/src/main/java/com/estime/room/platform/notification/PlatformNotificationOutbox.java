@@ -34,9 +34,10 @@ public class PlatformNotificationOutbox extends Outbox {
             final PlatformType platformType,
             final String channelId,
             final PlatformNotificationType platformNotificationType,
-            final Instant scheduledAt
+            final Instant scheduledAt,
+            final Instant now
     ) {
-        super(scheduledAt);
+        super(scheduledAt, now);
         this.roomId = roomId;
         this.platformType = platformType;
         this.channelId = channelId;
@@ -49,14 +50,16 @@ public class PlatformNotificationOutbox extends Outbox {
             final String channelId,
             final PlatformNotificationType platformNotificationType,
             final Instant createdAt,
-            final Instant deadlineAt
+            final Instant deadlineAt,
+            final Instant now
     ) {
         return new PlatformNotificationOutbox(
                 roomId,
                 platformType,
                 channelId,
                 platformNotificationType,
-                platformNotificationType.scheduledAt(createdAt, deadlineAt)
+                platformNotificationType.scheduledAt(createdAt, deadlineAt),
+                now
         );
     }
 }
