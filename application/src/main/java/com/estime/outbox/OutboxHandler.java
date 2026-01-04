@@ -1,10 +1,13 @@
 package com.estime.outbox;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class OutboxHandler<T extends Outbox> {
+
+    protected static final Duration STALE_THRESHOLD = Duration.ofMinutes(10);
 
     /**
      * 처리할 Outbox들을 조회하고 PROCESSING 상태로 변경 (Claim)
@@ -32,13 +35,31 @@ public abstract class OutboxHandler<T extends Outbox> {
      */
     public abstract void process(T outbox);
 
+    protected abstract T findById(Long outboxId);
+
+    /**
+     * Outbox를 COMPLETED 상태로 변경
+     * <p>
+     * 파라미터로 받은 outbox는 claimPendingOutboxes 트랜잭션 종료 후
+     * detached 상태이므로, 새 트랜잭션에서 ID로 다시 조회하여
+     * managed 상태의 엔티티를 얻은 후 상태를 변경합니다.
+     */
     @Transactional
     public void markAsCompleted(final T outbox) {
-        outbox.markAsCompleted();
+        final T managedOutbox = findById(outbox.getId());
+        managedOutbox.markAsCompleted();
     }
 
+    /**
+     * Outbox를 실패 처리 (재시도 또는 FAILED 상태로 변경)
+     * <p>
+     * 파라미터로 받은 outbox는 claimPendingOutboxes 트랜잭션 종료 후
+     * detached 상태이므로, 새 트랜잭션에서 ID로 다시 조회하여
+     * managed 상태의 엔티티를 얻은 후 상태를 변경합니다.
+     */
     @Transactional
     public void markAsFailed(final T outbox) {
-        outbox.markAsFailed();
+        final T managedOutbox = findById(outbox.getId());
+        managedOutbox.markAsFailed();
     }
 }
