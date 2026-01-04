@@ -17,10 +17,14 @@ public class OutboxProcessingOrchestrator {
             final OutboxHandler<T> handler,
             final int batchSize
     ) {
-        final List<T> outboxes = handler.claimPendingOutboxes(timeProvider.now(), batchSize);
+        try {
+            final List<T> outboxes = handler.claimPendingOutboxes(timeProvider.now(), batchSize);
 
-        for (final T outbox : outboxes) {
-            processOutbox(handler, outbox);
+            for (final T outbox : outboxes) {
+                processOutbox(handler, outbox);
+            }
+        } catch (final Exception e) {
+            log.error("Failed to claim pending outboxes", e);
         }
     }
 
@@ -28,7 +32,11 @@ public class OutboxProcessingOrchestrator {
             final OutboxHandler<T> handler,
             final int batchSize
     ) {
-        handler.recoverStaleProcessing(timeProvider.now(), batchSize);
+        try {
+            handler.recoverStaleProcessing(timeProvider.now(), batchSize);
+        } catch (final Exception e) {
+            log.error("Failed to recover stale outboxes", e);
+        }
     }
 
     private <T extends Outbox> void processOutbox(
