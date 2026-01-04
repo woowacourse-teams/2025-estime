@@ -145,7 +145,8 @@ public class RoomApplicationService {
                                 platform.getChannelId(),
                                 type,
                                 savedRoom.getCreatedAt(),
-                                savedRoom.getDeadline(timeProvider.zone())));
+                                savedRoom.getDeadline(timeProvider.zone()),
+                                timeProvider.now()));
             }
         }
 

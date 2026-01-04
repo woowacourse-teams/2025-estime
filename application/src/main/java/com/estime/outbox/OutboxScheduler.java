@@ -1,7 +1,6 @@
 package com.estime.outbox;
 
 import com.estime.room.notification.PlatformNotificationOutboxHandler;
-import com.estime.port.out.TimeProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,9 @@ public class OutboxScheduler {
 
     private final OutboxProcessingOrchestrator orchestrator;
     private final PlatformNotificationOutboxHandler handler;
-    private final TimeProvider timeProvider;
 
     @Scheduled(cron = "0 * * * * *") // 매 분마다 실행
     public void processOutbox() {
-        orchestrator.processOutboxes(handler, timeProvider.now(), BATCH_SIZE);
+        orchestrator.processOutboxes(handler, BATCH_SIZE);
     }
 }

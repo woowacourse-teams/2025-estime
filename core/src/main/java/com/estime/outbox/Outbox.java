@@ -35,46 +35,51 @@ public abstract class Outbox {
     @Column(name = "retry_count", nullable = false)
     private int retryCount;
 
-    protected Outbox(final Instant scheduledAt) {
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    protected Outbox(
+            final Instant scheduledAt,
+            final Instant now
+    ) {
         this.status = OutboxStatus.PENDING;
         this.scheduledAt = scheduledAt;
         this.retryCount = 0;
+        this.updatedAt = now;
     }
 
-    public void markAsProcessing() {
-        if (status == OutboxStatus.PROCESSING) {
-            return;
-        }
+    public void markAsProcessing(final Instant now) {
         if (status != OutboxStatus.PENDING) {
             throw new InvalidOutboxStateException(status, OutboxStatus.PENDING);
         }
         this.status = OutboxStatus.PROCESSING;
+        this.updatedAt = now;
     }
 
-    public void markAsCompleted() {
-        if (status == OutboxStatus.COMPLETED) {
-            return;
-        }
+    public void markAsCompleted(final Instant now) {
         if (status != OutboxStatus.PROCESSING) {
             throw new InvalidOutboxStateException(status, OutboxStatus.PROCESSING);
         }
         this.status = OutboxStatus.COMPLETED;
+        this.updatedAt = now;
     }
 
-    public void markAsFailed() {
+    public void markAsFailed(final Instant now) {
         this.retryCount++;
 
         if (this.retryCount >= MAX_RETRY_COUNT) {
             this.status = OutboxStatus.FAILED;
+            this.updatedAt = now;
             return;
         }
 
         this.status = OutboxStatus.PENDING;
-        this.scheduledAt = calculateNextRetryTime();
+        this.scheduledAt = calculateNextRetryTime(now);
+        this.updatedAt = now;
     }
 
     private Instant calculateNextRetryTime() {
         final long delayMinutes = 1L << (retryCount - 1);
-        return Instant.now().plus(delayMinutes, ChronoUnit.MINUTES);
+        return now.plus(delayMinutes, ChronoUnit.MINUTES);
     }
 }
