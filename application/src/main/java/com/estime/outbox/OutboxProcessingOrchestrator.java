@@ -24,6 +24,13 @@ public class OutboxProcessingOrchestrator {
         }
     }
 
+    public <T extends Outbox> void recoverStaleOutboxes(
+            final OutboxHandler<T> handler,
+            final int batchSize
+    ) {
+        handler.recoverStaleProcessing(timeProvider.now(), batchSize);
+    }
+
     private <T extends Outbox> void processOutbox(
             final OutboxHandler<T> handler,
             final T outbox

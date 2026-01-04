@@ -78,7 +78,14 @@ public abstract class Outbox {
         this.updatedAt = now;
     }
 
-    private Instant calculateNextRetryTime() {
+    public void recoverFromStale(final Instant now) {
+        if (status != OutboxStatus.PROCESSING) {
+            throw new InvalidOutboxStateException(status, OutboxStatus.PROCESSING);
+        }
+        markAsFailed(now);
+    }
+
+    private Instant calculateNextRetryTime(final Instant now) {
         final long delayMinutes = 1L << (retryCount - 1);
         return now.plus(delayMinutes, ChronoUnit.MINUTES);
     }
