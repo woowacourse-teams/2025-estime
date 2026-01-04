@@ -19,6 +19,7 @@ public class PlatformNotificationOutbox extends Outbox {
     @Column(name = "room_id", nullable = false)
     private Long roomId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "platform_type", nullable = false)
     private PlatformType platformType;
 
