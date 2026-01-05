@@ -13,7 +13,6 @@ import com.estime.shared.exception.InvalidLengthException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -136,7 +135,7 @@ class RoomTest {
     @Test
     void getDeadline_withZoneId_returnsInstant() {
         // given
-        final LocalDateTime deadline = LocalDateTime.of(2025, 12, 31, 23, 59, 0);
+        final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
         final Room room = Room.withoutId("테스트방", roomSession, deadline);
         final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
 
@@ -155,7 +154,7 @@ class RoomTest {
     @Test
     void getDeadline_withDifferentZoneIds_representsSameInstant() {
         // given
-        final LocalDateTime deadline = LocalDateTime.of(2025, 12, 31, 23, 59, 0);
+        final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
         final Room room = Room.withoutId("테스트방", roomSession, deadline);
         final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
         final ZoneId utcZone = ZoneId.of("UTC");

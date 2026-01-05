@@ -2,7 +2,6 @@ package com.estime.room.controller.dto.response;
 
 import com.estime.room.dto.input.CompactVotesOutput;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
 
 public record ParticipantVotesResponseV2(
