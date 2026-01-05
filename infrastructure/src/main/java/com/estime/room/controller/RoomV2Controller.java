@@ -11,7 +11,10 @@ import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
 import com.estime.room.service.CompactRoomApplicationService;
 import com.estime.shared.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
