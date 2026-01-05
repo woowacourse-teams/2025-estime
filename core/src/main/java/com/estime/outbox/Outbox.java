@@ -65,6 +65,10 @@ public abstract class Outbox {
     }
 
     public void markAsFailed(final Instant now) {
+        if (status != OutboxStatus.PROCESSING) {
+            throw new InvalidOutboxStateException(status, OutboxStatus.PROCESSING);
+        }
+
         this.retryCount++;
 
         if (this.retryCount >= MAX_RETRY_COUNT) {
