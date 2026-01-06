@@ -29,8 +29,8 @@ public class DiscordMessageBuilder {
                 .build();
     }
 
-    public MessageCreateData buildConnectedRoomCreateMessage(final String roomCreateShortcut) {
-        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATE;
+    public MessageCreateData buildStartMessage(final String roomCreateShortcut) {
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_START;
         final MessageEmbed embed = new EmbedBuilder()
                 .setTitle(platformMessage.getTitleWithEmoji())
                 .setColor(PlatformMessageStyle.DEFAULT.getColor())
@@ -42,12 +42,12 @@ public class DiscordMessageBuilder {
                 .build();
     }
 
-    public MessageCreateData buildConnectedRoomCreatedMessage(
+    public MessageCreateData buildCreationMessage(
             final String shortcut,
             final String title,
             final LocalDateTime deadline
     ) {
-        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATED;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATION;
         final String formattedDeadline = deadline
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
         final MessageEmbed embed = new EmbedBuilder()
@@ -70,7 +70,7 @@ public class DiscordMessageBuilder {
             final String title,
             final LocalDateTime deadline
     ) {
-        final PlatformMessage platformMessage = PlatformMessage.ROOM_REMIND;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_REMINDER;
         final String formattedDeadline = deadline
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
 
@@ -90,11 +90,11 @@ public class DiscordMessageBuilder {
                 .build();
     }
 
-    public MessageCreateData buildDeadlineAlertMessage(
+    public MessageCreateData buildDeadlineMessage(
             final String shortcut,
             final String title
     ) {
-        final PlatformMessage platformMessage = PlatformMessage.ROOM_SOLVED;
+        final PlatformMessage platformMessage = PlatformMessage.ROOM_DEADLINE;
 
         final MessageEmbed embed = new EmbedBuilder()
                 .setTitle(platformMessage.getTitleWithEmoji())
