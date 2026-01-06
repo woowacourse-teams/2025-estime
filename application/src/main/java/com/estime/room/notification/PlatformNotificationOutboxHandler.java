@@ -6,6 +6,7 @@ import com.estime.room.platform.notification.PlatformNotificationOutboxRepositor
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -54,8 +55,8 @@ public class PlatformNotificationOutboxHandler extends OutboxHandler<PlatformNot
     }
 
     @Override
-    public void process(final PlatformNotificationOutbox outbox) {
-        platformNotificationService.sendNotification(outbox.getRoomId(), outbox.getPlatformNotificationType());
+    public CompletableFuture<Void> process(final PlatformNotificationOutbox outbox) {
+        return platformNotificationService.sendNotification(outbox.getRoomId(), outbox.getPlatformNotificationType());
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.estime.outbox;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class OutboxHandler<T extends Outbox> {
@@ -41,21 +42,25 @@ public abstract class OutboxHandler<T extends Outbox> {
     );
 
     /**
-     * 실제 작업 수행
+     * 실제 작업 수행 (비동기)
      * <p>
-     * 이미 PROCESSING 상태인 Outbox에 대해 비즈니스 로직을 실행합니다. 외부 API 호출 등이 포함될 수 있으므로 트랜잭션 없이 실행됩니다.
+     * 이미 PROCESSING 상태인 Outbox에 대해 비즈니스 로직을 실행합니다. 외부 API 호출 등이 포함될 수 있으므로 트랜잭션 없이 실행됩니다. 비동기 처리를 위해 CompletableFuture를
+     * 반환하며, 완료 시 콜백에서 상태가 업데이트됩니다.
      *
      * @param outbox 처리할 Outbox (이미 PROCESSING 상태)
+     * @return 비동기 처리 결과
      */
-    public abstract void process(T outbox);
+    public abstract CompletableFuture<Void> process(T outbox);
 
     protected abstract T findById(Long outboxId);
 
     /**
      * Outbox를 COMPLETED 상태로 변경
      * <p>
-     * 파라미터로 받은 outbox는 claimPendingOutboxes 트랜잭션 종료 후 detached 상태이므로, 새 트랜잭션에서 ID로 다시 조회하여 managed 상태의 엔티티를 얻은 후 상태를
-     * 변경합니다.
+     * 비동기 콜백에서 호출되므로 새 트랜잭션에서 ID로 조회하여 managed 상태의 엔티티를 얻은 후 상태를 변경합니다.
+     *
+     * @param outbox 완료 처리할 Outbox
+     * @param now    현재 시각
      */
     @Transactional
     public void markAsCompleted(
@@ -69,8 +74,10 @@ public abstract class OutboxHandler<T extends Outbox> {
     /**
      * Outbox를 실패 처리 (재시도 또는 FAILED 상태로 변경)
      * <p>
-     * 파라미터로 받은 outbox는 claimPendingOutboxes 트랜잭션 종료 후 detached 상태이므로, 새 트랜잭션에서 ID로 다시 조회하여 managed 상태의 엔티티를 얻은 후 상태를
-     * 변경합니다.
+     * 비동기 콜백에서 호출되므로 새 트랜잭션에서 ID로 조회하여 managed 상태의 엔티티를 얻은 후 상태를 변경합니다.
+     *
+     * @param outbox 실패 처리할 Outbox
+     * @param now    현재 시각
      */
     @Transactional
     public void markAsFailed(
