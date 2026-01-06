@@ -42,9 +42,9 @@ public class DiscordMessageSender implements PlatformMessageSender {
         final String roomUrl = platformShortcutBuilder.buildConnectedRoomUrl(session);
 
         final MessageCreateData message = switch (type) {
-            case CREATION -> discordMessageBuilder.buildConnectedRoomCreatedMessage(roomUrl, title, deadline);
+            case CREATION -> discordMessageBuilder.buildCreationMessage(roomUrl, title, deadline);
             case REMINDER -> discordMessageBuilder.buildReminderMessage(roomUrl, title, deadline);
-            case DEADLINE -> discordMessageBuilder.buildDeadlineAlertMessage(roomUrl, title);
+            case DEADLINE -> discordMessageBuilder.buildDeadlineMessage(roomUrl, title);
         };
 
         return sendMessage(channel, message);
