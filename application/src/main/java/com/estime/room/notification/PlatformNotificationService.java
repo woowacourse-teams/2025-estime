@@ -10,6 +10,7 @@ import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.shared.DomainTerm;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class PlatformNotificationService {
     private final PlatformRepository platformRepository;
     private final Map<PlatformType, PlatformMessageSender> platformMessageSenders;
 
-    public void sendNotification(
+    public CompletableFuture<Void> sendNotification(
             final Long roomId,
             final PlatformNotificationType type
     ) {
@@ -34,24 +35,12 @@ public class PlatformNotificationService {
 
         final PlatformMessageSender sender = platformMessageSenders.get(platform.getType());
 
-        switch (type) {
-            case CREATION -> sender.sendConnectedRoomCreatedMessage(
-                    platform.getChannelId(),
-                    room.getSession(),
-                    room.getTitle(),
-                    room.getDeadline()
-            );
-            case REMINDER -> sender.sendReminderMessage(
-                    platform.getChannelId(),
-                    room.getSession(),
-                    room.getTitle(),
-                    room.getDeadline()
-            );
-            case DEADLINE -> sender.sendDeadlineAlertMessage(
-                    platform.getChannelId(),
-                    room.getSession(),
-                    room.getTitle()
-            );
-        }
+        return sender.send(
+                type,
+                platform.getChannelId(),
+                room.getSession(),
+                room.getTitle(),
+                room.getDeadline()
+        );
     }
 }
