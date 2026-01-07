@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.estime.TestApplication;
 import com.estime.cache.CacheNames;
 import com.estime.port.out.RoomSessionGenerator;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -21,6 +20,7 @@ import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.DateTimeSlot;
+import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,15 +33,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
-class VoteStatisticCacheTest {
+class VoteStatisticCacheTest extends IntegrationTest {
 
     @Autowired
     private RoomApplicationService roomApplicationService;

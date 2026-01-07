@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.TestApplication;
 import com.estime.exception.NotFoundException;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
@@ -42,6 +41,7 @@ import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
+import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,14 +54,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
 @Transactional
-class RoomApplicationServiceTest {
+class RoomApplicationServiceTest extends IntegrationTest {
 
     private static final RoomSession roomSession = RoomSession.from("testRoomSession");
 
@@ -485,6 +481,30 @@ class RoomApplicationServiceTest {
             final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
             softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATION))
                     .isTrue();
+        });
+    }
+
+    @DisplayName("Room을 저장하면 createdAt이 자동으로 설정된다")
+    @Test
+    void save_setsCreatedAt() {
+        // given
+        final java.time.Instant beforeSave = java.time.Instant.now();
+        final Room newRoom = Room.withoutId(
+                "테스트방",
+                RoomSession.from("test-session-createdAt"),
+                LocalDateTime.now().plusDays(1)
+        );
+
+        // when
+        final Room savedRoom = roomRepository.save(newRoom);
+        final java.time.Instant afterSave = java.time.Instant.now();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(savedRoom.getCreatedAt()).isNotNull();
+            softly.assertThat(savedRoom.getCreatedAt())
+                    .isAfterOrEqualTo(beforeSave)
+                    .isBeforeOrEqualTo(afterSave);
         });
     }
 }

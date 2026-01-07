@@ -5,24 +5,20 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import com.estime.TestApplication;
 import com.estime.outbox.OutboxProcessingOrchestrator;
 import com.estime.outbox.OutboxStatus;
-import com.estime.port.out.TimeProvider;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.notification.PlatformNotificationOutboxHandler;
-import com.estime.room.notification.PlatformNotificationService;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
 import com.estime.room.platform.notification.PlatformNotificationType;
+import com.estime.support.IntegrationTest;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -41,14 +37,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
-class PlatformNotificationOutboxHandlerTest {
+class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
 
     private static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.HOURS).plus(365, ChronoUnit.DAYS);
     private static final String CHANNEL_ID = "test-channel";
@@ -67,12 +58,6 @@ class PlatformNotificationOutboxHandlerTest {
 
     @Autowired
     private RoomRepository roomRepository;
-
-    @MockitoBean
-    private PlatformNotificationService notificationService;
-
-    @MockitoBean
-    private TimeProvider timeProvider;
 
     /**
      * 테스트용 Room 생성 헬퍼
