@@ -42,7 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
 
-    private static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.HOURS).plus(365, ChronoUnit.DAYS);
     private static final String CHANNEL_ID = "test-channel";
 
     @Autowired
@@ -172,6 +171,78 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
                 softly.assertThat(claimedOutbox.getScheduledAt()).isEqualTo(originalScheduledAt); // 불변
             });
         }
+
+        @DisplayName("배치 크기 경계: 정확히 100개 outbox가 있을 때 100개 모두 클레임된다")
+        @Test
+        void claimPendingOutboxes_exactlyBatchSize_allClaimed() {
+            // given
+            final Room room = saveRoom();
+            final int batchSize = 100;
+            for (int i = 0; i < batchSize; i++) {
+                final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(i + 1, ChronoUnit.MINUTES));
+                repository.save(outbox);
+            }
+
+            // when
+            final List<PlatformNotificationOutbox> claimed = handler.claimPendingOutboxes(NOW, batchSize);
+
+            // then
+            assertThat(claimed).hasSize(batchSize);
+        }
+
+        @DisplayName("배치 크기 경계: 101개 outbox가 있을 때 100개만 클레임되고 1개는 남는다")
+        @Test
+        void claimPendingOutboxes_overBatchSize_onlyBatchSizeClaimed() {
+            // given
+            final Room room = saveRoom();
+            final int batchSize = 100;
+            final int totalCount = 101;
+            for (int i = 0; i < totalCount; i++) {
+                final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(i + 1, ChronoUnit.MINUTES));
+                repository.save(outbox);
+            }
+
+            // when: 첫 번째 클레임 - 100개
+            final List<PlatformNotificationOutbox> firstClaim = handler.claimPendingOutboxes(NOW, batchSize);
+            // when: 두 번째 클레임 - 남은 1개
+            final List<PlatformNotificationOutbox> secondClaim = handler.claimPendingOutboxes(NOW, batchSize);
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(firstClaim).hasSize(batchSize);
+                softly.assertThat(secondClaim).hasSize(1);
+            });
+        }
+
+        @DisplayName("클레임 정렬 보장: limit < due 수량일 때 scheduledAt 오름차순으로 우선 처리된다")
+        @Test
+        void claimPendingOutboxes_limitLessThanDue_oldestScheduledAtFirst() {
+            // given: 5개의 outbox를 다양한 scheduledAt으로 생성
+            final Room room = saveRoom();
+            final Instant oldest = NOW.minus(50, ChronoUnit.MINUTES);
+            final Instant secondOldest = NOW.minus(40, ChronoUnit.MINUTES);
+            final Instant middle = NOW.minus(30, ChronoUnit.MINUTES);
+            final Instant secondNewest = NOW.minus(20, ChronoUnit.MINUTES);
+            final Instant newest = NOW.minus(10, ChronoUnit.MINUTES);
+
+            // 순서 섞어서 저장 (DB 삽입 순서가 결과에 영향 없음을 검증)
+            repository.save(buildOutbox(room.getId(), middle));
+            repository.save(buildOutbox(room.getId(), newest));
+            repository.save(buildOutbox(room.getId(), oldest));
+            repository.save(buildOutbox(room.getId(), secondNewest));
+            repository.save(buildOutbox(room.getId(), secondOldest));
+
+            // when: limit=3으로 클레임 (5개 중 3개만)
+            final List<PlatformNotificationOutbox> claimed = handler.claimPendingOutboxes(NOW, 3);
+
+            // then: 가장 오래된 3개가 scheduledAt 오름차순으로 선택됨
+            assertSoftly(softly -> {
+                softly.assertThat(claimed).hasSize(3);
+                softly.assertThat(claimed.get(0).getScheduledAt()).isEqualTo(oldest);
+                softly.assertThat(claimed.get(1).getScheduledAt()).isEqualTo(secondOldest);
+                softly.assertThat(claimed.get(2).getScheduledAt()).isEqualTo(middle);
+            });
+        }
     }
 
     @Nested
@@ -180,11 +251,6 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
     class ProcessingFlowTest {
 
         private final List<Long> createdOutboxIds = new ArrayList<>();
-
-        @BeforeEach
-        void setUp() {
-            given(timeProvider.now()).willReturn(NOW);
-        }
 
         @AfterEach
         void tearDown() {
@@ -332,11 +398,6 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
     @Transactional
     class StaleRecoveryTest {
 
-        @BeforeEach
-        void setUp() {
-            given(timeProvider.now()).willReturn(NOW);
-        }
-
         @DisplayName("10분 이상 지난 PROCESSING outbox가 복구되고 scheduledAt=now+1분(첫 백오프)으로 설정된다")
         @Test
         void recoverStaleOutboxes_recoversOldProcessingRecords_withBackoffSchedule() {
@@ -379,6 +440,46 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
                 softly.assertThat(result.getRetryCount()).isEqualTo(0);
             });
         }
+
+        @DisplayName("Stale 경계값: updatedAt == now - 10분 (정확히 threshold)일 때 복구 대상에 포함된다 (loe)")
+        @Test
+        void recoverStaleOutboxes_exactlyThreshold_included() {
+            // given: 정확히 10분 전에 PROCESSING 상태가 된 outbox (경계값)
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(15, ChronoUnit.MINUTES));
+            outbox.markAsProcessing(NOW.minus(10, ChronoUnit.MINUTES)); // 정확히 threshold
+            repository.save(outbox);
+
+            // when
+            orchestrator.recoverStaleOutboxes(handler, 100);
+
+            // then: loe(threshold)이므로 포함됨
+            final PlatformNotificationOutbox result = repository.find(outbox.getId()).orElseThrow();
+            assertSoftly(softly -> {
+                softly.assertThat(result.getStatus()).isEqualTo(OutboxStatus.PENDING);
+                softly.assertThat(result.getRetryCount()).isEqualTo(1);
+            });
+        }
+
+        @DisplayName("Stale 경계값: updatedAt == now - 10분 + 1초 (threshold 직전)일 때 복구 대상에서 제외된다")
+        @Test
+        void recoverStaleOutboxes_justBeforeThreshold_excluded() {
+            // given: 10분 - 1초 전에 PROCESSING 상태가 된 outbox (경계값 직전)
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(15, ChronoUnit.MINUTES));
+            outbox.markAsProcessing(NOW.minus(10, ChronoUnit.MINUTES).plusSeconds(1)); // threshold - 1초
+            repository.save(outbox);
+
+            // when
+            orchestrator.recoverStaleOutboxes(handler, 100);
+
+            // then: threshold 이전이므로 제외됨
+            final PlatformNotificationOutbox result = repository.find(outbox.getId()).orElseThrow();
+            assertSoftly(softly -> {
+                softly.assertThat(result.getStatus()).isEqualTo(OutboxStatus.PROCESSING);
+                softly.assertThat(result.getRetryCount()).isEqualTo(0);
+            });
+        }
     }
 
     @Nested
@@ -391,7 +492,6 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            given(timeProvider.now()).willReturn(NOW);
             testRoom = saveRoom();
         }
 

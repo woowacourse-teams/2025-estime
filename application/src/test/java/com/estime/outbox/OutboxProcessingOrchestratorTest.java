@@ -168,6 +168,21 @@ class OutboxProcessingOrchestratorTest {
                     .doesNotThrowAnyException();
         }
 
+        @DisplayName("findById 실패로 IllegalStateException 발생 시 로깅만 하고 예외 전파 안함 (outbox 삭제 케이스)")
+        @Test
+        void processOutboxes_findByIdThrowsIllegalStateException_logsAndDoesNotPropagate() {
+            // given: process 성공 후 markAsCompleted 호출 시 outbox가 삭제되어 findById 실패
+            final TestOutbox outbox = new TestOutbox(1L, NOW.minus(5, ChronoUnit.MINUTES), NOW);
+            given(handler.claimPendingOutboxes(NOW, BATCH_SIZE)).willReturn(List.of(outbox));
+            given(handler.process(outbox)).willReturn(CompletableFuture.completedFuture(null));
+            willThrow(new IllegalStateException("Outbox not found: 1"))
+                    .given(handler).markAsCompleted(outbox, NOW);
+
+            // when & then: IllegalStateException이 전파되지 않음
+            assertThatCode(() -> orchestrator.processOutboxes(handler, BATCH_SIZE))
+                    .doesNotThrowAnyException();
+        }
+
         @DisplayName("markAsFailed 예외: 예외 발생 시 로깅만 하고 예외 전파 안함")
         @Test
         void processOutboxes_markAsFailedException_logsAndDoesNotPropagate() {
