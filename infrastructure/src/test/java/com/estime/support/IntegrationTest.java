@@ -15,11 +15,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+/**
+ * 통합 테스트 베이스 클래스.
+ * <p>
+ * 공통 Mock Bean과 TimeProvider 기본 설정을 제공합니다.
+ */
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
 @TestPropertySource(properties = "spring.main.allow-bean-definition-overriding=true")
 @AutoConfigureMockMvc
 public abstract class IntegrationTest {
+
+    protected static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.HOURS).plus(30, ChronoUnit.DAYS);
 
     @MockitoBean
     protected PlatformNotificationService notificationService;
@@ -29,7 +36,7 @@ public abstract class IntegrationTest {
 
     @BeforeEach
     void setUpIntegrationTest() {
-        given(timeProvider.now()).willReturn(Instant.now().plus(30, ChronoUnit.DAYS));
+        given(timeProvider.now()).willReturn(NOW);
         given(timeProvider.zone()).willReturn(ZoneId.of("Asia/Seoul"));
     }
 }
