@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,9 +61,9 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
     private RoomRepository roomRepository;
 
     /**
-     * 테스트용 Room 생성 헬퍼
+     * 테스트용 Room 저장 헬퍼
      */
-    private Room createRoom() {
+    private Room saveRoom() {
         final Room room = Room.withoutId(
                 "테스트방",
                 RoomSession.from(UUID.randomUUID().toString()),
@@ -72,9 +73,9 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
     }
 
     /**
-     * 테스트용 PlatformNotificationOutbox 생성 헬퍼
+     * 테스트용 PlatformNotificationOutbox 빌드 헬퍼 (저장하지 않음)
      */
-    private PlatformNotificationOutbox createOutbox(
+    private PlatformNotificationOutbox buildOutbox(
             final Long roomId,
             final Instant scheduledAt
     ) {
@@ -90,14 +91,14 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
     }
 
     /**
-     * 특정 retryCount를 가진 outbox 생성 헬퍼
+     * 특정 retryCount를 가진 outbox 빌드 헬퍼 (저장하지 않음)
      */
-    private PlatformNotificationOutbox createOutboxWithRetryCount(
+    private PlatformNotificationOutbox buildOutboxWithRetryCount(
             final Long roomId,
             final int targetRetryCount,
             final Instant scheduledAt
     ) {
-        final PlatformNotificationOutbox outbox = createOutbox(roomId, scheduledAt);
+        final PlatformNotificationOutbox outbox = buildOutbox(roomId, scheduledAt);
         for (int i = 0; i < targetRetryCount; i++) {
             outbox.markAsProcessing(scheduledAt);
             outbox.markAsFailed(scheduledAt);
@@ -114,8 +115,8 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void claimPendingOutboxes_changeStatusToProcessing() {
             // given
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox = createOutbox(room.getId(), NOW.minus(5, ChronoUnit.MINUTES));
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(5, ChronoUnit.MINUTES));
             repository.save(outbox);
 
             // when
@@ -132,9 +133,9 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void claimPendingOutboxes_returnsClaimedOutboxes() {
             // given
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox1 = createOutbox(room.getId(), NOW.minus(10, ChronoUnit.MINUTES));
-            final PlatformNotificationOutbox outbox2 = createOutbox(room.getId(), NOW.minus(5, ChronoUnit.MINUTES));
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox1 = buildOutbox(room.getId(), NOW.minus(10, ChronoUnit.MINUTES));
+            final PlatformNotificationOutbox outbox2 = buildOutbox(room.getId(), NOW.minus(5, ChronoUnit.MINUTES));
             repository.save(outbox1);
             repository.save(outbox2);
 
@@ -154,9 +155,9 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void claimPendingOutboxes_invariants_statusProcessing_updatedAtNow_scheduledAtUnchanged() {
             // given
-            final Room room = createRoom();
+            final Room room = saveRoom();
             final Instant originalScheduledAt = NOW.minus(5, ChronoUnit.MINUTES);
-            final PlatformNotificationOutbox outbox = createOutbox(room.getId(), originalScheduledAt);
+            final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), originalScheduledAt);
             repository.save(outbox);
 
             // when
@@ -175,23 +176,50 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
 
     @Nested
     @DisplayName("전체 처리 흐름 테스트")
-    @Transactional
+            // 주의: @Transactional 제거 - async 콜백이 새 트랜잭션에서 실행되므로 테스트 트랜잭션과 충돌
     class ProcessingFlowTest {
+
+        private final List<Long> createdOutboxIds = new ArrayList<>();
 
         @BeforeEach
         void setUp() {
             given(timeProvider.now()).willReturn(NOW);
         }
 
+        @AfterEach
+        void tearDown() {
+            createdOutboxIds.forEach(jpaRepository::deleteById);
+            createdOutboxIds.clear();
+        }
+
+        private PlatformNotificationOutbox saveOutbox(final Long roomId, final Instant scheduledAt) {
+            final PlatformNotificationOutbox outbox = buildOutbox(roomId, scheduledAt);
+            final PlatformNotificationOutbox saved = repository.save(outbox);
+            createdOutboxIds.add(saved.getId());
+            return saved;
+        }
+
+        private PlatformNotificationOutbox saveOutboxWithRetryCount(
+                final Long roomId,
+                final int targetRetryCount,
+                final Instant scheduledAt
+        ) {
+            final PlatformNotificationOutbox outbox = buildOutboxWithRetryCount(roomId, targetRetryCount, scheduledAt);
+            final PlatformNotificationOutbox saved = repository.save(outbox);
+            createdOutboxIds.add(saved.getId());
+            return saved;
+        }
+
         @DisplayName("처리 성공 시 outbox가 COMPLETED 상태가 된다")
         @Test
         void processOutboxes_successfulProcessing_marksAsCompleted() {
             // given
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox = createOutbox(room.getId(), NOW.minus(5, ChronoUnit.MINUTES));
-            repository.save(outbox);
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = saveOutbox(room.getId(),
+                    NOW.minus(5, ChronoUnit.MINUTES));
 
-            doNothing().when(notificationService).sendNotification(eq(room.getId()), any());
+            given(notificationService.sendNotification(eq(room.getId()), any()))
+                    .willReturn(CompletableFuture.completedFuture(null));
 
             // when
             orchestrator.processOutboxes(handler, 100);
@@ -205,12 +233,12 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void processOutboxes_failedProcessing_marksAsFailedAndRetries() {
             // given
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox = createOutbox(room.getId(), NOW.minus(5, ChronoUnit.MINUTES));
-            repository.save(outbox);
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = saveOutbox(room.getId(),
+                    NOW.minus(5, ChronoUnit.MINUTES));
 
-            doThrow(new RuntimeException("External API failed"))
-                    .when(notificationService).sendNotification(eq(room.getId()), any());
+            given(notificationService.sendNotification(eq(room.getId()), any()))
+                    .willReturn(CompletableFuture.failedFuture(new RuntimeException("External API failed")));
 
             // when
             orchestrator.processOutboxes(handler, 100);
@@ -229,13 +257,12 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
             // given: retryCount가 4인 outbox (다음 실패 시 FAILED)
             // 주의: exponential backoff로 인해 scheduledAt이 변경되므로, 충분히 과거 시간 사용
             // 4번 실패 후 backoff = 8분, 따라서 NOW - 10분으로 설정하면 최종 scheduledAt = NOW - 2분
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox = createOutboxWithRetryCount(room.getId(), 4,
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = saveOutboxWithRetryCount(room.getId(), 4,
                     NOW.minus(10, ChronoUnit.MINUTES));
-            repository.save(outbox);
 
-            doThrow(new RuntimeException("External API failed"))
-                    .when(notificationService).sendNotification(eq(room.getId()), any());
+            given(notificationService.sendNotification(eq(room.getId()), any()))
+                    .willReturn(CompletableFuture.failedFuture(new RuntimeException("External API failed")));
 
             // when
             orchestrator.processOutboxes(handler, 100);
@@ -252,21 +279,20 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void processOutboxes_mixedResults_eachProcessedIndependently() {
             // given: 2개의 outbox - 하나는 성공, 하나는 실패하도록 설정
-            final Room successRoom = createRoom();
-            final Room failRoom = createRoom();
+            final Room successRoom = saveRoom();
+            final Room failRoom = saveRoom();
 
-            final PlatformNotificationOutbox successOutbox = createOutbox(successRoom.getId(),
+            final PlatformNotificationOutbox successOutbox = saveOutbox(successRoom.getId(),
                     NOW.minus(10, ChronoUnit.MINUTES));
-            final PlatformNotificationOutbox failOutbox = createOutbox(failRoom.getId(),
+            final PlatformNotificationOutbox failOutbox = saveOutbox(failRoom.getId(),
                     NOW.minus(5, ChronoUnit.MINUTES));
-            repository.save(successOutbox);
-            repository.save(failOutbox);
 
             // 성공 outbox 처리
-            doNothing().when(notificationService).sendNotification(eq(successRoom.getId()), any());
+            given(notificationService.sendNotification(eq(successRoom.getId()), any()))
+                    .willReturn(CompletableFuture.completedFuture(null));
             // 실패 outbox 처리
-            doThrow(new RuntimeException("External API failed"))
-                    .when(notificationService).sendNotification(eq(failRoom.getId()), any());
+            given(notificationService.sendNotification(eq(failRoom.getId()), any()))
+                    .willReturn(CompletableFuture.failedFuture(new RuntimeException("External API failed")));
 
             // when
             orchestrator.processOutboxes(handler, 100);
@@ -289,9 +315,9 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void processOutboxes_noDueOutboxes_noServiceCall() {
             // given: due한 outbox 없음 (미래 스케줄)
-            final Room room = createRoom();
-            final PlatformNotificationOutbox futureOutbox = createOutbox(room.getId(), NOW.plus(1, ChronoUnit.HOURS));
-            repository.save(futureOutbox);
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox futureOutbox = saveOutbox(room.getId(),
+                    NOW.plus(1, ChronoUnit.HOURS));
 
             // when
             orchestrator.processOutboxes(handler, 100);
@@ -315,8 +341,8 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void recoverStaleOutboxes_recoversOldProcessingRecords_withBackoffSchedule() {
             // given: 15분 전에 PROCESSING 상태가 된 outbox
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox = createOutbox(room.getId(), NOW.minus(20, ChronoUnit.MINUTES));
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(20, ChronoUnit.MINUTES));
             outbox.markAsProcessing(NOW.minus(15, ChronoUnit.MINUTES));
             repository.save(outbox);
 
@@ -338,8 +364,8 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @Test
         void recoverStaleOutboxes_ignoresRecentProcessingRecords() {
             // given: 5분 전에 PROCESSING 상태가 된 outbox
-            final Room room = createRoom();
-            final PlatformNotificationOutbox outbox = createOutbox(room.getId(), NOW.minus(10, ChronoUnit.MINUTES));
+            final Room room = saveRoom();
+            final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(10, ChronoUnit.MINUTES));
             outbox.markAsProcessing(NOW.minus(5, ChronoUnit.MINUTES));
             repository.save(outbox);
 
@@ -357,7 +383,7 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
 
     @Nested
     @DisplayName("동시성 테스트 (FOR UPDATE 락 검증)")
-    // 주의: @Transactional 제거 - 동시성 테스트에서는 다른 스레드가 데이터를 볼 수 있도록 커밋 필요
+            // 주의: @Transactional 제거 - 동시성 테스트에서는 다른 스레드가 데이터를 볼 수 있도록 커밋 필요
     class ConcurrencyTest {
 
         private final List<Long> createdOutboxIds = new ArrayList<>();
@@ -366,7 +392,7 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         @BeforeEach
         void setUp() {
             given(timeProvider.now()).willReturn(NOW);
-            testRoom = createRoom();
+            testRoom = saveRoom();
         }
 
         @AfterEach
@@ -381,7 +407,7 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         void claimPendingOutboxes_concurrentClaims_noDoubleClaim() throws Exception {
             // given: 5개의 PENDING outbox 생성
             for (int i = 0; i < 5; i++) {
-                final PlatformNotificationOutbox outbox = createOutbox(testRoom.getId(),
+                final PlatformNotificationOutbox outbox = buildOutbox(testRoom.getId(),
                         NOW.minus(i + 1, ChronoUnit.MINUTES));
                 final PlatformNotificationOutbox saved = repository.save(outbox);
                 createdOutboxIds.add(saved.getId());
@@ -423,7 +449,7 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         void claimPendingOutboxes_limitWithConcurrency_distributedWithoutDuplication() throws Exception {
             // given: 5개의 PENDING outbox 생성
             for (int i = 0; i < 5; i++) {
-                final PlatformNotificationOutbox outbox = createOutbox(testRoom.getId(),
+                final PlatformNotificationOutbox outbox = buildOutbox(testRoom.getId(),
                         NOW.minus(i + 1, ChronoUnit.MINUTES));
                 final PlatformNotificationOutbox saved = repository.save(outbox);
                 createdOutboxIds.add(saved.getId());
@@ -468,7 +494,7 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         void claimPendingOutboxes_sequentialReclaim_returnsEmpty() {
             // given: 3개의 PENDING outbox 생성
             for (int i = 0; i < 3; i++) {
-                final PlatformNotificationOutbox outbox = createOutbox(testRoom.getId(),
+                final PlatformNotificationOutbox outbox = buildOutbox(testRoom.getId(),
                         NOW.minus(i + 1, ChronoUnit.MINUTES));
                 final PlatformNotificationOutbox saved = repository.save(outbox);
                 createdOutboxIds.add(saved.getId());
