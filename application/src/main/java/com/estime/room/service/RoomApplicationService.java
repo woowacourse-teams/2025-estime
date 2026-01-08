@@ -2,16 +2,13 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomEventSender;
-import com.estime.port.out.RoomMessageSender;
 import com.estime.port.out.RoomSessionGenerator;
 import com.estime.port.out.TimeProvider;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.SlotBatchRepository;
-import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.dto.input.DateSlotInput;
 import com.estime.room.dto.input.ParticipantCreateInput;
@@ -26,6 +23,7 @@ import com.estime.room.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipan
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomCreateOutput;
 import com.estime.room.dto.output.RoomOutput;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.ParticipantName;
