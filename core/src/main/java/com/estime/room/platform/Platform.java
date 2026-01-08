@@ -1,6 +1,7 @@
 package com.estime.room.platform;
 
 import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.shared.BaseEntity;
 import com.estime.shared.Validator;
 import jakarta.persistence.Column;
@@ -57,5 +58,9 @@ public class Platform extends BaseEntity {
                 .add(Fields.channelId, channelId)
                 .add(Fields.notification, notification)
                 .validateNull();
+    }
+
+    public boolean shouldNotifyFor(final PlatformNotificationType type) {
+        return notification.shouldNotifyFor(type);
     }
 }

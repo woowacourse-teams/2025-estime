@@ -135,7 +135,7 @@ public class RoomApplicationService {
                         input.notification()));
 
         for (final PlatformNotificationType type : PlatformNotificationType.values()) {
-            if (platform.getNotification().shouldNotifyFor(type)) {
+            if (platform.shouldNotifyFor(type)) {
                 platformNotificationOutboxRepository.save(
                         PlatformNotificationOutbox.of(
                                 savedRoom.getId(),
