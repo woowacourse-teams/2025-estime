@@ -8,23 +8,6 @@ export type UserAvailableTimeResponseType = {
   dateTimeSlots: string[];
 };
 
-export interface CombinedAvailableTimesResponseType {
-  timeSlots: TimeSlotStatType[];
-}
-
-export interface RecommendationTimeResponseType {
-  recommendations: RecommendedTimeSlotType[];
-}
-
-export interface TimeSlotStatType {
-  startTime: string;
-  availableMembers: number;
-}
-
-export interface RecommendedTimeSlotType {
-  dateTime: string;
-  userNames: string[];
-}
 export interface updateUserAvailableTimeType {
   message: string;
 }
