@@ -1,6 +1,5 @@
 package com.estime.sse;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.room.RoomSession;

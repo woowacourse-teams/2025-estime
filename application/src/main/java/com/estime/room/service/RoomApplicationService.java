@@ -2,14 +2,13 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.port.out.PlatformMessageSender;
 import com.estime.port.out.RoomEventSender;
 import com.estime.port.out.RoomSessionGenerator;
+import com.estime.port.out.TimeProvider;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.SlotBatchRepository;
-import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.dto.input.DateSlotInput;
 import com.estime.room.dto.input.ParticipantCreateInput;
@@ -24,6 +23,7 @@ import com.estime.room.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipan
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomCreateOutput;
 import com.estime.room.dto.output.RoomOutput;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.ParticipantName;
@@ -32,8 +32,10 @@ import com.estime.room.participant.Participants;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
+import com.estime.room.platform.notification.PlatformNotificationOutbox;
+import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
@@ -67,11 +69,12 @@ public class RoomApplicationService {
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
     private final PlatformRepository platformRepository;
-    private final PlatformMessageSender platformMessageSender;
     private final SlotBatchRepository slotBatchRepository;
     private final AvailableDateSlotRepository availableDateSlotRepository;
     private final AvailableTimeSlotRepository availableTimeSlotRepository;
     private final RoomSessionGenerator roomSessionGenerator;
+    private final PlatformNotificationOutboxRepository platformNotificationOutboxRepository;
+    private final TimeProvider timeProvider;
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
@@ -127,16 +130,22 @@ public class RoomApplicationService {
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
                         savedRoom.getId(),
-                        input.type(),
+                        input.platformType(),
                         input.channelId(),
                         input.notification()));
 
-        if (platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED)) {
-            platformMessageSender.sendConnectedRoomCreatedMessage(
-                    input.channelId(),
-                    savedRoom.getSession(),
-                    savedRoom.getTitle(),
-                    savedRoom.getDeadline());
+        for (final PlatformNotificationType type : PlatformNotificationType.values()) {
+            if (platform.getNotification().shouldNotifyFor(type)) {
+                platformNotificationOutboxRepository.save(
+                        PlatformNotificationOutbox.of(
+                                savedRoom.getId(),
+                                input.platformType(),
+                                platform.getChannelId(),
+                                type,
+                                savedRoom.getCreatedAt(),
+                                savedRoom.getDeadline(timeProvider.zone()),
+                                timeProvider.now()));
+            }
         }
 
         return ConnectedRoomCreateOutput.from(savedRoom.getSession(), platform.getType());

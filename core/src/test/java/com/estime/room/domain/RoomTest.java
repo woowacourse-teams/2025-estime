@@ -10,7 +10,9 @@ import com.estime.room.exception.DeadlineOverdueException;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.shared.DomainTerm;
 import com.estime.shared.exception.InvalidLengthException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -127,5 +129,50 @@ class RoomTest {
         assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plusDays(2)))
                 .isInstanceOf(DeadlineOverdueException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
+    }
+
+    @DisplayName("getDeadline(ZoneId)는 LocalDateTime을 주어진 ZoneId의 Instant로 변환한다")
+    @Test
+    void getDeadline_withZoneId_returnsInstant() {
+        // given
+        final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
+        final Room room = Room.withoutId("테스트방", roomSession, deadline);
+        final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
+
+        // when
+        final Instant actualInstant = room.getDeadline(seoulZone);
+
+        // then
+        final Instant expectedInstant = deadline.atZone(seoulZone).toInstant();
+        assertSoftly(softly -> {
+            softly.assertThat(actualInstant).isEqualTo(expectedInstant);
+            softly.assertThat(actualInstant).isNotNull();
+        });
+    }
+
+    @DisplayName("getDeadline(ZoneId)는 서로 다른 ZoneId로 변환해도 같은 시점을 나타낸다")
+    @Test
+    void getDeadline_withDifferentZoneIds_representsSameInstant() {
+        // given
+        final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
+        final Room room = Room.withoutId("테스트방", roomSession, deadline);
+        final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
+        final ZoneId utcZone = ZoneId.of("UTC");
+
+        // when
+        final Instant seoulInstant = room.getDeadline(seoulZone);
+        final Instant utcInstant = room.getDeadline(utcZone);
+
+        // then
+        // LocalDateTime이 같으므로, ZoneId가 달라도 서로 다른 시점을 나타냄
+        // (Seoul의 2025-12-31 23:59 ≠ UTC의 2025-12-31 23:59)
+        assertSoftly(softly -> {
+            softly.assertThat(seoulInstant).isNotEqualTo(utcInstant);
+            // Seoul이 UTC보다 9시간 빠르므로, Seoul 시간이 더 이른 Instant
+            softly.assertThat(seoulInstant).isBefore(utcInstant);
+            // 정확히 9시간 차이
+            softly.assertThat(utcInstant.getEpochSecond() - seoulInstant.getEpochSecond())
+                    .isEqualTo(9 * 60 * 60);
+        });
     }
 }

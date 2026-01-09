@@ -2,9 +2,11 @@ package com.estime.room.platform.discord;
 
 import com.estime.port.out.PlatformMessageSender;
 import com.estime.room.RoomSession;
-import com.estime.room.platform.PlatformMessage;
 import com.estime.room.platform.PlatformShortcutBuilder;
+import com.estime.room.platform.PlatformType;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
@@ -24,79 +26,48 @@ public class DiscordMessageSender implements PlatformMessageSender {
     private final PlatformShortcutBuilder platformShortcutBuilder;
 
     @Override
-    public void sendDeadlineAlertMessage(
-            final String channelId,
-            final RoomSession session,
-            final String title
-    ) {
-        final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
-
-        final MessageCreateData message = discordMessageBuilder.buildDeadlineAlertMessage(
-                platformShortcutBuilder.buildConnectedRoomUrl(session),
-                title
-        );
-        sendMessage(channel, message);
+    public PlatformType getPlatformType() {
+        return PlatformType.DISCORD;
     }
 
     @Override
-    public void sendConnectedRoomCreatedMessage(
+    public CompletableFuture<Void> send(
+            final PlatformNotificationType type,
             final String channelId,
             final RoomSession session,
             final String title,
             final LocalDateTime deadline
     ) {
         final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
+        final String roomUrl = platformShortcutBuilder.buildConnectedRoomUrl(session);
 
-        final MessageCreateData message = discordMessageBuilder.buildConnectedRoomCreatedMessage(
-                platformShortcutBuilder.buildConnectedRoomUrl(session),
-                title,
-                deadline
-        );
+        final MessageCreateData message = switch (type) {
+            case CREATION -> discordMessageBuilder.buildCreationMessage(roomUrl, title, deadline);
+            case REMINDER -> discordMessageBuilder.buildReminderMessage(roomUrl, title, deadline);
+            case DEADLINE -> discordMessageBuilder.buildDeadlineMessage(roomUrl, title);
+        };
 
-        sendMessage(channel, message);
-    }
-
-    @Override
-    public void sendReminderMessage(
-            final String channelId,
-            final RoomSession session,
-            final String title,
-            final LocalDateTime deadline
-    ) {
-        final TextChannel channel = getChannel(channelId);
-        if (channel == null) {
-            return;
-        }
-
-        final MessageCreateData message = discordMessageBuilder.buildReminderMessage(
-                platformShortcutBuilder.buildConnectedRoomUrl(session),
-                title,
-                deadline
-        );
-        sendMessage(channel, message);
+        return sendMessage(channel, message);
     }
 
     private TextChannel getChannel(final String channelId) {
         final TextChannel channel = jda.getTextChannelById(channelId);
         if (channel == null) {
-            log.warn("Discord channel not found: id={}", channelId);
+            throw new IllegalStateException("Discord channel not found: id=" + channelId);
         }
         return channel;
     }
 
-    private void sendMessage(final TextChannel channel, final MessageCreateData message) {
+    private CompletableFuture<Void> sendMessage(
+            final TextChannel channel,
+            final MessageCreateData message
+    ) {
+        final CompletableFuture<Void> future = new CompletableFuture<>();
         channel.sendMessage(message)
                 .queue(
-                        success -> log.info("Success to send, channelId:{}, message:{}",
-                                channel.getId(), PlatformMessage.ROOM_CREATED.name()),
-                        failure -> log.error("Fail to send, channelId:{}, message:{}, failure:{}",
-                                channel.getId(), PlatformMessage.ROOM_CREATED.name(), failure.getMessage())
+                        success -> future.complete(null),
+                        future::completeExceptionally
                 );
+        return future;
     }
 }
