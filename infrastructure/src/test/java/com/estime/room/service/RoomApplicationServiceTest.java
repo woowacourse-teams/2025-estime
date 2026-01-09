@@ -31,17 +31,17 @@ import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformNotification;
-import com.estime.room.platform.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
+import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.slot.AvailableDateSlot;
 import com.estime.room.slot.AvailableDateSlotRepository;
 import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
-import com.estime.TestApplication;
+import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,14 +54,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
 @Transactional
-class RoomApplicationServiceTest {
+class RoomApplicationServiceTest extends IntegrationTest {
 
     private static final RoomSession roomSession = RoomSession.from("testRoomSession");
 
@@ -483,8 +479,32 @@ class RoomApplicationServiceTest {
             softly.assertThat(platformRepository.findByRoomId(createdRoom.getId()))
                     .isPresent();
             final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
-            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED))
+            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATION))
                     .isTrue();
+        });
+    }
+
+    @DisplayName("Room을 저장하면 createdAt이 자동으로 설정된다")
+    @Test
+    void save_setsCreatedAt() {
+        // given
+        final java.time.Instant beforeSave = java.time.Instant.now();
+        final Room newRoom = Room.withoutId(
+                "테스트방",
+                RoomSession.from("test-session-createdAt"),
+                LocalDateTime.now().plusDays(1)
+        );
+
+        // when
+        final Room savedRoom = roomRepository.save(newRoom);
+        final java.time.Instant afterSave = java.time.Instant.now();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(savedRoom.getCreatedAt()).isNotNull();
+            softly.assertThat(savedRoom.getCreatedAt())
+                    .isAfterOrEqualTo(beforeSave)
+                    .isBeforeOrEqualTo(afterSave);
         });
     }
 }

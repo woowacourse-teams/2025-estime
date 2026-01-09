@@ -1,5 +1,6 @@
 package com.estime.room.platform;
 
+import com.estime.room.platform.notification.PlatformNotification;
 import com.estime.shared.BaseEntity;
 import com.estime.shared.Validator;
 import jakarta.persistence.Column;

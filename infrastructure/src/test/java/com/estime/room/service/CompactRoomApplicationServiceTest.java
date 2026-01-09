@@ -3,7 +3,6 @@ package com.estime.room.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.TestApplication;
 import com.estime.exception.NotFoundException;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
@@ -26,6 +25,7 @@ import com.estime.room.slot.AvailableTimeSlot;
 import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.shared.DomainTerm;
+import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,14 +34,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
 @Transactional
-class CompactRoomApplicationServiceTest {
+class CompactRoomApplicationServiceTest extends IntegrationTest {
 
     private static final RoomSession roomSession = RoomSession.from("testRoomSession");
 
