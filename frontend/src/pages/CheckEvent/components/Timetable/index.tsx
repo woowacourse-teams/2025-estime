@@ -22,10 +22,10 @@ const TimetableContent = ({ timeColumnRef, dateTimeSlots, availableDates }: Time
       <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
       <Wrapper maxWidth="100%" center={false} ref={containerRef} {...pointerHandlers}>
         <Flex>
-          {[...availableDates].map((date) => (
+          {[...availableDates].map((date, dayIndex) => (
             <Wrapper key={date} maxWidth="100%">
               <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
-              <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
+              <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} dayIndex={dayIndex} />
             </Wrapper>
           ))}
         </Flex>

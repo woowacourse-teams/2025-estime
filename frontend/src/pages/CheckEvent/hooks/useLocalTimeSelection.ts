@@ -3,43 +3,68 @@ import { useUserAvailability, userAvailabilityStore } from '../stores/userAvaila
 import usePreventScroll from './usePreventScroll';
 import { usePaginationStore } from '../stores/paginationStore';
 
-type TimeCellHitbox = {
-  key: string;
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
+type DragState = {
+  isDragging: boolean;
+  startDayIdx: number;
+  startTimeIdx: number;
+  mode: 'add' | 'remove';
+  initialSet: Set<string>;
 };
 
 const useLocalTimeSelection = () => {
   const selectedTimes = useUserAvailability().selectedTimes;
-
   const page = usePaginationStore();
 
   const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
-
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const dragStartX = useRef(0);
-  const dragStartY = useRef(0);
-  const selectionModeRef = useRef<'add' | 'remove'>('add');
 
-  const containerBoundingRectRef = useRef<DOMRectReadOnly | null>(null);
-  const dragHitboxesRef = useRef<TimeCellHitbox[]>([]);
+  const gridLookupRef = useRef<Map<string, string>>(new Map());
+
+  const dragState = useRef<DragState>({
+    isDragging: false,
+    startDayIdx: -1,
+    startTimeIdx: -1,
+    mode: 'add',
+    initialSet: new Set(),
+  });
+
   const renderAnimationFrameId = useRef<number | null>(null);
-  const hoverRequestAnimationFrameId = useRef<number | null>(null);
 
   usePreventScroll(containerRef);
 
-  const addDraggingClass = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.classList.add('dragging');
+  const getCellInfo = useCallback((x: number, y: number) => {
+    const el = document.elementFromPoint(x, y);
+    const cell = el?.closest('.time-table-cell') as HTMLElement | null;
+
+    if (!cell || !cell.dataset.time) return null;
+
+    // DOM에 심어둔 인덱스를 읽음 (문자열 -> 숫자 변환)
+    const dayIdx = parseInt(cell.dataset.dayIndex || '-1', 10);
+    const timeIdx = parseInt(cell.dataset.timeIndex || '-1', 10);
+
+    if (dayIdx === -1 || timeIdx === -1) return null;
+
+    return {
+      key: cell.dataset.time,
+      dayIdx,
+      timeIdx,
+    };
   }, []);
 
-  const removeDraggingClass = useCallback(() => {
+  const cacheGridKeys = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
-    container.classList.remove('dragging');
+
+    const map = new Map<string, string>();
+    container.querySelectorAll<HTMLElement>('.time-table-cell').forEach((el) => {
+      const day = el.dataset.dayIndex;
+      const time = el.dataset.timeIndex;
+      const key = el.dataset.time;
+      if (day && time && key) {
+        map.set(`${day}|${time}`, key); // "0|1" -> "2024-01-01T09:30"
+      }
+    });
+    gridLookupRef.current = map;
   }, []);
 
   const toggleSelectedCellClasses = useCallback(() => {
@@ -50,7 +75,11 @@ const useLocalTimeSelection = () => {
       container.querySelectorAll<HTMLElement>('.time-table-cell').forEach((cell) => {
         const dateTime = cell.dataset.time;
         if (!dateTime) return;
-        cell.classList.toggle('selected', currentWorkingSetRef.current.has(dateTime));
+
+        const shouldSelect = currentWorkingSetRef.current.has(dateTime);
+        if (cell.classList.contains('selected') !== shouldSelect) {
+          cell.classList.toggle('selected', shouldSelect);
+        }
       });
     } finally {
       renderAnimationFrameId.current = null;
@@ -62,167 +91,106 @@ const useLocalTimeSelection = () => {
     renderAnimationFrameId.current = requestAnimationFrame(toggleSelectedCellClasses);
   }, [toggleSelectedCellClasses]);
 
-  const cacheDragHitboxes = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const containerRect = container.getBoundingClientRect();
-    containerBoundingRectRef.current = containerRect;
-
-    dragHitboxesRef.current = Array.from(
-      container.querySelectorAll<HTMLElement>('.time-table-cell')
-    ).map((el) => {
-      const rect = el.getBoundingClientRect();
-      return {
-        key: el.dataset.time!,
-        left: rect.left - containerRect.left,
-        right: rect.right - containerRect.left,
-        top: rect.top - containerRect.top,
-        bottom: rect.bottom - containerRect.top,
-      };
-    });
-  }, []);
-
-  const getCurrentCell = useCallback((event: React.PointerEvent) => {
-    const el = document.elementFromPoint(event.clientX, event.clientY);
-    if (!el) return null;
-    const targetCell = el.closest('.time-table-cell') as HTMLElement | null;
-    if (!targetCell) return null;
-    return targetCell.dataset.time;
-  }, []);
-
   const onDragStart = useCallback(
     (event: React.PointerEvent) => {
-      cacheDragHitboxes();
+      const cellInfo = getCellInfo(event.clientX, event.clientY);
+      if (!cellInfo) return;
 
-      const bounds = containerBoundingRectRef.current;
-      if (!bounds) return;
+      cacheGridKeys();
 
-      const cellKey = getCurrentCell(event);
-      if (!cellKey) return;
+      containerRef.current?.classList.add('dragging');
 
-      addDraggingClass();
+      const isAlreadySelected = currentWorkingSetRef.current.has(cellInfo.key);
 
-      dragStartX.current = event.clientX - bounds.left;
-      dragStartY.current = event.clientY - bounds.top;
+      dragState.current = {
+        isDragging: true,
+        startDayIdx: cellInfo.dayIdx,
+        startTimeIdx: cellInfo.timeIdx,
+        mode: isAlreadySelected ? 'remove' : 'add',
+        initialSet: new Set(currentWorkingSetRef.current),
+      };
 
-      selectionModeRef.current = currentWorkingSetRef.current.has(cellKey) ? 'remove' : 'add';
-
-      if (selectionModeRef.current === 'add') {
-        currentWorkingSetRef.current.add(cellKey);
+      if (dragState.current.mode === 'add') {
+        currentWorkingSetRef.current.add(cellInfo.key);
       } else {
-        currentWorkingSetRef.current.delete(cellKey);
+        currentWorkingSetRef.current.delete(cellInfo.key);
       }
 
       updateCellClasses();
     },
-    [updateCellClasses, addDraggingClass, getCurrentCell, cacheDragHitboxes]
+    [getCellInfo, cacheGridKeys, updateCellClasses]
   );
 
-  const onDragMove = useCallback((event: React.PointerEvent) => {
-    const bounds = containerBoundingRectRef.current;
-    if (!bounds) return;
+  const onDragMove = useCallback(
+    (event: React.PointerEvent) => {
+      if (!dragState.current.isDragging) return;
 
-    const pointerX = event.clientX - bounds.left;
-    const pointerY = event.clientY - bounds.top;
+      const cellInfo = getCellInfo(event.clientX, event.clientY);
+      if (!cellInfo) return;
 
-    const selectionRect = {
-      left: Math.min(dragStartX.current, pointerX),
-      top: Math.min(dragStartY.current, pointerY),
-      right: Math.max(dragStartX.current, pointerX),
-      bottom: Math.max(dragStartY.current, pointerY),
-    };
+      const { startDayIdx, startTimeIdx, mode, initialSet } = dragState.current;
+      const { dayIdx: currDayIdx, timeIdx: currTimeIdx } = cellInfo;
 
-    let didChange = false;
-    for (const cell of dragHitboxesRef.current) {
-      const overlaps =
-        cell.left < selectionRect.right &&
-        cell.right > selectionRect.left &&
-        cell.top < selectionRect.bottom &&
-        cell.bottom > selectionRect.top;
+      const minDay = Math.min(startDayIdx, currDayIdx);
+      const maxDay = Math.max(startDayIdx, currDayIdx);
+      const minTime = Math.min(startTimeIdx, currTimeIdx);
+      const maxTime = Math.max(startTimeIdx, currTimeIdx);
 
-      if (!overlaps) continue;
+      const nextSet = new Set(initialSet);
 
-      if (selectionModeRef.current === 'add') {
-        if (!currentWorkingSetRef.current.has(cell.key)) {
-          currentWorkingSetRef.current.add(cell.key);
-          didChange = true;
-        }
-      } else {
-        if (currentWorkingSetRef.current.has(cell.key)) {
-          currentWorkingSetRef.current.delete(cell.key);
-          didChange = true;
+      for (let day = minDay; day <= maxDay; day++) {
+        for (let time = minTime; time <= maxTime; time++) {
+          const key = gridLookupRef.current.get(`${day}|${time}`);
+          if (key) {
+            if (mode === 'add') nextSet.add(key);
+            else nextSet.delete(key);
+          }
         }
       }
-    }
 
-    return didChange;
-  }, []);
-
-  const cleanUp = useCallback(() => {
-    removeDraggingClass();
-    dragHitboxesRef.current = [];
-    containerBoundingRectRef.current = null;
-  }, [removeDraggingClass]);
-
-  const cancelRAF = useCallback(() => {
-    if (renderAnimationFrameId.current != null) {
-      cancelAnimationFrame(renderAnimationFrameId.current);
-      renderAnimationFrameId.current = null;
-    }
-    if (hoverRequestAnimationFrameId.current != null) {
-      cancelAnimationFrame(hoverRequestAnimationFrameId.current);
-      hoverRequestAnimationFrameId.current = null;
-    }
-  }, []);
+      currentWorkingSetRef.current = nextSet;
+      updateCellClasses();
+    },
+    [getCellInfo, updateCellClasses]
+  );
 
   const onDragEnd = useCallback(() => {
-    try {
-      cancelRAF();
-      toggleSelectedCellClasses();
-      commitSelection();
-    } finally {
-      cleanUp();
-    }
-  }, [cancelRAF, toggleSelectedCellClasses, cleanUp]);
+    if (!dragState.current.isDragging) return;
 
-  const handleDragStart = useCallback(
-    (e: React.PointerEvent) => {
-      onDragStart(e);
-    },
-    [onDragStart]
-  );
+    containerRef.current?.classList.remove('dragging');
+    dragState.current.isDragging = false;
+    gridLookupRef.current.clear();
 
-  const handleDragMove = useCallback(
-    (event: React.PointerEvent) => {
-      const didChange = onDragMove(event);
-      if (didChange) updateCellClasses();
-    },
-    [onDragMove, updateCellClasses]
-  );
-
-  const handleDragEnd = useCallback(() => {
-    onDragEnd();
-  }, [onDragEnd]);
-
-  useEffect(() => {
-    currentWorkingSetRef.current = new Set(selectedTimes);
-    updateCellClasses();
-  }, [selectedTimes, updateCellClasses, page]);
-
-  useEffect(() => {
-    return () => {
-      cancelRAF();
-      cleanUp();
-    };
-  }, [cancelRAF, cleanUp]);
-
-  /** 최종 반영 */
-  const commitSelection = () => {
     userAvailabilityStore.setState((prev) => ({
       ...prev,
       selectedTimes: new Set(currentWorkingSetRef.current),
     }));
-  };
+
+    if (renderAnimationFrameId.current) {
+      cancelAnimationFrame(renderAnimationFrameId.current);
+      renderAnimationFrameId.current = null;
+    }
+  }, []);
+
+  const handleDragStart = useCallback((e: React.PointerEvent) => onDragStart(e), [onDragStart]);
+  const handleDragMove = useCallback(
+    (e: React.PointerEvent) => {
+      onDragMove(e);
+    },
+    [onDragMove]
+  );
+  const handleDragEnd = useCallback(() => onDragEnd(), [onDragEnd]);
+
+  useEffect(() => {
+    currentWorkingSetRef.current = new Set(selectedTimes);
+    updateCellClasses();
+  }, [selectedTimes, page, updateCellClasses]);
+
+  useEffect(() => {
+    return () => {
+      if (renderAnimationFrameId.current) cancelAnimationFrame(renderAnimationFrameId.current);
+    };
+  }, []);
 
   const pointerHandlers = useMemo(
     () => ({

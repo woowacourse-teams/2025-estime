@@ -9,9 +9,11 @@ import { useTheme } from '@emotion/react';
 interface TimeTableCellProps {
   date: string;
   timeText: string;
+  dayIndex: number;
+  timeIndex: number;
 }
 
-const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
+const TimeTableCell = ({ date, timeText, dayIndex, timeIndex }: TimeTableCellProps) => {
   const dateTimeKey = `${date}T${timeText}`;
   const roomStatistics = useRoomStatistics();
   const cellInfo = roomStatistics.statistics.get(dateTimeKey);
@@ -22,7 +24,6 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const isDragging = e.currentTarget.closest('.dragging') !== null;
-
     if (!isDragging && !theme.isMobile && isOn) {
       if (!cellInfo) {
         cellDataStore.initialStore();
@@ -37,6 +38,7 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
       }
     }
   };
+
   const handleEnter = () => {
     if (theme.isMobile) return;
     timeTableCellHover(timeText);
@@ -52,6 +54,8 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
       className="time-table-cell"
       aria-label={`${FormatManager.formatKoreanDate(date)} ${timeText} 선택`}
       data-time={dateTimeKey}
+      data-day-index={dayIndex}
+      data-time-index={timeIndex}
       onMouseEnter={handleEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}

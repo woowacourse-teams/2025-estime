@@ -5,15 +5,24 @@ import Wrapper from '@/shared/layout/Wrapper';
 interface TimeTableColumnProps {
   date: string;
   dateTimeSlots: string[];
+  dayIndex: number;
 }
 
-const TimeTableColumn = ({ date, dateTimeSlots }: TimeTableColumnProps) => {
+const TimeTableColumn = ({ date, dateTimeSlots, dayIndex }: TimeTableColumnProps) => {
   return (
     <Wrapper center={false} maxWidth="100%">
       <TimeTableDay date={date} />
-      {dateTimeSlots.map((dateTimeSlot) => (
-        <TimeTableCell key={`${date}T${dateTimeSlot}`} date={date} timeText={dateTimeSlot} />
-      ))}
+      {dateTimeSlots.map((dateTimeSlot, timeIndex) => {
+        return (
+          <TimeTableCell
+            key={`${date}T${dateTimeSlot}`}
+            date={date}
+            timeText={dateTimeSlot}
+            dayIndex={dayIndex}
+            timeIndex={timeIndex}
+          />
+        );
+      })}
     </Wrapper>
   );
 };
