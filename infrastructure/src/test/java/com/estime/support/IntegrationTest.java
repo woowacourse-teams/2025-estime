@@ -6,6 +6,8 @@ import com.estime.TestApplication;
 import com.estime.port.out.TimeProvider;
 import com.estime.room.notification.PlatformNotificationService;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @AutoConfigureMockMvc
 public abstract class IntegrationTest {
 
+    protected static final ZoneId ZONE = ZoneId.of("Asia/Seoul");
     protected static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.HOURS).plus(30, ChronoUnit.DAYS);
+    protected static final LocalDateTime NOW_LOCAL_DATE_TIME = NOW.atZone(ZONE).toLocalDateTime();
+    protected static final LocalDate NOW_LOCAL_DATE = NOW_LOCAL_DATE_TIME.toLocalDate();
 
     @MockitoBean
     protected PlatformNotificationService notificationService;
@@ -37,6 +42,7 @@ public abstract class IntegrationTest {
     @BeforeEach
     void setUpIntegrationTest() {
         given(timeProvider.now()).willReturn(NOW);
-        given(timeProvider.zone()).willReturn(ZoneId.of("Asia/Seoul"));
+        given(timeProvider.zone()).willReturn(ZONE);
+        given(timeProvider.nowDateTime()).willReturn(NOW_LOCAL_DATE_TIME);
     }
 }

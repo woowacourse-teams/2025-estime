@@ -15,10 +15,7 @@ import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.service.RoomApplicationService;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.AvailableTimeSlot;
-import com.estime.room.slot.AvailableTimeSlotRepository;
+import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
@@ -46,12 +43,6 @@ class VoteStatisticCacheTest extends IntegrationTest {
     private RoomRepository roomRepository;
 
     @Autowired
-    private AvailableDateSlotRepository availableDateSlotRepository;
-
-    @Autowired
-    private AvailableTimeSlotRepository availableTimeSlotRepository;
-
-    @Autowired
     private ParticipantRepository participantRepository;
 
     @Autowired
@@ -72,20 +63,20 @@ class VoteStatisticCacheTest extends IntegrationTest {
         cacheManager.getCache(CacheNames.VOTE_STATISTIC).clear();
 
         final RoomSession roomSession = RoomSession.from(roomSessionGenerator.generate().toString());
-        room = roomRepository.save(Room.withoutId(
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        final Room tempRoom = Room.withoutId(
                 "cacheTest",
                 roomSession,
-                LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
-        ));
-
-        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
+                List.of(CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))))
+        );
+        room = roomRepository.save(tempRoom);
 
         participant = participantRepository.save(
                 Participant.withoutId(room.getId(), ParticipantName.from("CTU"))
         );
 
-        slot = DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        slot = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant.getId(), slot));
     }
 

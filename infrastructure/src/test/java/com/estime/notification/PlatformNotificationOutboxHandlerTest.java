@@ -66,7 +66,8 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
         final Room room = Room.withoutId(
                 "테스트방",
                 RoomSession.from(UUID.randomUUID().toString()),
-                LocalDateTime.now().plusDays(7)
+                NOW_LOCAL_DATE_TIME.plusDays(7),
+                List.of()
         );
         return roomRepository.save(room);
     }
