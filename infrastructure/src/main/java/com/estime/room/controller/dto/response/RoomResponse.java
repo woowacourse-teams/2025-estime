@@ -1,8 +1,7 @@
 package com.estime.room.controller.dto.response;
 
 import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableTimeSlot;
+import com.estime.room.slot.RoomAvailableSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -30,12 +29,24 @@ public record RoomResponse(
 ) {
 
     public static RoomResponse from(final RoomOutput output) {
+        final List<LocalDateTime> dateTimes = output.availableSlots().stream()
+                .map(RoomAvailableSlot::getStartAt)
+                .toList();
+
         return new RoomResponse(
                 output.title(),
-                output.availableDateSlots().stream().map(AvailableDateSlot::getStartAt).sorted().toList(),
-                output.availableTimeSlots().stream().map(AvailableTimeSlot::getStartAt).sorted().toList(),
+                dateTimes.stream()
+                        .map(LocalDateTime::toLocalDate)
+                        .distinct()
+                        .sorted()
+                        .toList(),
+                dateTimes.stream()
+                        .map(LocalDateTime::toLocalTime)
+                        .distinct()
+                        .sorted()
+                        .toList(),
                 output.deadline(),
-                output.session().getValue().toString()
+                output.session().getValue()
         );
     }
 }
