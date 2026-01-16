@@ -5,7 +5,7 @@ import useHandleError from '../../../shared/hooks/common/useCreateError';
 const MAX_RETRY_COUNT = 10;
 const RETRY_INTERVAL = 1000; // 1초
 
-const useSSE = (session: string, onVoteChange: () => Promise<void>) => {
+const useSSE = (session: string, onVoteChange: (participantName: string) => Promise<void>) => {
   const retryCountRef = useRef(0);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -47,16 +47,19 @@ const useSSE = (session: string, onVoteChange: () => Promise<void>) => {
 
       const handleVoteChange = async (ev: MessageEvent<string>) => {
         try {
-          const data = JSON.parse(ev.data);
-          onVoteChange();
-          console.log('투표 변경:', data);
+          const { participantName } = JSON.parse(ev.data) as {
+            participantName: string;
+            eventName: 'votes-updated';
+          };
+          onVoteChange(participantName);
+          console.log('투표 변경 누가?:', participantName);
         } catch (error) {
           handleError(error, 'SSE 연결 오류');
         }
       };
 
       eventSource.addEventListener('connected', handleConnected);
-      eventSource.addEventListener('vote-changed', handleVoteChange);
+      eventSource.addEventListener('votes-updated', handleVoteChange);
 
       eventSource.onerror = (e) => {
         if (retryCountRef.current < MAX_RETRY_COUNT) {
