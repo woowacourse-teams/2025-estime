@@ -1,5 +1,6 @@
 package com.estime.room;
 
+import com.estime.room.slot.QRoomAvailableSlot;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class RoomRepositoryAdapter implements RoomRepository {
 
     private static final QRoom room = QRoom.room;
+    private static final QRoomAvailableSlot slot = QRoomAvailableSlot.roomAvailableSlot;
     private final RoomJpaRepository roomJpaRepository;
     private final JPAQueryFactory queryFactory;
 
@@ -61,5 +63,16 @@ public class RoomRepositoryAdapter implements RoomRepository {
         return queryFactory.selectFrom(room)
                 .where(room.deadline.after(criterion))
                 .fetch();
+    }
+
+    @Override
+    public Optional<Room> findWithAvailableSlotsBySession(final RoomSession session) {
+        return Optional.ofNullable(
+                queryFactory.selectFrom(room)
+                        .distinct()
+                        .leftJoin(room.availableSlots, slot).fetchJoin()
+                        .where(room.session.eq(session))
+                        .fetchOne()
+        );
     }
 }

@@ -21,8 +21,8 @@ import lombok.experimental.FieldNameConstants;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(exclude = RoomAvailableSlot.Fields.room)
-@EqualsAndHashCode(of = RoomAvailableSlot.Fields.id)
+@ToString(exclude = "room")
+@EqualsAndHashCode(of = "id")
 @FieldNameConstants
 public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
 
