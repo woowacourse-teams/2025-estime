@@ -56,7 +56,7 @@ const useSSE = (session: string, onVoteChange: () => Promise<void>) => {
       };
 
       eventSource.addEventListener('connected', handleConnected);
-      eventSource.addEventListener('vote-changed', handleVoteChange);
+      eventSource.addEventListener('votes-updated', handleVoteChange);
 
       eventSource.onerror = (e) => {
         if (retryCountRef.current < MAX_RETRY_COUNT) {
