@@ -3,6 +3,7 @@ import * as S from './Notice.styled';
 interface ExpiryNoticeProps {
   show: boolean;
   type: 'info' | 'warning' | 'error';
+  maxWidth?: string;
   children: React.ReactNode;
 }
 

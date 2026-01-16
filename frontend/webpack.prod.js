@@ -3,11 +3,15 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import common from './webpack.common.js';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 import InjectGTMPlugin from './build/plugins/InjectGTMPlugin.js';
 
 export default merge(common, {
   mode: 'production',
   devtool: 'source-map',
+
+  parallelism: 4,
+
   module: {
     rules: [
       {
@@ -16,6 +20,8 @@ export default merge(common, {
         use: {
           loader: 'babel-loader',
           options: {
+            cacheDirectory: true,
+            cacheCompression: false,
             presets: [
               ['@babel/preset-env', { modules: false }],
               '@babel/preset-typescript',
@@ -42,6 +48,7 @@ export default merge(common, {
       org: 'estime',
       project: 'javascript-react',
       authToken: process.env.SENTRY_AUTH_TOKEN,
+      silent: true,
       sourcemaps: {
         filesToDeleteAfterUpload: '**/*.js.map',
       },
@@ -50,7 +57,18 @@ export default merge(common, {
   optimization: {
     minimize: true,
     sideEffects: true,
-    minimizer: [`...`, new CssMinimizerPlugin()],
+
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+        },
+      }),
+      new CssMinimizerPlugin(),
+    ],
     splitChunks: {
       chunks: 'all',
       cacheGroups: {
