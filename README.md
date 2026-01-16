@@ -1,10 +1,7 @@
-# 아인슈타임   <img src="https://github.com/user-attachments/assets/b9f4b531-e259-4855-927a-939573544dcd" width="40" height="40" valign="middle" />
+# <img src="https://github.com/user-attachments/assets/b9f4b531-e259-4855-927a-939573544dcd" width="40" height="40" valign="middle" /> [아인슈타임](https://estime.today/)   
 
+<img width="7680" height="4320" alt="서비스 썸네일 이미지" src="https://github.com/user-attachments/assets/238f2d64-bf78-4d36-9617-810a86d9d445" />
 
-
-
-### “책임질 사람 없이도, 쉽고 공평하며 빠르게 약속을 확정해 주는 서비스” 
-### [🔗 아인슈타임](https://estime.today/)
 
 ### Team Members
 
@@ -12,14 +9,14 @@
 
 | 강산 🏔️ | 리버 💧 | 제프리 🍎 | 플린트 🔥 |
 |:-------:|:------:|:--------:|:--------:|
-| <img src="https://github.com/user-attachments/assets/b8222adf-c28e-4686-b7b6-7014db3056f9" alt="강산" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/67aadd73-1e95-4845-a8ee-293880e832ba" alt="리버" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/122d491e-26e5-46d4-88d8-4921c846ba8c" alt="제프리" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/509c085d-5935-4949-a470-b5fc18d933b7" alt="플린트" style="width:100px;height:100px;object-fit:cover;" /> |
+| <img src="https://github.com/user-attachments/assets/b8222adf-c28e-4686-b7b6-7014db3056f9" alt="강산" style="width:120px;height:120px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/67aadd73-1e95-4845-a8ee-293880e832ba" alt="리버" style="width:120px;height:120px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/122d491e-26e5-46d4-88d8-4921c846ba8c" alt="제프리" style="width:120px;height:120px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/509c085d-5935-4949-a470-b5fc18d933b7" alt="플린트" style="width:120px;height:120px;object-fit:cover;" /> |
 | [@m-a-king](https://github.com/m-a-king) | [@yeonnhuu](https://github.com/yeonnhuu) | [@AppleMint98](https://github.com/AppleMint98) | [@jhan0121](https://github.com/jhan0121) |
 
 ## Frontend 🎨
 
 | 메이토 🍅 | 마빈 🎮 | 해삐 😊 | 호이초이 🤡 |
 |:--------:|:------:|:------:|:----------:|
-| <img src="https://github.com/user-attachments/assets/04e762d7-9e2f-4204-9724-c0db6c25ac42" alt="메이토" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/002d6291-3c30-4464-a4da-c464f60b3890" alt="마빈" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/ac2c0666-784c-4c31-81b4-482f405da8b8" alt="해삐" style="width:100px;height:100px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/f6fb0179-f5a3-469d-ab76-8db7a86878bf" alt="호이초이" style="width:100px;height:100px;object-fit:cover;" /> |
+| <img src="https://github.com/user-attachments/assets/04e762d7-9e2f-4204-9724-c0db6c25ac42" alt="메이토" style="width:120px;height:120px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/002d6291-3c30-4464-a4da-c464f60b3890" alt="마빈" style="width:120px;height:120px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/ac2c0666-784c-4c31-81b4-482f405da8b8" alt="해삐" style="width:120px;height:120px;object-fit:cover;" /> | <img src="https://github.com/user-attachments/assets/0af7f115-f599-4a48-bb40-b5af870c802e" alt="호이초이" style="width:120px;height:120px;object-fit:cover;" /> |
 | [@Db0111](https://github.com/Db0111) | [@spoyodevelop](https://github.com/spoyodevelop) | [@thgml05](https://github.com/thgml05) | [@hoyyChoi](https://github.com/hoyyChoi) |
 
 ## 🛠️ Tech Stack
