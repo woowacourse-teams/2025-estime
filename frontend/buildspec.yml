@@ -4,6 +4,13 @@ env:
   exported-variables:
     - COMMIT_HASH
 
+cache:
+  key: estime-pnpm-$(codebuild-hash-files 'frontend/pnpm-lock.yaml')
+  paths:
+    - 'frontend/node_modules/**/*'
+    - '/root/.local/share/pnpm/store/**/*'
+    - '/root/.npm/_cacache/**/*' # pnpm 캐싱
+
 phases:
   pre_build:
     commands:

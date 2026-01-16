@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.div<{ show: boolean; type: 'info' | 'warning' | 'error' }>`
+export const Container = styled.div<{
+  show: boolean;
+  type: 'info' | 'warning' | 'error';
+  maxWidth?: string;
+}>`
   display: ${({ show }) => (show ? 'flex' : 'none')};
   background: ${({ theme, type }) => {
     if (type === 'info') return theme.colors.green30;
@@ -12,4 +16,5 @@ export const Container = styled.div<{ show: boolean; type: 'info' | 'warning' | 
   border-radius: 12px;
   align-items: center;
   justify-content: center;
+  max-width: ${({ maxWidth }) => maxWidth || '100%'};
 `;
