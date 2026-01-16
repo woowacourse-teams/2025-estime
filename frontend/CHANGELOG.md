@@ -1,3 +1,21 @@
+## 1.7.0 (2026-01-16)
+
+* fix: buildspec.yml 파일 수정 (#781) ([27a81c0](https://github.com/woowacourse-teams/2025-estime/commit/27a81c0)), closes [#781](https://github.com/woowacourse-teams/2025-estime/issues/781)
+* fix: sse 데이터 변경 및 플립 타이밍 변경 (#811) ([6628c9f](https://github.com/woowacourse-teams/2025-estime/commit/6628c9f)), closes [#811](https://github.com/woowacourse-teams/2025-estime/issues/811)
+* buildspec.yml 수정 (#779) ([2c4c95b](https://github.com/woowacourse-teams/2025-estime/commit/2c4c95b)), closes [#779](https://github.com/woowacourse-teams/2025-estime/issues/779)
+* buildspec.yml 파일 수정 및 캐시키 설정 (#783) ([3e27686](https://github.com/woowacourse-teams/2025-estime/commit/3e27686)), closes [#783](https://github.com/woowacourse-teams/2025-estime/issues/783)
+* pnpm + 빌드 결과물 cache 적용 (#780) ([da6f37b](https://github.com/woowacourse-teams/2025-estime/commit/da6f37b)), closes [#780](https://github.com/woowacourse-teams/2025-estime/issues/780)
+* 로그인 경고 메시지 UI 이슈 수정 (#788) ([cc0da19](https://github.com/woowacourse-teams/2025-estime/commit/cc0da19)), closes [#788](https://github.com/woowacourse-teams/2025-estime/issues/788)
+* 패키지 매니저 pnpm으로 마이그레이션 (#768) ([04d4827](https://github.com/woowacourse-teams/2025-estime/commit/04d4827)), closes [#768](https://github.com/woowacourse-teams/2025-estime/issues/768)
+* chore: buildspec 파일 수정 (#769) ([c4fff74](https://github.com/woowacourse-teams/2025-estime/commit/c4fff74)), closes [#769](https://github.com/woowacourse-teams/2025-estime/issues/769)
+* chore: buildspec 파일 수정 (#770) ([07ce2ca](https://github.com/woowacourse-teams/2025-estime/commit/07ce2ca)), closes [#770](https://github.com/woowacourse-teams/2025-estime/issues/770)
+* chore: webpack 빌드 결과물 캐시 제거 (#782) ([56c40c0](https://github.com/woowacourse-teams/2025-estime/commit/56c40c0)), closes [#782](https://github.com/woowacourse-teams/2025-estime/issues/782)
+* chore: 버전 변경 (v1.6.4) ([cb8bdda](https://github.com/woowacourse-teams/2025-estime/commit/cb8bdda))
+* feat: buildspec.yml 파일 수정 (#777) ([6faef3f](https://github.com/woowacourse-teams/2025-estime/commit/6faef3f)), closes [#777](https://github.com/woowacourse-teams/2025-estime/issues/777)
+* feat: buildspec.yml 파일 수정 (#778) ([f0774f1](https://github.com/woowacourse-teams/2025-estime/commit/f0774f1)), closes [#778](https://github.com/woowacourse-teams/2025-estime/issues/778)
+
+
+
 ## <small>1.6.4 (2025-11-17)</small>
 
 * chore: buildspec 파일 수정 (#769) ([c4fff74](https://github.com/woowacourse-teams/2025-estime/commit/c4fff74)), closes [#769](https://github.com/woowacourse-teams/2025-estime/issues/769)
