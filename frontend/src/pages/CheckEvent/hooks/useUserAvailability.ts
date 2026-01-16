@@ -8,9 +8,7 @@ import { userAvailabilityStore } from '../stores/userAvailabilityStore';
 export const useUserAvailability = ({ session }: { session: string }) => {
   const { triggerFetch: getUserTime } = useFetch({
     context: 'fetchUserAvailableTime',
-    requestFn: () =>
-      // const name = userNameStore.getSnapshot();
-      getUserAvailableTime(session, userNameStore.getSnapshot().name),
+    requestFn: () => getUserAvailableTime(session, userNameStore.getSnapshot().name),
   });
 
   const { isLoading: isSavingUserTime, triggerFetch: handleUserAvailabilitySubmit } = useFetch({
