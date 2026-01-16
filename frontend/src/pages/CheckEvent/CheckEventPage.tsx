@@ -19,6 +19,7 @@ import HeatmapSection from './sections/HeatmapSection';
 import GlassTooltip from './components/GlassTooltip';
 import Announce from './components/Announce/Announce';
 import { useTheme } from '@emotion/react';
+import { userNameStore } from './stores/userNameStore';
 
 const CheckEventPage = () => {
   const { isMobile } = useTheme();
@@ -47,6 +48,7 @@ const CheckEventPage = () => {
     buttonName,
     modal,
     handleButtonClick,
+    triggerSaveComplete,
     handleLoginModalButtonClick,
     handleConfirmModalButtonClick,
     handleModalClick,
@@ -57,11 +59,17 @@ const CheckEventPage = () => {
     pageReset: pagination.pageReset,
   });
 
-  const onVoteChange = useCallback(async () => {
-    console.log('🔄 SSE vote-changed event 확인... fetch중...');
-    await fetchRoomStatistics();
-    console.log('✅ fetch 완료!');
-  }, [fetchRoomStatistics]);
+  const onVoteChange = useCallback(
+    async (participantName: string) => {
+      console.log('🔄 SSE vote-changed event 확인... fetch중...');
+      await fetchRoomStatistics();
+      console.log('✅ fetch 완료!');
+
+      const currentUserName = userNameStore.getSnapshot().name;
+      if (participantName === currentUserName) triggerSaveComplete();
+    },
+    [fetchRoomStatistics]
+  );
 
   useSSE(session, onVoteChange);
 
