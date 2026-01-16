@@ -198,7 +198,6 @@ const useLocalTimeSelection = () => {
       onPointerMove: handleDragMove,
       onPointerUp: handleDragEnd,
       onPointerLeave: handleDragEnd,
-      onPointerCancel: handleDragEnd,
     }),
     [handleDragStart, handleDragMove, handleDragEnd]
   );
