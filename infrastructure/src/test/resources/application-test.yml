@@ -10,6 +10,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
 
@@ -29,6 +32,12 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+        orm:
+          jdbc:
+            batch: DEBUG
+        engine:
+          jdbc:
+            batch: DEBUG
         type:
           descriptor:
             sql:

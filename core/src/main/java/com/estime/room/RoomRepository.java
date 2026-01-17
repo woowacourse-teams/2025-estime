@@ -16,5 +16,7 @@ public interface RoomRepository {
 
     Optional<Room> findBySession(RoomSession session);
 
+    Optional<Room> findWithAvailableSlotsBySession(RoomSession session);
+
     Optional<Long> findIdBySession(RoomSession session);
 }

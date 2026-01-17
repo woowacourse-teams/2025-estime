@@ -56,7 +56,7 @@ public class CompactDateTimeSlot implements Comparable<CompactDateTimeSlot> {
     }
 
     private static void validateStartAt(final LocalDateTime startAt) {
-        if (startAt.getMinute() != 0 && startAt.getMinute() != AvailableTimeSlot.UNIT.toMinutes()) {
+        if (startAt.getMinute() != 0 && startAt.getMinute() != DateTimeSlot.UNIT.toMinutes()) {
             throw new SlotNotDivideException(DomainTerm.TIME_SLOT, startAt);
         }
 

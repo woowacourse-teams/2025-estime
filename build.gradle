@@ -67,6 +67,9 @@ subprojects {
         useJUnitPlatform()
         workingDir = rootDir
         finalizedBy tasks.named('jacocoTestReport')
+        testLogging {
+            showStandardStreams = true
+        }
     }
 
     jacocoTestReport {

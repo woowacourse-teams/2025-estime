@@ -13,6 +13,7 @@ import com.estime.shared.exception.InvalidLengthException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,8 @@ class RoomTest {
         final Room room = Room.withoutId(
                 "테스트방",
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         );
 
         assertSoftly(softly -> {
@@ -49,7 +51,8 @@ class RoomTest {
         assertThatCode(() -> Room.withoutId(
                 exactLengthTitle,
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         )).doesNotThrowAnyException();
     }
 
@@ -63,7 +66,8 @@ class RoomTest {
         assertThatThrownBy(() -> Room.withoutId(
                 invalidTitle,
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         )).isInstanceOf(InvalidLengthException.class)
                 .hasMessageContaining(DomainTerm.ROOM.name());
     }
@@ -78,7 +82,8 @@ class RoomTest {
         assertThatThrownBy(() -> Room.withoutId(
                 blankTitle,
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         )).isInstanceOf(InvalidLengthException.class)
                 .hasMessageContaining(DomainTerm.ROOM.name());
     }
@@ -89,7 +94,8 @@ class RoomTest {
         assertThatCode(() -> Room.withoutId(
                 "테스트방",
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         )).doesNotThrowAnyException();
     }
 
@@ -99,7 +105,8 @@ class RoomTest {
         assertThatThrownBy(() -> Room.withoutId(
                 "테스트방",
                 roomSession,
-                pastDeadline
+                pastDeadline,
+                List.of()
         )).isInstanceOf(PastNotAllowedException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }
@@ -110,7 +117,8 @@ class RoomTest {
         final Room room = Room.withoutId(
                 "테스트방",
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         );
 
         assertThatCode(() -> room.ensureDeadlineNotPassed(now))
@@ -123,7 +131,8 @@ class RoomTest {
         final Room room = Room.withoutId(
                 "테스트방",
                 roomSession,
-                futureDeadline
+                futureDeadline,
+                List.of()
         );
 
         assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plusDays(2)))
@@ -136,7 +145,7 @@ class RoomTest {
     void getDeadline_withZoneId_returnsInstant() {
         // given
         final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
-        final Room room = Room.withoutId("테스트방", roomSession, deadline);
+        final Room room = Room.withoutId("테스트방", roomSession, deadline, List.of());
         final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
 
         // when
@@ -155,7 +164,7 @@ class RoomTest {
     void getDeadline_withDifferentZoneIds_representsSameInstant() {
         // given
         final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
-        final Room room = Room.withoutId("테스트방", roomSession, deadline);
+        final Room room = Room.withoutId("테스트방", roomSession, deadline, List.of());
         final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
         final ZoneId utcZone = ZoneId.of("UTC");
 
