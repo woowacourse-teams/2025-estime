@@ -20,6 +20,4 @@ FROM available_date_slot d
 WHERE d.active = true
   AND t.active = true;
 
--- 기존 테이블 삭제
-DROP TABLE available_date_slot;
-DROP TABLE available_time_slot;
+-- 기존 테이블 삭제는 수동 작업 필요
