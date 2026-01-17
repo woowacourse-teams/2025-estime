@@ -1,8 +1,11 @@
 package com.estime.support;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.doThrow;
 
 import com.estime.TestApplication;
+import com.estime.outbox.OutboxScheduler;
 import com.estime.port.out.TimeProvider;
 import com.estime.room.notification.PlatformNotificationService;
 import java.time.Instant;
@@ -39,10 +42,18 @@ public abstract class IntegrationTest {
     @MockitoBean
     protected TimeProvider timeProvider;
 
+    @MockitoBean
+    protected OutboxScheduler outboxScheduler;
+
     @BeforeEach
     void setUpIntegrationTest() {
         given(timeProvider.now()).willReturn(NOW);
         given(timeProvider.zone()).willReturn(ZONE);
         given(timeProvider.nowDateTime()).willReturn(NOW_LOCAL_DATE_TIME);
+
+        doThrow(new IllegalStateException("OutboxScheduler should not be called in tests"))
+                .when(outboxScheduler).processOutbox();
+        doThrow(new IllegalStateException("OutboxScheduler should not be called in tests"))
+                .when(outboxScheduler).recoverStaleOutbox();
     }
 }
