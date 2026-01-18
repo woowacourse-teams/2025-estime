@@ -44,7 +44,11 @@ export const TimeLabel = styled.div`
 
   span {
     color: ${({ theme }) => theme.colors.text};
-    transition: all 0.2s ease;
+    transition:
+      color 0.2s ease,
+      font-size 0.2s ease,
+      font-weight 0.2s ease,
+      transform 0.2s ease;
     font-size: 14px;
     font-weight: 400;
     line-height: 1;
@@ -55,7 +59,6 @@ export const TimeLabel = styled.div`
     font-weight: 600;
     font-size: 16px;
     transform: scale(1.02);
-    transition: opacity 0.15s ease-in-out;
   }
 `;
 
@@ -63,15 +66,21 @@ export const HoverLabel = styled.div`
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   text-align: center;
   height: 3rem;
   line-height: 3rem;
   font-size: ${({ theme }) => theme.typography.body};
   opacity: 0;
-  transition: all 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease,
+    font-weight 0.2s ease,
+    transform 0.2s ease;
   pointer-events: none;
   color: ${({ theme }) => theme.colors.text};
   z-index: 1;
+  will-change: transform;
 
   &.visible {
     opacity: 1;
@@ -80,8 +89,6 @@ export const HoverLabel = styled.div`
   &.active {
     color: ${({ theme }) => theme.colors.primary};
     font-weight: 600;
-
-    transform: scale(1.02);
   }
 `;
 

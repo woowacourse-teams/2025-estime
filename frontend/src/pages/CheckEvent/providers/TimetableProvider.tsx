@@ -36,7 +36,7 @@ const TimetableHoverProvider = ({
 
     // hover 해제 시
     if (!hoveredTime) {
-      hoverLabel.classList.remove('visible');
+      hoverLabel.classList.remove('visible', 'active');
       return;
     }
 
@@ -49,14 +49,13 @@ const TimetableHoverProvider = ({
     const top = `calc(24px + ${(dateTimeSlotsRef.current.indexOf(nextLabelTime) / 2) * 3}rem)`;
 
     hoverLabel.textContent = nextLabelTime;
-    hoverLabel.style.top = top;
-    hoverLabel.classList.add('visible');
+    hoverLabel.style.transform = `translateY(${top}) scale(1.02)`;
+    hoverLabel.classList.add('visible', 'active');
 
     const startLabel = labelRefs.current?.[hoveredTime];
     const endLabel = labelRefs.current?.[endTime];
     startLabel?.classList.add('active');
     endLabel?.classList.add('active');
-    hoverLabel.classList.add('active');
   }, []);
 
   useEffect(() => {
