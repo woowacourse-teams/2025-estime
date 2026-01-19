@@ -7,6 +7,6 @@ export type UserAvailableTimeResponseType = {
   slotCodes: number[];
 };
 
-export interface updateUserAvailableTimeType {
+export interface UpdateUserAvailableTimeType {
   slotCodes: number[];
 }

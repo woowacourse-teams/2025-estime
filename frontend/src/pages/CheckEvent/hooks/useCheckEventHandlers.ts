@@ -2,7 +2,7 @@ import { useCallback, useReducer } from 'react';
 import modeReducer from '../reducers/modeReducer';
 import { ModalAction, modalReducer } from '../reducers/modalReducer';
 import { CreateUserResponseType } from '@/apis/room/type';
-import { updateUserAvailableTimeType } from '@/apis/time/type';
+import { UpdateUserAvailableTimeType } from '@/apis/time/type';
 import { userAvailabilityStore } from '../stores/userAvailabilityStore';
 import { showToast } from '@/shared/store/toastStore';
 import { userNameStore } from '../stores/userNameStore';
@@ -22,7 +22,7 @@ const initialModalState = {
 interface CheckEventHandlers {
   handleLogin: () => Promise<CreateUserResponseType>;
   fetchUserAvailableTime: () => Promise<void>;
-  handleUserAvailabilitySubmit: () => Promise<updateUserAvailableTimeType | undefined>;
+  handleUserAvailabilitySubmit: () => Promise<UpdateUserAvailableTimeType | undefined>;
   pageReset: () => void;
 }
 

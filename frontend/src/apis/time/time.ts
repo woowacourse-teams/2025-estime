@@ -1,7 +1,7 @@
 import api from '../common';
 import { ROOM_API_PATH_V2 } from '../common/constant';
 import type {
-  updateUserAvailableTimeType,
+  UpdateUserAvailableTimeType,
   UserAvailableTimeResponseType,
   UserAvailableTimeRequestType,
 } from './type';
@@ -9,7 +9,7 @@ import type {
 export const updateUserAvailableTime = async (
   session: string | null,
   body: UserAvailableTimeRequestType
-): Promise<updateUserAvailableTimeType> => {
+): Promise<UpdateUserAvailableTimeType> => {
   return await api.put(`${ROOM_API_PATH_V2}/${session}/votes/participants`, body);
 };
 
