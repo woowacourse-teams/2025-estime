@@ -1,14 +1,15 @@
-import { getRoomStatistics } from '@/apis/room/room';
+import { getRoomStatistics2 } from '@/apis/room/room';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
 import { roomStatisticsStore, type StatisticItem } from '../stores/roomStatisticsStore';
-import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
+import type { GetRoomStatistics2ResponseType } from '@/apis/room/type';
 import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
+import { FormatManager } from '@/shared/utils/common/FormatManager';
 
 const useHeatmapStatistics = ({ session }: { session: string }) => {
   const { triggerFetch: getStatistics } = useFetch({
     context: 'fetchRoomStatistics',
-    requestFn: useCallback(() => getRoomStatistics(session), [session]),
+    requestFn: useCallback(() => getRoomStatistics2(session), [session]),
   });
 
   const { statisticsAnnounce } = useAnnounceContext();
@@ -33,16 +34,19 @@ const useHeatmapStatistics = ({ session }: { session: string }) => {
   );
 
   const storeRoomResponse = useCallback(
-    (response: GetRoomStatisticsResponseType) => {
+    (response: GetRoomStatistics2ResponseType) => {
       const statisticsMap = new Map<string, StatisticItem>();
       const recommendedTime = [];
-      const { participantCount, participants, maxVoteCount, statistic } = response;
+      const { participantCount, participants, maxVoteCount, statistics } = response;
 
-      for (const item of statistic) {
+      for (const item of statistics) {
+        // 🔥 slotCode → dateTimeSlot 변환
+        const dateTimeSlot = FormatManager.decodeSlotCode(item.slotCode);
+
         if (item.participantNames.length === maxVoteCount) {
-          recommendedTime.push(item.dateTimeSlot);
+          recommendedTime.push(dateTimeSlot);
         }
-        statisticsMap.set(item.dateTimeSlot, {
+        statisticsMap.set(dateTimeSlot, {
           voteCount: item.voteCount,
           weight: item.weight,
           participantNames: item.participantNames,
