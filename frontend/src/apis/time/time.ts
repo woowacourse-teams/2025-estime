@@ -4,6 +4,7 @@ import type {
   UserAvailableTimeResponseType,
   UserAvailableTimeRequestType,
   updateUserAvailableTimeType,
+  UserAvailableTime2ResponseType,
 } from './type';
 
 export const updateUserAvailableTime = async (
@@ -11,6 +12,13 @@ export const updateUserAvailableTime = async (
   body: UserAvailableTimeRequestType
 ): Promise<updateUserAvailableTimeType> => {
   return await api.put(`${ROOM_API_PATH}/${session}/votes/participants`, body);
+};
+
+export const updateUserAvailableTime2 = async (
+  session: string | null,
+  body: UserAvailableTimeRequestType
+): Promise<updateUserAvailableTimeType> => {
+  return await api.put(`${ROOM_API_PATH_V2}/${session}/votes/participants`, body);
 };
 
 export const getUserAvailableTime = async (
@@ -23,7 +31,7 @@ export const getUserAvailableTime = async (
 export const getUserAvailableTime2 = async (
   session: string,
   name: string
-): Promise<UserAvailableTimeResponseType> => {
+): Promise<UserAvailableTime2ResponseType> => {
   return await api.get(`${ROOM_API_PATH_V2}/${session}/votes/participants`, {
     participantName: name,
   });

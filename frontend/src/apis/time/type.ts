@@ -11,3 +11,16 @@ export type UserAvailableTimeResponseType = {
 export interface updateUserAvailableTimeType {
   message: string;
 }
+
+export interface UserAvailableTime2RequestType {
+  participantName: string;
+  slotCodes: number[];
+}
+
+export type UserAvailableTime2ResponseType = {
+  slotCodes: number[];
+};
+
+export interface updateUserAvailableTimeType {
+  slotCodes: number[];
+}

@@ -1,5 +1,5 @@
 import api from '../common';
-import { CHANNEL_ROOM_API_PATH, ROOM_API_PATH } from '../common/constant';
+import { CHANNEL_ROOM_API_PATH, ROOM_API_PATH, ROOM_API_PATH_V2 } from '../common/constant';
 import type {
   CreateRoomResponseType,
   CreateRoomRequestType,
@@ -35,4 +35,10 @@ export const getRoomStatistics = async (
   sessionId: string
 ): Promise<GetRoomStatisticsResponseType> => {
   return await api.get(`${ROOM_API_PATH}/${sessionId}/statistics/date-time-slots`);
+};
+
+export const getRoomStatistics2 = async (
+  sessionId: string
+): Promise<GetRoomStatisticsResponseType> => {
+  return await api.get(`${ROOM_API_PATH_V2}/${sessionId}/statistics/date-time-slots`);
 };
