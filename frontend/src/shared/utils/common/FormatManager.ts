@@ -77,7 +77,6 @@ export const FormatManager = {
       nextTime: nextTimeString,
     };
   },
-
   /**
    * 슬롯 코드를 ISO 8601 형식의 날짜/시간 문자열로 디코딩합니다.
    *
@@ -90,24 +89,52 @@ export const FormatManager = {
    *
    * @example
    * FormatManager.decodeSlotCode(17426) // "2025-12-31T09:00"
-   * FormatManager.decodeSlotCode(68 << 8 | 18) // "2025-12-31T09:00"
    */
   decodeSlotCode(slotCode: number): string {
-    const EPOCH = new Date('2025-10-24T00:00:00');
+    const EPOCH = new Date('2025-10-24T00:00:00Z');
     const SLOT_INTERVAL_MINUTES = 30;
 
     const days = slotCode >> 8;
     const timeSlotIndex = slotCode & 0xff;
 
     const targetDate = new Date(EPOCH);
-    targetDate.setDate(targetDate.getDate() + days);
+    targetDate.setUTCDate(targetDate.getUTCDate() + days);
 
     const totalMinutes = timeSlotIndex * SLOT_INTERVAL_MINUTES;
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
 
-    targetDate.setHours(hours, minutes, 0, 0);
+    targetDate.setUTCHours(hours, minutes, 0, 0);
 
     return targetDate.toISOString().slice(0, 16);
+  },
+
+  /**
+   * ISO 8601 형식의 날짜/시간 문자열을 슬롯 코드로 인코딩합니다.
+   *
+   * @param dateTimeSlot - 'YYYY-MM-DDTHH:mm' 형식의 ISO 8601 문자열
+   * @returns 인코딩된 슬롯 코드 (16비트 정수)
+   *
+   * @example
+   * FormatManager.encodeSlotCode("2025-12-31T09:00") // 17426
+   */
+  encodeSlotCode(dateTimeSlot: string): number {
+    const EPOCH = new Date('2025-10-24T00:00:00Z');
+    const SLOT_INTERVAL_MINUTES = 30;
+
+    // 🔥 UTC로 파싱 (끝에 'Z' 추가)
+    const targetDate = new Date(dateTimeSlot + 'Z');
+
+    // EPOCH로부터 경과한 일수 계산
+    const diffMs = targetDate.getTime() - EPOCH.getTime();
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    // 🔥 UTC 시간 사용
+    const hours = targetDate.getUTCHours();
+    const minutes = targetDate.getUTCMinutes();
+    const totalMinutes = hours * 60 + minutes;
+    const timeSlotIndex = Math.floor(totalMinutes / SLOT_INTERVAL_MINUTES);
+
+    return (days << 8) | timeSlotIndex;
   },
 };
