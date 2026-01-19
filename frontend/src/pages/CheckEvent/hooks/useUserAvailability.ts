@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { getUserAvailableTime2, updateUserAvailableTime2 } from '@/apis/time/time';
+import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { userNameStore } from '../stores/userNameStore';
 import { userAvailabilityStore } from '../stores/userAvailabilityStore';
@@ -8,7 +8,7 @@ import { FormatManager } from '@/shared/utils/common/FormatManager';
 export const useUserAvailability = ({ session }: { session: string }) => {
   const { triggerFetch: getUserTime } = useFetch({
     context: 'fetchUserAvailableTime',
-    requestFn: () => getUserAvailableTime2(session, userNameStore.getSnapshot().name),
+    requestFn: () => getUserAvailableTime(session, userNameStore.getSnapshot().name),
   });
 
   const { isLoading: isSavingUserTime, triggerFetch: handleUserAvailabilitySubmit } = useFetch({
@@ -21,7 +21,7 @@ export const useUserAvailability = ({ session }: { session: string }) => {
         FormatManager.encodeSlotCode(dateTime)
       );
 
-      return updateUserAvailableTime2(session, {
+      return updateUserAvailableTime(session, {
         participantName: userAvailability.userName,
         slotCodes,
       });

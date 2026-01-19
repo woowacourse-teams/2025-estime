@@ -1,15 +1,15 @@
-import { getRoomStatistics2 } from '@/apis/room/room';
+import { getRoomStatistics } from '@/apis/room/room';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useEffect, useCallback } from 'react';
 import { roomStatisticsStore, type StatisticItem } from '../stores/roomStatisticsStore';
-import type { GetRoomStatistics2ResponseType } from '@/apis/room/type';
+import type { GetRoomStatisticsResponseType } from '@/apis/room/type';
 import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 
 const useHeatmapStatistics = ({ session }: { session: string }) => {
   const { triggerFetch: getStatistics } = useFetch({
     context: 'fetchRoomStatistics',
-    requestFn: useCallback(() => getRoomStatistics2(session), [session]),
+    requestFn: useCallback(() => getRoomStatistics(session), [session]),
   });
 
   const { statisticsAnnounce } = useAnnounceContext();
@@ -34,7 +34,7 @@ const useHeatmapStatistics = ({ session }: { session: string }) => {
   );
 
   const storeRoomResponse = useCallback(
-    (response: GetRoomStatistics2ResponseType) => {
+    (response: GetRoomStatisticsResponseType) => {
       const statisticsMap = new Map<string, StatisticItem>();
       const recommendedTime = [];
       const { participantCount, participants, maxVoteCount, statistics } = response;
