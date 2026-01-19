@@ -58,5 +58,5 @@ export type GetRoomStatistics2ResponseType = {
   participantCount: number;
   participants: string[];
   maxVoteCount: number;
-  statistic: StatisticItem[] | [];
+  statistics: StatisticItem2[] | [];
 };

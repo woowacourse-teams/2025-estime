@@ -8,6 +8,7 @@ import type {
   CreateUserResponseType,
   CreateChannelRoomRequestType,
   GetRoomStatisticsResponseType,
+  GetRoomStatistics2ResponseType,
 } from './type';
 
 export const createRoom = async (body: CreateRoomRequestType): Promise<CreateRoomResponseType> => {
@@ -39,6 +40,6 @@ export const getRoomStatistics = async (
 
 export const getRoomStatistics2 = async (
   sessionId: string
-): Promise<GetRoomStatisticsResponseType> => {
+): Promise<GetRoomStatistics2ResponseType> => {
   return await api.get(`${ROOM_API_PATH_V2}/${sessionId}/statistics/date-time-slots`);
 };

@@ -5,6 +5,7 @@ import type {
   UserAvailableTimeRequestType,
   updateUserAvailableTimeType,
   UserAvailableTime2ResponseType,
+  UserAvailableTime2RequestType,
 } from './type';
 
 export const updateUserAvailableTime = async (
@@ -16,7 +17,7 @@ export const updateUserAvailableTime = async (
 
 export const updateUserAvailableTime2 = async (
   session: string | null,
-  body: UserAvailableTimeRequestType
+  body: UserAvailableTime2RequestType
 ): Promise<updateUserAvailableTimeType> => {
   return await api.put(`${ROOM_API_PATH_V2}/${session}/votes/participants`, body);
 };
