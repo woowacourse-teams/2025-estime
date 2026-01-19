@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 import modeReducer from '../reducers/modeReducer';
 import { ModalAction, modalReducer } from '../reducers/modalReducer';
 import { CreateUserResponseType } from '@/apis/room/type';
@@ -34,9 +34,6 @@ const useCheckEventHandlers = ({
 }: CheckEventHandlers) => {
   const [buttonMode, buttonModeDispatch] = useReducer(modeReducer, 'register');
   const [modal, modalDispatch] = useReducer(modalReducer, initialModalState);
-
-  // 등록하기 버튼 클릭 -> 로그인 모달 open
-  //   const
 
   const handleLoginModalButtonClick = async () => {
     const data = await handleLogin();
@@ -92,19 +89,19 @@ const useCheckEventHandlers = ({
       // 서버에서 SSE 메시지 브로드캐스트 → 클라이언트 수신
       // SSE 핸들러에서 userAvailabilityStore.setState(...) 호출 → 전역 store 업데이트
       // 그 순간 "flip" (예: buttonModeDispatch('click_save')) 실행하고 싶다
-      setTimeout(() => {
-        buttonModeDispatch('click_save');
-      }, 200);
     } else if (buttonMode === 'edit') {
       buttonModeDispatch('click_edit');
     }
   };
+
+  const triggerSaveComplete = useCallback(() => buttonModeDispatch('click_save'), []);
 
   return {
     buttonMode,
     buttonName: BUTTON_NAME[buttonMode],
     modal,
     handleButtonClick,
+    triggerSaveComplete,
     handleLoginModalButtonClick,
     handleConfirmModalButtonClick,
     handleModalClick,
