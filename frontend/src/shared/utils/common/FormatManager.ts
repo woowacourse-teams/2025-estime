@@ -55,6 +55,7 @@ export const FormatManager = {
   zeroFill2(value: number | string): string {
     return value.toString().padStart(2, '0');
   },
+
   formatAvailableTimeRange(date: string, timeText: string) {
     const currentTime = new Date(`${date}T${timeText}`);
     const nextTime = new Date(currentTime);
@@ -75,5 +76,38 @@ export const FormatManager = {
       currentTime: currentTimeString,
       nextTime: nextTimeString,
     };
+  },
+
+  /**
+   * 슬롯 코드를 ISO 8601 형식의 날짜/시간 문자열로 디코딩합니다.
+   *
+   * 슬롯 코드는 16비트 정수로 인코딩된 값으로:
+   * - 상위 8비트: EPOCH(2025-10-24)로부터 경과한 일수
+   * - 하위 8비트: 30분 단위 시간 슬롯 인덱스 (0 = 00:00, 1 = 00:30, ...)
+   *
+   * @param slotCode - 인코딩된 슬롯 코드 (예: 17426 = 2025-12-31 09:00)
+   * @returns 'YYYY-MM-DDTHH:mm' 형식의 ISO 8601 문자열
+   *
+   * @example
+   * FormatManager.decodeSlotCode(17426) // "2025-12-31T09:00"
+   * FormatManager.decodeSlotCode(68 << 8 | 18) // "2025-12-31T09:00"
+   */
+  decodeSlotCode(slotCode: number): string {
+    const EPOCH = new Date('2025-10-24T00:00:00');
+    const SLOT_INTERVAL_MINUTES = 30;
+
+    const days = slotCode >> 8;
+    const timeSlotIndex = slotCode & 0xff;
+
+    const targetDate = new Date(EPOCH);
+    targetDate.setDate(targetDate.getDate() + days);
+
+    const totalMinutes = timeSlotIndex * SLOT_INTERVAL_MINUTES;
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    targetDate.setHours(hours, minutes, 0, 0);
+
+    return targetDate.toISOString().slice(0, 16);
   },
 };
