@@ -2,25 +2,21 @@ package com.estime.room.dto.output;
 
 import com.estime.room.Room;
 import com.estime.room.RoomSession;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableTimeSlot;
+import com.estime.room.slot.RoomAvailableSlot;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record RoomOutput(
         String title,
-        List<AvailableDateSlot> availableDateSlots,
-        List<AvailableTimeSlot> availableTimeSlots,
+        List<RoomAvailableSlot> availableSlots,
         LocalDateTime deadline,
         RoomSession session
 ) {
 
-    public static RoomOutput of(final Room room, final List<AvailableDateSlot> availableDateSlots,
-                                final List<AvailableTimeSlot> availableTimeSlots) {
+    public static RoomOutput from(final Room room) {
         return new RoomOutput(
                 room.getTitle(),
-                availableDateSlots,
-                availableTimeSlots,
+                room.getRoomAvailableSlots(),
                 room.getDeadline(),
                 room.getSession()
         );

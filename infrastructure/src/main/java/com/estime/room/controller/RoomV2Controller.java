@@ -1,14 +1,21 @@
 package com.estime.room.controller;
 
 import com.estime.room.RoomSession;
+import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV2;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
-import com.estime.room.controller.dto.response.ParticipantVotesResponseV2;
+import com.estime.room.controller.dto.request.RoomCreateRequestV2;
+import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponseV2;
+import com.estime.room.controller.dto.response.ParticipantVotesResponseV2;
+import com.estime.room.controller.dto.response.RoomCreateResponse;
+import com.estime.room.controller.dto.response.RoomResponseV2;
+import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.dto.input.CompactVotesOutput;
 import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesFindInput;
 import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
 import com.estime.room.service.CompactRoomApplicationService;
+import com.estime.room.service.RoomApplicationService;
 import com.estime.shared.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +27,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RoomV2Controller implements RoomV2ControllerSpecification {
 
+    private final RoomApplicationService roomApplicationService;
     private final CompactRoomApplicationService compactRoomApplicationService;
+
+    @Override
+    public CustomApiResponse<RoomCreateResponse> createRoom(@RequestBody final RoomCreateRequestV2 request) {
+        return CustomApiResponse.ok(
+                RoomCreateResponse.from(
+                        roomApplicationService.createRoom(request.toInput())));
+    }
+
+    @Override
+    public CustomApiResponse<ConnectedRoomCreateResponse> createConnectedRoom(
+            @RequestBody final ConnectedRoomCreateRequestV2 request) {
+        return CustomApiResponse.ok(
+                ConnectedRoomCreateResponse.from(
+                        roomApplicationService.createConnectedRoom(request.toInput())));
+    }
+
+    @Override
+    public CustomApiResponse<RoomResponseV2> getBySession(
+            @PathVariable("session") final RoomSession session
+    ) {
+        final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(session));
+        return CustomApiResponse.ok(RoomResponseV2.from(output));
+    }
 
     @Override
     public CustomApiResponse<DateTimeSlotStatisticResponseV2> getDateTimeSlotStatisticBySession(
