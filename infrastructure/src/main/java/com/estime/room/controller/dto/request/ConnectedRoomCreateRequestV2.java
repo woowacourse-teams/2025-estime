@@ -6,21 +6,16 @@ import com.estime.room.platform.notification.PlatformNotification;
 import com.estime.room.slot.CompactDateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
-public record ConnectedRoomCreateRequest(
+public record ConnectedRoomCreateRequestV2(
         @Schema(example = "아인슈타임 알림 회의")
         String title,
 
-        @Schema(example = "[\"2026-01-01\", \"2026-01-02\"]")
-        List<LocalDate> availableDateSlots,
-
-        @Schema(example = "[\"09:00\", \"09:30\", \"10:00\", \"10:30\", \"11:00\", \"11:30\", \"12:00\", \"12:30\"]")
-        List<LocalTime> availableTimeSlots,
+        @Schema(example = "[\"2026-01-01T09:00\", \"2026-01-01T09:30\", \"2026-01-02T14:00\"]")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+        List<LocalDateTime> availableDateTimeSlots,
 
         @Schema(example = "2026-01-06T09:00")
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -39,25 +34,14 @@ public record ConnectedRoomCreateRequest(
     public ConnectedRoomCreateInput toInput() {
         return new ConnectedRoomCreateInput(
                 title,
-                toSlotCodes(availableDateSlots, availableTimeSlots),
+                availableDateTimeSlots.stream()
+                        .map(CompactDateTimeSlot::from)
+                        .toList(),
                 deadline,
                 PlatformType.from(platformType),
                 channelId,
-                PlatformNotification.of(notification.created, notification.remind, notification.deadline)
+                PlatformNotification.of(notification.created(), notification.remind(), notification.deadline())
         );
-    }
-
-    private List<CompactDateTimeSlot> toSlotCodes(
-            final List<LocalDate> dates,
-            final List<LocalTime> times
-    ) {
-        final List<CompactDateTimeSlot> slotCodes = new ArrayList<>();
-        for (final LocalDate date : dates) {
-            for (final LocalTime time : times) {
-                slotCodes.add(CompactDateTimeSlot.from(LocalDateTime.of(date, time)));
-            }
-        }
-        return slotCodes;
     }
 
     public record PlatformNotificationRequest(
