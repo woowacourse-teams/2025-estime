@@ -16,7 +16,7 @@ public class TestContainersConfig {
                 .withUsername("testuser")
                 .withPassword("testpw")
                 .withUrlParam("rewriteBatchedStatements", "true")
-                .withCommand("--general-log=1", "--general-log-file=/var/log/mysql/general.log")
+//                .withCommand("--general-log=1", "--general-log-file=/var/log/mysql/general.log")
                 .withReuse(true);
     }
 }
