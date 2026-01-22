@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
  * <p>
  * 3. CompactVote 저장 시 불필요한 SELECT(N+1) 발생 여부 및 Batch INSERT 동작
  */
-//@Disabled("문서화 목적의 테스트. 실제 실행 시 데이터가 커밋됨.")
+@Disabled("문서화 목적의 테스트. 실제 실행 시 데이터가 커밋됨.")
 @Transactional
 @Rollback(false)
 class SqlCountTest extends IntegrationTest {
