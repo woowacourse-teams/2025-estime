@@ -6,6 +6,10 @@ dependencies {
     // Spring TX (for @Transactional in services)
     implementation 'org.springframework:spring-tx'
 
+    // for JPA Persistable annotation
+    compileOnly 'org.springframework.data:spring-data-commons'
+    testRuntimeOnly 'org.springframework.data:spring-data-commons'
+
     // Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core'

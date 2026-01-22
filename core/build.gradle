@@ -3,6 +3,10 @@ dependencies {
     compileOnly 'jakarta.persistence:jakarta.persistence-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
+    // for JPA Persistable annotation
+    compileOnly 'org.springframework.data:spring-data-commons'
+    testImplementation 'org.springframework.data:spring-data-commons'
+
     // Considering removal of the core module's dependency on hibernate
     compileOnly 'org.hibernate.orm:hibernate-core'
     testRuntimeOnly 'org.hibernate.orm:hibernate-core'
