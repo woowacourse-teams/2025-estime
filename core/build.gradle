@@ -1,7 +1,15 @@
+configurations {
+    testImplementation.extendsFrom compileOnly
+}
+
 dependencies {
     // JPA annotations for entities (compile-only, implementation provided by infrastructure)
     compileOnly 'jakarta.persistence:jakarta.persistence-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    // for JPA Persistable annotation
+    compileOnly 'org.springframework.data:spring-data-commons'
+    testRuntimeOnly 'org.springframework.data:spring-data-commons'
 
     // Considering removal of the core module's dependency on hibernate
     compileOnly 'org.hibernate.orm:hibernate-core'
