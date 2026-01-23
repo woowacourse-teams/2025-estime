@@ -5,7 +5,7 @@ import { UserAvailability } from '../types/userAvailability';
 const createUserAvailabilityStore = () => {
   const store = createStore<UserAvailability>({
     userName: '',
-    selectedTimes: new Set<string>(),
+    selectedTimes: new Set<number>(),
   });
 
   return {

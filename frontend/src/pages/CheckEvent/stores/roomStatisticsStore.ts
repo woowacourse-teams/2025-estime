@@ -9,8 +9,8 @@ export interface StatisticItem {
   participantNames: string[];
 }
 interface RoomStatisticsStore extends Omit<GetRoomStatisticsResponseType, 'statistics'> {
-  recommendedTime: string[];
-  statistics: Map<string, StatisticItem>;
+  recommendedTime: number[];
+  statistics: Map<number, StatisticItem>;
 }
 const createRoomStatisticsStore = () => {
   const store = createStore<RoomStatisticsStore>({

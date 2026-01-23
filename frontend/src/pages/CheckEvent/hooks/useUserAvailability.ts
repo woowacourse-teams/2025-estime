@@ -3,7 +3,7 @@ import { getUserAvailableTime, updateUserAvailableTime } from '@/apis/time/time'
 import useFetch from '@/shared/hooks/common/useFetch';
 import { userNameStore } from '../stores/userNameStore';
 import { userAvailabilityStore } from '../stores/userAvailabilityStore';
-import { FormatManager } from '@/shared/utils/common/FormatManager';
+
 
 export const useUserAvailability = ({ session }: { session: string }) => {
   const { triggerFetch: getUserTime } = useFetch({
@@ -16,10 +16,7 @@ export const useUserAvailability = ({ session }: { session: string }) => {
     requestFn: () => {
       const userAvailability = userAvailabilityStore.getSnapshot();
 
-      // 🔥 dateTimeSlots → slotCodes 변환
-      const slotCodes = Array.from(userAvailability.selectedTimes).map((dateTime) =>
-        FormatManager.encodeSlotCode(dateTime)
-      );
+      const slotCodes = Array.from(userAvailability.selectedTimes);
 
       return updateUserAvailableTime(session, {
         participantName: userAvailability.userName,
@@ -32,10 +29,7 @@ export const useUserAvailability = ({ session }: { session: string }) => {
     const userAvailableTimeInfo = await getUserTime();
     if (userAvailableTimeInfo === undefined) return;
 
-    // 🔥 slotCodes → dateTimeSlots 변환
-    const selectedTimesResponse = new Set(
-      userAvailableTimeInfo.slotCodes.map((slotCode) => FormatManager.decodeSlotCode(slotCode))
-    );
+    const selectedTimesResponse = new Set(userAvailableTimeInfo.slotCodes);
 
     userAvailabilityStore.setState((prev) => ({
       ...prev,

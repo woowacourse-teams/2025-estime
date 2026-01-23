@@ -1,4 +1,4 @@
 export interface UserAvailability {
   userName: string;
-  selectedTimes: Set<string>;
+  selectedTimes: Set<number>;
 }
