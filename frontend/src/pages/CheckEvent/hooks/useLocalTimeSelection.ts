@@ -4,7 +4,7 @@ import usePreventScroll from './usePreventScroll';
 import { usePaginationStore } from '../stores/paginationStore';
 
 type TimeCellHitbox = {
-  key: string;
+  key: number;
   left: number;
   right: number;
   top: number;
@@ -16,7 +16,7 @@ const useLocalTimeSelection = () => {
 
   const page = usePaginationStore();
 
-  const currentWorkingSetRef = useRef<Set<string>>(new Set(selectedTimes));
+  const currentWorkingSetRef = useRef<Set<number>>(new Set(selectedTimes));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const dragStartX = useRef(0);
@@ -50,7 +50,7 @@ const useLocalTimeSelection = () => {
       container.querySelectorAll<HTMLElement>('.time-table-cell').forEach((cell) => {
         const dateTime = cell.dataset.time;
         if (!dateTime) return;
-        cell.classList.toggle('selected', currentWorkingSetRef.current.has(dateTime));
+        cell.classList.toggle('selected', currentWorkingSetRef.current.has(+dateTime));
       });
     } finally {
       renderAnimationFrameId.current = null;
@@ -73,7 +73,7 @@ const useLocalTimeSelection = () => {
     ).map((el) => {
       const rect = el.getBoundingClientRect();
       return {
-        key: el.dataset.time!,
+        key: Number(el.dataset.time),
         left: rect.left - containerRect.left,
         right: rect.right - containerRect.left,
         top: rect.top - containerRect.top,
@@ -87,7 +87,7 @@ const useLocalTimeSelection = () => {
     if (!el) return null;
     const targetCell = el.closest('.time-table-cell') as HTMLElement | null;
     if (!targetCell) return null;
-    return targetCell.dataset.time;
+    return Number(targetCell.dataset.time);
   }, []);
 
   const onDragStart = useCallback(

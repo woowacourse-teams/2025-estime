@@ -15,16 +15,17 @@ const useHeatmapStatistics = ({ session }: { session: string }) => {
   const { statisticsAnnounce } = useAnnounceContext();
 
   const announceNewStatistics = useCallback(
-    (recommendedTime: string[]) => {
+    (recommendedTime: number[]) => {
       const recommendedTimeString = recommendedTime
-        .map((date) =>
-          new Date(date).toLocaleString('ko-kr', {
+        .map((slotCode) => {
+          const dateTimeSlot = FormatManager.decodeSlotCode(slotCode);
+          return new Date(dateTimeSlot).toLocaleString('ko-kr', {
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-          })
-        )
+          });
+        })
         .slice(0, 6)
         .join(', ');
 
@@ -35,18 +36,15 @@ const useHeatmapStatistics = ({ session }: { session: string }) => {
 
   const storeRoomResponse = useCallback(
     (response: GetRoomStatisticsResponseType) => {
-      const statisticsMap = new Map<string, StatisticItem>();
+      const statisticsMap = new Map<number, StatisticItem>();
       const recommendedTime = [];
       const { participantCount, participants, maxVoteCount, statistics } = response;
 
       for (const item of statistics) {
-        // 🔥 slotCode → dateTimeSlot 변환
-        const dateTimeSlot = FormatManager.decodeSlotCode(item.slotCode);
-
         if (item.participantNames.length === maxVoteCount) {
-          recommendedTime.push(dateTimeSlot);
+          recommendedTime.push(item.slotCode);
         }
-        statisticsMap.set(dateTimeSlot, {
+        statisticsMap.set(item.slotCode, {
           voteCount: item.voteCount,
           weight: item.weight,
           participantNames: item.participantNames,
