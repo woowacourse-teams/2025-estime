@@ -12,9 +12,9 @@ interface TimeTableCellProps {
 }
 
 const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
-  const dateTimeKey = `${date}T${timeText}`;
+  const slotCode = FormatManager.encodeSlotCode(`${date}T${timeText}`);
   const roomStatistics = useRoomStatistics();
-  const cellInfo = roomStatistics.statistics.get(dateTimeKey);
+  const cellInfo = roomStatistics.statistics.get(slotCode);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const theme = useTheme();
   const { isOn } = useGlassPreview();
@@ -51,7 +51,7 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
     <div
       className="time-table-cell"
       aria-label={`${FormatManager.formatKoreanDate(date)} ${timeText} 선택`}
-      data-time={dateTimeKey}
+      data-time={slotCode}
       onMouseEnter={handleEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}

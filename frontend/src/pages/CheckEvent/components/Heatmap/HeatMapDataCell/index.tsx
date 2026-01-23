@@ -17,7 +17,8 @@ const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => 
   const { isMobile } = useTheme();
 
   const roomStatistics = useRoomStatistics();
-  const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
+  const slotCode = FormatManager.encodeSlotCode(`${date}T${timeText}`);
+  const cellInfo = roomStatistics.statistics.get(slotCode);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
   const weight = cellInfo?.weight ?? 0;
   const participantNames = cellInfo?.participantNames.join(', ');
@@ -56,7 +57,7 @@ const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => 
   return (
     <S.Container
       data-cell
-      data-cell-id={`${date}T${timeText}`}
+      data-cell-id={slotCode}
       weight={weight}
       isRecommended={isRecommended}
       onMouseOver={() => {
