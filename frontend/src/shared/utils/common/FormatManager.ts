@@ -1,3 +1,9 @@
+// 슬롯 코드 인코딩/디코딩을 위한 상수
+const EPOCH_TIME = new Date('2025-10-24T00:00:00Z').getTime();
+const SLOT_INTERVAL_MINUTES = 30;
+const MS_PER_DAY = 86400000; // 1000 * 60 * 60 * 24
+const MS_PER_SLOT = 1800000; // 1000 * 60 * 30
+
 /**
  * 날짜 및 시간 포맷팅 관련 유틸 함수 모음
  */
@@ -80,8 +86,9 @@ export const FormatManager = {
   /**
    * 슬롯 코드를 ISO 8601 형식의 날짜/시간 문자열로 디코딩합니다.
    *
-   * 슬롯 코드는 16비트 정수로 인코딩된 값으로:
-   * - 상위 8비트: EPOCH(2025-10-24)로부터 경과한 일수
+   * 슬롯 코드는 24비트 정수로 인코딩된 값으로:
+   * - 상위 4비트: 확장용 플래그 (현재 미사용)
+   * - 중간 12비트: EPOCH(2025-10-24)로부터 경과한 일수
    * - 하위 8비트: 30분 단위 시간 슬롯 인덱스 (0 = 00:00, 1 = 00:30, ...)
    *
    * @param slotCode - 인코딩된 슬롯 코드 (예: 17426 = 2025-12-31 09:00)
@@ -91,45 +98,28 @@ export const FormatManager = {
    * FormatManager.decodeSlotCode(17426) // "2025-12-31T09:00"
    */
   decodeSlotCode(slotCode: number): string {
-    const EPOCH = new Date('2025-10-24T00:00:00Z');
-    const SLOT_INTERVAL_MINUTES = 30;
-
-    const days = slotCode >> 8;
+    const days = (slotCode >> 8) & 0xfff;
     const timeSlotIndex = slotCode & 0xff;
 
-    const targetDate = new Date(EPOCH);
-    targetDate.setUTCDate(targetDate.getUTCDate() + days);
-
-    const totalMinutes = timeSlotIndex * SLOT_INTERVAL_MINUTES;
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    targetDate.setUTCHours(hours, minutes, 0, 0);
-
-    return targetDate.toISOString().slice(0, 16);
+    const timestamp = EPOCH_TIME + days * MS_PER_DAY + timeSlotIndex * MS_PER_SLOT;
+    return new Date(timestamp).toISOString().slice(0, 16);
   },
 
   /**
    * ISO 8601 형식의 날짜/시간 문자열을 슬롯 코드로 인코딩합니다.
    *
    * @param dateTimeSlot - 'YYYY-MM-DDTHH:mm' 형식의 ISO 8601 문자열
-   * @returns 인코딩된 슬롯 코드 (16비트 정수)
+   * @returns 인코딩된 슬롯 코드 (24비트 정수)
    *
    * @example
    * FormatManager.encodeSlotCode("2025-12-31T09:00") // 17426
    */
   encodeSlotCode(dateTimeSlot: string): number {
-    const EPOCH = new Date('2025-10-24T00:00:00Z');
-    const SLOT_INTERVAL_MINUTES = 30;
-
-    // 🔥 UTC로 파싱 (끝에 'Z' 추가)
     const targetDate = new Date(dateTimeSlot + 'Z');
+    const timestamp = targetDate.getTime();
 
-    // EPOCH로부터 경과한 일수 계산
-    const diffMs = targetDate.getTime() - EPOCH.getTime();
-    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const days = Math.floor((timestamp - EPOCH_TIME) / MS_PER_DAY);
 
-    // 🔥 UTC 시간 사용
     const hours = targetDate.getUTCHours();
     const minutes = targetDate.getUTCMinutes();
     const totalMinutes = hours * 60 + minutes;
