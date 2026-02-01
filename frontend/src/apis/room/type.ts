@@ -34,7 +34,7 @@ export interface CreateUserResponseType {
 }
 
 export type StatisticItem = {
-  dateTimeSlot: string;
+  slotCode: number;
   voteCount: number;
   weight: number;
   participantNames: string[];
@@ -44,5 +44,5 @@ export type GetRoomStatisticsResponseType = {
   participantCount: number;
   participants: string[];
   maxVoteCount: number;
-  statistic: StatisticItem[] | [];
+  statistics: StatisticItem[] | [];
 };
