@@ -8,7 +8,7 @@ export interface StatisticItem {
   weight: number;
   participantNames: string[];
 }
-interface RoomStatisticsStore extends Omit<GetRoomStatisticsResponseType, 'statistic'> {
+interface RoomStatisticsStore extends Omit<GetRoomStatisticsResponseType, 'statistics'> {
   recommendedTime: string[];
   statistics: Map<string, StatisticItem>;
 }
