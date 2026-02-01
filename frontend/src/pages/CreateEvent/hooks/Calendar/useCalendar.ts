@@ -7,6 +7,7 @@ const useCalender = (date: Date) => {
   const prevMonth = useCallback(() => {
     setCurrent((prev: Date) => {
       const newDate = new Date(prev);
+      newDate.setDate(1);
       newDate.setMonth(newDate.getMonth() - 1);
       return newDate;
     });
@@ -15,6 +16,7 @@ const useCalender = (date: Date) => {
   const nextMonth = useCallback(() => {
     setCurrent((prev: Date) => {
       const newDate = new Date(prev);
+      newDate.setDate(1);
       newDate.setMonth(newDate.getMonth() + 1);
       return newDate;
     });
