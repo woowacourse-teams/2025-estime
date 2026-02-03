@@ -1,9 +1,11 @@
 package com.estime.room.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.estime.exception.NotFoundException;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -30,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -48,6 +51,9 @@ class CompactRoomApplicationServiceTest extends IntegrationTest {
 
     @Autowired
     private CompactVoteRepository compactVoteRepository;
+
+    @Autowired
+    private ApplicationEvents events;
 
     private Room room;
     private Participant participant1;
@@ -221,6 +227,29 @@ class CompactRoomApplicationServiceTest extends IntegrationTest {
             softly.assertThat(updatedVotesOutput.votes()).hasSize(1);
             softly.assertThat(updatedVotesOutput.votes().getFirst().getCompactDateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(updatedVotesOutput.name()).isEqualTo(participant1.getName());
+        });
+    }
+
+    @DisplayName("참여자 투표 수정 시 VotesUpdatedEvent가 발행된다.")
+    @Test
+    void updateParticipantVotes_publishesVotesUpdatedEvent() {
+        // given
+        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+        final CompactVoteUpdateInput input = new CompactVoteUpdateInput(
+                room.getSession(), participant1.getName(), List.of(slot));
+
+        // when
+        compactRoomApplicationService.updateParticipantVotes(input);
+
+        // then
+        final long eventCount = events.stream(VotesUpdatedEvent.class).count();
+        assertThat(eventCount).isEqualTo(1);
+
+        final VotesUpdatedEvent event = events.stream(VotesUpdatedEvent.class).findFirst().orElseThrow();
+        assertSoftly(softly -> {
+            softly.assertThat(event.roomSession()).isEqualTo(room.getSession());
+            softly.assertThat(event.participantName()).isEqualTo(participant1.getName().getValue());
         });
     }
 
