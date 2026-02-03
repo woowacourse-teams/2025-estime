@@ -244,10 +244,10 @@ class CompactRoomApplicationServiceTest extends IntegrationTest {
 
         // then
         final long eventCount = events.stream(VotesUpdatedEvent.class).count();
-        assertThat(eventCount).isEqualTo(1);
-
         final VotesUpdatedEvent event = events.stream(VotesUpdatedEvent.class).findFirst().orElseThrow();
+
         assertSoftly(softly -> {
+            softly.assertThat(eventCount).isEqualTo(1);
             softly.assertThat(event.roomSession()).isEqualTo(room.getSession());
             softly.assertThat(event.participantName()).isEqualTo(participant1.getName().getValue());
         });

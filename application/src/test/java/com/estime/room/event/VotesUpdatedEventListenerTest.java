@@ -44,7 +44,7 @@ class VotesUpdatedEventListenerTest {
         final VotesUpdatedEvent event = new VotesUpdatedEvent(roomSession, "participantName");
         doThrow(new RuntimeException()).when(roomEventSender).sendEvent(roomSession, event);
 
-        // when & then (예외 발생하지 않음)
+        // when & then
         assertThatCode(() -> listener.handle(event)).doesNotThrowAnyException();
     }
 }
