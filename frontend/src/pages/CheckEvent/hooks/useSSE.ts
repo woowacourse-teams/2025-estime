@@ -1,11 +1,22 @@
 import { useEffect, useRef } from 'react';
 import useHandleError from '../../../shared/hooks/common/useCreateError';
 
+export interface SSEData {
+  eventName: 'votes-updated';
+  participantName: string;
+  roomSession?: string;
+}
+export const isSSEData = (data: unknown): data is SSEData => {
+  if (typeof data !== 'object' || data === null) return false;
+  const obj = data as Record<string, unknown>;
+
+  return obj.eventName === 'votes-updated' && typeof obj.participantName === 'string';
+};
 // SSE 재연결 관련 상수
 const MAX_RETRY_COUNT = 10;
 const RETRY_INTERVAL = 1000; // 1초
 
-const useSSE = (session: string, onVoteChange: (participantName: string) => Promise<void>) => {
+const useSSE = (session: string, onVoteChange: (sseData: SSEData) => Promise<void>) => {
   const retryCountRef = useRef(0);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -47,17 +58,15 @@ const useSSE = (session: string, onVoteChange: (participantName: string) => Prom
 
       const handleVoteChange = async (ev: MessageEvent<string>) => {
         try {
-          const { participantName } = JSON.parse(ev.data) as {
-            participantName: string;
-            eventName: 'votes-updated';
-          };
-          onVoteChange(participantName);
-          console.log('투표 변경 누가?:', participantName);
+          const sseData = JSON.parse(ev.data);
+
+          if (!isSSEData(sseData)) return;
+
+          onVoteChange(sseData);
         } catch (error) {
           handleError(error, 'SSE 연결 오류');
         }
       };
-
       eventSource.addEventListener('connected', handleConnected);
       eventSource.addEventListener('votes-updated', handleVoteChange);
 

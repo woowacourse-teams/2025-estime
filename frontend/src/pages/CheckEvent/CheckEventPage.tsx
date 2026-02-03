@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { EntryConfirmModal } from '@/pages/CheckEvent/components/EntryConfirmModal';
 import Modal from '@/shared/components/Modal';
 import CopyLinkModal from '@/pages/CheckEvent/components/CopyLinkModal';
-import useSSE from '@/pages/CheckEvent/hooks/useSSE';
+import useSSE, { SSEData } from '@/pages/CheckEvent/hooks/useSSE';
 import useHeatmapStatistics from '@/pages/CheckEvent/hooks/useHeatmapStatistics';
 import useUserLogin from './hooks/useUserLogin';
 import useTimeTablePagination from './hooks/useTimeTablePagination';
@@ -60,15 +60,15 @@ const CheckEventPage = () => {
   });
 
   const onVoteChange = useCallback(
-    async (participantName: string) => {
+    async (sseData: SSEData) => {
       console.log('🔄 SSE vote-changed event 확인... fetch중...');
       await fetchRoomStatistics();
       console.log('✅ fetch 완료!');
 
       const currentUserName = userNameStore.getSnapshot().name;
-      if (participantName === currentUserName) triggerSaveComplete();
+      if (sseData.participantName === currentUserName) triggerSaveComplete();
     },
-    [fetchRoomStatistics]
+    [fetchRoomStatistics, triggerSaveComplete]
   );
 
   useSSE(session, onVoteChange);
