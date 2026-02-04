@@ -1,11 +1,16 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+    <property name="LOG_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}} %5p ${PID:- } [%mdc{traceId:-no-req--}] --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <property name="DISCORD_PATTERN"
+              value="### [Summary]%n%msg%n### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n### [Level]%n%-5level%n### [Trace Id]%n%mdc{traceId}%n### [User Agent]%n%mdc{userAgent}%n### [Client IP]%n%mdc{clientIp}%n### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n"/>
+
     <!-- local 환경-->
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="Console"/>
-            <!--            <appender-ref ref="File"/>-->
         </root>
     </springProfile>
 
@@ -17,15 +22,7 @@
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_LOG_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>
-### [Summary]%n%msg%n
-### [Time]%n%d{yyyy-MM-dd HH:mm:ss}%n
-### [Level]%n%-5level%n
-### [Trace Id]%n%mdc{traceId}%n
-### [User Agent]%n%mdc{userAgent}%n
-### [Client IP]%n%mdc{clientIp}%n
-### [Header]%n- host: %mdc{host}%n- uri: %mdc{httpMethod} %mdc{requestUri}%mdc{query}%n
-                </pattern>
+                <pattern>${DISCORD_PATTERN}</pattern>
             </layout>
             <username>${DISCORD_USERNAME}</username>
             <tts>false</tts>
@@ -48,7 +45,7 @@
     <!-- 공통 콘솔 로거 -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <pattern>${LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
@@ -58,10 +55,7 @@
         <file>/app/logs/estime-api.log</file>
 
         <encoder>
-            <Pattern>${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}
-                ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} :
-                %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
-            </Pattern>
+            <pattern>${LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
 
