@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.event.RecordApplicationEvents;
 
 /**
  * 통합 테스트 베이스 클래스.
@@ -29,6 +30,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ActiveProfiles("test")
 @TestPropertySource(properties = "spring.main.allow-bean-definition-overriding=true")
 @AutoConfigureMockMvc
+@RecordApplicationEvents
 public abstract class IntegrationTest {
 
     protected static final ZoneId ZONE = ZoneId.of("Asia/Seoul");

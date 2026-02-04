@@ -10,6 +10,7 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.ParticipantCreateInput;
 import com.estime.room.dto.input.RoomCreateInput;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -49,6 +50,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -70,6 +72,9 @@ class RoomApplicationServiceTest extends IntegrationTest {
 
     @Autowired
     private PlatformRepository platformRepository;
+
+    @Autowired
+    private ApplicationEvents events;
 
     private Room room;
     private Participant participant1;
@@ -310,6 +315,29 @@ class RoomApplicationServiceTest extends IntegrationTest {
             softly.assertThat(updatedVotesOutput.votes()).hasSize(1);
             softly.assertThat(updatedVotesOutput.votes().getFirst().getId().getDateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(updatedVotesOutput.name()).isEqualTo(participant1.getName());
+        });
+    }
+
+    @DisplayName("참여자 투표 수정 시 VotesUpdatedEvent가 발행된다.")
+    @Test
+    void updateParticipantVotes_publishesVotesUpdatedEvent() {
+        // given
+        final DateTimeSlot slot = DateTimeSlot.from(
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+        final VotesUpdateInput input = new VotesUpdateInput(
+                room.getSession(), participant1.getName(), List.of(slot));
+
+        // when
+        roomApplicationService.updateParticipantVotes(input);
+
+        // then
+        final long eventCount = events.stream(VotesUpdatedEvent.class).count();
+        assertThat(eventCount).isEqualTo(1);
+
+        final VotesUpdatedEvent event = events.stream(VotesUpdatedEvent.class).findFirst().orElseThrow();
+        assertSoftly(softly -> {
+            softly.assertThat(event.roomSession()).isEqualTo(room.getSession());
+            softly.assertThat(event.participantName()).isEqualTo(participant1.getName().getValue());
         });
     }
 
