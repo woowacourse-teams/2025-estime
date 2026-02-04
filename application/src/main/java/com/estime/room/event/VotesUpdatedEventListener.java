@@ -2,6 +2,7 @@ package com.estime.room.event;
 
 import com.estime.port.out.RoomEventSender;
 import com.estime.room.RoomSession;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class VotesUpdatedEventListener {
 
     private final RoomEventSender roomEventSender;
-    private final ConcurrentHashMap<RoomSession, Boolean> pendingRooms = new ConcurrentHashMap<>();
+    private final Map<RoomSession, Boolean> pendingRooms = new ConcurrentHashMap<>();
 
     @Async("staleDroppableExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
