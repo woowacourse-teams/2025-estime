@@ -13,4 +13,9 @@ public class TestExecutorConfig {
     public Executor outboxCallbackExecutor() {
         return Runnable::run;
     }
+
+    @Bean
+    public Executor staleDroppableExecutor() {
+        return Runnable::run;
+    }
 }

@@ -3,6 +3,10 @@ spring:
     activate:
       on-profile: test
 
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+
   jpa:
     show-sql: true
     hibernate:

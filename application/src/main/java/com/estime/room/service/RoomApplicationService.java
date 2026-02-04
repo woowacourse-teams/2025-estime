@@ -2,7 +2,6 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.port.out.RoomEventSender;
 import com.estime.port.out.RoomSessionGenerator;
 import com.estime.port.out.TimeProvider;
 import com.estime.room.Room;
@@ -49,17 +48,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RoomApplicationService {
 
-    private final RoomEventSender roomEventSender;
+    private final ApplicationEventPublisher eventPublisher;
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final VoteRepository voteRepository;
@@ -187,18 +185,9 @@ public class RoomApplicationService {
         voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         voteRepository.saveAll(updatedVotes.subtract(originVotes));
 
-        final RoomSession roomSession = room.getSession();
-        final String participantName = input.name().getValue();
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                try {
-                    roomEventSender.sendEvent(roomSession, new VotesUpdatedEvent(participantName));
-                } catch (final Exception e) {
-                    log.warn("Failed to send SSE [votes-updated] after commit. roomSession={}", roomSession, e);
-                }
-            }
-        });
+        eventPublisher.publishEvent(
+                new VotesUpdatedEvent(room.getSession(), input.name().getValue())
+        );
 
         return VotesOutput.from(input.name(), updatedVotes);
     }
