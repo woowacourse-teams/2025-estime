@@ -31,3 +31,11 @@ url:
 springdoc:
   swagger-ui:
     path: /docs
+
+jdbc:
+  datasource-proxy:
+    query:
+      enable-logging: true
+      log-level: DEBUG
+    slow-query:
+      threshold: 1  # 초 단위
