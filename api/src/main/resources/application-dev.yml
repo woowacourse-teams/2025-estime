@@ -35,6 +35,7 @@ springdoc:
 logging:
   discord:
     webhook-url: ${DISCORD_LOG_WEBHOOK_URL}
+    username: 🚨DEV ERROR LOGS 🚨
 
 server:
   tomcat:
