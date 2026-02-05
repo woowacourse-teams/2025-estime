@@ -1,16 +1,32 @@
 package com.estime.config;
 
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 public class ExecutorConfig {
 
     private static final int PROCESSORS = Runtime.getRuntime().availableProcessors();
+    private static final TaskDecorator MDC_TASK_DECORATOR = runnable -> {
+        final Map<String, String> contextMap = MDC.getCopyOfContextMap();
+        return () -> {
+            try {
+                if (contextMap != null) {
+                    MDC.setContextMap(contextMap);
+                }
+                runnable.run();
+            } finally {
+                MDC.clear();
+            }
+        };
+    };
 
     @Value("${spring.datasource.hikari.maximum-pool-size}")
     private int hikariPoolSize;
@@ -33,6 +49,7 @@ public class ExecutorConfig {
 
         // 유실 불가: 큐 포화 시 호출 스레드에서 실행
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setTaskDecorator(MDC_TASK_DECORATOR);
 
         executor.initialize();
         return executor;
@@ -56,6 +73,7 @@ public class ExecutorConfig {
 
         // 큐 포화 시 오래된 작업 버림
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardOldestPolicy());
+        executor.setTaskDecorator(MDC_TASK_DECORATOR);
 
         executor.initialize();
         return executor;
