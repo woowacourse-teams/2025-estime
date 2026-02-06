@@ -62,12 +62,10 @@ class VotesUpdatedEventListenerTest {
         // given
         final RoomSession roomSession = RoomSession.from("test-session");
         final int eventCount = 10;
-        final CountDownLatch sendStarted = new CountDownLatch(1);
-        final CountDownLatch allEventsSubmitted = new CountDownLatch(1);
+        final CountDownLatch handleReturned = new CountDownLatch(eventCount - 1);
 
         doAnswer(invocation -> {
-            sendStarted.countDown();
-            allEventsSubmitted.await();
+            handleReturned.await();
             return null;
         }).when(roomEventSender).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
 
@@ -79,11 +77,10 @@ class VotesUpdatedEventListenerTest {
             executor.submit(() -> {
                 final VotesUpdatedEvent event = new VotesUpdatedEvent(roomSession, participantName);
                 listener.handle(event);
+                handleReturned.countDown();
             });
         }
 
-        sendStarted.await();
-        allEventsSubmitted.countDown();
         executor.shutdown();
         executor.awaitTermination(5, TimeUnit.SECONDS);
 

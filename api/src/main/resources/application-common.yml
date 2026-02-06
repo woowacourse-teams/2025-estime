@@ -34,3 +34,14 @@ management:
     distribution:
       percentiles-histogram:
         http.server.requests: true
+        jdbc.query: true
+
+jdbc:
+  datasource-proxy:
+    logging: slf4j
+    query:
+      enable-logging: false
+    slow-query:
+      enable-logging: true
+      log-level: WARN
+      threshold: 1  # 초 단위
