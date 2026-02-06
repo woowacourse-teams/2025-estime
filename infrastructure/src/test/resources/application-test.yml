@@ -8,12 +8,12 @@ spring:
       maximum-pool-size: 5
 
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         jdbc:
           batch_size: 50
         order_inserts: true
@@ -35,14 +35,4 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
-        orm:
-          jdbc:
-            batch: DEBUG
-        engine:
-          jdbc:
-            batch: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
+        SQL: WARN
