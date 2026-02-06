@@ -44,7 +44,7 @@ class SseSenderTest {
         sseConnectionManager.save(session, connection2);
 
         // when
-        sseSender.broadcast(session, new VotesUpdatedEvent("test-participant"));
+        sseSender.broadcast(session, new VotesUpdatedEvent(session, "test-participant"));
 
         // then: 모든 연결이 여전히 저장되어 있음
         assertSoftly(softly -> {
@@ -57,7 +57,7 @@ class SseSenderTest {
     @Test
     void broadcast_noConnections() {
         // when & then: 예외 발생하지 않음
-        assertThatCode(() -> sseSender.broadcast(session, new VotesUpdatedEvent("test-participant")))
+        assertThatCode(() -> sseSender.broadcast(session, new VotesUpdatedEvent(session, "test-participant")))
                 .doesNotThrowAnyException();
     }
 }

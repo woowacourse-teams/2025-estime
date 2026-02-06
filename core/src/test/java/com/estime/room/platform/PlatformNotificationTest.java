@@ -3,6 +3,8 @@ package com.estime.room.platform;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +18,8 @@ class PlatformNotificationTest {
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(notification.isOnCreated()).isTrue();
-            softly.assertThat(notification.isOnRemind()).isFalse();
+            softly.assertThat(notification.isOnCreation()).isTrue();
+            softly.assertThat(notification.isOnReminder()).isFalse();
             softly.assertThat(notification.isOnDeadline()).isTrue();
         });
     }
@@ -30,9 +32,9 @@ class PlatformNotificationTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATED)).isTrue();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMIND)).isFalse();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.SOLVED)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATION)).isTrue();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMINDER)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.DEADLINE)).isFalse();
         });
     }
 
@@ -44,9 +46,9 @@ class PlatformNotificationTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATED)).isFalse();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMIND)).isTrue();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.SOLVED)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATION)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMINDER)).isTrue();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.DEADLINE)).isFalse();
         });
     }
 
@@ -58,9 +60,9 @@ class PlatformNotificationTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATED)).isFalse();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMIND)).isFalse();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.SOLVED)).isTrue();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATION)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMINDER)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.DEADLINE)).isTrue();
         });
     }
 
@@ -72,9 +74,9 @@ class PlatformNotificationTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATED)).isTrue();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMIND)).isTrue();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.SOLVED)).isTrue();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATION)).isTrue();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMINDER)).isTrue();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.DEADLINE)).isTrue();
         });
     }
 
@@ -86,9 +88,9 @@ class PlatformNotificationTest {
 
         // when & then
         assertSoftly(softly -> {
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATED)).isFalse();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMIND)).isFalse();
-            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.SOLVED)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.CREATION)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.REMINDER)).isFalse();
+            softly.assertThat(notification.shouldNotifyFor(PlatformNotificationType.DEADLINE)).isFalse();
         });
     }
 }

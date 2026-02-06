@@ -2,32 +2,26 @@ package com.estime.room.service;
 
 import com.estime.cache.CacheNames;
 import com.estime.exception.NotFoundException;
-import com.estime.port.out.RoomEventSender;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
-import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.CompactVoteUpdateInput;
 import com.estime.room.dto.input.CompactVotesOutput;
 import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesFindInput;
 import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput.CompactDateTimeParticipantsOutput;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.Participants;
 import com.estime.room.participant.vote.compact.CompactVoteRepository;
 import com.estime.room.participant.vote.compact.CompactVotes;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.AvailableTimeSlot;
-import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.RoomAvailableSlot;
 import com.estime.shared.DomainTerm;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -37,22 +31,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CompactRoomApplicationService {
 
-    private final RoomEventSender roomEventSender;
+    private final ApplicationEventPublisher eventPublisher;
     private final CompactVoteRepository compactVoteRepository;
     private final ParticipantRepository participantRepository;
     private final RoomRepository roomRepository;
-    private final AvailableDateSlotRepository availableDateSlotRepository;
-    private final AvailableTimeSlotRepository availableTimeSlotRepository;
 
     @Cacheable(value = CacheNames.COMPACT_VOTE_STATISTIC, key = "#input.session()", sync = true)
     @Transactional(readOnly = true)
@@ -97,11 +88,11 @@ public class CompactRoomApplicationService {
     @CacheEvict(value = CacheNames.COMPACT_VOTE_STATISTIC, key = "#input.session()")
     @Transactional
     public CompactVotesOutput updateParticipantVotes(final CompactVoteUpdateInput input) {
-        final Room room = obtainRoomBySession(input.session());
+        final Room room = obtainRoomWithSlotsBySession(input.session());
         final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.name());
 
         room.ensureDeadlineNotPassed(LocalDateTime.now());
-        ensureAvailableDateTimeSlots(room.getId(), room.getSession(), input.dateTimeSlots());
+        ensureRoomAvailableSlots(room, input.dateTimeSlots());
 
         final CompactVotes originVotes = compactVoteRepository.findAllByParticipantId(participantId);
         final CompactVotes updatedVotes = CompactVotes.from(input.toEntities(participantId));
@@ -109,47 +100,30 @@ public class CompactRoomApplicationService {
         compactVoteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
         compactVoteRepository.saveAll(updatedVotes.subtract(originVotes));
 
-        final RoomSession roomSession = room.getSession();
-        final String participantName = input.name().getValue();
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                try {
-                    roomEventSender.sendEvent(roomSession, new VotesUpdatedEvent(participantName));
-                } catch (final Exception e) {
-                    log.warn("Failed to send SSE [votes-updated] after commit. roomSession={}", roomSession, e);
-                }
-            }
-        });
+        eventPublisher.publishEvent(
+                new VotesUpdatedEvent(room.getSession(), input.name().getValue())
+        );
 
         return CompactVotesOutput.from(input.name(), updatedVotes);
     }
 
-    private void ensureAvailableDateTimeSlots(
-            final Long roomId,
-            final RoomSession session,
+    private void ensureRoomAvailableSlots(
+            final Room room,
             final List<CompactDateTimeSlot> dateTimeSlots
     ) {
-        // TODO getter 개선 필요
-        final Set<LocalDate> availableDates = availableDateSlotRepository.findByRoomId(roomId).stream()
-                .map(AvailableDateSlot::getStartAt)
-                .collect(Collectors.toSet());
-        final Set<LocalTime> availableTimes = availableTimeSlotRepository.findByRoomId(roomId).stream()
-                .map(AvailableTimeSlot::getStartAt)
+        final Set<CompactDateTimeSlot> availableSlots = room.getRoomAvailableSlots().stream()
+                .map(RoomAvailableSlot::getSlotCode)
                 .collect(Collectors.toSet());
 
         for (final CompactDateTimeSlot dateTimeSlot : dateTimeSlots) {
-            final LocalDate date = dateTimeSlot.getStartAtLocalDate();
-            final LocalTime time = dateTimeSlot.getStartAtLocalTime();
-
-            if (!availableDates.contains(date) || !availableTimes.contains(time)) {
-                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, dateTimeSlot);
+            if (!availableSlots.contains(dateTimeSlot)) {
+                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, room.getSession(), dateTimeSlot);
             }
         }
     }
 
-    private Room obtainRoomBySession(final RoomSession session) {
-        return roomRepository.findBySession(session)
+    private Room obtainRoomWithSlotsBySession(final RoomSession session) {
+        return roomRepository.findWithAvailableSlotsBySession(session)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
     }
 

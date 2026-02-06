@@ -1,21 +1,17 @@
 package com.estime.room.dto.input;
 
-import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformType;
+import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.slot.CompactDateTimeSlot;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record ConnectedRoomCreateInput(
         String title,
-        List<DateSlotInput> availableDateSlots,
-        List<TimeSlotInput> availableTimeSlots,
+        List<CompactDateTimeSlot> slotCodes,
         LocalDateTime deadline,
-        PlatformType type,
+        PlatformType platformType,
         String channelId,
         PlatformNotification notification
 ) {
-
-    public RoomCreateInput toRoomCreateInput() {
-        return new RoomCreateInput(title, availableDateSlots, availableTimeSlots, deadline);
-    }
 }

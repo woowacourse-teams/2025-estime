@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.estime.TestApplication;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -19,10 +18,8 @@ import com.estime.room.controller.dto.request.RoomCreateRequest;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.AvailableTimeSlot;
-import com.estime.room.slot.AvailableTimeSlotRepository;
+import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.support.IntegrationTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
@@ -33,18 +30,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 @Transactional
-class RoomControllerTest {
+class RoomControllerTest extends IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,12 +50,6 @@ class RoomControllerTest {
     private ParticipantRepository participantRepository;
 
     @Autowired
-    private AvailableDateSlotRepository availableDateSlotRepository;
-
-    @Autowired
-    private AvailableTimeSlotRepository availableTimeSlotRepository;
-
-    @Autowired
     private TsidRoomSessionGenerator roomSessionGenerator;
 
     private Room room;
@@ -73,27 +58,31 @@ class RoomControllerTest {
     @BeforeEach
     void setUp() {
         roomSession = roomSessionGenerator.generate();
-        room = roomRepository.save(Room.withoutId(
+        final LocalDate date1 = NOW_LOCAL_DATE.plusDays(1);
+        final LocalDate date2 = NOW_LOCAL_DATE.plusDays(2);
+        final Room tempRoom = Room.withoutId(
                 "Test Room",
                 roomSession,
-                LocalDateTime.now().plusDays(7)
-        ));
-
-        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
-        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(2)));
-
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(14, 0)));
+                NOW_LOCAL_DATE_TIME.plusDays(7),
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)))
+                )
+        );
+        room = roomRepository.save(tempRoom);
     }
 
     @DisplayName("POST /api/v1/rooms - 방을 생성한다")
     @Test
     void createRoom() throws Exception {
         // given
-        final LocalDateTime deadline = LocalDateTime.now().plusDays(7).withSecond(0).withNano(0);
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        final LocalDateTime deadline = NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0);
         final RoomCreateRequest request = new RoomCreateRequest(
                 "New Room",
-                List.of(LocalDate.now().plusDays(1)),
+                List.of(date),
                 List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
                 deadline
         );
@@ -204,7 +193,7 @@ class RoomControllerTest {
 
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "gangsan",
-                List.of(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)))
         );
 
         // when & then
@@ -225,7 +214,7 @@ class RoomControllerTest {
 
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "gangsan",
-                List.of(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(20, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
         );
 
         // when & then
@@ -241,11 +230,12 @@ class RoomControllerTest {
     @Test
     void createConnectedRoom() throws Exception {
         // given
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
         final ConnectedRoomCreateRequest request = new ConnectedRoomCreateRequest(
                 "Connected Room",
-                List.of(LocalDate.now().plusDays(1)),
+                List.of(date),
                 List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
-                LocalDateTime.now().plusDays(7).withSecond(0).withNano(0),
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0),
                 "DISCORD",
                 "test-channel",
                 new PlatformNotificationRequest(true, false, false)
@@ -266,7 +256,7 @@ class RoomControllerTest {
         // given
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "NonExistent",
-                List.of(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)))
         );
 
         // when & then
@@ -300,10 +290,11 @@ class RoomControllerTest {
     @Test
     void createRoom_pastDate() throws Exception {
         // given
-        final LocalDateTime deadline = LocalDateTime.now().plusDays(7).withSecond(0).withNano(0);
+        final LocalDate pastDate = NOW_LOCAL_DATE.minusDays(1);
+        final LocalDateTime deadline = NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0);
         final RoomCreateRequest request = new RoomCreateRequest(
                 "Past Room",
-                List.of(LocalDate.now().minusDays(1)),
+                List.of(pastDate),
                 List.of(LocalTime.of(10, 0)),
                 deadline
         );

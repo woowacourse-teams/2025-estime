@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.estime.TestApplication;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
@@ -14,11 +13,8 @@ import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.AvailableTimeSlot;
-import com.estime.room.slot.AvailableTimeSlotRepository;
 import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.support.IntegrationTest;
 import com.estime.room.participant.vote.compact.CompactVote;
 import com.estime.room.participant.vote.compact.CompactVoteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,18 +27,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 @Transactional
-class RoomV2ControllerTest {
+class RoomV2ControllerTest extends IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,12 +47,6 @@ class RoomV2ControllerTest {
     private ParticipantRepository participantRepository;
 
     @Autowired
-    private AvailableDateSlotRepository availableDateSlotRepository;
-
-    @Autowired
-    private AvailableTimeSlotRepository availableTimeSlotRepository;
-
-    @Autowired
     private CompactVoteRepository compactVoteRepository;
 
     @Autowired
@@ -74,16 +58,18 @@ class RoomV2ControllerTest {
     @BeforeEach
     void setUp() {
         roomSession = roomSessionGenerator.generate();
-        room = roomRepository.save(Room.withoutId(
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        final Room tempRoom = Room.withoutId(
                 "Test Room V2",
                 roomSession,
-                LocalDateTime.now().plusDays(7)
-        ));
-
-        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(14, 0)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(18, 0)));
+                NOW_LOCAL_DATE_TIME.plusDays(7),
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)))
+                )
+        );
+        room = roomRepository.save(tempRoom);
     }
 
     @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - Compact 투표 통계를 조회한다")
@@ -155,7 +141,7 @@ class RoomV2ControllerTest {
         // given
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
-        final LocalDateTime dateTime = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+        final LocalDateTime dateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0));
         final int slotCode = CompactDateTimeSlot.from(dateTime).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
@@ -179,7 +165,7 @@ class RoomV2ControllerTest {
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
         // 사용할 수 없는 시간대 (20:00)
-        final LocalDateTime invalidDateTime = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(20, 0));
+        final LocalDateTime invalidDateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0));
         final int invalidSlotCode = CompactDateTimeSlot.from(invalidDateTime).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
@@ -200,7 +186,7 @@ class RoomV2ControllerTest {
     @Test
     void updateParticipantVotes_participantNotFound() throws Exception {
         // given
-        final LocalDateTime dateTime = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0));
+        final LocalDateTime dateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0));
         final int slotCode = CompactDateTimeSlot.from(dateTime).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
@@ -245,7 +231,7 @@ class RoomV2ControllerTest {
         final Participant participant2 = participantRepository.save(
                 Participant.withoutId(room.getId(), ParticipantName.from("jeffrey")));
 
-        final LocalDate date = LocalDate.now().plusDays(1);
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
 
         // 역순으로 투표 저장 (18:00, 14:00, 10:00)
         final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)));

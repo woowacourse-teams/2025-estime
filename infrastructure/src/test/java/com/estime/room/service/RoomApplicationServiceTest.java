@@ -10,11 +10,10 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
-import com.estime.room.dto.input.DateSlotInput;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.ParticipantCreateInput;
 import com.estime.room.dto.input.RoomCreateInput;
 import com.estime.room.dto.input.RoomSessionInput;
-import com.estime.room.dto.input.TimeSlotInput;
 import com.estime.room.dto.input.VotesFindInput;
 import com.estime.room.dto.input.VotesOutput;
 import com.estime.room.dto.input.VotesUpdateInput;
@@ -31,17 +30,14 @@ import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
-import com.estime.room.platform.PlatformNotification;
-import com.estime.room.platform.PlatformNotificationType;
 import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.AvailableTimeSlot;
-import com.estime.room.slot.AvailableTimeSlotRepository;
+import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationType;
+import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
-import com.estime.TestApplication;
+import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,14 +50,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
 @Transactional
-class RoomApplicationServiceTest {
+class RoomApplicationServiceTest extends IntegrationTest {
 
     private static final RoomSession roomSession = RoomSession.from("testRoomSession");
 
@@ -72,12 +65,6 @@ class RoomApplicationServiceTest {
     private RoomRepository roomRepository;
 
     @Autowired
-    private AvailableDateSlotRepository availableDateSlotRepository;
-
-    @Autowired
-    private AvailableTimeSlotRepository availableTimeSlotRepository;
-
-    @Autowired
     private ParticipantRepository participantRepository;
 
     @Autowired
@@ -86,6 +73,9 @@ class RoomApplicationServiceTest {
     @Autowired
     private PlatformRepository platformRepository;
 
+    @Autowired
+    private ApplicationEvents events;
+
     private Room room;
     private Participant participant1;
     private Participant participant2;
@@ -93,31 +83,33 @@ class RoomApplicationServiceTest {
     private static Stream<Arguments> unavailableDateTimeSlots() {
         return Stream.of(
                 Arguments.of( // Case 1: 날짜(date)가 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(10, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(10, 0)))
                 ),
                 Arguments.of( // Case 2: 시간(time)이 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(12, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(12, 0)))
                 ),
                 Arguments.of( // Case 3: 날짜(date)와 시간(time) 둘 다 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(2), LocalTime.of(12, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(12, 0)))
                 )
         );
     }
 
     @BeforeEach
     void setUp() {
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
         final Room tempRoom = Room.withoutId(
                 "test",
                 roomSession,
-                LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
+                )
         );
-        room = roomRepository.save(tempRoom);
 
-        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 30)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(11, 0)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(11, 30)));
+        room = roomRepository.save(tempRoom);
 
         participant1 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user1")));
         participant2 = participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("user2")));
@@ -129,9 +121,11 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(new DateSlotInput(LocalDate.now().plusDays(1))),
-                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1)
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                ),
+                NOW_LOCAL_DATE_TIME.plusYears(1)
         );
 
         // when
@@ -151,8 +145,7 @@ class RoomApplicationServiceTest {
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(output.title())
                     .isEqualTo(room.getTitle());
-            softAssertions.assertThat(output.availableDateSlots()).hasSize(1);
-            softAssertions.assertThat(output.availableTimeSlots()).hasSize(4);
+            softAssertions.assertThat(output.availableSlots()).hasSize(4);
             softAssertions.assertThat(output.deadline())
                     .isEqualTo(room.getDeadline());
             softAssertions.assertThat(output.session())
@@ -178,7 +171,7 @@ class RoomApplicationServiceTest {
     void calculateVoteStatistic() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
         voteRepository.save(Vote.of(participant2.getId(), slot1));
 
@@ -204,7 +197,7 @@ class RoomApplicationServiceTest {
     void getParticipantVotesBySessionAndParticipantName() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         // when
@@ -224,11 +217,11 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_complex() {
         // given
         final DateTimeSlot slotToRemove = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         final DateTimeSlot slotToKeep = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 30)));
         final DateTimeSlot slotToAdd = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 0)));
 
         voteRepository.save(Vote.of(participant1.getId(), slotToRemove));
         voteRepository.save(Vote.of(participant1.getId(), slotToKeep));
@@ -258,16 +251,16 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_replaceAll() {
         // given
         final DateTimeSlot initialSlot1 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         final DateTimeSlot initialSlot2 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 30)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 30)));
         voteRepository.save(Vote.of(participant1.getId(), initialSlot1));
         voteRepository.save(Vote.of(participant1.getId(), initialSlot2));
 
         final DateTimeSlot newSlot1 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 0)));
         final DateTimeSlot newSlot2 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(11, 30)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 30)));
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
                 List.of(newSlot1, newSlot2));
 
@@ -288,7 +281,7 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_removeAll() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of());
@@ -309,7 +302,7 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_noChange() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of(slot1));
@@ -322,6 +315,29 @@ class RoomApplicationServiceTest {
             softly.assertThat(updatedVotesOutput.votes()).hasSize(1);
             softly.assertThat(updatedVotesOutput.votes().getFirst().getId().getDateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(updatedVotesOutput.name()).isEqualTo(participant1.getName());
+        });
+    }
+
+    @DisplayName("참여자 투표 수정 시 VotesUpdatedEvent가 발행된다.")
+    @Test
+    void updateParticipantVotes_publishesVotesUpdatedEvent() {
+        // given
+        final DateTimeSlot slot = DateTimeSlot.from(
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+        final VotesUpdateInput input = new VotesUpdateInput(
+                room.getSession(), participant1.getName(), List.of(slot));
+
+        // when
+        roomApplicationService.updateParticipantVotes(input);
+
+        // then
+        final long eventCount = events.stream(VotesUpdatedEvent.class).count();
+        assertThat(eventCount).isEqualTo(1);
+
+        final VotesUpdatedEvent event = events.stream(VotesUpdatedEvent.class).findFirst().orElseThrow();
+        assertSoftly(softly -> {
+            softly.assertThat(event.roomSession()).isEqualTo(room.getSession());
+            softly.assertThat(event.participantName()).isEqualTo(participant1.getName().getValue());
         });
     }
 
@@ -377,9 +393,11 @@ class RoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                List.of(new DateSlotInput(LocalDate.now().plusDays(1))),
-                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1),
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                ),
+                NOW_LOCAL_DATE_TIME.plusYears(1),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(false, false, false)
@@ -402,15 +420,17 @@ class RoomApplicationServiceTest {
         // given
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
-                List.of(new DateSlotInput(LocalDate.now().minusDays(1))),
-                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1)
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
+                ),
+                NOW_LOCAL_DATE_TIME.plusYears(1)
         );
 
         // when & then
         assertThatThrownBy(() -> roomApplicationService.createRoom(input))
                 .isInstanceOf(PastNotAllowedException.class)
-                .hasMessageContaining(DomainTerm.DATE_SLOT.name() + " cannot be past");
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " cannot be past");
     }
 
     @DisplayName("플랫폼과 연결된 방 생성 시 과거 날짜 슬롯이면 PastNotAllowedException이 발생한다")
@@ -419,9 +439,11 @@ class RoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                List.of(new DateSlotInput(LocalDate.now().minusDays(1))),
-                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1),
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
+                ),
+                NOW_LOCAL_DATE_TIME.plusYears(1),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(false, false, false)
@@ -430,7 +452,7 @@ class RoomApplicationServiceTest {
         // when & then
         assertThatThrownBy(() -> roomApplicationService.createConnectedRoom(input))
                 .isInstanceOf(PastNotAllowedException.class)
-                .hasMessageContaining(DomainTerm.DATE_SLOT.name() + " cannot be past");
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " cannot be past");
     }
 
     @DisplayName("존재하지 않는 참여자의 투표를 조회하면 NotFoundException이 발생한다")
@@ -450,7 +472,7 @@ class RoomApplicationServiceTest {
     void updateParticipantVotes_withNonexistentParticipant() {
         // given
         final DateTimeSlot slot = DateTimeSlot.from(
-                LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(),
                 ParticipantName.from("nonexistent"), List.of(slot));
 
@@ -466,9 +488,11 @@ class RoomApplicationServiceTest {
         // given
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
-                List.of(new DateSlotInput(LocalDate.now().plusDays(1))),
-                List.of(new TimeSlotInput(LocalTime.of(7, 0)), new TimeSlotInput(LocalTime.of(20, 0))),
-                LocalDateTime.now().plusYears(1),
+                List.of(
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
+                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                ),
+                NOW_LOCAL_DATE_TIME.plusYears(1),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(true, false, false) // CREATED 알림 활성화
@@ -483,8 +507,33 @@ class RoomApplicationServiceTest {
             softly.assertThat(platformRepository.findByRoomId(createdRoom.getId()))
                     .isPresent();
             final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
-            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATED))
+            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATION))
                     .isTrue();
+        });
+    }
+
+    @DisplayName("Room을 저장하면 createdAt이 자동으로 설정된다")
+    @Test
+    void save_setsCreatedAt() {
+        // given
+        final java.time.Instant beforeSave = java.time.Instant.now();
+        final Room newRoom = Room.withoutId(
+                "테스트방",
+                RoomSession.from("test-session-createdAt"),
+                NOW_LOCAL_DATE_TIME.plusDays(1),
+                List.of()
+        );
+
+        // when
+        final Room savedRoom = roomRepository.save(newRoom);
+        final java.time.Instant afterSave = java.time.Instant.now();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(savedRoom.getCreatedAt()).isNotNull();
+            softly.assertThat(savedRoom.getCreatedAt())
+                    .isAfterOrEqualTo(beforeSave)
+                    .isBeforeOrEqualTo(afterSave);
         });
     }
 }

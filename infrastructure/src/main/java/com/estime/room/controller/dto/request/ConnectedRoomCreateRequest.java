@@ -1,15 +1,15 @@
 package com.estime.room.controller.dto.request;
 
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
-import com.estime.room.dto.input.DateSlotInput;
-import com.estime.room.dto.input.TimeSlotInput;
-import com.estime.room.platform.PlatformNotification;
 import com.estime.room.platform.PlatformType;
+import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.slot.CompactDateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public record ConnectedRoomCreateRequest(
@@ -39,8 +39,7 @@ public record ConnectedRoomCreateRequest(
     public ConnectedRoomCreateInput toInput() {
         return new ConnectedRoomCreateInput(
                 title,
-                availableDateSlots.stream().map(DateSlotInput::new).toList(),
-                availableTimeSlots.stream().map(TimeSlotInput::new).toList(),
+                toSlotCodes(availableDateSlots, availableTimeSlots),
                 deadline,
                 PlatformType.from(platformType),
                 channelId,
@@ -48,8 +47,20 @@ public record ConnectedRoomCreateRequest(
         );
     }
 
+    private List<CompactDateTimeSlot> toSlotCodes(
+            final List<LocalDate> dates,
+            final List<LocalTime> times
+    ) {
+        final List<CompactDateTimeSlot> slotCodes = new ArrayList<>();
+        for (final LocalDate date : dates) {
+            for (final LocalTime time : times) {
+                slotCodes.add(CompactDateTimeSlot.from(LocalDateTime.of(date, time)));
+            }
+        }
+        return slotCodes;
+    }
+
     public record PlatformNotificationRequest(
-            // TODO  Boolean -> null 입력시 NPE 유도, 추후에 모든 controller req -> spring validation
             @Schema(description = "방 생성 시 알림", example = "true")
             Boolean created,
 

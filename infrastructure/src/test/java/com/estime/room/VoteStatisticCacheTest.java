@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.estime.TestApplication;
 import com.estime.cache.CacheNames;
 import com.estime.port.out.RoomSessionGenerator;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -16,11 +15,9 @@ import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.service.RoomApplicationService;
-import com.estime.room.slot.AvailableDateSlot;
-import com.estime.room.slot.AvailableDateSlotRepository;
-import com.estime.room.slot.AvailableTimeSlot;
-import com.estime.room.slot.AvailableTimeSlotRepository;
+import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
+import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,27 +30,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = TestApplication.class)
-@ActiveProfiles("test")
-class VoteStatisticCacheTest {
+class VoteStatisticCacheTest extends IntegrationTest {
 
     @Autowired
     private RoomApplicationService roomApplicationService;
 
     @Autowired
     private RoomRepository roomRepository;
-
-    @Autowired
-    private AvailableDateSlotRepository availableDateSlotRepository;
-
-    @Autowired
-    private AvailableTimeSlotRepository availableTimeSlotRepository;
 
     @Autowired
     private ParticipantRepository participantRepository;
@@ -76,20 +63,20 @@ class VoteStatisticCacheTest {
         cacheManager.getCache(CacheNames.VOTE_STATISTIC).clear();
 
         final RoomSession roomSession = RoomSession.from(roomSessionGenerator.generate().toString());
-        room = roomRepository.save(Room.withoutId(
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        final Room tempRoom = Room.withoutId(
                 "cacheTest",
                 roomSession,
-                LocalDateTime.of(LocalDate.now().plusDays(3), LocalTime.of(10, 0))
-        ));
-
-        availableDateSlotRepository.save(AvailableDateSlot.of(room.getId(), LocalDate.now().plusDays(1)));
-        availableTimeSlotRepository.save(AvailableTimeSlot.of(room.getId(), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
+                List.of(CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))))
+        );
+        room = roomRepository.save(tempRoom);
 
         participant = participantRepository.save(
                 Participant.withoutId(room.getId(), ParticipantName.from("CTU"))
         );
 
-        slot = DateTimeSlot.from(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        slot = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
         voteRepository.save(Vote.of(participant.getId(), slot));
     }
 
