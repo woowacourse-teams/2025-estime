@@ -68,7 +68,7 @@ subprojects {
         workingDir = rootDir
         finalizedBy tasks.named('jacocoTestReport')
         testLogging {
-            showStandardStreams = true
+            showStandardStreams = false
         }
     }
 
