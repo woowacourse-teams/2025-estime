@@ -2,7 +2,9 @@ package com.estime.outbox;
 
 import com.estime.port.out.TimeProvider;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,12 @@ public class OutboxProcessingOrchestrator {
         try {
             final List<T> outboxes = handler.claimPendingOutboxes(timeProvider.now(), batchSize);
 
+            if (outboxes.isEmpty()) {
+                return;
+            }
+
+            logOutboxClaimSummary(outboxes);
+
             for (final T outbox : outboxes) {
                 processOutbox(handler, outbox);
             }
@@ -39,6 +47,21 @@ public class OutboxProcessingOrchestrator {
         } catch (final Exception e) {
             log.error("Failed to recover stale outboxes", e);
         }
+    }
+
+    private <T extends Outbox> void logOutboxClaimSummary(final List<T> outboxes) {
+        final Map<String, List<T>> grouped = outboxes.stream()
+                .collect(Collectors.groupingBy(Outbox::getDescription));
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Processing ").append(outboxes.size()).append(" pending outboxes");
+        grouped.forEach((label, group) -> {
+            final String ids = group.stream()
+                    .map(o -> String.valueOf(o.getId()))
+                    .collect(Collectors.joining(","));
+            sb.append("\n  ").append(label).append(": id=").append(ids);
+        });
+
+        log.info(String.valueOf(sb));
     }
 
     private <T extends Outbox> void processOutbox(
