@@ -2,7 +2,6 @@ package com.estime.outbox;
 
 import com.estime.port.out.TimeProvider;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -50,18 +49,15 @@ public class OutboxProcessingOrchestrator {
     }
 
     private <T extends Outbox> void logOutboxClaimSummary(final List<T> outboxes) {
-        final Map<String, List<T>> grouped = outboxes.stream()
-                .collect(Collectors.groupingBy(Outbox::getDescription));
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Processing ").append(outboxes.size()).append(" pending outboxes");
-        grouped.forEach((label, group) -> {
-            final String ids = group.stream()
-                    .map(o -> String.valueOf(o.getId()))
-                    .collect(Collectors.joining(","));
-            sb.append("\n  ").append(label).append(": id=").append(ids);
-        });
+        final String details = outboxes.stream()
+                .collect(Collectors.groupingBy(Outbox::getDescription))
+                .entrySet().stream()
+                .map(e -> "  " + e.getKey() + ": id=" + e.getValue().stream()
+                        .map(o -> String.valueOf(o.getId()))
+                        .collect(Collectors.joining(",")))
+                .collect(Collectors.joining("\n"));
 
-        log.info(String.valueOf(sb));
+        log.info("Processing {} pending outboxes\n{}", outboxes.size(), details);
     }
 
     private <T extends Outbox> void processOutbox(
