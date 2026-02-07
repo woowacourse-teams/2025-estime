@@ -2,8 +2,6 @@ package com.estime.outbox;
 
 import com.estime.room.notification.PlatformNotificationOutboxHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +19,8 @@ public class OutboxScheduler {
         orchestrator.processOutboxes(platformNotificationOutboxHandler, BATCH_SIZE);
     }
 
-    @EventListener(ApplicationReadyEvent.class) // 서버 시작 시 + 10분마다 실행
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(initialDelay = 0) // 서버 시작 즉시
+    @Scheduled(cron = "0 */10 * * * *") // 10분마다
     public void recoverStaleOutbox() {
         orchestrator.recoverStaleOutboxes(platformNotificationOutboxHandler, BATCH_SIZE);
     }
