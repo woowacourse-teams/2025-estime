@@ -67,14 +67,14 @@ public class ApiLogFilter implements Filter {
         final String query = (queryString != null ? "?" + queryString : "");
         final String userAgent = (userAgentHeader != null ? userAgentHeader : "-");
 
-        log.info("[REQ] layer=filter | ip={} | method={} | uri={}{} | ua={}", ip, method, uri, query, userAgent);
+        log.info("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
     }
 
     private void logResponse(final HttpServletResponse response, final long startTime, final int status) {
         final long duration = System.currentTimeMillis() - startTime;
         final String contentType = Optional.ofNullable(response.getContentType()).orElse("-");
 
-        log.info("[RES] layer=filter | status={} | duration={}ms | contentType={}", status, duration, contentType);
+        log.info("[RES] {} | {}ms | {}", status, duration, contentType);
     }
 
     private String generateTraceId() {
