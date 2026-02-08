@@ -48,6 +48,8 @@ public abstract class Outbox {
         this.updatedAt = now;
     }
 
+    public abstract String getDescription();
+
     public void markAsProcessing(final Instant now) {
         if (status != OutboxStatus.PENDING) {
             throw new InvalidOutboxStateException(status, OutboxStatus.PENDING);

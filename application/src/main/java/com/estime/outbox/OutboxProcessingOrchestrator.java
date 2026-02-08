@@ -3,6 +3,7 @@ package com.estime.outbox;
 import com.estime.port.out.TimeProvider;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,12 @@ public class OutboxProcessingOrchestrator {
         try {
             final List<T> outboxes = handler.claimPendingOutboxes(timeProvider.now(), batchSize);
 
+            if (outboxes.isEmpty()) {
+                return;
+            }
+
+            logOutboxClaimSummary(outboxes);
+
             for (final T outbox : outboxes) {
                 processOutbox(handler, outbox);
             }
@@ -39,6 +46,18 @@ public class OutboxProcessingOrchestrator {
         } catch (final Exception e) {
             log.error("Failed to recover stale outboxes", e);
         }
+    }
+
+    private <T extends Outbox> void logOutboxClaimSummary(final List<T> outboxes) {
+        final String details = outboxes.stream()
+                .collect(Collectors.groupingBy(Outbox::getDescription))
+                .entrySet().stream()
+                .map(e -> "  " + e.getKey() + ": id=" + e.getValue().stream()
+                        .map(o -> String.valueOf(o.getId()))
+                        .collect(Collectors.joining(",")))
+                .collect(Collectors.joining("\n"));
+
+        log.info("Processing {} pending outboxes\n{}", outboxes.size(), details);
     }
 
     private <T extends Outbox> void processOutbox(

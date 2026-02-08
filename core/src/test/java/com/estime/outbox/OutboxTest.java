@@ -33,6 +33,11 @@ class OutboxTest {
         TestOutbox(final Instant scheduledAt, final Instant now) {
             super(scheduledAt, now);
         }
+
+        @Override
+        public String getDescription() {
+            return "TestOutbox";
+        }
     }
 
     @Nested
