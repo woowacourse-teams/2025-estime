@@ -16,11 +16,13 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @Slf4j
 @Component
@@ -33,6 +35,7 @@ public class ApiLogFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        final ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
 
         final String traceId = Optional.ofNullable(request.getHeader(REQUEST_ID_HEADER))
                 .filter(s -> !s.isBlank())
@@ -46,12 +49,13 @@ public class ApiLogFilter implements Filter {
 
         int statusForLog = 200;
         try {
-            filterChain.doFilter(servletRequest, servletResponse);
+            filterChain.doFilter(wrappedRequest, servletResponse);
             statusForLog = response.getStatus();
         } catch (final Exception ex) {
             statusForLog = 500;
             throw ex;
         } finally {
+            logRequestBody(wrappedRequest);
             logResponse(response, startTime, statusForLog);
             MDC.clear();
         }
@@ -68,6 +72,20 @@ public class ApiLogFilter implements Filter {
         final String userAgent = (userAgentHeader != null ? userAgentHeader : "-");
 
         log.info("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
+    }
+
+    private void logRequestBody(final ContentCachingRequestWrapper request) {
+        final String contentType = request.getContentType();
+        if (contentType == null) {
+            return;
+        }
+
+        if (contentType.contains("application/json")) {
+            log.info("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
+            return;
+        }
+
+        log.info("[REQ-BODY] content-type={}", contentType);
     }
 
     private void logResponse(final HttpServletResponse response, final long startTime, final int status) {
