@@ -31,12 +31,12 @@ public class SchedulerLoggingAspect {
         MDC.put(MdcKey.TRACE_ID.getKey(), traceId);
 
         final long startTime = System.currentTimeMillis();
-        log.info("[START] scheduler={}", methodName);
+        log.debug("[START] method={}", methodName);
         try {
             return joinPoint.proceed();
         } finally {
             final long duration = System.currentTimeMillis() - startTime;
-            log.info("[END] scheduler={} | duration={}ms", methodName, duration);
+            log.debug("[END] method={} | duration={}ms", methodName, duration);
             MDC.clear();
         }
     }

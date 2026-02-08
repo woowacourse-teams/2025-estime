@@ -16,11 +16,14 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @Slf4j
 @Component
@@ -33,6 +36,7 @@ public class ApiLogFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
+        final ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
 
         final String traceId = Optional.ofNullable(request.getHeader(REQUEST_ID_HEADER))
                 .filter(s -> !s.isBlank())
@@ -44,14 +48,15 @@ public class ApiLogFilter implements Filter {
         final long startTime = System.currentTimeMillis();
         logRequest(request);
 
-        int statusForLog = 200;
+        int statusForLog = -1;
         try {
-            filterChain.doFilter(servletRequest, servletResponse);
+            filterChain.doFilter(wrappedRequest, servletResponse);
             statusForLog = response.getStatus();
         } catch (final Exception ex) {
-            statusForLog = 500;
+            statusForLog = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             throw ex;
         } finally {
+            logRequestBody(wrappedRequest);
             logResponse(response, startTime, statusForLog);
             MDC.clear();
         }
@@ -67,14 +72,36 @@ public class ApiLogFilter implements Filter {
         final String query = (queryString != null ? "?" + queryString : "");
         final String userAgent = (userAgentHeader != null ? userAgentHeader : "-");
 
-        log.info("[REQ] layer=filter | ip={} | method={} | uri={}{} | ua={}", ip, method, uri, query, userAgent);
+        log.info("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
+    }
+
+    private void logRequestBody(final ContentCachingRequestWrapper request) {
+        final String contentType = request.getContentType();
+        if (contentType == null) {
+            return;
+        }
+
+        if (contentType.contains("application/json")) {
+            log.info("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
+            return;
+        }
+
+        log.info("[REQ-BODY] content-type={}", contentType);
     }
 
     private void logResponse(final HttpServletResponse response, final long startTime, final int status) {
         final long duration = System.currentTimeMillis() - startTime;
         final String contentType = Optional.ofNullable(response.getContentType()).orElse("-");
 
-        log.info("[RES] layer=filter | status={} | duration={}ms | contentType={}", status, duration, contentType);
+        log.info("[RES] {} | {}ms | {}", formatStatus(status), duration, contentType);
+    }
+
+    private String formatStatus(final int statusCode) {
+        try {
+            return statusCode + " " + HttpStatus.valueOf(statusCode).getReasonPhrase();
+        } catch (final IllegalArgumentException e) {
+            return statusCode + " Unknown";
+        }
     }
 
     private String generateTraceId() {

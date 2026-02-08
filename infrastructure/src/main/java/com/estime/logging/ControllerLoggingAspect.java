@@ -48,7 +48,7 @@ public class ControllerLoggingAspect {
             final String className, final String methodName,
             final String httpMethod, final String uri, final Object[] args
     ) {
-        log.info("[REQ] layer=controller | method={}.{} | httpMethod={} | uri={} | args={}",
+        log.debug("[REQ] layer=controller | method={}.{} | httpMethod={} | uri={} | args={}",
                 className, methodName, httpMethod, uri, Arrays.toString(args));
     }
 
@@ -59,7 +59,7 @@ public class ControllerLoggingAspect {
         final long duration = System.currentTimeMillis() - startTime;
         final String resultStr = formatResult(result);
 
-        log.info("[RES] layer=controller | method={}.{} | httpMethod={} | uri={} | duration={}ms | result={}",
+        log.debug("[RES] layer=controller | method={}.{} | httpMethod={} | uri={} | duration={}ms | result={}",
                 className, methodName, httpMethod, uri, duration, resultStr);
     }
 
