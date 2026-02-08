@@ -27,7 +27,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health, info, prometheus"
+        include: "health, info, prometheus, loggers"
   metrics:
     tags:
       application: estime-api

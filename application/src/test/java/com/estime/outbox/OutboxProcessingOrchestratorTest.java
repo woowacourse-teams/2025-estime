@@ -53,6 +53,11 @@ class OutboxProcessingOrchestratorTest {
         public Long getId() {
             return id;
         }
+
+        @Override
+        public String getDescription() {
+            return "TestOutbox";
+        }
     }
 
     @BeforeEach

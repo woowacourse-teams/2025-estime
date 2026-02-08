@@ -37,7 +37,7 @@ public class ServiceLoggingAspect {
     }
 
     private void logRequest(final String className, final String methodName, final Object[] args) {
-        log.info("[REQ] layer=service | method={}.{} | args={}", className, methodName, Arrays.toString(args));
+        log.debug("[REQ] layer=service | method={}.{} | args={}", className, methodName, Arrays.toString(args));
     }
 
     private void logResponse(
@@ -46,7 +46,7 @@ public class ServiceLoggingAspect {
         final long duration = System.currentTimeMillis() - startTime;
         final String resultStr = formatResult(result);
 
-        log.info("[RES] layer=service | method={}.{} | duration={}ms | result={}", className, methodName, duration,
+        log.debug("[RES] layer=service | method={}.{} | duration={}ms | result={}", className, methodName, duration,
                 resultStr);
     }
 
