@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -47,12 +48,12 @@ public class ApiLogFilter implements Filter {
         final long startTime = System.currentTimeMillis();
         logRequest(request);
 
-        int statusForLog = 200;
+        int statusForLog = -1;
         try {
             filterChain.doFilter(wrappedRequest, servletResponse);
             statusForLog = response.getStatus();
         } catch (final Exception ex) {
-            statusForLog = 500;
+            statusForLog = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             throw ex;
         } finally {
             logRequestBody(wrappedRequest);
@@ -92,7 +93,15 @@ public class ApiLogFilter implements Filter {
         final long duration = System.currentTimeMillis() - startTime;
         final String contentType = Optional.ofNullable(response.getContentType()).orElse("-");
 
-        log.info("[RES] {} | {}ms | {}", status, duration, contentType);
+        log.info("[RES] {} | {}ms | {}", formatStatus(status), duration, contentType);
+    }
+
+    private String formatStatus(final int statusCode) {
+        try {
+            return statusCode + " " + HttpStatus.valueOf(statusCode).getReasonPhrase();
+        } catch (final IllegalArgumentException e) {
+            return statusCode + " Unknown";
+        }
     }
 
     private String generateTraceId() {
