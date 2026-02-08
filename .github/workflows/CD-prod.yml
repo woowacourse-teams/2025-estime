@@ -63,7 +63,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           tags: |
             ${{ secrets.PROD_IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }}
             ${{ secrets.PROD_IMAGE_NAME }}:latest
