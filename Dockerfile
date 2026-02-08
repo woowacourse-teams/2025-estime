@@ -1,4 +1,6 @@
-# 런타임 단계 - JAR는 CI 러너에서 이미 빌드됨 (플랫폼 무관)
+# 이 Dockerfile은 사전 빌드된 JAR를 런타임 이미지에 패키징합니다.
+# JAR 빌드는 Dockerfile 외부에서 수행되어야 합니다. (예: ./gradlew :api:bootJar)
+
 FROM amazoncorretto:21-alpine3.19
 
 WORKDIR /app
@@ -9,7 +11,7 @@ RUN apk add --no-cache curl tzdata && \
     echo "Asia/Seoul" > /etc/timezone && \
     apk del tzdata
 
-# CI 러너에서 빌드된 JAR 파일 복사
+# 사전 빌드된 JAR 파일 복사
 COPY api/build/libs/api-*-SNAPSHOT.jar app.jar
 
 # 보안을 위한 일반 사용자 생성 및 파일 소유권 변경
