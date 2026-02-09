@@ -43,13 +43,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build & Push (multi-arch)
+      - name: Build & Push
         uses: docker/build-push-action@v6
         with:
           context: ./
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           tags: |
             ${{ secrets.DEV_IMAGE_NAME }}:${{ steps.set_short_sha.outputs.short_sha }}
             ${{ secrets.DEV_IMAGE_NAME }}:latest
