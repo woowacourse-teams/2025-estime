@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -27,12 +26,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-@Slf4j
+@Slf4j(topic = "API_LOG")
 @Component
 public class ApiLogFilter implements Filter {
 
     private static final String REQUEST_ID_HEADER = "X-Request-Id";
-    private static final Set<String> MONITORING_PREFIXES = Set.of("/actuator", "/health", "/metrics");
+    private static final String API_PREFIX = "/api";
 
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -48,9 +47,7 @@ public class ApiLogFilter implements Filter {
         populateMDC(traceId, request);
         response.setHeader(REQUEST_ID_HEADER, traceId);
 
-        final Level logLevel = resolveLogLevel(request.getRequestURI());
         final long startTime = System.currentTimeMillis();
-        logRequest(request, logLevel);
 
         int statusForLog = -1;
         try {
@@ -60,28 +57,36 @@ public class ApiLogFilter implements Filter {
             statusForLog = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             throw ex;
         } finally {
+            final long duration = System.currentTimeMillis() - startTime;
+            final Level logLevel = resolveLogLevel(request.getRequestURI(), statusForLog);
+            logApi(request, statusForLog, duration, logLevel);
             logRequestBody(wrappedRequest, logLevel);
-            logResponse(response, startTime, statusForLog, logLevel);
             MDC.clear();
         }
     }
 
-    private Level resolveLogLevel(final String uri) {
-        final boolean monitoring = MONITORING_PREFIXES.stream().anyMatch(uri::startsWith);
-        return monitoring ? Level.DEBUG : Level.INFO;
+    private Level resolveLogLevel(final String uri, final int status) {
+        if (status >= 500) {
+            return Level.ERROR;
+        }
+        if (status >= 400) {
+            return Level.WARN;
+        }
+        if (uri.startsWith(API_PREFIX)) {
+            return Level.INFO;
+        }
+        return Level.DEBUG;
     }
 
-    private void logRequest(final HttpServletRequest request, final Level level) {
+    private void logApi(final HttpServletRequest request, final int status, final long duration, final Level level) {
         final String uri = request.getRequestURI();
         final String method = request.getMethod();
         final String ip = request.getRemoteAddr();
-
         final String queryString = request.getQueryString();
-        final String userAgentHeader = request.getHeader("User-Agent");
         final String query = (queryString != null ? "?" + queryString : "");
-        final String userAgent = (userAgentHeader != null ? userAgentHeader : "-");
 
-        log.atLevel(level).log("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
+        log.atLevel(level)
+                .log("{} | {} {}{} | {} | {}ms", ip, method, uri, query, formatStatus(status), duration);
     }
 
     private void logRequestBody(final ContentCachingRequestWrapper request, final Level level) {
@@ -91,19 +96,12 @@ public class ApiLogFilter implements Filter {
         }
 
         if (contentType.contains("application/json")) {
-            log.atLevel(level).log("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
+            log.atLevel(level)
+                    .log("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
             return;
         }
 
         log.atLevel(level).log("[REQ-BODY] content-type={}", contentType);
-    }
-
-    private void logResponse(final HttpServletResponse response, final long startTime, final int status,
-                             final Level level) {
-        final long duration = System.currentTimeMillis() - startTime;
-        final String contentType = Optional.ofNullable(response.getContentType()).orElse("-");
-
-        log.atLevel(level).log("[RES] {} | {}ms | {}", formatStatus(status), duration, contentType);
     }
 
     private String formatStatus(final int statusCode) {
