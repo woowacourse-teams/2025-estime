@@ -18,9 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -30,6 +32,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 public class ApiLogFilter implements Filter {
 
     private static final String REQUEST_ID_HEADER = "X-Request-Id";
+    private static final Set<String> MONITORING_PREFIXES = Set.of("/actuator", "/health", "/metrics");
 
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -45,8 +48,9 @@ public class ApiLogFilter implements Filter {
         populateMDC(traceId, request);
         response.setHeader(REQUEST_ID_HEADER, traceId);
 
+        final Level logLevel = resolveLogLevel(request.getRequestURI());
         final long startTime = System.currentTimeMillis();
-        logRequest(request);
+        logRequest(request, logLevel);
 
         int statusForLog = -1;
         try {
@@ -56,13 +60,18 @@ public class ApiLogFilter implements Filter {
             statusForLog = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             throw ex;
         } finally {
-            logRequestBody(wrappedRequest);
-            logResponse(response, startTime, statusForLog);
+            logRequestBody(wrappedRequest, logLevel);
+            logResponse(response, startTime, statusForLog, logLevel);
             MDC.clear();
         }
     }
 
-    private void logRequest(final HttpServletRequest request) {
+    private Level resolveLogLevel(final String uri) {
+        final boolean monitoring = MONITORING_PREFIXES.stream().anyMatch(uri::startsWith);
+        return monitoring ? Level.DEBUG : Level.INFO;
+    }
+
+    private void logRequest(final HttpServletRequest request, final Level level) {
         final String uri = request.getRequestURI();
         final String method = request.getMethod();
         final String ip = request.getRemoteAddr();
@@ -72,28 +81,29 @@ public class ApiLogFilter implements Filter {
         final String query = (queryString != null ? "?" + queryString : "");
         final String userAgent = (userAgentHeader != null ? userAgentHeader : "-");
 
-        log.info("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
+        log.atLevel(level).log("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
     }
 
-    private void logRequestBody(final ContentCachingRequestWrapper request) {
+    private void logRequestBody(final ContentCachingRequestWrapper request, final Level level) {
         final String contentType = request.getContentType();
         if (contentType == null) {
             return;
         }
 
         if (contentType.contains("application/json")) {
-            log.info("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
+            log.atLevel(level).log("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
             return;
         }
 
-        log.info("[REQ-BODY] content-type={}", contentType);
+        log.atLevel(level).log("[REQ-BODY] content-type={}", contentType);
     }
 
-    private void logResponse(final HttpServletResponse response, final long startTime, final int status) {
+    private void logResponse(final HttpServletResponse response, final long startTime, final int status,
+                             final Level level) {
         final long duration = System.currentTimeMillis() - startTime;
         final String contentType = Optional.ofNullable(response.getContentType()).orElse("-");
 
-        log.info("[RES] {} | {}ms | {}", formatStatus(status), duration, contentType);
+        log.atLevel(level).log("[RES] {} | {}ms | {}", formatStatus(status), duration, contentType);
     }
 
     private String formatStatus(final int statusCode) {
