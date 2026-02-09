@@ -337,7 +337,7 @@ jobs:
   rollback:
     runs-on: [ self-hosted, estime-prod ]
     needs: [ build-and-push, deploy ]
-    if: failure() && needs.deploy.outputs.current != 'none'
+    if: failure() && (needs.deploy.outputs.current == 'blue' || needs.deploy.outputs.current == 'green')
 
     steps:
       - name: Checkout repository
