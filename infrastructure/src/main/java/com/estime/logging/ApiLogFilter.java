@@ -21,15 +21,17 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-@Slf4j
+@Slf4j(topic = "API_LOG")
 @Component
 public class ApiLogFilter implements Filter {
 
     private static final String REQUEST_ID_HEADER = "X-Request-Id";
+    private static final String API_PREFIX = "/api";
 
     @Override
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
@@ -46,7 +48,6 @@ public class ApiLogFilter implements Filter {
         response.setHeader(REQUEST_ID_HEADER, traceId);
 
         final long startTime = System.currentTimeMillis();
-        logRequest(request);
 
         int statusForLog = -1;
         try {
@@ -56,44 +57,51 @@ public class ApiLogFilter implements Filter {
             statusForLog = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             throw ex;
         } finally {
-            logRequestBody(wrappedRequest);
-            logResponse(response, startTime, statusForLog);
+            final long duration = System.currentTimeMillis() - startTime;
+            final Level logLevel = resolveLogLevel(request.getRequestURI(), statusForLog);
+            logApi(request, statusForLog, duration, logLevel);
+            logRequestBody(wrappedRequest, logLevel);
             MDC.clear();
         }
     }
 
-    private void logRequest(final HttpServletRequest request) {
+    private Level resolveLogLevel(final String uri, final int status) {
+        if (status >= 500) {
+            return Level.ERROR;
+        }
+        if (status >= 400) {
+            return Level.WARN;
+        }
+        if (uri.startsWith(API_PREFIX)) {
+            return Level.INFO;
+        }
+        return Level.DEBUG;
+    }
+
+    private void logApi(final HttpServletRequest request, final int status, final long duration, final Level level) {
         final String uri = request.getRequestURI();
         final String method = request.getMethod();
         final String ip = request.getRemoteAddr();
-
         final String queryString = request.getQueryString();
-        final String userAgentHeader = request.getHeader("User-Agent");
         final String query = (queryString != null ? "?" + queryString : "");
-        final String userAgent = (userAgentHeader != null ? userAgentHeader : "-");
 
-        log.info("[REQ] {} | {} {}{} | ua={}", ip, method, uri, query, userAgent);
+        log.atLevel(level)
+                .log("{} | {} {}{} | {} | {}ms", ip, method, uri, query, formatStatus(status), duration);
     }
 
-    private void logRequestBody(final ContentCachingRequestWrapper request) {
+    private void logRequestBody(final ContentCachingRequestWrapper request, final Level level) {
         final String contentType = request.getContentType();
         if (contentType == null) {
             return;
         }
 
         if (contentType.contains("application/json")) {
-            log.info("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
+            log.atLevel(level)
+                    .log("[REQ-BODY] {}", new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
             return;
         }
 
-        log.info("[REQ-BODY] content-type={}", contentType);
-    }
-
-    private void logResponse(final HttpServletResponse response, final long startTime, final int status) {
-        final long duration = System.currentTimeMillis() - startTime;
-        final String contentType = Optional.ofNullable(response.getContentType()).orElse("-");
-
-        log.info("[RES] {} | {}ms | {}", formatStatus(status), duration, contentType);
+        log.atLevel(level).log("[REQ-BODY] content-type={}", contentType);
     }
 
     private String formatStatus(final int statusCode) {
