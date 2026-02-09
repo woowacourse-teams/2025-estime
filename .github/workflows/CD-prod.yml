@@ -330,6 +330,7 @@ jobs:
 
       - name: Clean up unused Docker resources
         if: always()
+        continue-on-error: true
         run: |
           docker image prune -a -f
           docker builder prune -a -f
