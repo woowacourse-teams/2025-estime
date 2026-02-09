@@ -1,0 +1,5 @@
+# 전체 제외
+**
+
+# Dockerfile에서 COPY하는 빌드 산출물만 포함
+!api/build/libs/api-*-SNAPSHOT.jar
