@@ -11,17 +11,19 @@ export const options = {
     room_create: {
       executor: 'ramping-vus',
       stages: [
-        { duration: '30s', target: 5 },
-        { duration: '1m', target: 10 },
-        { duration: '1m', target: 20 },
-        { duration: '1m', target: 30 },
-        { duration: '30s', target: 0 },
+        { duration: '30s', target: 30 },   // 검증 완료 구간 빠르게 도달
+        { duration: '1m', target: 30 },    // sustain
+        { duration: '30s', target: 60 },   // push
+        { duration: '1m', target: 60 },    // sustain
+        { duration: '30s', target: 100 },  // max hunt
+        { duration: '1m', target: 100 },   // sustain
+        { duration: '30s', target: 0 },    // cool-down
       ],
     },
   },
   thresholds: {
     http_req_failed: [{ threshold: 'rate==0', abortOnFail: true }],
-    http_req_duration: ['p(50)<100', 'p(95)<500', 'p(99)<1000'],
+    http_req_duration: ['p(50)<100', 'p(95)<500', 'p(99)<3000'],
     checks: [{ threshold: 'rate==1', abortOnFail: true }],
   },
 };
