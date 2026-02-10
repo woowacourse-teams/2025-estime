@@ -53,9 +53,13 @@ export function setup() {
 }
 
 export default function (data) {
-  // 랜덤 방, 랜덤 참여자로 투표
-  const room = data.rooms[Math.floor(Math.random() * data.rooms.length)];
-  const name = room.participants[Math.floor(Math.random() * room.participants.length)];
+  // 각 VU에 고유한 방/참여자 할당 (동시 수정 충돌 방지)
+  const vuIndex = (__VU - 1) % (ROOM_COUNT * PARTICIPANTS_PER_ROOM);
+  const roomIndex = Math.floor(vuIndex / PARTICIPANTS_PER_ROOM);
+  const participantIndex = vuIndex % PARTICIPANTS_PER_ROOM;
+
+  const room = data.rooms[roomIndex];
+  const name = room.participants[participantIndex];
   const selectedSlots = data.allDateTimeSlots.filter(() => Math.random() > 0.4);
 
   if (selectedSlots.length > 0) {
