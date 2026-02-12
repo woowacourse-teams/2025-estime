@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
@@ -33,6 +34,12 @@ public class GlobalExceptionHandler {
     public CustomApiResponse<Void> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException e) {
         log.warn(e.getMessage());
         return CustomApiResponse.badRequest("올바른 형식으로 다시 입력해 주세요.");
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public CustomApiResponse<Void> handleOptimisticLockException(final OptimisticLockingFailureException e) {
+        log.warn("Optimistic lock conflict: {}", e.getMessage());
+        return CustomApiResponse.conflict("동시 수정이 감지되었습니다. 다시 시도해 주세요.");
     }
 
     @ExceptionHandler(AsyncRequestTimeoutException.class)
