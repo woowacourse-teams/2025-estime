@@ -13,6 +13,7 @@ import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput.CompactDateTimeParticipantsOutput;
 import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.exception.UnavailableSlotException;
+import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.Participants;
@@ -20,8 +21,8 @@ import com.estime.room.participant.vote.compact.CompactVoteRepository;
 import com.estime.room.participant.vote.compact.CompactVotes;
 import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.RoomAvailableSlot;
+import com.estime.port.out.TimeProvider;
 import com.estime.shared.DomainTerm;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +49,7 @@ public class CompactRoomApplicationService {
     private final CompactVoteRepository compactVoteRepository;
     private final ParticipantRepository participantRepository;
     private final RoomRepository roomRepository;
+    private final TimeProvider timeProvider;
 
     @Cacheable(value = CacheNames.COMPACT_VOTE_STATISTIC, key = "#input.session()", sync = true)
     @Transactional(readOnly = true)
@@ -86,14 +92,22 @@ public class CompactRoomApplicationService {
     }
 
     @CacheEvict(value = CacheNames.COMPACT_VOTE_STATISTIC, key = "#input.session()")
+    @Retryable(
+            retryFor = {OptimisticLockingFailureException.class, DataIntegrityViolationException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50)
+    )
     @Transactional
     public CompactVotesOutput updateParticipantVotes(final CompactVoteUpdateInput input) {
         final Room room = obtainRoomWithSlotsBySession(input.session());
-        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.name());
+        final Participant participant = obtainParticipantByRoomIdAndName(room.getId(), input.name());
 
-        room.ensureDeadlineNotPassed(LocalDateTime.now());
+        room.ensureDeadlineNotPassed(timeProvider.nowDateTime());
         ensureRoomAvailableSlots(room, input.dateTimeSlots());
 
+        participant.markVoted(timeProvider.now());
+
+        final Long participantId = participant.getId();
         final CompactVotes originVotes = compactVoteRepository.findAllByParticipantId(participantId);
         final CompactVotes updatedVotes = CompactVotes.from(input.toEntities(participantId));
 
@@ -130,6 +144,11 @@ public class CompactRoomApplicationService {
     private Long obtainRoomIdBySession(final RoomSession session) {
         return roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
+    }
+
+    private Participant obtainParticipantByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return participantRepository.findByRoomIdAndName(roomId, name)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, name));
     }
 
     private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final ParticipantName name) {
