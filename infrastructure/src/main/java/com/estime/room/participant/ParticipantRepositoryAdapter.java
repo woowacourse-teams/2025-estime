@@ -59,4 +59,14 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository {
                         .fetchOne()
         );
     }
+
+    @Override
+    public Optional<Participant> findByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return Optional.ofNullable(
+                queryFactory.selectFrom(participant)
+                        .where(participant.roomId.eq(roomId)
+                                .and(participant.name.eq(name)))
+                        .fetchOne()
+        );
+    }
 }

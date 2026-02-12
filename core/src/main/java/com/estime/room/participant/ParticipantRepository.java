@@ -14,6 +14,8 @@ public interface ParticipantRepository {
 
     Optional<Long> findIdByRoomIdAndName(Long roomId, ParticipantName name);
 
+    Optional<Participant> findByRoomIdAndName(Long roomId, ParticipantName name);
+
     List<Long> findIdsByRoomId(Long roomId);
 
     Participants findAllByIdIn(Set<Long> ids);
