@@ -36,7 +36,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 전체 빌드 및 테스트
-        run: ./gradlew clean build
+        run: ./gradlew clean build --stacktrace
+        env:
+          TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE: /var/run/docker.sock
+          DOCKER_HOST: unix:///var/run/docker.sock
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
