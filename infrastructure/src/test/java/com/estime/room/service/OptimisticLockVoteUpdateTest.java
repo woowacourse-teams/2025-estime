@@ -88,9 +88,9 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
         });
     }
 
-    @DisplayName("동일 참여자에 대한 동시 투표 수정 시 하나는 성공하고 나머지는 OptimisticLockingFailure가 발생한다")
+    @DisplayName("동일 참여자가 다른 슬롯을 동시에 추가하면 version 불일치로 충돌이 발생한다")
     @Test
-    void concurrentVoteUpdate_onlyOneSucceeds() throws Exception {
+    void concurrentVoteUpdate_differentSlots_onlyOneSucceeds() throws Exception {
         // given
         final CompactVoteUpdateInput input1 = new CompactVoteUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotB));
@@ -108,7 +108,7 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
                 startLatch.await();
                 compactRoomApplicationService.updateParticipantVotes(input1);
                 successCount.incrementAndGet();
-            } catch (final OptimisticLockingFailureException | DataIntegrityViolationException e) {
+            } catch (final OptimisticLockingFailureException e) {
                 failCount.incrementAndGet();
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -120,7 +120,58 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
                 startLatch.await();
                 compactRoomApplicationService.updateParticipantVotes(input2);
                 successCount.incrementAndGet();
-            } catch (final OptimisticLockingFailureException | DataIntegrityViolationException e) {
+            } catch (final OptimisticLockingFailureException e) {
+                failCount.incrementAndGet();
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+
+        startLatch.countDown();
+        future1.get();
+        future2.get();
+        executor.shutdown();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(successCount.get()).isEqualTo(1);
+            softly.assertThat(failCount.get()).isEqualTo(1);
+        });
+    }
+
+    @DisplayName("동일 참여자가 같은 슬롯을 동시에 추가하면 PK 중복으로 충돌이 발생한다")
+    @Test
+    void concurrentVoteUpdate_sameSlot_onlyOneSucceeds() throws Exception {
+        // given
+        final CompactVoteUpdateInput input1 = new CompactVoteUpdateInput(
+                room.getSession(), participant.getName(), List.of(slotA, slotB));
+        final CompactVoteUpdateInput input2 = new CompactVoteUpdateInput(
+                room.getSession(), participant.getName(), List.of(slotA, slotB));
+
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
+        final CountDownLatch startLatch = new CountDownLatch(1);
+        final AtomicInteger successCount = new AtomicInteger(0);
+        final AtomicInteger failCount = new AtomicInteger(0);
+
+        // when
+        final Future<?> future1 = executor.submit(() -> {
+            try {
+                startLatch.await();
+                compactRoomApplicationService.updateParticipantVotes(input1);
+                successCount.incrementAndGet();
+            } catch (final DataIntegrityViolationException e) {
+                failCount.incrementAndGet();
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+
+        final Future<?> future2 = executor.submit(() -> {
+            try {
+                startLatch.await();
+                compactRoomApplicationService.updateParticipantVotes(input2);
+                successCount.incrementAndGet();
+            } catch (final DataIntegrityViolationException e) {
                 failCount.incrementAndGet();
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
