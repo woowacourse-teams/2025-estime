@@ -32,6 +32,16 @@ jobs:
       - name: Gradle Wrapper 실행 권한 부여
         run: chmod +x ./gradlew
 
+      - name: Verify docker-java override file
+        run: |
+          set -euxo pipefail
+          echo "HOME=$HOME"
+          id
+          ls -ld "$HOME"
+          printf "api.version=1.44\n" > "$HOME/.docker-java.properties"
+          test -f "$HOME/.docker-java.properties"
+          cat "$HOME/.docker-java.properties"
+
       - name: 전체 빌드 및 테스트
         run: ./gradlew clean build
 
