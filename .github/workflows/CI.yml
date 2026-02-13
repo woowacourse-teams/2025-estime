@@ -23,8 +23,8 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker 상태 확인
-        run: docker info && docker version && ls -la /var/run/docker.sock
+      - name: Docker API 버전 설정
+        run: echo 'api.version=1.44' > ~/.docker-java.properties
 
       - name: JDK 21 버전 설치
         uses: actions/setup-java@v4
@@ -37,19 +37,6 @@ jobs:
 
       - name: 전체 빌드 및 테스트
         run: ./gradlew clean build
-        env:
-          TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE: /var/run/docker.sock
-          DOCKER_HOST: unix:///var/run/docker.sock
-
-      - name: 테스트 실패 로그 출력
-        if: ${{ failure() }}
-        run: |
-          echo "=== Failed test output ==="
-          find . -path "*/build/reports/tests/test" -name "*.html" | head -5
-          for f in $(find . -path "*/test-results/test" -name "*.xml"); do
-            echo "--- $f ---"
-            cat "$f"
-          done
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
