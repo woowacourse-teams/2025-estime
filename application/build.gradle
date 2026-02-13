@@ -2,6 +2,7 @@ dependencies {
     implementation project(':core')
 
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.retry:spring-retry'
 
     // Spring TX (for @Transactional in services)
     implementation 'org.springframework:spring-tx'

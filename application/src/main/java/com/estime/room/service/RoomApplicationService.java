@@ -23,6 +23,7 @@ import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.exception.UnavailableSlotException;
+import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.Participants;
@@ -49,6 +50,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -171,14 +176,22 @@ public class RoomApplicationService {
     }
 
     @CacheEvict(value = CacheNames.VOTE_STATISTIC, key = "#input.session()")
+    @Retryable(
+            retryFor = {OptimisticLockingFailureException.class, DataIntegrityViolationException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50)
+    )
     @Transactional
     public VotesOutput updateParticipantVotes(final VotesUpdateInput input) {
         final Room room = obtainRoomWithAvailableSlotsBySession(input.session());
-        final Long participantId = obtainParticipantIdByRoomIdAndName(room.getId(), input.name());
+        final Participant participant = obtainParticipantByRoomIdAndName(room.getId(), input.name());
 
         room.ensureDeadlineNotPassed(timeProvider.nowDateTime());
         ensureRoomAvailableSlots(room, input.dateTimeSlots());
 
+        participant.markVoted(timeProvider.now());
+
+        final Long participantId = participant.getId();
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
 
@@ -232,6 +245,11 @@ public class RoomApplicationService {
     private Long obtainRoomIdBySession(final RoomSession session) {
         return roomRepository.findIdBySession(session)
                 .orElseThrow(() -> new NotFoundException(DomainTerm.ROOM, session));
+    }
+
+    private Participant obtainParticipantByRoomIdAndName(final Long roomId, final ParticipantName name) {
+        return participantRepository.findByRoomIdAndName(roomId, name)
+                .orElseThrow(() -> new NotFoundException(DomainTerm.PARTICIPANT, roomId, name));
     }
 
     private Long obtainParticipantIdByRoomIdAndName(final Long roomId, final ParticipantName name) {

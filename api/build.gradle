@@ -7,6 +7,7 @@ dependencies {
     implementation project(':infrastructure')
 
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.retry:spring-retry'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
 }
