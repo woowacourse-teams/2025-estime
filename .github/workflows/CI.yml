@@ -36,10 +36,20 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 전체 빌드 및 테스트
-        run: ./gradlew clean build --stacktrace
+        run: ./gradlew clean build
         env:
           TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE: /var/run/docker.sock
           DOCKER_HOST: unix:///var/run/docker.sock
+
+      - name: 테스트 실패 로그 출력
+        if: ${{ failure() }}
+        run: |
+          echo "=== Failed test output ==="
+          find . -path "*/build/reports/tests/test" -name "*.html" | head -5
+          for f in $(find . -path "*/test-results/test" -name "*.xml"); do
+            echo "--- $f ---"
+            cat "$f"
+          done
 
       - name: Close PR, if build fail
         if: ${{ failure() }}
