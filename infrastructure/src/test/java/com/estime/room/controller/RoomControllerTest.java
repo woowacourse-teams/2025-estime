@@ -3,6 +3,7 @@ package com.estime.room.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -103,6 +105,31 @@ class RoomControllerTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.title").value("Test Room"))
                 .andExpect(jsonPath("$.data.roomSession").value(roomSession.getValue()));
+    }
+
+    @DisplayName("GET /api/v1/rooms/{session} - 응답에 ETag 헤더가 포함된다")
+    @Test
+    void getBySession_returnsETag() throws Exception {
+        // when & then
+        mockMvc.perform(get("/api/v1/rooms/{session}", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andExpect(header().exists("ETag"));
+    }
+
+    @DisplayName("GET /api/v1/rooms/{session} - 동일한 응답이면 304 Not Modified를 반환한다")
+    @Test
+    void getBySession_returnsNotModifiedWithMatchingETag() throws Exception {
+        // given
+        final MvcResult result = mockMvc.perform(get("/api/v1/rooms/{session}", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        final String etag = result.getResponse().getHeader("ETag");
+
+        // when & then
+        mockMvc.perform(get("/api/v1/rooms/{session}", roomSession.getValue())
+                        .header("If-None-Match", etag))
+                .andExpect(status().isNotModified());
     }
 
     @DisplayName("GET /api/v1/rooms/{session} - 잘못된 세션 형식 시 400(code)")
