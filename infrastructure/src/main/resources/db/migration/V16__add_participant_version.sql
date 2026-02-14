@@ -1,0 +1,2 @@
+ALTER TABLE participant ADD COLUMN version BIGINT NOT NULL DEFAULT 0;
+ALTER TABLE participant ADD COLUMN last_voted_at DATETIME(6) NULL;
