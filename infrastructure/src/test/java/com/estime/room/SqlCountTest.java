@@ -1,5 +1,8 @@
 package com.estime.room;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+
 import com.estime.room.participant.vote.CompactVoteJpaRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteJpaRepository;
@@ -18,10 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.MySQLContainer;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import org.testcontainers.mysql.MySQLContainer;
 
 /**
  * 저장 시 Batch INSERT 동작 및 N+1 문제 여부를 확인하는 통합 테스트.
@@ -54,7 +54,7 @@ class SqlCountTest extends IntegrationTest {
     private EntityManager entityManager;
 
     @Autowired
-    private MySQLContainer<?> mysqlContainer;
+    private MySQLContainer mysqlContainer;
 
     @Test
     @DisplayName("Room 저장 시 AvailableSlots가 Batch INSERT로 동작하는지 확인한다")
@@ -103,9 +103,9 @@ class SqlCountTest extends IntegrationTest {
         // given
         final var logLineCountBefore = getGeneralLogLineCount();
 
-        long participantId = 1L;
-        List<Vote> votes = new ArrayList<>();
-        LocalDateTime baseTime = LocalDateTime.of(2026, 1, 1, 10, 0);
+        final long participantId = 1L;
+        final List<Vote> votes = new ArrayList<>();
+        final LocalDateTime baseTime = LocalDateTime.of(2026, 1, 1, 10, 0);
 
         // 10개의 Vote 생성
         for (int i = 0; i < 10; i++) {
@@ -149,9 +149,9 @@ class SqlCountTest extends IntegrationTest {
         // given
         final var logLineCountBefore = getGeneralLogLineCount();
 
-        long participantId = 1L;
-        List<CompactVote> votes = new ArrayList<>();
-        LocalDateTime baseTime = LocalDateTime.of(2026, 1, 1, 10, 0);
+        final long participantId = 1L;
+        final List<CompactVote> votes = new ArrayList<>();
+        final LocalDateTime baseTime = LocalDateTime.of(2026, 1, 1, 10, 0);
 
         // 10개의 CompactVote 생성
         for (int i = 0; i < 10; i++) {
@@ -203,7 +203,7 @@ class SqlCountTest extends IntegrationTest {
                     if (line.contains("autocommit")) {
                         return true;
                     }
-                    for (String keyword : keywords) {
+                    for (final String keyword : keywords) {
                         if (line.contains(keyword)) {
                             return true;
                         }
@@ -213,7 +213,7 @@ class SqlCountTest extends IntegrationTest {
                 .toList();
     }
 
-    private void printQueries(List<String> queries) {
+    private void printQueries(final List<String> queries) {
         System.out.println("\n========== MySQL General Query Log ==========");
         queries.forEach(System.out::println);
         System.out.println("==============================================\n");
