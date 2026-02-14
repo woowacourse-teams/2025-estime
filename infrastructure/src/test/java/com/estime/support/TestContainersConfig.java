@@ -11,6 +11,7 @@ public class TestContainersConfig {
     @Bean
     @ServiceConnection
     MySQLContainer mysqlContainer() {
+        //noinspection resource
         return new MySQLContainer("mysql:8.0")
                 .withDatabaseName("testdb")
                 .withUsername("testuser")
