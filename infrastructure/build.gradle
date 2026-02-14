@@ -38,6 +38,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework:spring-tx'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'org.testcontainers:mysql'
+    testImplementation 'org.testcontainers:testcontainers-mysql'
     testRuntimeOnly 'com.mysql:mysql-connector-j'
 }

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.mysql.MySQLContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -54,7 +54,7 @@ class SqlCountTest extends IntegrationTest {
     private EntityManager entityManager;
 
     @Autowired
-    private MySQLContainer<?> mysqlContainer;
+    private MySQLContainer mysqlContainer;
 
     @Test
     @DisplayName("Room 저장 시 AvailableSlots가 Batch INSERT로 동작하는지 확인한다")
