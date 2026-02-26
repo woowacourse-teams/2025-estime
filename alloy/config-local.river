@@ -4,28 +4,6 @@ loki.write "local" {
     }
 }
 
-loki.source.file "estime_api_logs" {
-    targets = [{ "__path__" = "/app/logs/estime-api.log" }]
-    forward_to = [loki.relabel.add_api_labels.receiver]
-}
-
-loki.relabel "add_api_labels" {
-    forward_to = [loki.write.local.receiver]
-
-    rule {
-        target_label = "job"
-        replacement = "estime-api-local"
-    }
-    rule {
-        target_label = "app"
-        replacement = "estime-api-local"
-    }
-    rule {
-        target_label = "env"
-        replacement = "local"
-    }
-}
-
 prometheus.scrape "estime_api_metrics" {
     targets = [{
         __address__ = "host.docker.internal:8080",
