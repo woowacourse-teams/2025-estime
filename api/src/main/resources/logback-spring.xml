@@ -38,7 +38,6 @@
         <root level="INFO">
             <appender-ref ref="ASYNC_DISCORD"/>
             <appender-ref ref="Console"/>
-            <appender-ref ref="File"/>
         </root>
     </springProfile>
 
@@ -50,18 +49,4 @@
         </encoder>
     </appender>
 
-    <!-- 공통 파일 로거 -->
-    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/app/logs/estime-api.log</file>
-
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-            <charset>utf8</charset>
-        </encoder>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/app/logs/estime-api.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-    </appender>
 </configuration>

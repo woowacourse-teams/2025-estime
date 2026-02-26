@@ -27,7 +27,6 @@ services:
       - ./.env.local
     volumes:
       - ./alloy/config-local.river:/etc/alloy/config-local.river
-      - /app/logs:/app/logs
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-local.river"
     networks:

@@ -18,9 +18,6 @@ COPY api/build/libs/api-*-SNAPSHOT.jar app.jar
 RUN addgroup -g 1001 -S appuser && adduser -S -u 1001 -G appuser appuser
 RUN chown appuser:appuser app.jar
 
-# 로그 디렉토리 생성 및 권한 설정
-RUN mkdir -p /app/logs && chown -R appuser:appuser /app/logs
-
 USER appuser
 
 # 애플리케이션 상태 확인 설정 (30초마다 체크)
