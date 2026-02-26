@@ -11,8 +11,11 @@ services:
       - "127.0.0.1:8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-    volumes:
-      - /app/logs:/app/logs
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - monitor_net
     restart: unless-stopped
@@ -26,8 +29,11 @@ services:
       - "127.0.0.1:8081:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-    volumes:
-      - /app/logs:/app/logs
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - monitor_net
     restart: unless-stopped
@@ -39,7 +45,7 @@ services:
       - ./.env.prod
     volumes:
       - ./alloy/config-prod.river:/etc/alloy/config-prod.river
-      - /app/logs:/app/logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - alloy-data:/var/lib/alloy
     command: "run /etc/alloy/config-prod.river"
     networks:

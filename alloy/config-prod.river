@@ -4,8 +4,17 @@ loki.write "prod" {
     }
 }
 
-loki.source.file "estime_api_logs" {
-    targets = [{ "__path__" = "/app/logs/estime-api.log" }]
+discovery.docker "api_containers" {
+    host = "unix:///var/run/docker.sock"
+    filter {
+        name = "name"
+        values = ["estime-api-blue", "estime-api-green"]
+    }
+}
+
+loki.source.docker "estime_api_logs" {
+    host = "unix:///var/run/docker.sock"
+    targets = discovery.docker.api_containers.targets
     forward_to = [loki.relabel.add_api_labels.receiver]
 }
 
@@ -23,6 +32,11 @@ loki.relabel "add_api_labels" {
     rule {
         target_label = "env"
         replacement = "prod"
+    }
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex = "/(.*)"
+        target_label = "container"
     }
 }
 
