@@ -1,7 +1,7 @@
 package com.estime.room.controller.dto.request;
 
 import com.estime.room.dto.input.RoomCreateInput;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public record RoomCreateRequestV2(
         return new RoomCreateInput(
                 title,
                 availableDateTimeSlots.stream()
-                        .map(CompactDateTimeSlot::from)
+                        .map(DateTimeSlot::from)
                         .toList(),
                 deadline
         );

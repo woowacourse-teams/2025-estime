@@ -1,9 +1,9 @@
 package com.estime.room.controller.dto.request;
 
 import com.estime.room.RoomSession;
-import com.estime.room.dto.input.CompactVoteUpdateInput;
+import com.estime.room.dto.input.VotesUpdateInput;
 import com.estime.room.participant.ParticipantName;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
@@ -16,20 +16,20 @@ public record ParticipantVotesUpdateRequestV2(
         List<Integer> slotCodes
 ) {
 
-    public List<CompactDateTimeSlot> toCompactSlots() {
+    public List<DateTimeSlot> toDateTimeSlots() {
         if (slotCodes == null || slotCodes.isEmpty()) {
             return List.of();
         }
         return slotCodes.stream()
-                .map(CompactDateTimeSlot::from)
+                .map(DateTimeSlot::from)
                 .toList();
     }
 
-    public CompactVoteUpdateInput toInput(final RoomSession session) {
-        return new CompactVoteUpdateInput(
+    public VotesUpdateInput toInput(final RoomSession session) {
+        return new VotesUpdateInput(
                 session,
                 ParticipantName.from(participantName),
-                toCompactSlots()
+                toDateTimeSlots()
         );
     }
 }

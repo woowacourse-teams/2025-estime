@@ -25,15 +25,15 @@ public class RoomAvailableSlotId implements Serializable {
     private Long roomId;
 
     @Column(name = "slot_code", nullable = false)
-    private CompactDateTimeSlot slotCode;
+    private DateTimeSlot slotCode;
 
-    public static RoomAvailableSlotId of(final CompactDateTimeSlot slotCode) {
+    public static RoomAvailableSlotId of(final DateTimeSlot slotCode) {
         validateNull(slotCode);
         // roomId는 @MapsId에 의해 persist 시점에 채워짐
         return new RoomAvailableSlotId(null, slotCode);
     }
 
-    private static void validateNull(final CompactDateTimeSlot slotCode) {
+    private static void validateNull(final DateTimeSlot slotCode) {
         Validator.builder()
                 .add(Fields.slotCode, slotCode)
                 .validateNull();
