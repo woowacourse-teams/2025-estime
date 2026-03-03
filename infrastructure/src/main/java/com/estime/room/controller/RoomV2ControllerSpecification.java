@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Room V2 API", description = "룸 API V2 (compact)")
+@Tag(name = "Room V2 API", description = "룸 API V2 (slotCode)")
 @RequestMapping("/api/v2/rooms")
 public interface RoomV2ControllerSpecification {
 
@@ -42,20 +42,20 @@ public interface RoomV2ControllerSpecification {
             @PathVariable("session") RoomSession session
     );
 
-    @Operation(summary = "일시 기준, 참여자 투표 통계 조회 (compact)")
+    @Operation(summary = "일시 기준, 참여자 투표 통계 조회 (slotCode)")
     @GetMapping("/{session}/statistics/date-time-slots")
     CustomApiResponse<DateTimeSlotStatisticResponseV2> getDateTimeSlotStatisticBySession(
             @PathVariable("session") RoomSession session
     );
 
-    @Operation(summary = "참여자 기준, 투표 일시 조회 (compact)")
+    @Operation(summary = "참여자 기준, 투표 일시 조회 (slotCode)")
     @GetMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponseV2> getParticipantVotesBySessionAndParticipantName(
             @PathVariable("session") RoomSession session,
             @RequestParam("participantName") String participantName
     );
 
-    @Operation(summary = "참여자 제출 시간 수정 (compact)")
+    @Operation(summary = "참여자 제출 시간 수정 (slotCode)")
     @PutMapping("/{session}/votes/participants")
     CustomApiResponse<ParticipantVotesResponseV2> updateParticipantVotes(
             @PathVariable("session") RoomSession session,

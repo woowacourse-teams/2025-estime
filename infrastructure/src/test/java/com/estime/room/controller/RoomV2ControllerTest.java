@@ -13,10 +13,10 @@ import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
-import com.estime.room.participant.vote.compact.CompactVote;
-import com.estime.room.participant.vote.compact.CompactVoteRepository;
+import com.estime.room.participant.vote.Vote;
+import com.estime.room.participant.vote.VoteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
@@ -47,7 +47,7 @@ class RoomV2ControllerTest extends IntegrationTest {
     private ParticipantRepository participantRepository;
 
     @Autowired
-    private CompactVoteRepository compactVoteRepository;
+    private VoteRepository voteRepository;
 
     @Autowired
     private TsidRoomSessionGenerator roomSessionGenerator;
@@ -64,15 +64,15 @@ class RoomV2ControllerTest extends IntegrationTest {
                 roomSession,
                 NOW_LOCAL_DATE_TIME.plusDays(7),
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)))
                 )
         );
         room = roomRepository.save(tempRoom);
     }
 
-    @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - Compact 투표 통계를 조회한다")
+    @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - 투표 통계를 조회한다")
     @Test
     void getDateTimeSlotStatistic() throws Exception {
         // given
@@ -111,7 +111,7 @@ class RoomV2ControllerTest extends IntegrationTest {
                 .andExpect(jsonPath("$.success").value(false));
     }
 
-    @DisplayName("GET /api/v2/rooms/{session}/votes/participants - Compact 참여자의 투표를 조회한다")
+    @DisplayName("GET /api/v2/rooms/{session}/votes/participants - 참여자의 투표를 조회한다")
     @Test
     void getParticipantVotes() throws Exception {
         // given
@@ -135,14 +135,14 @@ class RoomV2ControllerTest extends IntegrationTest {
                 .andExpect(jsonPath("$.success").value(false));
     }
 
-    @DisplayName("PUT /api/v2/rooms/{session}/votes/participants - Compact 참여자의 투표를 수정한다")
+    @DisplayName("PUT /api/v2/rooms/{session}/votes/participants - 참여자의 투표를 수정한다")
     @Test
     void updateParticipantVotes() throws Exception {
         // given
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
         final LocalDateTime dateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0));
-        final int slotCode = CompactDateTimeSlot.from(dateTime).getEncoded();
+        final int slotCode = DateTimeSlot.from(dateTime).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
                 "gangsan",
@@ -158,7 +158,7 @@ class RoomV2ControllerTest extends IntegrationTest {
                 .andExpect(jsonPath("$.data.slotCodes").isArray());
     }
 
-    @DisplayName("PUT /api/v2/rooms/{session}/votes/participants - 유효하지 않은 Compact 시간대로 투표 수정 시 400 에러")
+    @DisplayName("PUT /api/v2/rooms/{session}/votes/participants - 유효하지 않은 시간대로 투표 수정 시 400 에러")
     @Test
     void updateParticipantVotes_invalidSlot() throws Exception {
         // given
@@ -166,7 +166,7 @@ class RoomV2ControllerTest extends IntegrationTest {
 
         // 사용할 수 없는 시간대 (20:00)
         final LocalDateTime invalidDateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0));
-        final int invalidSlotCode = CompactDateTimeSlot.from(invalidDateTime).getEncoded();
+        final int invalidSlotCode = DateTimeSlot.from(invalidDateTime).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
                 "gangsan",
@@ -187,7 +187,7 @@ class RoomV2ControllerTest extends IntegrationTest {
     void updateParticipantVotes_participantNotFound() throws Exception {
         // given
         final LocalDateTime dateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0));
-        final int slotCode = CompactDateTimeSlot.from(dateTime).getEncoded();
+        final int slotCode = DateTimeSlot.from(dateTime).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
                 "NonExistent",
@@ -234,13 +234,13 @@ class RoomV2ControllerTest extends IntegrationTest {
         final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
 
         // 역순으로 투표 저장 (18:00, 14:00, 10:00)
-        final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)));
-        final CompactDateTimeSlot slot2 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)));
-        final CompactDateTimeSlot slot3 = CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
+        final DateTimeSlot slot1 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)));
+        final DateTimeSlot slot2 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)));
+        final DateTimeSlot slot3 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
 
-        compactVoteRepository.save(CompactVote.of(participant1.getId(), slot1));
-        compactVoteRepository.save(CompactVote.of(participant1.getId(), slot2));
-        compactVoteRepository.save(CompactVote.of(participant2.getId(), slot3));
+        voteRepository.save(Vote.of(participant1.getId(), slot1));
+        voteRepository.save(Vote.of(participant1.getId(), slot2));
+        voteRepository.save(Vote.of(participant2.getId(), slot3));
 
         // when & then: slotCode가 오름차순으로 정렬되어야 함
         mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", roomSession.getValue()))
