@@ -9,7 +9,6 @@ import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.controller.dto.response.ParticipantCheckResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesResponse;
-import com.estime.room.controller.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponse;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -75,14 +74,14 @@ public class RoomController implements RoomControllerSpecification {
     }
 
     @Override
-    public CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
+    public CustomApiResponse<ParticipantVotesResponse> updateParticipantVotes(
             @PathVariable("session") final RoomSession session,
             @RequestBody final ParticipantVotesUpdateRequest request
     ) {
         final VotesOutput output = roomApplicationService.updateParticipantVotes(
                 request.toInput(session));
         return CustomApiResponse.ok("Update success",
-                ParticipantVotesUpdateResponse.from(output));
+                ParticipantVotesResponse.from(output));
     }
 
     @Override
