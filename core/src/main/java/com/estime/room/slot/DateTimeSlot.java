@@ -40,11 +40,12 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
     public static final Duration UNIT = Duration.ofMinutes(30);
 
     private static final LocalDate EPOCH = LocalDate.of(2025, 10, 24);
+    private static final int MAX_ENCODED = 0xFFFFFF;
 
     private final int encoded;
 
     public static DateTimeSlot from(final int encoded) {
-        if (encoded < 0 || encoded > 0xFFFFF) {
+        if (encoded < 0 || encoded > MAX_ENCODED) {
             throw new DateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, encoded);
         }
         return new DateTimeSlot(encoded);

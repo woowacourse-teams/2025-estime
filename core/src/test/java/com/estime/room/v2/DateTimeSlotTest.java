@@ -88,8 +88,8 @@ class DateTimeSlotTest {
     @Test
     @DisplayName("from(int) - 최대값 초과 시 예외 발생")
     void createFromValueExceedingMax() {
-        // given: 0xFFFFF = 1048575 초과
-        final int exceedingValue = 0xFFFFF + 1;
+        // given: 0xFFFFFF = 16777215 초과
+        final int exceedingValue = 0xFFFFFF + 1;
 
         // when & then
         assertThatThrownBy(() -> DateTimeSlot.from(exceedingValue))
@@ -112,10 +112,10 @@ class DateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(int) - 경계값 최대값(0xFFFFF)으로 생성 성공")
+    @DisplayName("from(int) - 경계값 최대값(0xFFFFFF)으로 생성 성공")
     void createFromMaxValue() {
         // given
-        final int maxValue = 0xFFFFF; // 1048575
+        final int maxValue = 0xFFFFFF; // 16777215
 
         // when
         final DateTimeSlot slot = DateTimeSlot.from(maxValue);
