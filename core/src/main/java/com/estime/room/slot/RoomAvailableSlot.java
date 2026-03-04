@@ -35,7 +35,7 @@ public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
     private Room room;
 
     public static RoomAvailableSlot of(
-            final CompactDateTimeSlot slotCode,
+            final DateTimeSlot slotCode,
             final Room room
     ) {
         validateNull(slotCode, room);
@@ -43,7 +43,7 @@ public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
     }
 
     private static void validateNull(
-            final CompactDateTimeSlot slotCode,
+            final DateTimeSlot slotCode,
             final Room room
     ) {
         Validator.builder()
@@ -52,12 +52,12 @@ public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
                 .validateNull();
     }
 
-    public CompactDateTimeSlot getSlotCode() {
+    public DateTimeSlot getSlotCode() {
         return id.getSlotCode();
     }
 
     public LocalDateTime getStartAt() {
-        final CompactDateTimeSlot slotCode = id.getSlotCode();
+        final DateTimeSlot slotCode = id.getSlotCode();
         return LocalDateTime.of(slotCode.getStartAtLocalDate(), slotCode.getStartAtLocalTime());
     }
 

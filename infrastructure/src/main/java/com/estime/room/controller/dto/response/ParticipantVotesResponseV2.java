@@ -1,6 +1,6 @@
 package com.estime.room.controller.dto.response;
 
-import com.estime.room.dto.input.CompactVotesOutput;
+import com.estime.room.dto.input.VotesOutput;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
@@ -9,9 +9,9 @@ public record ParticipantVotesResponseV2(
         List<Integer> slotCodes
 ) {
 
-    public static ParticipantVotesResponseV2 from(final CompactVotesOutput output) {
+    public static ParticipantVotesResponseV2 from(final VotesOutput output) {
         final List<Integer> slotCodes = output.votes().stream()
-                .map(vote -> vote.getCompactDateTimeSlot().getEncoded())
+                .map(vote -> vote.getDateTimeSlot().getEncoded())
                 .toList();
 
         return new ParticipantVotesResponseV2(slotCodes);

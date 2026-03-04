@@ -34,12 +34,10 @@ import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
 import com.estime.room.platform.notification.PlatformNotificationType;
-import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.RoomAvailableSlot;
 import com.estime.shared.DomainTerm;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -120,9 +118,9 @@ public class RoomApplicationService {
         return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }
 
-    private void validateSlotCodesNotPast(final List<CompactDateTimeSlot> slotCodes) {
+    private void validateSlotCodesNotPast(final List<DateTimeSlot> slotCodes) {
         final LocalDate today = timeProvider.nowDateTime().toLocalDate();
-        for (final CompactDateTimeSlot slotCode : slotCodes) {
+        for (final DateTimeSlot slotCode : slotCodes) {
             if (slotCode.getStartAtLocalDate().isBefore(today)) {
                 throw new PastNotAllowedException(DomainTerm.DATE_TIME_SLOT, slotCode);
             }
@@ -209,12 +207,12 @@ public class RoomApplicationService {
             final Room room,
             final List<DateTimeSlot> dateTimeSlots
     ) {
-        final Set<LocalDateTime> availableSlots = room.getRoomAvailableSlots().stream()
-                .map(RoomAvailableSlot::getStartAt)
+        final Set<DateTimeSlot> availableSlots = room.getRoomAvailableSlots().stream()
+                .map(RoomAvailableSlot::getSlotCode)
                 .collect(Collectors.toSet());
 
         for (final DateTimeSlot dateTimeSlot : dateTimeSlots) {
-            if (!availableSlots.contains(dateTimeSlot.getStartAt())) {
+            if (!availableSlots.contains(dateTimeSlot)) {
                 throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, room.getSession(), dateTimeSlot);
             }
         }

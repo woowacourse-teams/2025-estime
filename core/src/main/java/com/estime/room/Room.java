@@ -3,7 +3,7 @@ package com.estime.room;
 import com.estime.room.exception.DeadlineOverdueException;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.participant.vote.exception.DuplicateNotAllowedException;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.RoomAvailableSlot;
 import com.estime.shared.BaseEntity;
 import com.estime.shared.DomainTerm;
@@ -61,7 +61,7 @@ public class Room extends BaseEntity {
             final RoomSession session,
             final String title,
             final LocalDateTime deadline,
-            final List<CompactDateTimeSlot> slotCodes
+            final List<DateTimeSlot> slotCodes
     ) {
         this.session = session;
         this.title = title;
@@ -73,7 +73,7 @@ public class Room extends BaseEntity {
             final String title,
             final RoomSession session,
             final LocalDateTime deadline,
-            final List<CompactDateTimeSlot> slotCodes
+            final List<DateTimeSlot> slotCodes
     ) {
         validateNull(title, session, deadline, slotCodes);
         final String trimmedTitle = title.trim();
@@ -87,7 +87,7 @@ public class Room extends BaseEntity {
             final String title,
             final RoomSession session,
             final LocalDateTime deadline,
-            final List<CompactDateTimeSlot> slotCodes
+            final List<DateTimeSlot> slotCodes
     ) {
         Validator.builder()
                 .add(Fields.title, title)
@@ -109,7 +109,7 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateSlotCodesNoDuplicate(final List<CompactDateTimeSlot> slotCodes) {
+    private static void validateSlotCodesNoDuplicate(final List<DateTimeSlot> slotCodes) {
         if (new HashSet<>(slotCodes).size() != slotCodes.size()) {
             throw new DuplicateNotAllowedException(DomainTerm.DATE_TIME_SLOT, slotCodes);
         }

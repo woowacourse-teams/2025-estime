@@ -4,9 +4,9 @@ import com.estime.shared.DomainTerm;
 import com.estime.shared.exception.DomainException;
 import com.estime.shared.exception.ExceptionMessageFormatter;
 
-public class CompactDateTimeSlotOutOfRangeException extends DomainException {
+public class DateTimeSlotOutOfRangeException extends DomainException {
 
-    public CompactDateTimeSlotOutOfRangeException(final DomainTerm term, final Object... params) {
+    public DateTimeSlotOutOfRangeException(final DomainTerm term, final Object... params) {
         super(
                 buildLogMessage(term, params),
                 buildUserMessage(term)

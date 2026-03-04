@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.room.slot.CompactDateTimeSlot;
-import com.estime.room.slot.exception.CompactDateTimeSlotOutOfRangeException;
+import com.estime.room.slot.DateTimeSlot;
+import com.estime.room.slot.exception.DateTimeSlotOutOfRangeException;
 import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.exception.NullNotAllowedException;
@@ -15,8 +15,8 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CompactDateTimeSlot 테스트")
-class CompactDateTimeSlotTest {
+@DisplayName("DateTimeSlot 테스트")
+class DateTimeSlotTest {
 
     @Test
     @DisplayName("압축된 슬롯 코드로부터 생성")
@@ -25,7 +25,7 @@ class CompactDateTimeSlotTest {
         final int encoded = 28; // 0x0001C
 
         // when
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(encoded);
+        final DateTimeSlot slot = DateTimeSlot.from(encoded);
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(28);
@@ -35,8 +35,8 @@ class CompactDateTimeSlotTest {
     @DisplayName("슬롯 비교 - 작은 값이 먼저")
     void compareSlots() {
         // given
-        final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(28);    // 2025-10-24 14:00
-        final CompactDateTimeSlot slot2 = CompactDateTimeSlot.from(3603);  // 2025-11-07 09:30
+        final DateTimeSlot slot1 = DateTimeSlot.from(28);    // 2025-10-24 14:00
+        final DateTimeSlot slot2 = DateTimeSlot.from(3603);  // 2025-11-07 09:30
 
         // when & then
         assertSoftly(softly -> {
@@ -49,8 +49,8 @@ class CompactDateTimeSlotTest {
     @DisplayName("동일 슬롯 equals 검증")
     void testEquals() {
         // given
-        final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(28);
-        final CompactDateTimeSlot slot2 = CompactDateTimeSlot.from(28);
+        final DateTimeSlot slot1 = DateTimeSlot.from(28);
+        final DateTimeSlot slot2 = DateTimeSlot.from(28);
 
         // when & then
         assertSoftly(softly -> {
@@ -63,8 +63,8 @@ class CompactDateTimeSlotTest {
     @DisplayName("toString 검증 - 사람이 읽을 수 있는 형식")
     void testToString() {
         // given
-        final CompactDateTimeSlot slot1 = CompactDateTimeSlot.from(28);     // 2025-10-24 14:00
-        final CompactDateTimeSlot slot2 = CompactDateTimeSlot.from(3603);   // 2025-11-07 09:30
+        final DateTimeSlot slot1 = DateTimeSlot.from(28);     // 2025-10-24 14:00
+        final DateTimeSlot slot2 = DateTimeSlot.from(3603);   // 2025-11-07 09:30
 
         // when
         final String result1 = slot1.toString();
@@ -81,19 +81,19 @@ class CompactDateTimeSlotTest {
     @DisplayName("from(int) - 음수 값으로 생성 시 예외 발생")
     void createFromNegativeValue() {
         // when & then
-        assertThatThrownBy(() -> CompactDateTimeSlot.from(-1))
-                .isInstanceOf(CompactDateTimeSlotOutOfRangeException.class);
+        assertThatThrownBy(() -> DateTimeSlot.from(-1))
+                .isInstanceOf(DateTimeSlotOutOfRangeException.class);
     }
 
     @Test
     @DisplayName("from(int) - 최대값 초과 시 예외 발생")
     void createFromValueExceedingMax() {
-        // given: 0xFFFFF = 1048575 초과
-        final int exceedingValue = 0xFFFFF + 1;
+        // given: 0xFFFFFF = 16777215 초과
+        final int exceedingValue = 0xFFFFFF + 1;
 
         // when & then
-        assertThatThrownBy(() -> CompactDateTimeSlot.from(exceedingValue))
-                .isInstanceOf(CompactDateTimeSlotOutOfRangeException.class);
+        assertThatThrownBy(() -> DateTimeSlot.from(exceedingValue))
+                .isInstanceOf(DateTimeSlotOutOfRangeException.class);
     }
 
     @Test
@@ -103,7 +103,7 @@ class CompactDateTimeSlotTest {
         final int minValue = 0;
 
         // when
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(minValue);
+        final DateTimeSlot slot = DateTimeSlot.from(minValue);
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(0);
@@ -112,13 +112,13 @@ class CompactDateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(int) - 경계값 최대값(0xFFFFF)으로 생성 성공")
+    @DisplayName("from(int) - 경계값 최대값(0xFFFFFF)으로 생성 성공")
     void createFromMaxValue() {
         // given
-        final int maxValue = 0xFFFFF; // 1048575
+        final int maxValue = 0xFFFFFF; // 16777215
 
         // when
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(maxValue);
+        final DateTimeSlot slot = DateTimeSlot.from(maxValue);
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(maxValue);
@@ -128,7 +128,7 @@ class CompactDateTimeSlotTest {
     @DisplayName("from(LocalDateTime) - null 값으로 생성 시 예외 발생")
     void createFromNullDateTime() {
         // when & then
-        assertThatThrownBy(() -> CompactDateTimeSlot.from(null))
+        assertThatThrownBy(() -> DateTimeSlot.from((LocalDateTime) null))
                 .isInstanceOf(NullNotAllowedException.class);
     }
 
@@ -139,7 +139,7 @@ class CompactDateTimeSlotTest {
         final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 15);
 
         // when & then
-        assertThatThrownBy(() -> CompactDateTimeSlot.from(invalidTime))
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
                 .isInstanceOf(SlotNotDivideException.class);
     }
 
@@ -150,7 +150,7 @@ class CompactDateTimeSlotTest {
         final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 30);
 
         // when & then
-        assertThatThrownBy(() -> CompactDateTimeSlot.from(invalidTime))
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
                 .isInstanceOf(InvalidTimeDetailException.class);
     }
 
@@ -161,7 +161,7 @@ class CompactDateTimeSlotTest {
         final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 0, 1);
 
         // when & then
-        assertThatThrownBy(() -> CompactDateTimeSlot.from(invalidTime))
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
                 .isInstanceOf(InvalidTimeDetailException.class);
     }
 
@@ -172,7 +172,7 @@ class CompactDateTimeSlotTest {
         final LocalDateTime epochStart = LocalDateTime.of(2025, 10, 24, 0, 0);
 
         // when
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(epochStart);
+        final DateTimeSlot slot = DateTimeSlot.from(epochStart);
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(0);
@@ -187,7 +187,7 @@ class CompactDateTimeSlotTest {
         final LocalDateTime lastSlot = LocalDateTime.of(2025, 10, 24, 23, 30);
 
         // when
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(lastSlot);
+        final DateTimeSlot slot = DateTimeSlot.from(lastSlot);
 
         // then
         assertThat(slot.getStartAtLocalTime()).isEqualTo(LocalTime.of(23, 30));
@@ -197,7 +197,7 @@ class CompactDateTimeSlotTest {
     @DisplayName("getStartAtLocalDate() - 날짜 부분 추출 검증")
     void getStartAtLocalDate() {
         // given
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(3603); // 2025-11-07 09:30
+        final DateTimeSlot slot = DateTimeSlot.from(3603); // 2025-11-07 09:30
 
         // when
         final LocalDate date = slot.getStartAtLocalDate();
@@ -210,7 +210,7 @@ class CompactDateTimeSlotTest {
     @DisplayName("getStartAtLocalTime() - 시간 부분 추출 검증")
     void getStartAtLocalTime() {
         // given
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(3603); // 2025-11-07 09:30
+        final DateTimeSlot slot = DateTimeSlot.from(3603); // 2025-11-07 09:30
 
         // when
         final LocalTime time = slot.getStartAtLocalTime();
@@ -226,12 +226,25 @@ class CompactDateTimeSlotTest {
         final LocalDateTime original = LocalDateTime.of(2025, 12, 25, 15, 30);
 
         // when
-        final CompactDateTimeSlot slot = CompactDateTimeSlot.from(original);
+        final DateTimeSlot slot = DateTimeSlot.from(original);
         final LocalDate resultDate = slot.getStartAtLocalDate();
         final LocalTime resultTime = slot.getStartAtLocalTime();
         final LocalDateTime result = LocalDateTime.of(resultDate, resultTime);
 
         // then
         assertThat(result).isEqualTo(original);
+    }
+
+    @Test
+    @DisplayName("toLocalDateTime() - 편의 메서드 검증")
+    void toLocalDateTime() {
+        // given
+        final LocalDateTime original = LocalDateTime.of(2025, 12, 25, 15, 30);
+
+        // when
+        final DateTimeSlot slot = DateTimeSlot.from(original);
+
+        // then
+        assertThat(slot.toLocalDateTime()).isEqualTo(original);
     }
 }

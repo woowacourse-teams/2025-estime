@@ -10,11 +10,10 @@ import com.estime.room.controller.dto.response.ParticipantVotesResponseV2;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponseV2;
 import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.dto.input.CompactVotesOutput;
 import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesFindInput;
-import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
-import com.estime.room.service.CompactRoomApplicationService;
+import com.estime.room.dto.input.VotesOutput;
+import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.service.RoomApplicationService;
 import com.estime.shared.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomV2Controller implements RoomV2ControllerSpecification {
 
     private final RoomApplicationService roomApplicationService;
-    private final CompactRoomApplicationService compactRoomApplicationService;
 
     @Override
     public CustomApiResponse<RoomCreateResponse> createRoom(@RequestBody final RoomCreateRequestV2 request) {
@@ -57,7 +55,7 @@ public class RoomV2Controller implements RoomV2ControllerSpecification {
     public CustomApiResponse<DateTimeSlotStatisticResponseV2> getDateTimeSlotStatisticBySession(
             @PathVariable("session") final RoomSession session
     ) {
-        final CompactDateTimeSlotStatisticOutput output = compactRoomApplicationService.calculateVoteStatistic(
+        final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(
                 RoomSessionInput.from(session));
         return CustomApiResponse.ok(DateTimeSlotStatisticResponseV2.from(output));
     }
@@ -67,7 +65,7 @@ public class RoomV2Controller implements RoomV2ControllerSpecification {
             @PathVariable("session") final RoomSession session,
             @RequestBody final ParticipantVotesUpdateRequestV2 request
     ) {
-        final CompactVotesOutput output = compactRoomApplicationService.updateParticipantVotes(
+        final VotesOutput output = roomApplicationService.updateParticipantVotes(
                 request.toInput(session));
         return CustomApiResponse.ok(
                 "Update success",
@@ -80,7 +78,7 @@ public class RoomV2Controller implements RoomV2ControllerSpecification {
             @PathVariable("session") final RoomSession session,
             @RequestParam("participantName") final String participantName
     ) {
-        final CompactVotesOutput output = compactRoomApplicationService.getParticipantVotesBySessionAndParticipantName(
+        final VotesOutput output = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
                 VotesFindInput.of(session, participantName));
         return CustomApiResponse.ok(ParticipantVotesResponseV2.from(output));
     }
