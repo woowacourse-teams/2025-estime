@@ -19,8 +19,8 @@ public class Votes {
     private final Set<Vote> elements;
 
     public static Votes from(final List<Vote> votes) {
-        validateDuplicate(votes);
         validateNull(votes);
+        validateDuplicate(votes);
         return new Votes(new HashSet<>(votes));
     }
 
