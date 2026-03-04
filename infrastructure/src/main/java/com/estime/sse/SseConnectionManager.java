@@ -61,7 +61,7 @@ public class SseConnectionManager {
             delete(session, connection);
         });
         emitter.onError((ex) -> {
-            log.debug("SSE connection error: {}", ex.getMessage());
+            log.debug("SSE connection error for session {} and connection {}", session, connection, ex);
             delete(session, connection);
         });
     }
