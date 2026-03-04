@@ -3,11 +3,8 @@ package com.estime.room;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.estime.room.participant.vote.CompactVoteJpaRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteJpaRepository;
-import com.estime.room.participant.vote.compact.CompactVote;
-import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
 import jakarta.persistence.EntityManager;
@@ -31,8 +28,6 @@ import org.testcontainers.mysql.MySQLContainer;
  * 1. Room 저장 시 RoomAvailableSlot Batch INSERT 동작
  * <p>
  * 2. Vote 저장 시 불필요한 SELECT(N+1) 발생 여부 및 Batch INSERT 동작
- * <p>
- * 3. CompactVote 저장 시 불필요한 SELECT(N+1) 발생 여부 및 Batch INSERT 동작
  */
 @Disabled("문서화 목적의 테스트. 실제 실행 시 데이터가 커밋됨.")
 @Transactional
@@ -46,9 +41,6 @@ class SqlCountTest extends IntegrationTest {
 
     @Autowired
     private VoteJpaRepository voteJpaRepository;
-
-    @Autowired
-    private CompactVoteJpaRepository compactVoteJpaRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -68,10 +60,10 @@ class SqlCountTest extends IntegrationTest {
                 RoomSession.from("batchTestSession"),
                 LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
                 )
         );
 
@@ -135,52 +127,6 @@ class SqlCountTest extends IntegrationTest {
         assertSoftly(softly -> {
             softly.assertThat(selectQueries)
                     .as("Vote 저장 시 불필요한 SELECT 쿼리가 발생하지 않아야 한다 (Persistable 구현)")
-                    .isEmpty();
-
-            softly.assertThat(insertQueries)
-                    .as("Batch INSERT(rewriteBatchedStatements)가 적용되어 1개의 INSERT 쿼리만 실행되어야 한다")
-                    .hasSize(1);
-        });
-    }
-
-    @Test
-    @DisplayName("CompactVote 저장 시 N+1 문제 없이 Batch INSERT로 동작하는지 확인한다")
-    void verifyCompactVoteBatchInsert() throws Exception {
-        // given
-        final var logLineCountBefore = getGeneralLogLineCount();
-
-        final long participantId = 1L;
-        final List<CompactVote> votes = new ArrayList<>();
-        final LocalDateTime baseTime = LocalDateTime.of(2026, 1, 1, 10, 0);
-
-        // 10개의 CompactVote 생성
-        for (int i = 0; i < 10; i++) {
-            votes.add(CompactVote.of(participantId, CompactDateTimeSlot.from(baseTime.plusMinutes(30L * i))));
-        }
-
-        // when
-        compactVoteJpaRepository.saveAll(votes);
-        entityManager.flush();
-
-        // then
-        final var queries = readNewQueriesFromGeneralLog(logLineCountBefore, "compact_vote");
-
-        printQueries(queries);
-
-        final var selectQueries = queries.stream()
-                .filter(q -> q.toLowerCase().contains("select") && q.contains("compact_vote"))
-                .toList();
-
-        final var insertQueries = queries.stream()
-                .filter(q -> q.toLowerCase().contains("insert") && q.contains("compact_vote"))
-                .toList();
-
-        System.out.println(">>> CompactVote SELECT 쿼리 수: " + selectQueries.size());
-        System.out.println(">>> CompactVote INSERT 쿼리 수: " + insertQueries.size());
-
-        assertSoftly(softly -> {
-            softly.assertThat(selectQueries)
-                    .as("CompactVote 저장 시 불필요한 SELECT 쿼리가 발생하지 않아야 한다 (Persistable 구현)")
                     .isEmpty();
 
             softly.assertThat(insertQueries)

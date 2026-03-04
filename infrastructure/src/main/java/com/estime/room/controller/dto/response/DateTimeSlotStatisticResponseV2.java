@@ -1,6 +1,6 @@
 package com.estime.room.controller.dto.response;
 
-import com.estime.room.dto.output.CompactDateTimeSlotStatisticOutput;
+import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.participant.ParticipantName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Comparator;
@@ -20,7 +20,7 @@ public record DateTimeSlotStatisticResponseV2(
         List<DateTimeSlotVotesResponseV2> statistics
 ) {
 
-    public static DateTimeSlotStatisticResponseV2 from(final CompactDateTimeSlotStatisticOutput output) {
+    public static DateTimeSlotStatisticResponseV2 from(final DateTimeSlotStatisticOutput output) {
         final int participantCount = output.participantCount();
         final List<DateTimeSlotVotesResponseV2> statistics = output.statistic().stream()
                 .map(stat -> {

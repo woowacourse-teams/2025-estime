@@ -3,7 +3,7 @@ package com.estime.room.controller.dto.request;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotification;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ public record ConnectedRoomCreateRequestV2(
         return new ConnectedRoomCreateInput(
                 title,
                 availableDateTimeSlots.stream()
-                        .map(CompactDateTimeSlot::from)
+                        .map(DateTimeSlot::from)
                         .toList(),
                 deadline,
                 PlatformType.from(platformType),

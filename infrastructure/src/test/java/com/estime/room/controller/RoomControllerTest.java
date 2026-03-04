@@ -19,7 +19,7 @@ import com.estime.room.controller.dto.request.RoomCreateRequest;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
@@ -67,10 +67,10 @@ class RoomControllerTest extends IntegrationTest {
                 roomSession,
                 NOW_LOCAL_DATE_TIME.plusDays(7),
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)))
                 )
         );
         room = roomRepository.save(tempRoom);

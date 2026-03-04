@@ -9,7 +9,6 @@ import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.controller.dto.response.ParticipantCheckResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesResponse;
-import com.estime.room.controller.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponse;
 import com.estime.shared.CustomApiResponse;
@@ -60,7 +59,7 @@ public interface RoomControllerSpecification {
 
     @Operation(summary = "참여자 제출 시간 수정")
     @PutMapping("/{session}/votes/participants")
-    CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
+    CustomApiResponse<ParticipantVotesResponse> updateParticipantVotes(
             @PathVariable("session") RoomSession session,
             @RequestBody ParticipantVotesUpdateRequest request
     );

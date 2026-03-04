@@ -2,9 +2,6 @@ package com.estime.benchmark;
 
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.Votes;
-import com.estime.room.participant.vote.compact.CompactVote;
-import com.estime.room.participant.vote.compact.CompactVotes;
-import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,9 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * CompactVote 성능 벤치마크
- * <p>
- * 기존 Vote와 CompactVote의 성능을 비교 측정합니다.
+ * Vote 성능 벤치마크
  * <p>
  * 측정 항목:
  * - 객체 생성 속도
@@ -30,8 +25,8 @@ import org.junit.jupiter.api.Test;
  * - 통계 계산 속도 (Map 그룹핑)
  */
 @Disabled
-@DisplayName("CompactVote 성능 벤치마크")
-class CompactVotePerformanceTest {
+@DisplayName("Vote 성능 벤치마크")
+class VotePerformanceTest {
 
     private static final boolean PRINT_ENABLED = true;
 
@@ -70,35 +65,22 @@ class CompactVotePerformanceTest {
     }
 
     @Test
-    @DisplayName("객체 생성 속도 비교")
-    void compareObjectCreationSpeed() {
-        printSectionHeader("객체 생성 속도 비교", TOTAL_VOTES, BENCHMARK_ITERATIONS);
+    @DisplayName("객체 생성 속도")
+    void measureObjectCreationSpeed() {
+        printSectionHeader("객체 생성 속도", TOTAL_VOTES, BENCHMARK_ITERATIONS);
 
         // Warmup
         Object blackhole = null;
         for (int i = 0; i < WARMUP_ITERATIONS; i++) {
             blackhole = createAllVotes();
-            blackhole = createAllCompactVotes();
         }
 
-        // Vote: LocalDateTime 기반
-        final BenchmarkResult voteResult = measurePerformance(() -> {
-            Object result = null;
+        final BenchmarkResult result = measurePerformance(() -> {
+            Object r = null;
             for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = createAllVotes();
+                r = createAllVotes();
             }
-            if (result == null) {
-                throw new AssertionError();
-            }
-        });
-
-        // CompactVote: 압축 슬롯 기반
-        final BenchmarkResult compactResult = measurePerformance(() -> {
-            Object result = null;
-            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = createAllCompactVotes();
-            }
-            if (result == null) {
+            if (r == null) {
                 throw new AssertionError();
             }
         });
@@ -107,42 +89,28 @@ class CompactVotePerformanceTest {
             throw new AssertionError();
         }
 
-        printResult(voteResult.getMedianNanos(), compactResult.getMedianNanos());
+        printResult(result.getMedianNanos());
     }
 
     @Test
-    @DisplayName("컬렉션 연산 속도 비교 (정렬)")
-    void compareCollectionOperations() {
-        printSectionHeader("컬렉션 연산 속도 비교 (정렬)", TOTAL_VOTES, BENCHMARK_ITERATIONS);
+    @DisplayName("컬렉션 연산 속도 (정렬)")
+    void measureCollectionOperations() {
+        printSectionHeader("컬렉션 연산 속도 (정렬)", TOTAL_VOTES, BENCHMARK_ITERATIONS);
 
         final List<Vote> voteList = createAllVotes();
-        final List<CompactVote> compactVoteList = createAllCompactVotes();
 
         // Warmup
         Object blackhole = null;
         for (int i = 0; i < WARMUP_ITERATIONS; i++) {
             blackhole = Votes.from(voteList).getSortedVotes();
-            blackhole = CompactVotes.from(compactVoteList).getSortedVotes();
         }
 
-        // Vote: LocalDateTime 비교
-        final BenchmarkResult voteResult = measurePerformance(() -> {
-            Object result = null;
+        final BenchmarkResult result = measurePerformance(() -> {
+            Object r = null;
             for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = Votes.from(voteList).getSortedVotes();
+                r = Votes.from(voteList).getSortedVotes();
             }
-            if (result == null) {
-                throw new AssertionError();
-            }
-        });
-
-        // CompactVote: int 비교
-        final BenchmarkResult compactResult = measurePerformance(() -> {
-            Object result = null;
-            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = CompactVotes.from(compactVoteList).getSortedVotes();
-            }
-            if (result == null) {
+            if (r == null) {
                 throw new AssertionError();
             }
         });
@@ -151,42 +119,28 @@ class CompactVotePerformanceTest {
             throw new AssertionError();
         }
 
-        printResult(voteResult.getMedianNanos(), compactResult.getMedianNanos());
+        printResult(result.getMedianNanos());
     }
 
     @Test
-    @DisplayName("통계 계산 속도 비교 (Map 그룹핑)")
-    void compareStatisticsCalculation() {
-        printSectionHeader("통계 계산 속도 비교 (Map 그룹핑)", TOTAL_VOTES, BENCHMARK_ITERATIONS);
+    @DisplayName("통계 계산 속도 (Map 그룹핑)")
+    void measureStatisticsCalculation() {
+        printSectionHeader("통계 계산 속도 (Map 그룹핑)", TOTAL_VOTES, BENCHMARK_ITERATIONS);
 
         final List<Vote> voteList = createAllVotes();
-        final List<CompactVote> compactVoteList = createAllCompactVotes();
 
         // Warmup
         Object blackhole = null;
         for (int i = 0; i < WARMUP_ITERATIONS; i++) {
             blackhole = Votes.from(voteList).calculateStatistic();
-            blackhole = CompactVotes.from(compactVoteList).calculateStatistic();
         }
 
-        // Vote: LocalDateTime 키로 그룹핑
-        final BenchmarkResult voteResult = measurePerformance(() -> {
-            Object result = null;
+        final BenchmarkResult result = measurePerformance(() -> {
+            Object r = null;
             for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = Votes.from(voteList).calculateStatistic();
+                r = Votes.from(voteList).calculateStatistic();
             }
-            if (result == null) {
-                throw new AssertionError();
-            }
-        });
-
-        // CompactVote: int 키로 그룹핑
-        final BenchmarkResult compactResult = measurePerformance(() -> {
-            Object result = null;
-            for (int i = 0; i < BENCHMARK_ITERATIONS; i++) {
-                result = CompactVotes.from(compactVoteList).calculateStatistic();
-            }
-            if (result == null) {
+            if (r == null) {
                 throw new AssertionError();
             }
         });
@@ -195,7 +149,7 @@ class CompactVotePerformanceTest {
             throw new AssertionError();
         }
 
-        printResult(voteResult.getMedianNanos(), compactResult.getMedianNanos());
+        printResult(result.getMedianNanos());
     }
 
     // ========================================
@@ -209,18 +163,6 @@ class CompactVotePerformanceTest {
             for (final int slotIndex : participantSlotIndices.get(participantIndex)) {
                 final LocalDateTime dateTime = slotIndexToDateTime(slotIndex);
                 votes.add(Vote.of(participantId, DateTimeSlot.from(dateTime)));
-            }
-        }
-        return votes;
-    }
-
-    private List<CompactVote> createAllCompactVotes() {
-        final List<CompactVote> votes = new ArrayList<>(TOTAL_VOTES);
-        for (int participantIndex = 0; participantIndex < PARTICIPANT_COUNT; participantIndex++) {
-            final long participantId = participantIndex + 1;
-            for (final int slotIndex : participantSlotIndices.get(participantIndex)) {
-                final LocalDateTime dateTime = slotIndexToDateTime(slotIndex);
-                votes.add(CompactVote.of(participantId, CompactDateTimeSlot.from(dateTime)));
             }
         }
         return votes;
@@ -264,18 +206,13 @@ class CompactVotePerformanceTest {
         System.out.println("========================================");
     }
 
-    private void printResult(final long voteNanos, final long compactVoteNanos) {
+    private void printResult(final long nanos) {
         if (!PRINT_ENABLED) {
             return;
         }
 
-        final double voteMillis = voteNanos / 1_000_000.0;
-        final double compactVoteMillis = compactVoteNanos / 1_000_000.0;
-        final double speedup = (double) voteNanos / compactVoteNanos;
-
-        System.out.printf("Vote:        %.2f ms%n", voteMillis);
-        System.out.printf("CompactVote: %.2f ms%n", compactVoteMillis);
-        System.out.printf("성능 개선:    %.2fx%n", Math.abs(speedup));
+        final double millis = nanos / 1_000_000.0;
+        System.out.printf("Vote: %.2f ms%n", millis);
         System.out.println("========================================");
     }
 

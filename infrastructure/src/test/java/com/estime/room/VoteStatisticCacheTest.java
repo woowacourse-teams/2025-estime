@@ -15,7 +15,6 @@ import com.estime.room.participant.ParticipantRepository;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.service.RoomApplicationService;
-import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
@@ -68,7 +67,7 @@ class VoteStatisticCacheTest extends IntegrationTest {
                 "cacheTest",
                 roomSession,
                 LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
-                List.of(CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))))
+                List.of(DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))))
         );
         room = roomRepository.save(tempRoom);
 

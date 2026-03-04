@@ -10,7 +10,6 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.dto.input.ConnectedRoomCreateInput;
-import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.dto.input.ParticipantCreateInput;
 import com.estime.room.dto.input.RoomCreateInput;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -21,6 +20,7 @@ import com.estime.room.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomOutput;
+import com.estime.room.event.VotesUpdatedEvent;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.Participant;
@@ -34,7 +34,6 @@ import com.estime.room.platform.PlatformRepository;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotification;
 import com.estime.room.platform.notification.PlatformNotificationType;
-import com.estime.room.slot.CompactDateTimeSlot;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
 import com.estime.support.IntegrationTest;
@@ -102,10 +101,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
                 roomSession,
                 LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
                 )
         );
 
@@ -122,14 +121,13 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
                 ),
                 NOW_LOCAL_DATE_TIME.plusYears(1)
         );
 
-        // when
-        // then
+        // when & then
         assertThatCode(() -> roomApplicationService.createRoom(input))
                 .doesNotThrowAnyException();
     }
@@ -159,7 +157,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
         // given
         final String nonexistentSession = "no";
 
-        // when // then
+        // when & then
         assertThatThrownBy(() -> roomApplicationService.getRoomBySession(
                 RoomSessionInput.from(RoomSession.from(nonexistentSession))))
                 .isInstanceOf(NotFoundException.class)
@@ -186,10 +184,19 @@ class RoomApplicationServiceTest extends IntegrationTest {
             softly.assertThat(result.statistic().getFirst().dateTimeSlot()).isEqualTo(slot1);
             softly.assertThat(result.statistic().getFirst().participantNames())
                     .containsExactlyInAnyOrder(ParticipantName.from("user1"), ParticipantName.from("user2"));
-            softly.assertThat(result.statistic().getFirst().dateTimeSlot()).isEqualTo(slot1);
-            softly.assertThat(result.statistic().getFirst().participantNames())
-                    .containsExactlyInAnyOrder(ParticipantName.from("user1"), ParticipantName.from("user2"));
         });
+    }
+
+    @DisplayName("존재하지 않는 세션으로 투표 통계를 조회하면 NotFoundException이 발생한다")
+    @Test
+    void calculateVoteStatistic_withNonexistentSession() {
+        // given
+        final RoomSessionInput input = RoomSessionInput.from(RoomSession.from("nonexistent"));
+
+        // when & then
+        assertThatThrownBy(() -> roomApplicationService.calculateVoteStatistic(input))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining(DomainTerm.ROOM.name() + " is not exists");
     }
 
     @DisplayName("참여자 투표를 조회한다.")
@@ -394,8 +401,8 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
                 ),
                 NOW_LOCAL_DATE_TIME.plusYears(1),
                 PlatformType.DISCORD,
@@ -408,10 +415,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final Room room = roomRepository.findBySession(saved.session()).orElseThrow();
 
         // then
-        assertSoftly(softly -> {
-            softly.assertThat(platformRepository.findByRoomId(room.getId()))
-                    .isPresent();
-        });
+        assertThat(platformRepository.findByRoomId(room.getId())).isPresent();
     }
 
     @DisplayName("과거 날짜 슬롯으로 방을 생성하면 PastNotAllowedException이 발생한다")
@@ -421,8 +425,8 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
                 ),
                 NOW_LOCAL_DATE_TIME.plusYears(1)
         );
@@ -440,8 +444,8 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
                 ),
                 NOW_LOCAL_DATE_TIME.plusYears(1),
                 PlatformType.DISCORD,
@@ -453,6 +457,36 @@ class RoomApplicationServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> roomApplicationService.createConnectedRoom(input))
                 .isInstanceOf(PastNotAllowedException.class)
                 .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name() + " cannot be past");
+    }
+
+    @DisplayName("플랫폼과 연결된 방 생성 시 CREATED 알림이 활성화되어 있으면 메시지를 전송한다")
+    @Test
+    void createConnectedRoom_withCreatedNotificationEnabled() {
+        // given
+        final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
+                "title",
+                List.of(
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                ),
+                NOW_LOCAL_DATE_TIME.plusYears(1),
+                PlatformType.DISCORD,
+                "testChannelId",
+                PlatformNotification.of(true, false, false)
+        );
+
+        // when
+        final ConnectedRoomCreateOutput saved = roomApplicationService.createConnectedRoom(input);
+        final Room createdRoom = roomRepository.findBySession(saved.session()).orElseThrow();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(platformRepository.findByRoomId(createdRoom.getId()))
+                    .isPresent();
+            final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
+            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATION))
+                    .isTrue();
+        });
     }
 
     @DisplayName("존재하지 않는 참여자의 투표를 조회하면 NotFoundException이 발생한다")
@@ -480,36 +514,6 @@ class RoomApplicationServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> roomApplicationService.updateParticipantVotes(input))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining(DomainTerm.PARTICIPANT.name() + " is not exists");
-    }
-
-    @DisplayName("플랫폼과 연결된 방 생성 시 CREATED 알림이 활성화되어 있으면 메시지를 전송한다")
-    @Test
-    void createConnectedRoom_withCreatedNotificationEnabled() {
-        // given
-        final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
-                "title",
-                List.of(
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
-                        CompactDateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
-                ),
-                NOW_LOCAL_DATE_TIME.plusYears(1),
-                PlatformType.DISCORD,
-                "testChannelId",
-                PlatformNotification.of(true, false, false) // CREATED 알림 활성화
-        );
-
-        // when
-        final ConnectedRoomCreateOutput saved = roomApplicationService.createConnectedRoom(input);
-        final Room createdRoom = roomRepository.findBySession(saved.session()).orElseThrow();
-
-        // then
-        assertSoftly(softly -> {
-            softly.assertThat(platformRepository.findByRoomId(createdRoom.getId()))
-                    .isPresent();
-            final Platform platform = platformRepository.findByRoomId(createdRoom.getId()).get();
-            softly.assertThat(platform.getNotification().shouldNotifyFor(PlatformNotificationType.CREATION))
-                    .isTrue();
-        });
     }
 
     @DisplayName("Room을 저장하면 createdAt이 자동으로 설정된다")

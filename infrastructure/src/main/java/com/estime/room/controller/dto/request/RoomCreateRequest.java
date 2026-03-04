@@ -1,7 +1,7 @@
 package com.estime.room.controller.dto.request;
 
 import com.estime.room.dto.input.RoomCreateInput;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.slot.DateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -35,14 +35,14 @@ public record RoomCreateRequest(
         );
     }
 
-    private List<CompactDateTimeSlot> toSlotCodes(
+    private List<DateTimeSlot> toSlotCodes(
             final List<LocalDate> dates,
             final List<LocalTime> times
     ) {
-        final List<CompactDateTimeSlot> slotCodes = new ArrayList<>();
+        final List<DateTimeSlot> slotCodes = new ArrayList<>();
         for (final LocalDate date : dates) {
             for (final LocalTime time : times) {
-                slotCodes.add(CompactDateTimeSlot.from(LocalDateTime.of(date, time)));
+                slotCodes.add(DateTimeSlot.from(LocalDateTime.of(date, time)));
             }
         }
         return slotCodes;

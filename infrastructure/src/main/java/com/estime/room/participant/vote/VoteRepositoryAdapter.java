@@ -24,6 +24,15 @@ public class VoteRepositoryAdapter implements VoteRepository {
     }
 
     @Override
+    public Votes findAllByParticipantId(final Long participantId) {
+        return Votes.from(
+                queryFactory.selectFrom(vote)
+                        .where(vote.id.participantId.eq(participantId))
+                        .fetch()
+        );
+    }
+
+    @Override
     public Votes findAllByParticipantIds(final List<Long> participantIds) {
         return Votes.from(
                 queryFactory.selectFrom(vote)
@@ -37,14 +46,5 @@ public class VoteRepositoryAdapter implements VoteRepository {
         queryFactory.delete(vote)
                 .where(vote.id.in(votes.getVoteIds()))
                 .execute();
-    }
-
-    @Override
-    public Votes findAllByParticipantId(final Long participantId) {
-        return Votes.from(
-                queryFactory.selectFrom(vote)
-                        .where(vote.id.participantId.eq(participantId))
-                        .fetch()
-        );
     }
 }

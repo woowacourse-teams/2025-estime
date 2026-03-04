@@ -10,7 +10,7 @@ public interface VoteRepository {
 
     Vote save(Vote vote);
 
-    Votes saveAll(Votes dateTimeSlots);
+    Votes saveAll(Votes votes);
 
-    void deleteAllInBatch(Votes dateTimeSlots);
+    void deleteAllInBatch(Votes votes);
 }

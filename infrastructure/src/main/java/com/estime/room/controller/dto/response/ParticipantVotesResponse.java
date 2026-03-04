@@ -1,7 +1,6 @@
 package com.estime.room.controller.dto.response;
 
 import com.estime.room.dto.input.VotesOutput;
-import com.estime.room.participant.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ public record ParticipantVotesResponse(
         return new ParticipantVotesResponse(
                 output.name().getValue(),
                 output.votes().stream()
-                        .map(Vote::startAt)
+                        .map(vote -> vote.getDateTimeSlot().toLocalDateTime())
                         .toList()
         );
     }
