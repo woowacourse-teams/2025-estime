@@ -8,7 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -56,9 +56,8 @@ public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
         return id.getSlotCode();
     }
 
-    public LocalDateTime getStartAt() {
-        final DateTimeSlot slotCode = id.getSlotCode();
-        return LocalDateTime.of(slotCode.getStartAtLocalDate(), slotCode.getStartAtLocalTime());
+    public Instant getStartAt() {
+        return id.getSlotCode().toInstant();
     }
 
     @Override

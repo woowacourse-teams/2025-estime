@@ -16,8 +16,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -48,7 +46,7 @@ public class Room extends BaseEntity {
     private String title;
 
     @Column(name = "deadline", nullable = false)
-    private LocalDateTime deadline;
+    private Instant deadline;
 
     @OneToMany(
             mappedBy = RoomAvailableSlot.Fields.room,
@@ -60,7 +58,7 @@ public class Room extends BaseEntity {
     private Room(
             final RoomSession session,
             final String title,
-            final LocalDateTime deadline,
+            final Instant deadline,
             final List<DateTimeSlot> slotCodes
     ) {
         this.session = session;
@@ -72,13 +70,14 @@ public class Room extends BaseEntity {
     public static Room withoutId(
             final String title,
             final RoomSession session,
-            final LocalDateTime deadline,
-            final List<DateTimeSlot> slotCodes
+            final Instant deadline,
+            final List<DateTimeSlot> slotCodes,
+            final Instant now
     ) {
         validateNull(title, session, deadline, slotCodes);
         final String trimmedTitle = title.trim();
         validateTitle(trimmedTitle);
-        validateDeadline(deadline);
+        validateDeadline(deadline, now);
         validateSlotCodesNoDuplicate(slotCodes);
         return new Room(session, trimmedTitle, deadline, slotCodes);
     }
@@ -86,7 +85,7 @@ public class Room extends BaseEntity {
     private static void validateNull(
             final String title,
             final RoomSession session,
-            final LocalDateTime deadline,
+            final Instant deadline,
             final List<DateTimeSlot> slotCodes
     ) {
         Validator.builder()
@@ -103,8 +102,11 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateDeadline(final LocalDateTime deadline) {
-        if (deadline.isBefore(LocalDateTime.now())) {
+    private static void validateDeadline(
+            final Instant deadline,
+            final Instant now
+    ) {
+        if (deadline.isBefore(now)) {
             throw new PastNotAllowedException(DomainTerm.DEADLINE, deadline);
         }
     }
@@ -119,13 +121,10 @@ public class Room extends BaseEntity {
         return Collections.unmodifiableList(availableSlots);
     }
 
-    public void ensureDeadlineNotPassed(final LocalDateTime currentDateTime) {
+    public void ensureDeadlineNotPassed(final Instant currentDateTime) {
         if (deadline.isBefore(currentDateTime)) {
             throw new DeadlineOverdueException(session, deadline, currentDateTime);
         }
     }
 
-    public Instant getDeadline(final ZoneId zoneId) {
-        return deadline.atZone(zoneId).toInstant();
-    }
 }

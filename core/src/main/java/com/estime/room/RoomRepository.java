@@ -1,6 +1,6 @@
 package com.estime.room;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ public interface RoomRepository {
 
     List<Room> findAllByIdGreaterThanOrderByIdAsc(Long id);
 
-    List<Room> findAllByDeadlineAfter(LocalDateTime criterion);
+    List<Room> findAllByDeadlineAfter(Instant criterion);
 
     Optional<Room> findBySession(RoomSession session);
 
