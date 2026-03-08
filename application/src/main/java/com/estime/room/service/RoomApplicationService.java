@@ -37,7 +37,7 @@ import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.RoomAvailableSlot;
 import com.estime.shared.DomainTerm;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +78,8 @@ public class RoomApplicationService {
                         input.title(),
                         roomSessionGenerator.generate(),
                         input.deadline(),
-                        input.slotCodes()));
+                        input.slotCodes(),
+                        timeProvider.now()));
 
         return RoomCreateOutput.from(room);
     }
@@ -92,7 +93,8 @@ public class RoomApplicationService {
                         input.title(),
                         roomSessionGenerator.generate(),
                         input.deadline(),
-                        input.slotCodes()));
+                        input.slotCodes(),
+                        timeProvider.now()));
 
         final Platform platform = platformRepository.save(
                 Platform.withoutId(
@@ -110,7 +112,7 @@ public class RoomApplicationService {
                                 platform.getChannelId(),
                                 type,
                                 room.getCreatedAt(),
-                                room.getDeadline(timeProvider.zone()),
+                                room.getDeadline(),
                                 timeProvider.now()));
             }
         }
@@ -119,9 +121,9 @@ public class RoomApplicationService {
     }
 
     private void validateSlotCodesNotPast(final List<DateTimeSlot> slotCodes) {
-        final LocalDate today = timeProvider.nowDateTime().toLocalDate();
+        final Instant now = timeProvider.now();
         for (final DateTimeSlot slotCode : slotCodes) {
-            if (slotCode.getStartAtLocalDate().isBefore(today)) {
+            if (slotCode.toInstant().isBefore(now)) {
                 throw new PastNotAllowedException(DomainTerm.DATE_TIME_SLOT, slotCode);
             }
         }
@@ -184,7 +186,7 @@ public class RoomApplicationService {
         final Room room = obtainRoomWithAvailableSlotsBySession(input.session());
         final Participant participant = obtainParticipantByRoomIdAndName(room.getId(), input.name());
 
-        room.ensureDeadlineNotPassed(timeProvider.nowDateTime());
+        room.ensureDeadlineNotPassed(timeProvider.now());
         ensureRoomAvailableSlots(room, input.dateTimeSlots());
 
         participant.markVoted(timeProvider.now());
@@ -223,7 +225,7 @@ public class RoomApplicationService {
         final Room room = obtainRoomBySession(input.session());
         final Long roomId = room.getId();
 
-        room.ensureDeadlineNotPassed(timeProvider.nowDateTime());
+        room.ensureDeadlineNotPassed(timeProvider.now());
 
         final int affected = participantRepository.saveIfNotExists(input.toEntity(roomId));
         final boolean isDuplicateName = affected == 0;

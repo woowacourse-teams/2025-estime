@@ -40,6 +40,7 @@ import com.estime.support.IntegrationTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,13 +83,13 @@ class RoomApplicationServiceTest extends IntegrationTest {
     private static Stream<Arguments> unavailableDateTimeSlots() {
         return Stream.of(
                 Arguments.of( // Case 1: 날짜(date)가 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(10, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(10, 0)).atZone(ZONE).toInstant())
                 ),
                 Arguments.of( // Case 2: 시간(time)이 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(12, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(12, 0)).atZone(ZONE).toInstant())
                 ),
                 Arguments.of( // Case 3: 날짜(date)와 시간(time) 둘 다 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(12, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(12, 0)).atZone(ZONE).toInstant())
                 )
         );
     }
@@ -99,13 +100,14 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final Room tempRoom = Room.withoutId(
                 "test",
                 roomSession,
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)).atZone(ZONE).toInstant(),
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
-                )
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)).atZone(ZONE).toInstant())
+                ),
+                NOW
         );
 
         room = roomRepository.save(tempRoom);
@@ -121,10 +123,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
                 ),
-                NOW_LOCAL_DATE_TIME.plusYears(1)
+                NOW.plus(365, ChronoUnit.DAYS)
         );
 
         // when & then
@@ -169,7 +171,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void calculateVoteStatistic() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         voteRepository.save(Vote.of(participant1.getId(), slot1));
         voteRepository.save(Vote.of(participant2.getId(), slot1));
 
@@ -204,7 +206,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void getParticipantVotesBySessionAndParticipantName() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         // when
@@ -224,11 +226,11 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void updateParticipantVotes_complex() {
         // given
         final DateTimeSlot slotToRemove = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         final DateTimeSlot slotToKeep = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 30)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 30)).atZone(ZONE).toInstant());
         final DateTimeSlot slotToAdd = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 0)).atZone(ZONE).toInstant());
 
         voteRepository.save(Vote.of(participant1.getId(), slotToRemove));
         voteRepository.save(Vote.of(participant1.getId(), slotToKeep));
@@ -258,16 +260,16 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void updateParticipantVotes_replaceAll() {
         // given
         final DateTimeSlot initialSlot1 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         final DateTimeSlot initialSlot2 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 30)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 30)).atZone(ZONE).toInstant());
         voteRepository.save(Vote.of(participant1.getId(), initialSlot1));
         voteRepository.save(Vote.of(participant1.getId(), initialSlot2));
 
         final DateTimeSlot newSlot1 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 0)).atZone(ZONE).toInstant());
         final DateTimeSlot newSlot2 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 30)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(11, 30)).atZone(ZONE).toInstant());
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(),
                 List.of(newSlot1, newSlot2));
 
@@ -288,7 +290,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void updateParticipantVotes_removeAll() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of());
@@ -309,7 +311,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void updateParticipantVotes_noChange() {
         // given
         final DateTimeSlot slot1 = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         voteRepository.save(Vote.of(participant1.getId(), slot1));
 
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(), participant1.getName(), List.of(slot1));
@@ -330,7 +332,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void updateParticipantVotes_publishesVotesUpdatedEvent() {
         // given
         final DateTimeSlot slot = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         final VotesUpdateInput input = new VotesUpdateInput(
                 room.getSession(), participant1.getName(), List.of(slot));
 
@@ -401,10 +403,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
                 ),
-                NOW_LOCAL_DATE_TIME.plusYears(1),
+                NOW.plus(365, ChronoUnit.DAYS),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(false, false, false)
@@ -425,10 +427,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
                 ),
-                NOW_LOCAL_DATE_TIME.plusYears(1)
+                NOW.plus(365, ChronoUnit.DAYS)
         );
 
         // when & then
@@ -444,10 +446,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
                 ),
-                NOW_LOCAL_DATE_TIME.plusYears(1),
+                NOW.plus(365, ChronoUnit.DAYS),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(false, false, false)
@@ -466,10 +468,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
                 ),
-                NOW_LOCAL_DATE_TIME.plusYears(1),
+                NOW.plus(365, ChronoUnit.DAYS),
                 PlatformType.DISCORD,
                 "testChannelId",
                 PlatformNotification.of(true, false, false)
@@ -506,7 +508,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
     void updateParticipantVotes_withNonexistentParticipant() {
         // given
         final DateTimeSlot slot = DateTimeSlot.from(
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)));
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         final VotesUpdateInput input = new VotesUpdateInput(room.getSession(),
                 ParticipantName.from("nonexistent"), List.of(slot));
 
@@ -524,8 +526,9 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final Room newRoom = Room.withoutId(
                 "테스트방",
                 RoomSession.from("test-session-createdAt"),
-                NOW_LOCAL_DATE_TIME.plusDays(1),
-                List.of()
+                NOW.plus(1, ChronoUnit.DAYS),
+                List.of(),
+                NOW
         );
 
         // when
