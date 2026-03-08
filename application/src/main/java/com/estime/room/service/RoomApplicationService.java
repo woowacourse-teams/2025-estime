@@ -21,8 +21,6 @@ import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomCreateOutput;
 import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.event.VotesUpdatedEvent;
-import com.estime.room.exception.PastNotAllowedException;
-import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
@@ -35,7 +33,6 @@ import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
 import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.slot.DateTimeSlot;
-import com.estime.room.slot.RoomAvailableSlot;
 import com.estime.shared.DomainTerm;
 import java.time.Instant;
 import java.util.Collection;
@@ -71,14 +68,12 @@ public class RoomApplicationService {
 
     @Transactional
     public RoomCreateOutput createRoom(final RoomCreateInput input) {
-        validateSlotCodesNotPast(input.slotCodes());
-
         final Room room = roomRepository.save(
                 Room.withoutId(
                         input.title(),
                         roomSessionGenerator.generate(),
                         input.deadline(),
-                        input.slotCodes(),
+                        input.slots(),
                         timeProvider.now()));
 
         return RoomCreateOutput.from(room);
@@ -86,14 +81,12 @@ public class RoomApplicationService {
 
     @Transactional
     public ConnectedRoomCreateOutput createConnectedRoom(final ConnectedRoomCreateInput input) {
-        validateSlotCodesNotPast(input.slotCodes());
-
         final Room room = roomRepository.save(
                 Room.withoutId(
                         input.title(),
                         roomSessionGenerator.generate(),
                         input.deadline(),
-                        input.slotCodes(),
+                        input.slots(),
                         timeProvider.now()));
 
         final Platform platform = platformRepository.save(
@@ -120,16 +113,7 @@ public class RoomApplicationService {
         return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }
 
-    private void validateSlotCodesNotPast(final List<DateTimeSlot> slotCodes) {
-        final Instant now = timeProvider.now();
-        for (final DateTimeSlot slotCode : slotCodes) {
-            if (slotCode.toInstant().isBefore(now)) {
-                throw new PastNotAllowedException(DomainTerm.DATE_TIME_SLOT, slotCode);
-            }
-        }
-    }
-
-    @Transactional(readOnly = true)
+@Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final RoomSessionInput input) {
         final Room room = obtainRoomWithAvailableSlotsBySession(input.session());
         return RoomOutput.from(room);
@@ -187,7 +171,7 @@ public class RoomApplicationService {
         final Participant participant = obtainParticipantByRoomIdAndName(room.getId(), input.name());
 
         room.ensureDeadlineNotPassed(timeProvider.now());
-        ensureRoomAvailableSlots(room, input.dateTimeSlots());
+        room.ensureAvailableSlots(input.dateTimeSlots());
 
         participant.markVoted(timeProvider.now());
 
@@ -205,22 +189,7 @@ public class RoomApplicationService {
         return VotesOutput.from(input.name(), updatedVotes);
     }
 
-    private void ensureRoomAvailableSlots(
-            final Room room,
-            final List<DateTimeSlot> dateTimeSlots
-    ) {
-        final Set<DateTimeSlot> availableSlots = room.getRoomAvailableSlots().stream()
-                .map(RoomAvailableSlot::getSlotCode)
-                .collect(Collectors.toSet());
-
-        for (final DateTimeSlot dateTimeSlot : dateTimeSlots) {
-            if (!availableSlots.contains(dateTimeSlot)) {
-                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, room.getSession(), dateTimeSlot);
-            }
-        }
-    }
-
-    @Transactional
+@Transactional
     public ParticipantCheckOutput createParticipant(final ParticipantCreateInput input) {
         final Room room = obtainRoomBySession(input.session());
         final Long roomId = room.getId();
