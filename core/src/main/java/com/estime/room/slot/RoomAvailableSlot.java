@@ -35,33 +35,33 @@ public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
     private Room room;
 
     public static RoomAvailableSlot of(
-            final DateTimeSlot slotCode,
+            final DateTimeSlot slot,
             final Room room
     ) {
-        validateNull(slotCode, room);
-        return new RoomAvailableSlot(RoomAvailableSlotId.of(slotCode), room);
+        validateNull(slot, room);
+        return new RoomAvailableSlot(RoomAvailableSlotId.of(slot), room);
     }
 
     private static void validateNull(
-            final DateTimeSlot slotCode,
+            final DateTimeSlot slot,
             final Room room
     ) {
         Validator.builder()
-                .add(RoomAvailableSlotId.Fields.slotCode, slotCode)
+                .add(RoomAvailableSlotId.Fields.slot, slot)
                 .add(RoomAvailableSlot.Fields.room, room)
                 .validateNull();
     }
 
-    public DateTimeSlot getSlotCode() {
-        return id.getSlotCode();
+    public DateTimeSlot getSlot() {
+        return id.getSlot();
     }
 
     public Instant getStartAt() {
-        return id.getSlotCode().toInstant();
+        return id.getSlot().getStartAt();
     }
 
     @Override
     public int compareTo(final RoomAvailableSlot other) {
-        return this.getSlotCode().compareTo(other.getSlotCode());
+        return this.getSlot().compareTo(other.getSlot());
     }
 }

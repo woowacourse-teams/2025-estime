@@ -6,7 +6,7 @@ import java.util.List;
 
 public record RoomCreateInput(
         String title,
-        List<DateTimeSlot> slotCodes,
+        List<DateTimeSlot> slots,
         Instant deadline
 ) {
 }

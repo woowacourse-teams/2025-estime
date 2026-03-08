@@ -44,12 +44,12 @@ public record RoomCreateRequest(
             final List<LocalTime> times,
             final ZoneId zone
     ) {
-        final List<DateTimeSlot> slotCodes = new ArrayList<>();
+        final List<DateTimeSlot> slots = new ArrayList<>();
         for (final LocalDate date : dates) {
             for (final LocalTime time : times) {
-                slotCodes.add(DateTimeSlot.from(LocalDateTime.of(date, time).atZone(zone).toInstant()));
+                slots.add(DateTimeSlot.from(LocalDateTime.of(date, time).atZone(zone).toInstant()));
             }
         }
-        return slotCodes;
+        return slots;
     }
 }

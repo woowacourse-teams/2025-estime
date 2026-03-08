@@ -43,7 +43,7 @@ public record DateTimeSlotStatisticResponse(
                             final int voteCount = each.participantNames().size();
                             final double weight = Math.round((double) voteCount / participantCount * 100.0) / 100.0;
                             return new DateTimeSlotVotesResponse(
-                                    each.dateTimeSlot().toInstant().atZone(zone).toLocalDateTime(),
+                                    each.dateTimeSlot().getStartAt().atZone(zone).toLocalDateTime(),
                                     voteCount,
                                     weight,
                                     participantNames.stream().map(ParticipantName::getValue).toList()

@@ -20,7 +20,7 @@ public record ParticipantVotesResponse(
         return new ParticipantVotesResponse(
                 output.name().getValue(),
                 output.votes().stream()
-                        .map(vote -> vote.getDateTimeSlot().toInstant().atZone(zone).toLocalDateTime())
+                        .map(vote -> vote.getDateTimeSlot().getStartAt().atZone(zone).toLocalDateTime())
                         .toList()
         );
     }

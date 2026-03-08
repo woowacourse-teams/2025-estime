@@ -8,7 +8,7 @@ import java.util.List;
 
 public record ConnectedRoomCreateInput(
         String title,
-        List<DateTimeSlot> slotCodes,
+        List<DateTimeSlot> slots,
         Instant deadline,
         PlatformType platformType,
         String channelId,

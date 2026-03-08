@@ -127,7 +127,7 @@ public class Room extends BaseEntity {
             final Instant now
     ) {
         for (final DateTimeSlot slot : availableSlots) {
-            if (slot.toInstant().isBefore(now)) {
+            if (slot.getStartAt().isBefore(now)) {
                 throw new PastNotAllowedException(DomainTerm.DATE_TIME_SLOT, slot);
             }
         }
