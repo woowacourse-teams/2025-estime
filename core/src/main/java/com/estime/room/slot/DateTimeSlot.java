@@ -85,12 +85,16 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         return new DateTimeSlot(/* (flag << 20) | */ (dayOffset << 8) | timeSlotIndex);
     }
 
-    public Instant toInstant() {
+    public Instant getStartAt() {
         final int dayOffset = (encoded >> 8) & 0xFFF;
         final int timeSlotIndex = encoded & 0xFF;
         final long totalMinutes = (long) dayOffset * MINUTES_PER_DAY
                 + (long) timeSlotIndex * UNIT.toMinutes();
         return EPOCH.plus(Duration.ofMinutes(totalMinutes));
+    }
+
+    public Instant getEndAt() {
+        return getStartAt().plus(UNIT);
     }
 
     @Override
@@ -100,6 +104,6 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
     @Override
     public String toString() {
-        return String.format("%s (%d)", toInstant(), encoded);
+        return String.format("%s ~ %s (%d)", getStartAt(), getEndAt(), encoded);
     }
 }
