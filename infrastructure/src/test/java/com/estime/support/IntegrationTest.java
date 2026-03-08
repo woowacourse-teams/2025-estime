@@ -51,7 +51,6 @@ public abstract class IntegrationTest {
     void setUpIntegrationTest() {
         given(timeProvider.now()).willReturn(NOW);
         given(timeProvider.zone()).willReturn(ZONE);
-        given(timeProvider.nowDateTime()).willReturn(NOW_LOCAL_DATE_TIME);
 
         doThrow(new IllegalStateException("OutboxScheduler should not be called in tests"))
                 .when(outboxScheduler).processOutbox();

@@ -31,7 +31,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         );
 
         assertSoftly(softly -> {
@@ -51,7 +52,8 @@ class RoomTest {
                 exactLengthTitle,
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).doesNotThrowAnyException();
     }
 
@@ -66,7 +68,8 @@ class RoomTest {
                 invalidTitle,
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).isInstanceOf(InvalidLengthException.class)
                 .hasMessageContaining(DomainTerm.ROOM.name());
     }
@@ -82,7 +85,8 @@ class RoomTest {
                 blankTitle,
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).isInstanceOf(InvalidLengthException.class)
                 .hasMessageContaining(DomainTerm.ROOM.name());
     }
@@ -94,7 +98,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).doesNotThrowAnyException();
     }
 
@@ -105,7 +110,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 pastDeadline,
-                List.of()
+                List.of(),
+                now
         )).isInstanceOf(PastNotAllowedException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }
@@ -117,7 +123,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         );
 
         assertThatCode(() -> room.ensureDeadlineNotPassed(now))
@@ -131,7 +138,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         );
 
         assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plus(2, ChronoUnit.DAYS)))

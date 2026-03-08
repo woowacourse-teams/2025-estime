@@ -66,8 +66,9 @@ class VoteStatisticCacheTest extends IntegrationTest {
         final Room tempRoom = Room.withoutId(
                 "cacheTest",
                 roomSession,
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
-                List.of(DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))))
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)).atZone(ZONE).toInstant(),
+                List.of(DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant())),
+                NOW
         );
         room = roomRepository.save(tempRoom);
 
@@ -75,7 +76,7 @@ class VoteStatisticCacheTest extends IntegrationTest {
                 Participant.withoutId(room.getId(), ParticipantName.from("CTU"))
         );
 
-        slot = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
+        slot = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
         voteRepository.save(Vote.of(participant.getId(), slot));
     }
 
