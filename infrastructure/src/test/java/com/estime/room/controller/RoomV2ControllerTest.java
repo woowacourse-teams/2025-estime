@@ -62,12 +62,13 @@ class RoomV2ControllerTest extends IntegrationTest {
         final Room tempRoom = Room.withoutId(
                 "Test Room V2",
                 roomSession,
-                NOW_LOCAL_DATE_TIME.plusDays(7),
+                NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant(),
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)))
-                )
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)).atZone(ZONE).toInstant())
+                ),
+                NOW
         );
         room = roomRepository.save(tempRoom);
     }
@@ -142,7 +143,7 @@ class RoomV2ControllerTest extends IntegrationTest {
         participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
 
         final LocalDateTime dateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0));
-        final int slotCode = DateTimeSlot.from(dateTime).getEncoded();
+        final int slotCode = DateTimeSlot.from(dateTime.atZone(ZONE).toInstant()).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
                 "gangsan",
@@ -166,7 +167,7 @@ class RoomV2ControllerTest extends IntegrationTest {
 
         // 사용할 수 없는 시간대 (20:00)
         final LocalDateTime invalidDateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0));
-        final int invalidSlotCode = DateTimeSlot.from(invalidDateTime).getEncoded();
+        final int invalidSlotCode = DateTimeSlot.from(invalidDateTime.atZone(ZONE).toInstant()).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
                 "gangsan",
@@ -187,7 +188,7 @@ class RoomV2ControllerTest extends IntegrationTest {
     void updateParticipantVotes_participantNotFound() throws Exception {
         // given
         final LocalDateTime dateTime = LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0));
-        final int slotCode = DateTimeSlot.from(dateTime).getEncoded();
+        final int slotCode = DateTimeSlot.from(dateTime.atZone(ZONE).toInstant()).getEncoded();
 
         final ParticipantVotesUpdateRequestV2 request = new ParticipantVotesUpdateRequestV2(
                 "NonExistent",
@@ -234,9 +235,9 @@ class RoomV2ControllerTest extends IntegrationTest {
         final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
 
         // 역순으로 투표 저장 (18:00, 14:00, 10:00)
-        final DateTimeSlot slot1 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)));
-        final DateTimeSlot slot2 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)));
-        final DateTimeSlot slot3 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)));
+        final DateTimeSlot slot1 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)).atZone(ZONE).toInstant());
+        final DateTimeSlot slot2 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant());
+        final DateTimeSlot slot3 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
 
         voteRepository.save(Vote.of(participant1.getId(), slot1));
         voteRepository.save(Vote.of(participant1.getId(), slot2));

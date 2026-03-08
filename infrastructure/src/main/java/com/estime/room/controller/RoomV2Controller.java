@@ -16,6 +16,7 @@ import com.estime.room.dto.input.VotesOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.service.RoomApplicationService;
 import com.estime.shared.CustomApiResponse;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class RoomV2Controller implements RoomV2ControllerSpecification {
+
+    private static final ZoneId DEFAULT_ZONE = ZoneId.of("Asia/Seoul");
 
     private final RoomApplicationService roomApplicationService;
 
@@ -48,7 +51,7 @@ public class RoomV2Controller implements RoomV2ControllerSpecification {
             @PathVariable("session") final RoomSession session
     ) {
         final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(session));
-        return CustomApiResponse.ok(RoomResponseV2.from(output));
+        return CustomApiResponse.ok(RoomResponseV2.from(output, DEFAULT_ZONE));
     }
 
     @Override

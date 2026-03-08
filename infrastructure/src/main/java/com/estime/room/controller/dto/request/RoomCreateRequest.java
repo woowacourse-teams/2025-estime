@@ -1,12 +1,16 @@
 package com.estime.room.controller.dto.request;
 
+import com.estime.room.controller.dto.FlexibleInstantDeserializer;
 import com.estime.room.dto.input.RoomCreateInput;
 import com.estime.room.slot.DateTimeSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,27 +26,28 @@ public record RoomCreateRequest(
         @JsonFormat(pattern = "HH:mm")
         List<LocalTime> availableTimeSlots,
 
-        @Schema(example = "2026-01-06T09:00")
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-        LocalDateTime deadline
+        @Schema(example = "2026-01-06T09:00+09:00")
+        @JsonDeserialize(using = FlexibleInstantDeserializer.class)
+        Instant deadline
 ) {
 
-    public RoomCreateInput toInput() {
+    public RoomCreateInput toInput(final ZoneId zone) {
         return new RoomCreateInput(
                 title,
-                toSlotCodes(availableDateSlots, availableTimeSlots),
+                toSlotCodes(availableDateSlots, availableTimeSlots, zone),
                 deadline
         );
     }
 
-    private List<DateTimeSlot> toSlotCodes(
+    private static List<DateTimeSlot> toSlotCodes(
             final List<LocalDate> dates,
-            final List<LocalTime> times
+            final List<LocalTime> times,
+            final ZoneId zone
     ) {
         final List<DateTimeSlot> slotCodes = new ArrayList<>();
         for (final LocalDate date : dates) {
             for (final LocalTime time : times) {
-                slotCodes.add(DateTimeSlot.from(LocalDateTime.of(date, time)));
+                slotCodes.add(DateTimeSlot.from(LocalDateTime.of(date, time).atZone(zone).toInstant()));
             }
         }
         return slotCodes;

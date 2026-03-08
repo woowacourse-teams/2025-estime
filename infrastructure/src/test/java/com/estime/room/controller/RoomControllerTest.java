@@ -65,13 +65,14 @@ class RoomControllerTest extends IntegrationTest {
         final Room tempRoom = Room.withoutId(
                 "Test Room",
                 roomSession,
-                NOW_LOCAL_DATE_TIME.plusDays(7),
+                NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant(),
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)))
-                )
+                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)).atZone(ZONE).toInstant())
+                ),
+                NOW
         );
         room = roomRepository.save(tempRoom);
     }
@@ -81,12 +82,11 @@ class RoomControllerTest extends IntegrationTest {
     void createRoom() throws Exception {
         // given
         final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
-        final LocalDateTime deadline = NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0);
         final RoomCreateRequest request = new RoomCreateRequest(
                 "New Room",
                 List.of(date),
                 List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
-                deadline
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0).atZone(ZONE).toInstant()
         );
 
         // when & then
@@ -220,7 +220,7 @@ class RoomControllerTest extends IntegrationTest {
 
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "gangsan",
-                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant())
         );
 
         // when & then
@@ -241,7 +241,7 @@ class RoomControllerTest extends IntegrationTest {
 
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "gangsan",
-                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
         );
 
         // when & then
@@ -262,7 +262,7 @@ class RoomControllerTest extends IntegrationTest {
                 "Connected Room",
                 List.of(date),
                 List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
-                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0),
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0).atZone(ZONE).toInstant(),
                 "DISCORD",
                 "test-channel",
                 new PlatformNotificationRequest(true, false, false)
@@ -283,7 +283,7 @@ class RoomControllerTest extends IntegrationTest {
         // given
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "NonExistent",
-                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant())
         );
 
         // when & then
@@ -318,12 +318,11 @@ class RoomControllerTest extends IntegrationTest {
     void createRoom_pastDate() throws Exception {
         // given
         final LocalDate pastDate = NOW_LOCAL_DATE.minusDays(1);
-        final LocalDateTime deadline = NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0);
         final RoomCreateRequest request = new RoomCreateRequest(
                 "Past Room",
                 List.of(pastDate),
                 List.of(LocalTime.of(10, 0)),
-                deadline
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0).atZone(ZONE).toInstant()
         );
 
         // when & then
