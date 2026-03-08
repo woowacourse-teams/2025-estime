@@ -2,7 +2,8 @@ package com.estime.room.platform.discord;
 
 import com.estime.room.platform.PlatformMessage;
 import com.estime.room.platform.PlatformMessageStyle;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -45,10 +46,11 @@ public class DiscordMessageBuilder {
     public MessageCreateData buildCreationMessage(
             final String shortcut,
             final String title,
-            final LocalDateTime deadline
+            final Instant deadline,
+            final ZoneId zone
     ) {
         final PlatformMessage platformMessage = PlatformMessage.ROOM_CREATION;
-        final String formattedDeadline = deadline
+        final String formattedDeadline = deadline.atZone(zone)
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
         final MessageEmbed embed = new EmbedBuilder()
                 .setTitle(platformMessage.getTitleWithEmoji())
@@ -68,10 +70,11 @@ public class DiscordMessageBuilder {
     public MessageCreateData buildReminderMessage(
             final String shortcut,
             final String title,
-            final LocalDateTime deadline
+            final Instant deadline,
+            final ZoneId zone
     ) {
         final PlatformMessage platformMessage = PlatformMessage.ROOM_REMINDER;
-        final String formattedDeadline = deadline
+        final String formattedDeadline = deadline.atZone(zone)
                 .format(PlatformMessageStyle.DEFAULT.getDateTimeFormatter());
 
         final MessageEmbed embed = new EmbedBuilder()

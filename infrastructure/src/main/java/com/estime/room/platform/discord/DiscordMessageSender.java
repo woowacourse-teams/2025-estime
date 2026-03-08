@@ -5,7 +5,8 @@ import com.estime.room.RoomSession;
 import com.estime.room.platform.PlatformShortcutBuilder;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotificationType;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class DiscordMessageSender implements PlatformMessageSender {
+
+    private static final ZoneId DEFAULT_ZONE = ZoneId.of("Asia/Seoul");
 
     private final JDA jda;
     private final DiscordMessageBuilder discordMessageBuilder;
@@ -36,14 +39,14 @@ public class DiscordMessageSender implements PlatformMessageSender {
             final String channelId,
             final RoomSession session,
             final String title,
-            final LocalDateTime deadline
+            final Instant deadline
     ) {
         final TextChannel channel = getChannel(channelId);
         final String roomUrl = platformShortcutBuilder.buildConnectedRoomUrl(session);
 
         final MessageCreateData message = switch (type) {
-            case CREATION -> discordMessageBuilder.buildCreationMessage(roomUrl, title, deadline);
-            case REMINDER -> discordMessageBuilder.buildReminderMessage(roomUrl, title, deadline);
+            case CREATION -> discordMessageBuilder.buildCreationMessage(roomUrl, title, deadline, DEFAULT_ZONE);
+            case REMINDER -> discordMessageBuilder.buildReminderMessage(roomUrl, title, deadline, DEFAULT_ZONE);
             case DEADLINE -> discordMessageBuilder.buildDeadlineMessage(roomUrl, title);
         };
 
