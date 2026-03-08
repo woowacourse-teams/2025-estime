@@ -4,9 +4,11 @@ import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.slot.RoomAvailableSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public record RoomResponse(
@@ -28,9 +30,9 @@ public record RoomResponse(
         String roomSession
 ) {
 
-    public static RoomResponse from(final RoomOutput output) {
+    public static RoomResponse from(final RoomOutput output, final ZoneId zone) {
         final List<LocalDateTime> dateTimes = output.availableSlots().stream()
-                .map(RoomAvailableSlot::getStartAt)
+                .map(slot -> slot.getStartAt().atZone(zone).toLocalDateTime())
                 .toList();
 
         return new RoomResponse(
@@ -45,7 +47,7 @@ public record RoomResponse(
                         .distinct()
                         .sorted()
                         .toList(),
-                output.deadline(),
+                output.deadline().atZone(zone).toLocalDateTime(),
                 output.session().getValue()
         );
     }

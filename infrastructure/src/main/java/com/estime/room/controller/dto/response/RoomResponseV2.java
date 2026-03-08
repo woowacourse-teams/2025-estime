@@ -5,6 +5,7 @@ import com.estime.room.slot.RoomAvailableSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public record RoomResponseV2(
@@ -23,14 +24,14 @@ public record RoomResponseV2(
         String roomSession
 ) {
 
-    public static RoomResponseV2 from(final RoomOutput output) {
+    public static RoomResponseV2 from(final RoomOutput output, final ZoneId zone) {
         return new RoomResponseV2(
                 output.title(),
                 output.availableSlots().stream()
-                        .map(RoomAvailableSlot::getStartAt)
+                        .map(slot -> slot.getStartAt().atZone(zone).toLocalDateTime())
                         .sorted()
                         .toList(),
-                output.deadline(),
+                output.deadline().atZone(zone).toLocalDateTime(),
                 output.session().getValue()
         );
     }
