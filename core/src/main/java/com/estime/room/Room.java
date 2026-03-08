@@ -61,13 +61,11 @@ public class Room extends BaseEntity {
     private Room(
             final RoomSession session,
             final String title,
-            final Instant deadline,
-            final List<DateTimeSlot> slots
+            final Instant deadline
     ) {
         this.session = session;
         this.title = title;
         this.deadline = deadline;
-        slots.forEach(slot -> this.availableSlots.add(RoomAvailableSlot.of(slot, this)));
     }
 
     public static Room withoutId(
@@ -83,7 +81,10 @@ public class Room extends BaseEntity {
         validateDeadline(deadline, now);
         validateAvailableSlotsNoDuplicate(slots);
         validateAvailableSlotsNotPast(slots, now);
-        return new Room(session, trimmedTitle, deadline, slots);
+
+        final Room room = new Room(session, trimmedTitle, deadline);
+        slots.forEach(slot -> room.availableSlots.add(RoomAvailableSlot.of(slot, room)));
+        return room;
     }
 
     private static void validateNull(
@@ -149,7 +150,6 @@ public class Room extends BaseEntity {
             }
         }
     }
-
 
     public List<RoomAvailableSlot> getRoomAvailableSlots() {
         return Collections.unmodifiableList(availableSlots);
