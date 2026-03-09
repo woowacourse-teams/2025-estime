@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 public record ParticipantVotesResponseV2(
-        @Schema(description = "압축된 슬롯 코드 배열", example = "[28, 3603, 25647]")
+        @Schema(description = "압축된 슬롯 코드 배열 (EPOCH: 2025-10-24T00:00+09:00)", example = "[28, 3603, 25647]")
         List<Integer> slotCodes
 ) {
 

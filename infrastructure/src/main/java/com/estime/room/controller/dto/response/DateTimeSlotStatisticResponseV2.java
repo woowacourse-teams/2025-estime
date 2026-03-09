@@ -55,7 +55,7 @@ public record DateTimeSlotStatisticResponseV2(
     }
 
     private record DateTimeSlotVotesResponseV2(
-            @Schema(description = "슬롯 코드", example = "28")
+            @Schema(description = "슬롯 코드 (EPOCH: 2025-10-24T00:00+09:00)", example = "28")
             int slotCode,
 
             @Schema(description = "투표 수", example = "3")

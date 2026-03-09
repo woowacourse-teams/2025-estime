@@ -11,7 +11,7 @@ public record ParticipantVotesUpdateRequestV2(
         @Schema(example = "메이토")
         String participantName,
 
-        @Schema(description = "압축된 슬롯 코드 배열 (EPOCH: 2025-10-24)",
+        @Schema(description = "압축된 슬롯 코드 배열 (EPOCH: 2025-10-24T00:00+09:00)",
                 example = "[17682, 17683, 17684, 17685, 17686, 17687, 17688, 17689, 17938, 17939, 17940, 17941, 17942, 17943, 17944, 17945]")
         List<Integer> slotCodes
 ) {
