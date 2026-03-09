@@ -1,7 +1,9 @@
 package com.estime.room.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -9,7 +11,10 @@ import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
 import com.estime.room.TsidRoomSessionGenerator;
+import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV2;
+import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV2.PlatformNotificationRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV2;
+import com.estime.room.controller.dto.request.RoomCreateRequestV2;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
@@ -22,6 +27,7 @@ import com.github.f4b6a3.tsid.TsidCreator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -54,23 +61,182 @@ class RoomV2ControllerTest extends IntegrationTest {
 
     private Room room;
     private RoomSession roomSession;
+    private DateTimeSlot slot1;
+    private DateTimeSlot slot2;
+    private DateTimeSlot slot3;
 
     @BeforeEach
     void setUp() {
         roomSession = roomSessionGenerator.generate();
         final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        slot1 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
+        slot2 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant());
+        slot3 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)).atZone(ZONE).toInstant());
         final Room tempRoom = Room.withoutId(
                 "Test Room V2",
                 roomSession,
                 NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant(),
-                List.of(
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)).atZone(ZONE).toInstant())
-                ),
+                List.of(slot1, slot2, slot3),
                 NOW
         );
         room = roomRepository.save(tempRoom);
+    }
+
+    @DisplayName("POST /api/v2/rooms - 방을 생성한다")
+    @Test
+    void createRoom() throws Exception {
+        // given
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        final Instant slotInstant1 = LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant();
+        final Instant slotInstant2 = LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant();
+        final RoomCreateRequestV2 request = new RoomCreateRequestV2(
+                "New Room",
+                List.of(slotInstant1, slotInstant2),
+                NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant()
+        );
+
+        // when & then
+        mockMvc.perform(post("/api/v2/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.session").exists());
+    }
+
+    @DisplayName("POST /api/v2/rooms - 과거 날짜로 방 생성 시 400 에러")
+    @Test
+    void createRoom_pastDate() throws Exception {
+        // given
+        final LocalDate pastDate = NOW_LOCAL_DATE.minusDays(1);
+        final RoomCreateRequestV2 request = new RoomCreateRequestV2(
+                "Past Room",
+                List.of(LocalDateTime.of(pastDate, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
+                NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant()
+        );
+
+        // when & then
+        mockMvc.perform(post("/api/v2/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("POST /api/v2/rooms - 잘못된 형식의 요청 시 400 에러")
+    @Test
+    void createRoom_invalidRequest() throws Exception {
+        // given
+        final RoomCreateRequestV2 request = new RoomCreateRequestV2(
+                "",
+                List.of(),
+                null
+        );
+
+        // when & then
+        mockMvc.perform(post("/api/v2/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("POST /api/v2/rooms/connected - 커넥티드 룸을 생성한다")
+    @Test
+    void createConnectedRoom() throws Exception {
+        // given
+        final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
+        final ConnectedRoomCreateRequestV2 request = new ConnectedRoomCreateRequestV2(
+                "Connected Room",
+                List.of(
+                        LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant(),
+                        LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant()
+                ),
+                NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant(),
+                "DISCORD",
+                "test-channel",
+                new PlatformNotificationRequest(true, false, false)
+        );
+
+        // when & then
+        mockMvc.perform(post("/api/v2/rooms/connected")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.session").exists())
+                .andExpect(jsonPath("$.data.platformType").value("DISCORD"));
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session} - 방 상세 정보를 조회한다")
+    @Test
+    void getBySession() throws Exception {
+        // when & then
+        mockMvc.perform(get("/api/v2/rooms/{session}", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.title").value("Test Room V2"))
+                .andExpect(jsonPath("$.data.roomSession").value(roomSession.getValue()));
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session} - 응답에 ETag 헤더가 포함된다")
+    @Test
+    void getBySession_returnsETag() throws Exception {
+        // when & then
+        mockMvc.perform(get("/api/v2/rooms/{session}", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andExpect(header().exists("ETag"));
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session} - 동일한 응답이면 304 Not Modified를 반환한다")
+    @Test
+    void getBySession_returnsNotModifiedWithMatchingETag() throws Exception {
+        // given
+        final MvcResult result = mockMvc.perform(get("/api/v2/rooms/{session}", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        final String etag = result.getResponse().getHeader("ETag");
+
+        // when & then
+        mockMvc.perform(get("/api/v2/rooms/{session}", roomSession.getValue())
+                        .header("If-None-Match", etag))
+                .andExpect(status().isNotModified());
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session} - 잘못된 세션 형식 시 400(code)")
+    @Test
+    void getBySession_invalidFormat() throws Exception {
+        // when & then
+        mockMvc.perform(get("/api/v2/rooms/{session}", "invalid-session"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session} - 존재하지 않는 방 조회 시 404 에러")
+    @Test
+    void getBySession_notFound() throws Exception {
+        // given
+        final String nonExistentSession = TsidCreator.getTsid().toString();
+
+        // when & then
+        mockMvc.perform(get("/api/v2/rooms/{session}", nonExistentSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - 존재하지 않는 방 통계 조회 시 404 에러")
+    @Test
+    void getDateTimeSlotStatistic_notFound() throws Exception {
+        // given
+        final String nonExistentSession = TsidCreator.getTsid().toString();
+
+        // when & then
+        mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", nonExistentSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.success").value(false));
     }
 
     @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - 투표 통계를 조회한다")
@@ -94,19 +260,6 @@ class RoomV2ControllerTest extends IntegrationTest {
     void getDateTimeSlotStatistic_invalidFormat() throws Exception {
         // when & then
         mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", "invalid-session"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
-                .andExpect(jsonPath("$.success").value(false));
-    }
-
-    @DisplayName("GET /api/v2/rooms/{session}/statistics/date-time-slots - 존재하지 않는 방 조회 시 404 에러")
-    @Test
-    void getDateTimeSlotStatistic_notFound() throws Exception {
-        // given: 유효한 TSID 형식이지만 존재하지 않는 세션
-        final String nonExistentSession = TsidCreator.getTsid().toString();
-
-        // when & then
-        mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", nonExistentSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
