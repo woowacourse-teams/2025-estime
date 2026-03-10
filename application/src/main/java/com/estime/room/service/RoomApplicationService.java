@@ -34,7 +34,6 @@ import com.estime.room.platform.notification.PlatformNotificationOutboxRepositor
 import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +112,7 @@ public class RoomApplicationService {
         return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }
 
-@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public RoomOutput getRoomBySession(final RoomSessionInput input) {
         final Room room = obtainRoomWithAvailableSlotsBySession(input.session());
         return RoomOutput.from(room);
@@ -189,7 +188,7 @@ public class RoomApplicationService {
         return VotesOutput.from(input.name(), updatedVotes);
     }
 
-@Transactional
+    @Transactional
     public ParticipantCheckOutput createParticipant(final ParticipantCreateInput input) {
         final Room room = obtainRoomBySession(input.session());
         final Long roomId = room.getId();

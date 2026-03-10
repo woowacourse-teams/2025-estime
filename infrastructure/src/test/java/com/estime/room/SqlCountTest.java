@@ -102,7 +102,8 @@ class SqlCountTest extends IntegrationTest {
 
         // 10개의 Vote 생성
         for (int i = 0; i < 10; i++) {
-            votes.add(Vote.of(participantId, DateTimeSlot.from(baseTime.plusMinutes(30L * i).atZone(ZONE).toInstant())));
+            votes.add(
+                    Vote.of(participantId, DateTimeSlot.from(baseTime.plusMinutes(30L * i).atZone(ZONE).toInstant())));
         }
 
         // when

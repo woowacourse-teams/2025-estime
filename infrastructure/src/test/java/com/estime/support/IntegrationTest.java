@@ -1,7 +1,6 @@
 package com.estime.support;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.doThrow;
 
 import com.estime.TestApplication;

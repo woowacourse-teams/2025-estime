@@ -382,7 +382,6 @@ class RoomV3ControllerTest extends IntegrationTest {
                 null
         );
 
-
         // when & then
         mockMvc.perform(post("/api/v3/rooms")
                         .contentType(MediaType.APPLICATION_JSON)

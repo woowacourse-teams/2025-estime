@@ -87,9 +87,9 @@ tasks.register('jacocoAggregatedReport', JacocoReport) {
 
     def sourceDirs = files(subprojects*.sourceSets.main.allSource.srcDirs)
     def classDirs = files(subprojects*.sourceSets.main.output)
-        .asFileTree.matching {
-            exclude '**/dto/**', '**/config/**', '**/*Application.class', '**/Q*.class'
-        }
+            .asFileTree.matching {
+        exclude '**/dto/**', '**/config/**', '**/*Application.class', '**/Q*.class'
+    }
 
     // 존재하는 exec 파일만 수집
     def execFiles = files(subprojects.collect { project ->

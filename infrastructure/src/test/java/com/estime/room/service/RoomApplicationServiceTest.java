@@ -83,13 +83,16 @@ class RoomApplicationServiceTest extends IntegrationTest {
     private static Stream<Arguments> unavailableDateTimeSlots() {
         return Stream.of(
                 Arguments.of( // Case 1: 날짜(date)가 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(10, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(10, 0)).atZone(ZONE)
+                                .toInstant())
                 ),
                 Arguments.of( // Case 2: 시간(time)이 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(12, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(12, 0)).atZone(ZONE)
+                                .toInstant())
                 ),
                 Arguments.of( // Case 3: 날짜(date)와 시간(time) 둘 다 범위를 벗어나는 경우
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(12, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(2), LocalTime.of(12, 0)).atZone(ZONE)
+                                .toInstant())
                 )
         );
     }
@@ -123,8 +126,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE)
+                                .toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE)
+                                .toInstant())
                 ),
                 NOW.plus(365, ChronoUnit.DAYS)
         );
@@ -403,8 +408,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE)
+                                .toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE)
+                                .toInstant())
                 ),
                 NOW.plus(365, ChronoUnit.DAYS),
                 PlatformType.DISCORD,
@@ -427,8 +434,11 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final RoomCreateInput input = new RoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0)).atZone(ZONE)
+                                .toInstant()),
+                        DateTimeSlot.from(
+                                LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)).atZone(ZONE)
+                                        .toInstant())
                 ),
                 NOW.plus(365, ChronoUnit.DAYS)
         );
@@ -446,8 +456,11 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(7, 0)).atZone(ZONE)
+                                .toInstant()),
+                        DateTimeSlot.from(
+                                LocalDateTime.of(NOW_LOCAL_DATE.minusDays(1), LocalTime.of(20, 0)).atZone(ZONE)
+                                        .toInstant())
                 ),
                 NOW.plus(365, ChronoUnit.DAYS),
                 PlatformType.DISCORD,
@@ -468,8 +481,10 @@ class RoomApplicationServiceTest extends IntegrationTest {
         final ConnectedRoomCreateInput input = new ConnectedRoomCreateInput(
                 "title",
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE).toInstant()),
-                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(7, 0)).atZone(ZONE)
+                                .toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE)
+                                .toInstant())
                 ),
                 NOW.plus(365, ChronoUnit.DAYS),
                 PlatformType.DISCORD,

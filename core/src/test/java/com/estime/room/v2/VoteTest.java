@@ -1,11 +1,11 @@
 package com.estime.room.v2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.slot.DateTimeSlot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Vote 테스트")
 class VoteTest {

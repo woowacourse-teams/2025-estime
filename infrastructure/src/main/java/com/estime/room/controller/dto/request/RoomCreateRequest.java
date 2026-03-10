@@ -39,7 +39,7 @@ public record RoomCreateRequest(
         );
     }
 
-    private static List<DateTimeSlot> toSlotCodes(
+    private List<DateTimeSlot> toSlotCodes(
             final List<LocalDate> dates,
             final List<LocalTime> times,
             final ZoneId zone

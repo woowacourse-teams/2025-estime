@@ -20,10 +20,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Vote 성능 벤치마크
  * <p>
- * 측정 항목:
- * - 객체 생성 속도
- * - 컬렉션 연산 속도 (정렬)
- * - 통계 계산 속도 (Map 그룹핑)
+ * 측정 항목: - 객체 생성 속도 - 컬렉션 연산 속도 (정렬) - 통계 계산 속도 (Map 그룹핑)
  */
 @Disabled
 @DisplayName("Vote 성능 벤치마크")
@@ -163,7 +160,8 @@ class VotePerformanceTest {
             final long participantId = participantIndex + 1;
             for (final int slotIndex : participantSlotIndices.get(participantIndex)) {
                 final LocalDateTime dateTime = slotIndexToDateTime(slotIndex);
-                votes.add(Vote.of(participantId, DateTimeSlot.from(dateTime.atZone(ZoneId.of("Asia/Seoul")).toInstant())));
+                votes.add(Vote.of(participantId,
+                        DateTimeSlot.from(dateTime.atZone(ZoneId.of("Asia/Seoul")).toInstant())));
             }
         }
         return votes;

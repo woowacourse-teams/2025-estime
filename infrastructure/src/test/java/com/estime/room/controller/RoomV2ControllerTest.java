@@ -18,16 +18,16 @@ import com.estime.room.controller.dto.request.RoomCreateRequestV2;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.slot.DateTimeSlot;
-import com.estime.support.IntegrationTest;
 import com.estime.room.participant.vote.Vote;
 import com.estime.room.participant.vote.VoteRepository;
+import com.estime.room.slot.DateTimeSlot;
+import com.estime.support.IntegrationTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.f4b6a3.tsid.TsidCreator;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -388,9 +388,12 @@ class RoomV2ControllerTest extends IntegrationTest {
         final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
 
         // 역순으로 투표 저장 (18:00, 14:00, 10:00)
-        final DateTimeSlot slot1 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(18, 0)).atZone(ZONE).toInstant());
-        final DateTimeSlot slot2 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant());
-        final DateTimeSlot slot3 = DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
+        final DateTimeSlot slot1 = DateTimeSlot.from(
+                LocalDateTime.of(date, LocalTime.of(18, 0)).atZone(ZONE).toInstant());
+        final DateTimeSlot slot2 = DateTimeSlot.from(
+                LocalDateTime.of(date, LocalTime.of(14, 0)).atZone(ZONE).toInstant());
+        final DateTimeSlot slot3 = DateTimeSlot.from(
+                LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
 
         voteRepository.save(Vote.of(participant1.getId(), slot1));
         voteRepository.save(Vote.of(participant1.getId(), slot2));

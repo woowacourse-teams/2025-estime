@@ -20,7 +20,6 @@ import com.estime.room.platform.notification.PlatformNotificationOutboxRepositor
 import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.support.IntegrationTest;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -181,7 +180,8 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
             final Room room = saveRoom();
             final int batchSize = 100;
             for (int i = 0; i < batchSize; i++) {
-                final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(i + 1, ChronoUnit.MINUTES));
+                final PlatformNotificationOutbox outbox = buildOutbox(room.getId(),
+                        NOW.minus(i + 1, ChronoUnit.MINUTES));
                 repository.save(outbox);
             }
 
@@ -200,7 +200,8 @@ class PlatformNotificationOutboxHandlerTest extends IntegrationTest {
             final int batchSize = 100;
             final int totalCount = 101;
             for (int i = 0; i < totalCount; i++) {
-                final PlatformNotificationOutbox outbox = buildOutbox(room.getId(), NOW.minus(i + 1, ChronoUnit.MINUTES));
+                final PlatformNotificationOutbox outbox = buildOutbox(room.getId(),
+                        NOW.minus(i + 1, ChronoUnit.MINUTES));
                 repository.save(outbox);
             }
 

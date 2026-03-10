@@ -1,7 +1,6 @@
 package com.estime.room.controller.dto.response;
 
 import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.slot.RoomAvailableSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
