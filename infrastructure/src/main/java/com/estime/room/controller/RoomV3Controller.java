@@ -2,10 +2,12 @@ package com.estime.room.controller;
 
 import com.estime.room.RoomSession;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV3;
+import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV3;
 import com.estime.room.controller.dto.request.RoomCreateRequestV3;
 import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponseV3;
+import com.estime.room.controller.dto.response.ParticipantCheckResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesResponseV3;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponseV3;
@@ -13,6 +15,7 @@ import com.estime.room.dto.input.RoomSessionInput;
 import com.estime.room.dto.input.VotesFindInput;
 import com.estime.room.dto.input.VotesOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
+import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.service.RoomApplicationService;
 import com.estime.shared.CustomApiResponse;
@@ -81,5 +84,15 @@ public class RoomV3Controller implements RoomV3ControllerSpecification {
                 "Update success",
                 ParticipantVotesResponseV3.from(output)
         );
+    }
+
+    @Override
+    public CustomApiResponse<ParticipantCheckResponse> createParticipant(
+            @PathVariable("session") final RoomSession session,
+            @RequestBody final ParticipantCreateRequest request
+    ) {
+        final ParticipantCheckOutput output = roomApplicationService.createParticipant(
+                request.toInput(session));
+        return CustomApiResponse.ok(ParticipantCheckResponse.from(output));
     }
 }

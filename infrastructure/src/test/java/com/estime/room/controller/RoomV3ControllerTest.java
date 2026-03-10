@@ -13,6 +13,7 @@ import com.estime.room.RoomSession;
 import com.estime.room.TsidRoomSessionGenerator;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV3;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV3.PlatformNotificationRequest;
+import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV3;
 import com.estime.room.controller.dto.request.RoomCreateRequestV3;
 import com.estime.room.participant.Participant;
@@ -389,5 +390,35 @@ class RoomV3ControllerTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("POST /api/v3/rooms/{session}/participants - 참여자를 생성한다")
+    @Test
+    void createParticipant() throws Exception {
+        // given
+        final ParticipantCreateRequest request = new ParticipantCreateRequest("gangsan");
+
+        // when & then
+        mockMvc.perform(post("/api/v3/rooms/{session}/participants", roomSession.getValue())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.isDuplicateName").value(false));
+    }
+
+    @DisplayName("POST /api/v3/rooms/{session}/participants - 이미 존재하는 참여자 이름으로 생성 시 isDuplicateName=true")
+    @Test
+    void createParticipant_duplicate() throws Exception {
+        // given
+        participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
+
+        final ParticipantCreateRequest request = new ParticipantCreateRequest("gangsan");
+
+        // when & then
+        mockMvc.perform(post("/api/v3/rooms/{session}/participants", roomSession.getValue())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.isDuplicateName").value(true));
     }
 }

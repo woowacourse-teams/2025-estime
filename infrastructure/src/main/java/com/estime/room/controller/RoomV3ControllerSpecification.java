@@ -2,10 +2,12 @@ package com.estime.room.controller;
 
 import com.estime.room.RoomSession;
 import com.estime.room.controller.dto.request.ConnectedRoomCreateRequestV3;
+import com.estime.room.controller.dto.request.ParticipantCreateRequest;
 import com.estime.room.controller.dto.request.ParticipantVotesUpdateRequestV3;
 import com.estime.room.controller.dto.request.RoomCreateRequestV3;
 import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponseV3;
+import com.estime.room.controller.dto.response.ParticipantCheckResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesResponseV3;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponseV3;
@@ -60,5 +62,12 @@ public interface RoomV3ControllerSpecification {
     CustomApiResponse<ParticipantVotesResponseV3> updateParticipantVotes(
             @PathVariable("session") RoomSession session,
             @RequestBody ParticipantVotesUpdateRequestV3 request
+    );
+
+    @Operation(summary = "새로운 참여자 이름 중복 검증 후 생성")
+    @PostMapping("/{session}/participants")
+    CustomApiResponse<ParticipantCheckResponse> createParticipant(
+            @PathVariable("session") RoomSession session,
+            @RequestBody ParticipantCreateRequest request
     );
 }
