@@ -136,6 +136,34 @@ class DateTimeSlotTest {
     }
 
     @Test
+    @DisplayName("from(Instant) - EPOCH로부터 4096일 이상 경과하면 예외 발생 (dayOffset 12비트 초과)")
+    void createFromInstantExceedingMaxDayOffset() {
+        // given: EPOCH + 4096일 = flag 영역 침범
+        final Instant tooFar = LocalDateTime.of(2025, 10, 24, 0, 0)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant()
+                .plus(java.time.Duration.ofDays(4096));
+
+        // when & then
+        assertThatThrownBy(() -> DateTimeSlot.from(tooFar))
+                .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+    }
+
+    @Test
+    @DisplayName("from(Instant) - EPOCH로부터 4095일은 정상 생성 (dayOffset 12비트 경계)")
+    void createFromInstantAtMaxDayOffset() {
+        // given: EPOCH + 4095일 = dayOffset 최대값
+        final Instant maxDay = LocalDateTime.of(2025, 10, 24, 0, 0)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant()
+                .plus(java.time.Duration.ofDays(4095));
+
+        // when
+        final DateTimeSlot slot = DateTimeSlot.from(maxDay);
+
+        // then
+        assertThat(slot.getStartAt()).isEqualTo(maxDay);
+    }
+
+    @Test
     @DisplayName("from(Instant) - null 값으로 생성 시 예외 발생")
     void createFromNullDateTime() {
         // when & then

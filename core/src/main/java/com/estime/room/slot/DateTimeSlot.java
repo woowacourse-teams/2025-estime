@@ -42,6 +42,7 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
                     .atZone(ZoneId.of("Asia/Seoul")).toInstant();
     private static final int MINUTES_PER_DAY = 24 * 60;
     private static final int MAX_ENCODED = 0xFFFFFF;
+    private static final int MAX_DAY_OFFSET = 0xFFF;
     private static final int DEFAULT_MAX_TIME_SLOT_INDEX = (MINUTES_PER_DAY / (int) UNIT.toMinutes()) - 1;
 
     private final int encoded;
@@ -86,6 +87,9 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
         // final int flag = 0;
         final int dayOffset = (int) (totalMinutes / MINUTES_PER_DAY);
+        if (dayOffset > MAX_DAY_OFFSET) {
+            throw new DateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, startAt);
+        }
         final int timeSlotIndex = minuteOfDay / (int) UNIT.toMinutes();
         return new DateTimeSlot(/* (flag << 20) | */ (dayOffset << 8) | timeSlotIndex);
     }
