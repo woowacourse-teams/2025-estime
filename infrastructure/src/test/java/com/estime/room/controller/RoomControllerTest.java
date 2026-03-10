@@ -19,6 +19,8 @@ import com.estime.room.controller.dto.request.RoomCreateRequest;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
+import com.estime.room.participant.vote.Vote;
+import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,26 +54,33 @@ class RoomControllerTest extends IntegrationTest {
     private ParticipantRepository participantRepository;
 
     @Autowired
+    private VoteRepository voteRepository;
+
+    @Autowired
     private TsidRoomSessionGenerator roomSessionGenerator;
 
     private Room room;
     private RoomSession roomSession;
+    private DateTimeSlot slot1;
+    private DateTimeSlot slot2;
+    private DateTimeSlot slot3;
+    private DateTimeSlot slot4;
 
     @BeforeEach
     void setUp() {
         roomSession = roomSessionGenerator.generate();
         final LocalDate date1 = NOW_LOCAL_DATE.plusDays(1);
         final LocalDate date2 = NOW_LOCAL_DATE.plusDays(2);
+        slot1 = DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
+        slot2 = DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0)).atZone(ZONE).toInstant());
+        slot3 = DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0)).atZone(ZONE).toInstant());
+        slot4 = DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)).atZone(ZONE).toInstant());
         final Room tempRoom = Room.withoutId(
                 "Test Room",
                 roomSession,
-                NOW_LOCAL_DATE_TIME.plusDays(7),
-                List.of(
-                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date1, LocalTime.of(14, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date2, LocalTime.of(14, 0)))
-                )
+                NOW_LOCAL_DATE_TIME.plusDays(7).atZone(ZONE).toInstant(),
+                List.of(slot1, slot2, slot3, slot4),
+                NOW
         );
         room = roomRepository.save(tempRoom);
     }
@@ -81,12 +90,11 @@ class RoomControllerTest extends IntegrationTest {
     void createRoom() throws Exception {
         // given
         final LocalDate date = NOW_LOCAL_DATE.plusDays(1);
-        final LocalDateTime deadline = NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0);
         final RoomCreateRequest request = new RoomCreateRequest(
                 "New Room",
                 List.of(date),
                 List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
-                deadline
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0).atZone(ZONE).toInstant()
         );
 
         // when & then
@@ -151,7 +159,7 @@ class RoomControllerTest extends IntegrationTest {
         // when & then
         mockMvc.perform(get("/api/v1/rooms/{session}", nonExistentSession))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 
@@ -208,7 +216,7 @@ class RoomControllerTest extends IntegrationTest {
         mockMvc.perform(get("/api/v1/rooms/{session}/votes/participants", roomSession.getValue())
                         .param("participantName", "NonExistent"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 
@@ -220,7 +228,7 @@ class RoomControllerTest extends IntegrationTest {
 
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "gangsan",
-                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant())
         );
 
         // when & then
@@ -241,7 +249,7 @@ class RoomControllerTest extends IntegrationTest {
 
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "gangsan",
-                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(20, 0)).atZone(ZONE).toInstant())
         );
 
         // when & then
@@ -262,7 +270,7 @@ class RoomControllerTest extends IntegrationTest {
                 "Connected Room",
                 List.of(date),
                 List.of(LocalTime.of(10, 0), LocalTime.of(14, 0)),
-                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0),
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0).atZone(ZONE).toInstant(),
                 "DISCORD",
                 "test-channel",
                 new PlatformNotificationRequest(true, false, false)
@@ -283,7 +291,7 @@ class RoomControllerTest extends IntegrationTest {
         // given
         final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
                 "NonExistent",
-                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)))
+                List.of(LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant())
         );
 
         // when & then
@@ -291,7 +299,7 @@ class RoomControllerTest extends IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 
@@ -318,12 +326,11 @@ class RoomControllerTest extends IntegrationTest {
     void createRoom_pastDate() throws Exception {
         // given
         final LocalDate pastDate = NOW_LOCAL_DATE.minusDays(1);
-        final LocalDateTime deadline = NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0);
         final RoomCreateRequest request = new RoomCreateRequest(
                 "Past Room",
                 List.of(pastDate),
                 List.of(LocalTime.of(10, 0)),
-                deadline
+                NOW_LOCAL_DATE_TIME.plusDays(7).withSecond(0).withNano(0).atZone(ZONE).toInstant()
         );
 
         // when & then
@@ -353,5 +360,67 @@ class RoomControllerTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("GET /api/v1/rooms/{session}/statistics/date-time-slots - 잘못된 세션 형식 시 400(code)")
+    @Test
+    void getDateTimeSlotStatistic_invalidFormat() throws Exception {
+        // when & then
+        mockMvc.perform(get("/api/v1/rooms/{session}/statistics/date-time-slots", "invalid-session"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("GET /api/v1/rooms/{session}/statistics/date-time-slots - 존재하지 않는 방 조회 시 404 에러")
+    @Test
+    void getDateTimeSlotStatistic_notFound() throws Exception {
+        // given
+        final String nonExistentSession = TsidCreator.getTsid().toString();
+
+        // when & then
+        mockMvc.perform(get("/api/v1/rooms/{session}/statistics/date-time-slots", nonExistentSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @DisplayName("GET /api/v1/rooms/{session}/statistics/date-time-slots - 통계가 시간 오름차순으로 정렬된다")
+    @Test
+    void getDateTimeSlotStatistic_sorted() throws Exception {
+        // given
+        final Participant participant1 = participantRepository.save(
+                Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
+        final Participant participant2 = participantRepository.save(
+                Participant.withoutId(room.getId(), ParticipantName.from("jeffrey")));
+
+        // 역순으로 투표 저장 (date1 14:00, date1 10:00)
+        voteRepository.save(Vote.of(participant1.getId(), slot2));
+        voteRepository.save(Vote.of(participant2.getId(), slot1));
+
+        // when & then: 시간 오름차순으로 정렬되어야 함
+        mockMvc.perform(get("/api/v1/rooms/{session}/statistics/date-time-slots", roomSession.getValue()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.statistic").isArray())
+                .andExpect(jsonPath("$.data.statistic.length()").value(2));
+    }
+
+    @DisplayName("PUT /api/v1/rooms/{session}/votes/participants - 빈 투표 목록으로 수정 (모든 투표 제거)")
+    @Test
+    void updateParticipantVotes_emptyVotes() throws Exception {
+        // given
+        participantRepository.save(Participant.withoutId(room.getId(), ParticipantName.from("gangsan")));
+
+        final ParticipantVotesUpdateRequest request = new ParticipantVotesUpdateRequest(
+                "gangsan",
+                List.of()
+        );
+
+        // when & then
+        mockMvc.perform(put("/api/v1/rooms/{session}/votes/participants", roomSession.getValue())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.dateTimeSlots").isEmpty());
     }
 }

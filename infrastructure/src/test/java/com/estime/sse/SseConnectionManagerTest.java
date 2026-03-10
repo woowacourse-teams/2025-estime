@@ -33,7 +33,7 @@ class SseConnectionManagerTest {
         });
     }
 
-@DisplayName("save() - SSE 연결을 저장한다")
+    @DisplayName("save() - SSE 연결을 저장한다")
     @Test
     void save() {
         // given

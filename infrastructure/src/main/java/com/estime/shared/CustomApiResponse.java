@@ -42,6 +42,10 @@ public class CustomApiResponse<T> {
         return new CustomApiResponse<>(400, false, message, null);
     }
 
+    public static <T> CustomApiResponse<T> notFound(final String message) {
+        return new CustomApiResponse<>(404, false, message, null);
+    }
+
     public static <T> CustomApiResponse<T> conflict(final String message) {
         return new CustomApiResponse<>(409, false, message, null);
     }

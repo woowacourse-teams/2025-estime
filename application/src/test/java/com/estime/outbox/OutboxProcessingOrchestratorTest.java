@@ -2,8 +2,6 @@ package com.estime.outbox;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
@@ -38,6 +36,14 @@ class OutboxProcessingOrchestratorTest {
 
     private OutboxProcessingOrchestrator orchestrator;
 
+    @BeforeEach
+    void setUp() {
+        // 동기 executor 사용 (테스트에서 콜백 즉시 실행)
+        final Executor syncExecutor = Runnable::run;
+        orchestrator = new OutboxProcessingOrchestrator(timeProvider, syncExecutor);
+        given(timeProvider.now()).willReturn(NOW);
+    }
+
     /**
      * 테스트용 Outbox 구현체
      */
@@ -58,14 +64,6 @@ class OutboxProcessingOrchestratorTest {
         public String getDescription() {
             return "TestOutbox";
         }
-    }
-
-    @BeforeEach
-    void setUp() {
-        // 동기 executor 사용 (테스트에서 콜백 즉시 실행)
-        final Executor syncExecutor = Runnable::run;
-        orchestrator = new OutboxProcessingOrchestrator(timeProvider, syncExecutor);
-        given(timeProvider.now()).willReturn(NOW);
     }
 
     @Nested

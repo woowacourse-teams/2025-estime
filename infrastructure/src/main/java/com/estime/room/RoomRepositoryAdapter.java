@@ -2,7 +2,7 @@ package com.estime.room;
 
 import com.estime.room.slot.QRoomAvailableSlot;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +59,7 @@ public class RoomRepositoryAdapter implements RoomRepository {
     }
 
     @Override
-    public List<Room> findAllByDeadlineAfter(final LocalDateTime criterion) {
+    public List<Room> findAllByDeadlineAfter(final Instant criterion) {
         return queryFactory.selectFrom(room)
                 .where(room.deadline.after(criterion))
                 .fetch();

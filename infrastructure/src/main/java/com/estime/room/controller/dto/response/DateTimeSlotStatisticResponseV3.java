@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Comparator;
 import java.util.List;
 
-public record DateTimeSlotStatisticResponseV2(
+public record DateTimeSlotStatisticResponseV3(
         @Schema(example = "4")
         int participantCount,
 
@@ -17,17 +17,17 @@ public record DateTimeSlotStatisticResponseV2(
         int maxVoteCount,
 
         @Schema(description = "슬롯별 투표 통계")
-        List<DateTimeSlotVotesResponseV2> statistics
+        List<DateTimeSlotVotesResponseV3> statistics
 ) {
 
-    public static DateTimeSlotStatisticResponseV2 from(final DateTimeSlotStatisticOutput output) {
+    public static DateTimeSlotStatisticResponseV3 from(final DateTimeSlotStatisticOutput output) {
         final int participantCount = output.participantCount();
-        final List<DateTimeSlotVotesResponseV2> statistics = output.statistic().stream()
+        final List<DateTimeSlotVotesResponseV3> statistics = output.statistic().stream()
                 .map(stat -> {
                     final int voteCount = stat.participantNames().size();
                     final double weight = Math.round((double) voteCount / participantCount * 100.0) / 100.0;
 
-                    return new DateTimeSlotVotesResponseV2(
+                    return new DateTimeSlotVotesResponseV3(
                             stat.dateTimeSlot().getEncoded(),
                             voteCount,
                             weight,
@@ -36,10 +36,10 @@ public record DateTimeSlotStatisticResponseV2(
                                     .toList()
                     );
                 })
-                .sorted(Comparator.comparingInt(DateTimeSlotVotesResponseV2::slotCode))
+                .sorted(Comparator.comparingInt(DateTimeSlotVotesResponseV3::slot))
                 .toList();
 
-        return new DateTimeSlotStatisticResponseV2(
+        return new DateTimeSlotStatisticResponseV3(
                 participantCount,
                 output.participants()
                         .stream()
@@ -54,9 +54,9 @@ public record DateTimeSlotStatisticResponseV2(
         );
     }
 
-    private record DateTimeSlotVotesResponseV2(
-            @Schema(description = "슬롯 코드 (EPOCH: 2025-10-24T00:00+09:00)", example = "28")
-            int slotCode,
+    private record DateTimeSlotVotesResponseV3(
+            @Schema(description = "슬롯 (EPOCH: 2025-10-24T00:00+09:00)", example = "28")
+            int slot,
 
             @Schema(description = "투표 수", example = "3")
             int voteCount,
