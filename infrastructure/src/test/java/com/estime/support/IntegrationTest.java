@@ -1,7 +1,6 @@
 package com.estime.support;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.doThrow;
 
 import com.estime.TestApplication;
@@ -51,7 +50,6 @@ public abstract class IntegrationTest {
     void setUpIntegrationTest() {
         given(timeProvider.now()).willReturn(NOW);
         given(timeProvider.zone()).willReturn(ZONE);
-        given(timeProvider.nowDateTime()).willReturn(NOW_LOCAL_DATE_TIME);
 
         doThrow(new IllegalStateException("OutboxScheduler should not be called in tests"))
                 .when(outboxScheduler).processOutbox();

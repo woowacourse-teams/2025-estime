@@ -3,13 +3,12 @@ package com.estime.room.participant.vote;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.Validator;
 import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 import lombok.ToString;
 
 @Embeddable

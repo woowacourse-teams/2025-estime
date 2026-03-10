@@ -3,7 +3,7 @@ package com.estime.port.out;
 import com.estime.room.RoomSession;
 import com.estime.room.platform.PlatformType;
 import com.estime.room.platform.notification.PlatformNotificationType;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
 public interface PlatformMessageSender {
@@ -15,6 +15,6 @@ public interface PlatformMessageSender {
             String channelId,
             RoomSession session,
             String title,
-            LocalDateTime deadline
+            Instant deadline
     );
 }

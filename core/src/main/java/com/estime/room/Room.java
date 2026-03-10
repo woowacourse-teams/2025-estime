@@ -2,6 +2,7 @@ package com.estime.room;
 
 import com.estime.room.exception.DeadlineOverdueException;
 import com.estime.room.exception.PastNotAllowedException;
+import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.vote.exception.DuplicateNotAllowedException;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.room.slot.RoomAvailableSlot;
@@ -16,12 +17,12 @@ import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +49,7 @@ public class Room extends BaseEntity {
     private String title;
 
     @Column(name = "deadline", nullable = false)
-    private LocalDateTime deadline;
+    private Instant deadline;
 
     @OneToMany(
             mappedBy = RoomAvailableSlot.Fields.room,
@@ -60,40 +61,43 @@ public class Room extends BaseEntity {
     private Room(
             final RoomSession session,
             final String title,
-            final LocalDateTime deadline,
-            final List<DateTimeSlot> slotCodes
+            final Instant deadline
     ) {
         this.session = session;
         this.title = title;
         this.deadline = deadline;
-        slotCodes.forEach(slotCode -> this.availableSlots.add(RoomAvailableSlot.of(slotCode, this)));
     }
 
     public static Room withoutId(
             final String title,
             final RoomSession session,
-            final LocalDateTime deadline,
-            final List<DateTimeSlot> slotCodes
+            final Instant deadline,
+            final List<DateTimeSlot> slots,
+            final Instant now
     ) {
-        validateNull(title, session, deadline, slotCodes);
+        validateNull(title, session, deadline, slots);
         final String trimmedTitle = title.trim();
         validateTitle(trimmedTitle);
-        validateDeadline(deadline);
-        validateSlotCodesNoDuplicate(slotCodes);
-        return new Room(session, trimmedTitle, deadline, slotCodes);
+        validateDeadline(deadline, now);
+        validateAvailableSlotsNoDuplicate(slots);
+        validateAvailableSlotsNotPast(slots, now);
+
+        final Room room = new Room(session, trimmedTitle, deadline);
+        slots.forEach(slot -> room.availableSlots.add(RoomAvailableSlot.of(slot, room)));
+        return room;
     }
 
     private static void validateNull(
             final String title,
             final RoomSession session,
-            final LocalDateTime deadline,
-            final List<DateTimeSlot> slotCodes
+            final Instant deadline,
+            final List<DateTimeSlot> slots
     ) {
         Validator.builder()
                 .add(Fields.title, title)
                 .add(Fields.session, session)
                 .add(Fields.deadline, deadline)
-                .add(Fields.availableSlots, slotCodes)
+                .add(Fields.availableSlots, slots)
                 .validateNull();
     }
 
@@ -103,29 +107,51 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateDeadline(final LocalDateTime deadline) {
-        if (deadline.isBefore(LocalDateTime.now())) {
+    private static void validateDeadline(
+            final Instant deadline,
+            final Instant now
+    ) {
+        if (deadline.isBefore(now)) {
             throw new PastNotAllowedException(DomainTerm.DEADLINE, deadline);
         }
     }
 
-    private static void validateSlotCodesNoDuplicate(final List<DateTimeSlot> slotCodes) {
-        if (new HashSet<>(slotCodes).size() != slotCodes.size()) {
-            throw new DuplicateNotAllowedException(DomainTerm.DATE_TIME_SLOT, slotCodes);
+    private static void validateAvailableSlotsNoDuplicate(final List<DateTimeSlot> slots) {
+        if (new HashSet<>(slots).size() != slots.size()) {
+            throw new DuplicateNotAllowedException(DomainTerm.DATE_TIME_SLOT, slots);
         }
     }
 
-    public List<RoomAvailableSlot> getRoomAvailableSlots() {
-        return Collections.unmodifiableList(availableSlots);
+    private static void validateAvailableSlotsNotPast(
+            final List<DateTimeSlot> availableSlots,
+            final Instant now
+    ) {
+        for (final DateTimeSlot slot : availableSlots) {
+            if (slot.getStartAt().isBefore(now)) {
+                throw new PastNotAllowedException(DomainTerm.DATE_TIME_SLOT, slot);
+            }
+        }
     }
 
-    public void ensureDeadlineNotPassed(final LocalDateTime currentDateTime) {
+    public void ensureDeadlineNotPassed(final Instant currentDateTime) {
         if (deadline.isBefore(currentDateTime)) {
             throw new DeadlineOverdueException(session, deadline, currentDateTime);
         }
     }
 
-    public Instant getDeadline(final ZoneId zoneId) {
-        return deadline.atZone(zoneId).toInstant();
+    public void ensureAvailableSlots(final List<DateTimeSlot> slots) {
+        final Set<DateTimeSlot> available = availableSlots.stream()
+                .map(RoomAvailableSlot::getSlot)
+                .collect(Collectors.toSet());
+
+        for (final DateTimeSlot slot : slots) {
+            if (!available.contains(slot)) {
+                throw new UnavailableSlotException(DomainTerm.DATE_TIME_SLOT, session, slot);
+            }
+        }
+    }
+
+    public List<RoomAvailableSlot> getRoomAvailableSlots() {
+        return Collections.unmodifiableList(availableSlots);
     }
 }

@@ -58,13 +58,14 @@ class SqlCountTest extends IntegrationTest {
         final Room room = Room.withoutId(
                 "batchTest",
                 RoomSession.from("batchTestSession"),
-                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)),
+                LocalDateTime.of(NOW_LOCAL_DATE.plusDays(3), LocalTime.of(10, 0)).atZone(ZONE).toInstant(),
                 List.of(
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0))),
-                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)))
-                )
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(10, 30)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 0)).atZone(ZONE).toInstant()),
+                        DateTimeSlot.from(LocalDateTime.of(date, LocalTime.of(11, 30)).atZone(ZONE).toInstant())
+                ),
+                NOW
         );
 
         // when
@@ -101,7 +102,8 @@ class SqlCountTest extends IntegrationTest {
 
         // 10개의 Vote 생성
         for (int i = 0; i < 10; i++) {
-            votes.add(Vote.of(participantId, DateTimeSlot.from(baseTime.plusMinutes(30L * i))));
+            votes.add(
+                    Vote.of(participantId, DateTimeSlot.from(baseTime.plusMinutes(30L * i).atZone(ZONE).toInstant())));
         }
 
         // when

@@ -9,9 +9,9 @@ import com.estime.room.slot.exception.DateTimeSlotOutOfRangeException;
 import com.estime.room.slot.exception.InvalidTimeDetailException;
 import com.estime.room.slot.exception.SlotNotDivideException;
 import com.estime.shared.exception.NullNotAllowedException;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.ZoneId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -72,8 +72,8 @@ class DateTimeSlotTest {
 
         // then
         assertSoftly(softly -> {
-            assertThat(result1).isEqualTo("2025-10-24 14:00 (28)");
-            assertThat(result2).isEqualTo("2025-11-07 09:30 (3603)");
+            assertThat(result1).isEqualTo("2025-10-24T05:00:00Z ~ 2025-10-24T05:30:00Z (28)");
+            assertThat(result2).isEqualTo("2025-11-07T00:30:00Z ~ 2025-11-07T01:00:00Z (3603)");
         });
     }
 
@@ -107,15 +107,15 @@ class DateTimeSlotTest {
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(0);
-        assertThat(slot.getStartAtLocalDate()).isEqualTo(LocalDate.of(2025, 10, 24)); // EPOCH
-        assertThat(slot.getStartAtLocalTime()).isEqualTo(LocalTime.of(0, 0));
+        // EPOCH: 2025-10-24 00:00 KST = 2025-10-23T15:00:00Z
+        assertThat(slot.getStartAt()).isEqualTo(Instant.parse("2025-10-23T15:00:00Z"));
     }
 
     @Test
-    @DisplayName("from(int) - 경계값 최대값(0xFFFFFF)으로 생성 성공")
+    @DisplayName("from(int) - 경계값 최대값(dayOffset=0xFFF, timeSlotIndex=47)으로 생성 성공")
     void createFromMaxValue() {
-        // given
-        final int maxValue = 0xFFFFFF; // 16777215
+        // given: dayOffset=4095, timeSlotIndex=47 → (4095 << 8) | 47 = 1048367
+        final int maxValue = (0xFFF << 8) | 47;
 
         // when
         final DateTimeSlot slot = DateTimeSlot.from(maxValue);
@@ -125,18 +125,58 @@ class DateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(LocalDateTime) - null 값으로 생성 시 예외 발생")
+    @DisplayName("from(int) - timeSlotIndex가 48 이상이면 예외 발생")
+    void createFromInvalidTimeSlotIndex() {
+        // given: dayOffset=0, timeSlotIndex=48 → 유효하지 않은 시간 인덱스
+        final int invalidEncoded = 48;
+
+        // when & then
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidEncoded))
+                .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+    }
+
+    @Test
+    @DisplayName("from(Instant) - EPOCH로부터 4096일 이상 경과하면 예외 발생 (dayOffset 12비트 초과)")
+    void createFromInstantExceedingMaxDayOffset() {
+        // given: EPOCH + 4096일 = flag 영역 침범
+        final Instant tooFar = LocalDateTime.of(2025, 10, 24, 0, 0)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant()
+                .plus(java.time.Duration.ofDays(4096));
+
+        // when & then
+        assertThatThrownBy(() -> DateTimeSlot.from(tooFar))
+                .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+    }
+
+    @Test
+    @DisplayName("from(Instant) - EPOCH로부터 4095일은 정상 생성 (dayOffset 12비트 경계)")
+    void createFromInstantAtMaxDayOffset() {
+        // given: EPOCH + 4095일 = dayOffset 최대값
+        final Instant maxDay = LocalDateTime.of(2025, 10, 24, 0, 0)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant()
+                .plus(java.time.Duration.ofDays(4095));
+
+        // when
+        final DateTimeSlot slot = DateTimeSlot.from(maxDay);
+
+        // then
+        assertThat(slot.getStartAt()).isEqualTo(maxDay);
+    }
+
+    @Test
+    @DisplayName("from(Instant) - null 값으로 생성 시 예외 발생")
     void createFromNullDateTime() {
         // when & then
-        assertThatThrownBy(() -> DateTimeSlot.from((LocalDateTime) null))
+        assertThatThrownBy(() -> DateTimeSlot.from((Instant) null))
                 .isInstanceOf(NullNotAllowedException.class);
     }
 
     @Test
-    @DisplayName("from(LocalDateTime) - 30분 단위가 아닌 시간으로 생성 시 예외 발생")
+    @DisplayName("from(Instant) - 30분 단위가 아닌 시간으로 생성 시 예외 발생")
     void createFromInvalidMinute() {
-        // given: 14:15 (30분 단위 아님)
-        final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 15);
+        // given: 14:15 KST (30분 단위 아님)
+        final Instant invalidTime = LocalDateTime.of(2025, 10, 24, 14, 15)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant();
 
         // when & then
         assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
@@ -144,10 +184,11 @@ class DateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(LocalDateTime) - 초가 0이 아닌 시간으로 생성 시 예외 발생")
+    @DisplayName("from(Instant) - 초가 0이 아닌 시간으로 생성 시 예외 발생")
     void createFromNonZeroSecond() {
-        // given: 14:00:30 (초가 0이 아님)
-        final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 30);
+        // given: 14:00:30 KST (초가 0이 아님)
+        final Instant invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 30)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant();
 
         // when & then
         assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
@@ -155,10 +196,11 @@ class DateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(LocalDateTime) - 나노초가 0이 아닌 시간으로 생성 시 예외 발생")
+    @DisplayName("from(Instant) - 나노초가 0이 아닌 시간으로 생성 시 예외 발생")
     void createFromNonZeroNano() {
-        // given: 14:00:00.000000001 (나노초가 0이 아님)
-        final LocalDateTime invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 0, 1);
+        // given: 14:00:00.000000001 KST (나노초가 0이 아님)
+        final Instant invalidTime = LocalDateTime.of(2025, 10, 24, 14, 0, 0, 1)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant();
 
         // when & then
         assertThatThrownBy(() -> DateTimeSlot.from(invalidTime))
@@ -166,85 +208,59 @@ class DateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(LocalDateTime) - EPOCH 시작 시간(2025-10-24 00:00)으로 생성 성공")
+    @DisplayName("from(Instant) - EPOCH 시작 시간(2025-10-24 00:00 KST)으로 생성 성공")
     void createFromEpochStart() {
-        // given: EPOCH의 시작 시간
-        final LocalDateTime epochStart = LocalDateTime.of(2025, 10, 24, 0, 0);
+        // given: EPOCH의 시작 시간 (2025-10-24 00:00 KST = 2025-10-23T15:00:00Z)
+        final Instant epochStart = LocalDateTime.of(2025, 10, 24, 0, 0)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant();
 
         // when
         final DateTimeSlot slot = DateTimeSlot.from(epochStart);
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(0);
-        assertThat(slot.getStartAtLocalDate()).isEqualTo(LocalDate.of(2025, 10, 24));
-        assertThat(slot.getStartAtLocalTime()).isEqualTo(LocalTime.of(0, 0));
+        assertThat(slot.getStartAt()).isEqualTo(Instant.parse("2025-10-23T15:00:00Z"));
     }
 
     @Test
-    @DisplayName("from(LocalDateTime) - 23:30 (하루의 마지막 슬롯)으로 생성 성공")
+    @DisplayName("from(Instant) - 23:30 KST (하루의 마지막 슬롯)으로 생성 성공")
     void createFromLastSlotOfDay() {
-        // given: 23:30 (하루의 마지막 30분 슬롯)
-        final LocalDateTime lastSlot = LocalDateTime.of(2025, 10, 24, 23, 30);
+        // given: 23:30 KST (하루의 마지막 30분 슬롯) = 14:30 UTC
+        final Instant lastSlot = LocalDateTime.of(2025, 10, 24, 23, 30)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant();
 
         // when
         final DateTimeSlot slot = DateTimeSlot.from(lastSlot);
 
         // then
-        assertThat(slot.getStartAtLocalTime()).isEqualTo(LocalTime.of(23, 30));
+        assertThat(slot.getStartAt()).isEqualTo(Instant.parse("2025-10-24T14:30:00Z"));
     }
 
     @Test
-    @DisplayName("getStartAtLocalDate() - 날짜 부분 추출 검증")
-    void getStartAtLocalDate() {
-        // given
-        final DateTimeSlot slot = DateTimeSlot.from(3603); // 2025-11-07 09:30
+    @DisplayName("getStartAt() - 슬롯 시작 시간 변환 검증")
+    void getStartAtConversion() {
+        // given: 2025-11-07 09:30 KST = 2025-11-07T00:30:00Z
+        final DateTimeSlot slot = DateTimeSlot.from(3603);
 
         // when
-        final LocalDate date = slot.getStartAtLocalDate();
+        final Instant instant = slot.getStartAt();
 
         // then
-        assertThat(date).isEqualTo(LocalDate.of(2025, 11, 7));
+        assertThat(instant).isEqualTo(Instant.parse("2025-11-07T00:30:00Z"));
     }
 
     @Test
-    @DisplayName("getStartAtLocalTime() - 시간 부분 추출 검증")
-    void getStartAtLocalTime() {
-        // given
-        final DateTimeSlot slot = DateTimeSlot.from(3603); // 2025-11-07 09:30
-
-        // when
-        final LocalTime time = slot.getStartAtLocalTime();
-
-        // then
-        assertThat(time).isEqualTo(LocalTime.of(9, 30));
-    }
-
-    @Test
-    @DisplayName("from(LocalDateTime)과 getStartAt 왕복 변환 검증")
+    @DisplayName("from(Instant)과 getStartAt() 왕복 변환 검증")
     void roundTripConversion() {
-        // given
-        final LocalDateTime original = LocalDateTime.of(2025, 12, 25, 15, 30);
+        // given: 2025-12-25 15:30 KST = 2025-12-25T06:30:00Z
+        final Instant original = LocalDateTime.of(2025, 12, 25, 15, 30)
+                .atZone(ZoneId.of("Asia/Seoul")).toInstant();
 
         // when
         final DateTimeSlot slot = DateTimeSlot.from(original);
-        final LocalDate resultDate = slot.getStartAtLocalDate();
-        final LocalTime resultTime = slot.getStartAtLocalTime();
-        final LocalDateTime result = LocalDateTime.of(resultDate, resultTime);
+        final Instant result = slot.getStartAt();
 
         // then
         assertThat(result).isEqualTo(original);
-    }
-
-    @Test
-    @DisplayName("toLocalDateTime() - 편의 메서드 검증")
-    void toLocalDateTime() {
-        // given
-        final LocalDateTime original = LocalDateTime.of(2025, 12, 25, 15, 30);
-
-        // when
-        final DateTimeSlot slot = DateTimeSlot.from(original);
-
-        // then
-        assertThat(slot.toLocalDateTime()).isEqualTo(original);
     }
 }

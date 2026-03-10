@@ -21,39 +21,6 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class SchedulerLoggingAspectTest {
 
-    @EnableAspectJAutoProxy
-    static class TestConfig {
-
-        @Bean
-        public SchedulerLoggingAspect schedulerLoggingAspect() {
-            return new SchedulerLoggingAspect();
-        }
-
-        @Bean
-        public TestScheduler testScheduler() {
-            return new TestScheduler();
-        }
-    }
-
-    @Component
-    static class TestScheduler {
-
-        private final AtomicReference<String> capturedTraceId = new AtomicReference<>();
-
-        @Scheduled(fixedRate = 1000)
-        public void scheduledMethod() {
-            capturedTraceId.set(MDC.get(MdcKey.TRACE_ID.getKey()));
-        }
-
-        public String getCapturedTraceId() {
-            return capturedTraceId.get();
-        }
-
-        public void reset() {
-            capturedTraceId.set(null);
-        }
-    }
-
     @Autowired
     private TestScheduler testScheduler;
 
@@ -105,5 +72,38 @@ class SchedulerLoggingAspectTest {
 
         // then
         assertThat(testScheduler.getCapturedTraceId()).isEqualTo(existingTraceId);
+    }
+
+    @EnableAspectJAutoProxy
+    static class TestConfig {
+
+        @Bean
+        public SchedulerLoggingAspect schedulerLoggingAspect() {
+            return new SchedulerLoggingAspect();
+        }
+
+        @Bean
+        public TestScheduler testScheduler() {
+            return new TestScheduler();
+        }
+    }
+
+    @Component
+    static class TestScheduler {
+
+        private final AtomicReference<String> capturedTraceId = new AtomicReference<>();
+
+        @Scheduled(fixedRate = 1000)
+        public void scheduledMethod() {
+            capturedTraceId.set(MDC.get(MdcKey.TRACE_ID.getKey()));
+        }
+
+        public String getCapturedTraceId() {
+            return capturedTraceId.get();
+        }
+
+        public void reset() {
+            capturedTraceId.set(null);
+        }
     }
 }

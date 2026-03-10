@@ -20,7 +20,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Room V2 API", description = "룸 API V2 (slotCode)")
+/**
+ * @deprecated V3 API로 전환 예정
+ */
+@Deprecated(since = "V3")
+@Tag(name = "Room V2 API", description = "룸 API V2 (Deprecated: V3로 전환 예정)")
 @RequestMapping("/api/v2/rooms")
 public interface RoomV2ControllerSpecification {
 

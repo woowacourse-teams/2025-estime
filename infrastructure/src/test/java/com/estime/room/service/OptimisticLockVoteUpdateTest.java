@@ -61,15 +61,16 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         final LocalDateTime date = NOW_LOCAL_DATE.plusDays(1).atTime(LocalTime.of(10, 0));
-        slotA = DateTimeSlot.from(date);
-        slotB = DateTimeSlot.from(date.plusMinutes(30));
-        slotC = DateTimeSlot.from(date.plusHours(1));
+        slotA = DateTimeSlot.from(date.atZone(ZONE).toInstant());
+        slotB = DateTimeSlot.from(date.plusMinutes(30).atZone(ZONE).toInstant());
+        slotC = DateTimeSlot.from(date.plusHours(1).atZone(ZONE).toInstant());
 
         room = roomRepository.save(Room.withoutId(
                 "낙관적락테스트",
                 RoomSession.from(UUID.randomUUID().toString()),
-                NOW_LOCAL_DATE_TIME.plusDays(3),
-                List.of(slotA, slotB, slotC)
+                NOW_LOCAL_DATE_TIME.plusDays(3).atZone(ZONE).toInstant(),
+                List.of(slotA, slotB, slotC),
+                NOW
         ));
 
         participant = participantRepository.save(
