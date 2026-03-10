@@ -222,7 +222,7 @@ class RoomV2ControllerTest extends IntegrationTest {
         // when & then
         mockMvc.perform(get("/api/v2/rooms/{session}", nonExistentSession))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 
@@ -235,7 +235,7 @@ class RoomV2ControllerTest extends IntegrationTest {
         // when & then
         mockMvc.perform(get("/api/v2/rooms/{session}/statistics/date-time-slots", nonExistentSession))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 
@@ -285,7 +285,7 @@ class RoomV2ControllerTest extends IntegrationTest {
         mockMvc.perform(get("/api/v2/rooms/{session}/votes/participants", roomSession.getValue())
                         .param("participantName", "NonExistent"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 
@@ -353,7 +353,7 @@ class RoomV2ControllerTest extends IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false));
     }
 

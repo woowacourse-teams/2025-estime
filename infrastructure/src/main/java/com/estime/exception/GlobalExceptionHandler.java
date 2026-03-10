@@ -24,6 +24,12 @@ public class GlobalExceptionHandler {
         return CustomApiResponse.badRequest(e.getUserMessage());
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public CustomApiResponse<Void> handleNotFoundException(final NotFoundException e) {
+        log.warn(e.getLogMessage());
+        return CustomApiResponse.notFound(e.getUserMessage());
+    }
+
     @ExceptionHandler(ApplicationException.class)
     public CustomApiResponse<Void> handleApplicationException(final ApplicationException e) {
         log.warn(e.getLogMessage());
