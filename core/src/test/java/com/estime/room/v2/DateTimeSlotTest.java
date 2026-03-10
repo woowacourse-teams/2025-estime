@@ -112,16 +112,27 @@ class DateTimeSlotTest {
     }
 
     @Test
-    @DisplayName("from(int) - 경계값 최대값(0xFFFFFF)으로 생성 성공")
+    @DisplayName("from(int) - 경계값 최대값(dayOffset=0xFFF, timeSlotIndex=47)으로 생성 성공")
     void createFromMaxValue() {
-        // given
-        final int maxValue = 0xFFFFFF; // 16777215
+        // given: dayOffset=4095, timeSlotIndex=47 → (4095 << 8) | 47 = 1048367
+        final int maxValue = (0xFFF << 8) | 47;
 
         // when
         final DateTimeSlot slot = DateTimeSlot.from(maxValue);
 
         // then
         assertThat(slot.getEncoded()).isEqualTo(maxValue);
+    }
+
+    @Test
+    @DisplayName("from(int) - timeSlotIndex가 48 이상이면 예외 발생")
+    void createFromInvalidTimeSlotIndex() {
+        // given: dayOffset=0, timeSlotIndex=48 → 유효하지 않은 시간 인덱스
+        final int invalidEncoded = 48;
+
+        // when & then
+        assertThatThrownBy(() -> DateTimeSlot.from(invalidEncoded))
+                .isInstanceOf(DateTimeSlotOutOfRangeException.class);
     }
 
     @Test

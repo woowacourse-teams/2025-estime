@@ -42,12 +42,17 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
                     .atZone(ZoneId.of("Asia/Seoul")).toInstant();
     private static final int MINUTES_PER_DAY = 24 * 60;
     private static final int MAX_ENCODED = 0xFFFFFF;
+    private static final int DEFAULT_MAX_TIME_SLOT_INDEX = (MINUTES_PER_DAY / (int) UNIT.toMinutes()) - 1;
 
     private final int encoded;
 
     public static DateTimeSlot from(final int encoded) {
         if (encoded < 0 || encoded > MAX_ENCODED) {
             throw new DateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, encoded);
+        }
+        final int timeSlotIndex = encoded & 0xFF;
+        if (timeSlotIndex > DEFAULT_MAX_TIME_SLOT_INDEX) {
+            throw new DateTimeSlotOutOfRangeException(DomainTerm.TIME_SLOT, encoded);
         }
         return new DateTimeSlot(encoded);
     }
