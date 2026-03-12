@@ -42,6 +42,12 @@ export interface GetRoomInfoResponseType {
   deadline: string;
   roomSession: string;
 }
+export interface GetRoomInfoResponseTypeV3 {
+  title: string;
+  availableSlots: number[];
+  deadline: string;
+  roomSession: string;
+}
 
 export interface CreateUserRequestType {
   participantName: string;

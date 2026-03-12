@@ -15,6 +15,7 @@ import type {
   CreateRoomRequestTypeV3,
   GetRoomStatisticsResponseType,
   CreateChannelRoomRequestTypeV3,
+  GetRoomInfoResponseTypeV3,
 } from './type';
 
 export const createRoom = async (body: CreateRoomRequestType): Promise<CreateRoomResponseType> => {
@@ -48,6 +49,10 @@ export const joinUser = async (
 
 export const getRoomInfo = async (sessionId: string): Promise<GetRoomInfoResponseType> => {
   return await api.get(`${ROOM_API_PATH}/${sessionId}`);
+};
+
+export const getRoomInfoV3 = async (sessionId: string): Promise<GetRoomInfoResponseTypeV3> => {
+  return await api.get(`${ROOM_API_PATH_V3}/${sessionId}`);
 };
 
 export const getRoomStatistics = async (
