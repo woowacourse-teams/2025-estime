@@ -54,7 +54,7 @@ export const toCreateRoomInfoV3 = (
   for (const date of availableDateSlots) {
     for (const t of timeList) {
       const dateTimeStr = `${date}T${t}`;
-      if (new Date(dateTimeStr + 'Z').getTime() > now) {
+      if (new Date(dateTimeStr).getTime() > now) {
         availableSlots.push(FormatManager.encodeSlotCode(dateTimeStr));
       } else {
         isPastSelected = true;
