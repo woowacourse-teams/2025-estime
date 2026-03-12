@@ -2,6 +2,7 @@ import { createChannelRoomV3, createRoomV3 } from '@/apis/room/room';
 import { useCallback, useState } from 'react';
 import { useExtractQueryParams } from '@/shared/hooks/common/useExtractQueryParams';
 import { usePastSlotFilter } from './usePastSlotFilter';
+import useFetch from '@/shared/hooks/common/useFetch';
 
 type checkedNotification = {
   created: boolean;
@@ -18,6 +19,22 @@ export const useCreateRoom = () => {
     deadline: true,
   });
 
+  const { triggerFetch: roomWithPlatformSubmit } = useFetch({
+    context: 'roomInfoSubmit',
+    requestFn: () =>
+      createChannelRoomV3({
+        ...getFilteredPayload(),
+        platformType: platformType as 'DISCORD' | 'SLACK',
+        channelId: channelId || 'DISCORD',
+        notification: checkedNotification,
+      }),
+  });
+
+  const { triggerFetch: roomSubmit } = useFetch({
+    context: 'roomInfoSubmit',
+    requestFn: () => createRoomV3(getFilteredPayload()),
+  });
+
   const notification = {
     value: checkedNotification,
     set: (id: keyof checkedNotification) =>
@@ -25,21 +42,14 @@ export const useCreateRoom = () => {
   };
 
   const roomInfoSubmit = useCallback(async () => {
-    const payload = getFilteredPayload();
-
     if (platformType && channelId) {
-      const response = await createChannelRoomV3({
-        ...payload,
-        platformType: platformType as 'DISCORD' | 'SLACK',
-        channelId: channelId || 'DISCORD',
-        notification: checkedNotification,
-      });
+      const response = await roomWithPlatformSubmit();
       return response?.session;
     }
 
-    const response = await createRoomV3(payload);
+    const response = await roomSubmit();
     return response?.session;
-  }, [channelId, checkedNotification, getFilteredPayload, platformType]);
+  }, [channelId, platformType, roomSubmit, roomWithPlatformSubmit]);
 
   return {
     platformType,
