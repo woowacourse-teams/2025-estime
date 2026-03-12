@@ -16,8 +16,7 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         final CaffeineCacheManager cacheManager = new CaffeineCacheManager(
-                CacheNames.VOTE_STATISTIC,
-                CacheNames.COMPACT_VOTE_STATISTIC
+                CacheNames.VOTE_STATISTIC
         );
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(500, TimeUnit.MILLISECONDS)

@@ -9,7 +9,6 @@ import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.controller.dto.response.ParticipantCheckResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesResponse;
-import com.estime.room.controller.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponse;
 import com.estime.shared.CustomApiResponse;
@@ -23,7 +22,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Room", description = "룸 API")
+/**
+ * @deprecated V3 API로 전환 예정
+ */
+@Deprecated(since = "V3")
+@Tag(name = "Room", description = "룸 API (Deprecated: V3로 전환 예정)")
 @RequestMapping("/api/v1/rooms")
 public interface RoomControllerSpecification {
 
@@ -60,12 +63,12 @@ public interface RoomControllerSpecification {
 
     @Operation(summary = "참여자 제출 시간 수정")
     @PutMapping("/{session}/votes/participants")
-    CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
+    CustomApiResponse<ParticipantVotesResponse> updateParticipantVotes(
             @PathVariable("session") RoomSession session,
             @RequestBody ParticipantVotesUpdateRequest request
     );
 
-    @Operation(summary = "새로운 참여자 이름 중복 검증 후 생성")
+    @Operation(summary = "새로운 참여자 이름 중복 검증 후 생성 (사용 가능하나 V3 사용 권장)")
     @PostMapping("/{session}/participants")
     CustomApiResponse<ParticipantCheckResponse> createParticipant(
             @PathVariable("session") RoomSession session,

@@ -3,18 +3,17 @@ package com.estime.room.slot.converter;
 import com.estime.room.slot.DateTimeSlot;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import java.sql.Timestamp;
 
 @Converter(autoApply = true)
-public class DateTimeSlotConverter implements AttributeConverter<DateTimeSlot, Timestamp> {
+public class DateTimeSlotConverter implements AttributeConverter<DateTimeSlot, Integer> {
 
     @Override
-    public Timestamp convertToDatabaseColumn(final DateTimeSlot dateTimeSlot) {
-        return (dateTimeSlot != null) ? Timestamp.valueOf(dateTimeSlot.getStartAt()) : null;
+    public Integer convertToDatabaseColumn(final DateTimeSlot dateTimeSlot) {
+        return (dateTimeSlot != null) ? dateTimeSlot.getEncoded() : null;
     }
 
     @Override
-    public DateTimeSlot convertToEntityAttribute(final Timestamp dateTime) {
-        return (dateTime != null) ? DateTimeSlot.from(dateTime.toLocalDateTime()) : null;
+    public DateTimeSlot convertToEntityAttribute(final Integer encoded) {
+        return (encoded != null) ? DateTimeSlot.from(encoded) : null;
     }
 }

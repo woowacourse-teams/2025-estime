@@ -11,8 +11,7 @@ import com.estime.room.exception.PastNotAllowedException;
 import com.estime.shared.DomainTerm;
 import com.estime.shared.exception.InvalidLengthException;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,9 @@ class RoomTest {
 
     private static final RoomSession roomSession = RoomSession.from("testRoomSession");
 
-    private final LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
-    private final LocalDateTime futureDeadline = now.plusDays(1);
-    private final LocalDateTime pastDeadline = now.minusDays(1);
+    private final Instant now = Instant.now().truncatedTo(ChronoUnit.HOURS);
+    private final Instant futureDeadline = now.plus(1, ChronoUnit.DAYS);
+    private final Instant pastDeadline = now.minus(1, ChronoUnit.DAYS);
 
     @DisplayName("정상적인 값으로 Room 생성을 성공한다")
     @Test
@@ -32,7 +31,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         );
 
         assertSoftly(softly -> {
@@ -52,7 +52,8 @@ class RoomTest {
                 exactLengthTitle,
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).doesNotThrowAnyException();
     }
 
@@ -67,7 +68,8 @@ class RoomTest {
                 invalidTitle,
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).isInstanceOf(InvalidLengthException.class)
                 .hasMessageContaining(DomainTerm.ROOM.name());
     }
@@ -83,7 +85,8 @@ class RoomTest {
                 blankTitle,
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).isInstanceOf(InvalidLengthException.class)
                 .hasMessageContaining(DomainTerm.ROOM.name());
     }
@@ -95,7 +98,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         )).doesNotThrowAnyException();
     }
 
@@ -106,7 +110,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 pastDeadline,
-                List.of()
+                List.of(),
+                now
         )).isInstanceOf(PastNotAllowedException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }
@@ -118,7 +123,8 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         );
 
         assertThatCode(() -> room.ensureDeadlineNotPassed(now))
@@ -132,56 +138,12 @@ class RoomTest {
                 "테스트방",
                 roomSession,
                 futureDeadline,
-                List.of()
+                List.of(),
+                now
         );
 
-        assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plusDays(2)))
+        assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plus(2, ChronoUnit.DAYS)))
                 .isInstanceOf(DeadlineOverdueException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
-    }
-
-    @DisplayName("getDeadline(ZoneId)는 LocalDateTime을 주어진 ZoneId의 Instant로 변환한다")
-    @Test
-    void getDeadline_withZoneId_returnsInstant() {
-        // given
-        final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
-        final Room room = Room.withoutId("테스트방", roomSession, deadline, List.of());
-        final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
-
-        // when
-        final Instant actualInstant = room.getDeadline(seoulZone);
-
-        // then
-        final Instant expectedInstant = deadline.atZone(seoulZone).toInstant();
-        assertSoftly(softly -> {
-            softly.assertThat(actualInstant).isEqualTo(expectedInstant);
-            softly.assertThat(actualInstant).isNotNull();
-        });
-    }
-
-    @DisplayName("getDeadline(ZoneId)는 서로 다른 ZoneId로 변환해도 같은 시점을 나타낸다")
-    @Test
-    void getDeadline_withDifferentZoneIds_representsSameInstant() {
-        // given
-        final LocalDateTime deadline = LocalDateTime.of(2030, 12, 31, 23, 59, 0);
-        final Room room = Room.withoutId("테스트방", roomSession, deadline, List.of());
-        final ZoneId seoulZone = ZoneId.of("Asia/Seoul");
-        final ZoneId utcZone = ZoneId.of("UTC");
-
-        // when
-        final Instant seoulInstant = room.getDeadline(seoulZone);
-        final Instant utcInstant = room.getDeadline(utcZone);
-
-        // then
-        // LocalDateTime이 같으므로, ZoneId가 달라도 서로 다른 시점을 나타냄
-        // (Seoul의 2025-12-31 23:59 ≠ UTC의 2025-12-31 23:59)
-        assertSoftly(softly -> {
-            softly.assertThat(seoulInstant).isNotEqualTo(utcInstant);
-            // Seoul이 UTC보다 9시간 빠르므로, Seoul 시간이 더 이른 Instant
-            softly.assertThat(seoulInstant).isBefore(utcInstant);
-            // 정확히 9시간 차이
-            softly.assertThat(utcInstant.getEpochSecond() - seoulInstant.getEpochSecond())
-                    .isEqualTo(9 * 60 * 60);
-        });
     }
 }

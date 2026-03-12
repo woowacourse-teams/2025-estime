@@ -1,10 +1,10 @@
 package com.estime.room.controller.dto.response;
 
 import com.estime.room.dto.input.VotesOutput;
-import com.estime.room.participant.vote.Vote;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public record ParticipantVotesResponse(
@@ -16,11 +16,11 @@ public record ParticipantVotesResponse(
         List<LocalDateTime> dateTimeSlots
 ) {
 
-    public static ParticipantVotesResponse from(final VotesOutput output) {
+    public static ParticipantVotesResponse from(final VotesOutput output, final ZoneId zone) {
         return new ParticipantVotesResponse(
                 output.name().getValue(),
                 output.votes().stream()
-                        .map(Vote::startAt)
+                        .map(vote -> vote.getDateTimeSlot().getStartAt().atZone(zone).toLocalDateTime())
                         .toList()
         );
     }

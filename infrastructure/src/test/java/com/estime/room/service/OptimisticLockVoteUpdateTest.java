@@ -6,13 +6,13 @@ import static org.mockito.BDDMockito.given;
 import com.estime.room.Room;
 import com.estime.room.RoomRepository;
 import com.estime.room.RoomSession;
-import com.estime.room.dto.input.CompactVoteUpdateInput;
+import com.estime.room.dto.input.VotesUpdateInput;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
-import com.estime.room.participant.vote.compact.CompactVote;
-import com.estime.room.participant.vote.compact.CompactVoteRepository;
-import com.estime.room.slot.CompactDateTimeSlot;
+import com.estime.room.participant.vote.Vote;
+import com.estime.room.participant.vote.VoteRepository;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.support.IntegrationTest;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 class OptimisticLockVoteUpdateTest extends IntegrationTest {
 
     @Autowired
-    private CompactRoomApplicationService compactRoomApplicationService;
+    private RoomApplicationService roomApplicationService;
 
     @Autowired
     private RoomRepository roomRepository;
@@ -47,42 +47,43 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
     private ParticipantRepository participantRepository;
 
     @Autowired
-    private CompactVoteRepository compactVoteRepository;
+    private VoteRepository voteRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
 
     private Room room;
     private Participant participant;
-    private CompactDateTimeSlot slotA;
-    private CompactDateTimeSlot slotB;
-    private CompactDateTimeSlot slotC;
+    private DateTimeSlot slotA;
+    private DateTimeSlot slotB;
+    private DateTimeSlot slotC;
 
     @BeforeEach
     void setUp() {
         final LocalDateTime date = NOW_LOCAL_DATE.plusDays(1).atTime(LocalTime.of(10, 0));
-        slotA = CompactDateTimeSlot.from(date);
-        slotB = CompactDateTimeSlot.from(date.plusMinutes(30));
-        slotC = CompactDateTimeSlot.from(date.plusHours(1));
+        slotA = DateTimeSlot.from(date.atZone(ZONE).toInstant());
+        slotB = DateTimeSlot.from(date.plusMinutes(30).atZone(ZONE).toInstant());
+        slotC = DateTimeSlot.from(date.plusHours(1).atZone(ZONE).toInstant());
 
         room = roomRepository.save(Room.withoutId(
                 "낙관적락테스트",
                 RoomSession.from(UUID.randomUUID().toString()),
-                NOW_LOCAL_DATE_TIME.plusDays(3),
-                List.of(slotA, slotB, slotC)
+                NOW_LOCAL_DATE_TIME.plusDays(3).atZone(ZONE).toInstant(),
+                List.of(slotA, slotB, slotC),
+                NOW
         ));
 
         participant = participantRepository.save(
                 Participant.withoutId(room.getId(), ParticipantName.from("testUser"))
         );
 
-        compactVoteRepository.save(CompactVote.of(participant.getId(), slotA));
+        voteRepository.save(Vote.of(participant.getId(), slotA));
     }
 
     @AfterEach
     void tearDown() {
         transactionTemplate.executeWithoutResult(status -> {
-            compactVoteRepository.deleteAllInBatch(compactVoteRepository.findAllByParticipantId(participant.getId()));
+            voteRepository.deleteAllInBatch(voteRepository.findAllByParticipantId(participant.getId()));
             participantRepository.findByRoomIdAndName(room.getId(), participant.getName())
                     .ifPresent(p -> participantRepository.save(p));
         });
@@ -92,9 +93,9 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
     @Test
     void concurrentVoteUpdate_differentSlots_onlyOneSucceeds() throws Exception {
         // given
-        final CompactVoteUpdateInput input1 = new CompactVoteUpdateInput(
+        final VotesUpdateInput input1 = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotB));
-        final CompactVoteUpdateInput input2 = new CompactVoteUpdateInput(
+        final VotesUpdateInput input2 = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotC));
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -106,7 +107,7 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
         final Future<?> future1 = executor.submit(() -> {
             try {
                 startLatch.await();
-                compactRoomApplicationService.updateParticipantVotes(input1);
+                roomApplicationService.updateParticipantVotes(input1);
                 successCount.incrementAndGet();
             } catch (final OptimisticLockingFailureException e) {
                 failCount.incrementAndGet();
@@ -118,7 +119,7 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
         final Future<?> future2 = executor.submit(() -> {
             try {
                 startLatch.await();
-                compactRoomApplicationService.updateParticipantVotes(input2);
+                roomApplicationService.updateParticipantVotes(input2);
                 successCount.incrementAndGet();
             } catch (final OptimisticLockingFailureException e) {
                 failCount.incrementAndGet();
@@ -143,9 +144,9 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
     @Test
     void concurrentVoteUpdate_sameSlot_onlyOneSucceeds() throws Exception {
         // given
-        final CompactVoteUpdateInput input1 = new CompactVoteUpdateInput(
+        final VotesUpdateInput input1 = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotB));
-        final CompactVoteUpdateInput input2 = new CompactVoteUpdateInput(
+        final VotesUpdateInput input2 = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotB));
 
         final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -157,7 +158,7 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
         final Future<?> future1 = executor.submit(() -> {
             try {
                 startLatch.await();
-                compactRoomApplicationService.updateParticipantVotes(input1);
+                roomApplicationService.updateParticipantVotes(input1);
                 successCount.incrementAndGet();
             } catch (final DataIntegrityViolationException e) {
                 failCount.incrementAndGet();
@@ -169,7 +170,7 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
         final Future<?> future2 = executor.submit(() -> {
             try {
                 startLatch.await();
-                compactRoomApplicationService.updateParticipantVotes(input2);
+                roomApplicationService.updateParticipantVotes(input2);
                 successCount.incrementAndGet();
             } catch (final DataIntegrityViolationException e) {
                 failCount.incrementAndGet();
@@ -197,16 +198,16 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
         final Instant firstTime = NOW;
         final Instant secondTime = NOW.plus(1, ChronoUnit.SECONDS);
 
-        final CompactVoteUpdateInput input1 = new CompactVoteUpdateInput(
+        final VotesUpdateInput input1 = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotB));
-        final CompactVoteUpdateInput input2 = new CompactVoteUpdateInput(
+        final VotesUpdateInput input2 = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotB, slotC));
 
         // when
         given(timeProvider.now()).willReturn(firstTime);
-        compactRoomApplicationService.updateParticipantVotes(input1);
+        roomApplicationService.updateParticipantVotes(input1);
         given(timeProvider.now()).willReturn(secondTime);
-        compactRoomApplicationService.updateParticipantVotes(input2);
+        roomApplicationService.updateParticipantVotes(input2);
 
         // then
         final Participant updated = participantRepository.findByRoomIdAndName(
@@ -221,11 +222,11 @@ class OptimisticLockVoteUpdateTest extends IntegrationTest {
     @Test
     void updateParticipantVotes_updatesVersionAndLastVotedAt() {
         // given
-        final CompactVoteUpdateInput input = new CompactVoteUpdateInput(
+        final VotesUpdateInput input = new VotesUpdateInput(
                 room.getSession(), participant.getName(), List.of(slotA, slotB));
 
         // when
-        compactRoomApplicationService.updateParticipantVotes(input);
+        roomApplicationService.updateParticipantVotes(input);
 
         // then
         final Participant updated = participantRepository.findByRoomIdAndName(

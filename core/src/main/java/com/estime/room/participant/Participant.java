@@ -46,14 +46,14 @@ public class Participant extends BaseEntity {
         return new Participant(roomId, name, null, null);
     }
 
-    public void markVoted(final Instant now) {
-        this.lastVotedAt = now;
-    }
-
     private static void validateNull(final Long roomId, final ParticipantName name) {
         Validator.builder()
                 .add(Fields.roomId, roomId)
                 .add(Fields.name, name)
                 .validateNull();
+    }
+
+    public void markVoted(final Instant now) {
+        this.lastVotedAt = now;
     }
 }

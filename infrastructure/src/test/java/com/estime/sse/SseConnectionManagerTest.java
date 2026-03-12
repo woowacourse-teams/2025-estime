@@ -20,6 +20,19 @@ class SseConnectionManagerTest {
         session = RoomSession.from("test-session");
     }
 
+    @DisplayName("init() - SSE 연결을 생성하고 저장한다")
+    @Test
+    void init() {
+        // when
+        final SseConnection connection = sseConnectionManager.init(session);
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(connection).isNotNull();
+            softly.assertThat(sseConnectionManager.findAll(session)).containsExactly(connection);
+        });
+    }
+
     @DisplayName("save() - SSE 연결을 저장한다")
     @Test
     void save() {

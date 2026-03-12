@@ -30,11 +30,6 @@ public class PlatformNotificationOutbox extends Outbox {
     @Column(name = "platform_notification_type", nullable = false)
     private PlatformNotificationType platformNotificationType;
 
-    @Override
-    public String getDescription() {
-        return "PlatformNotification-" + platformType + "-" + platformNotificationType;
-    }
-
     private PlatformNotificationOutbox(
             final Long roomId,
             final PlatformType platformType,
@@ -67,5 +62,10 @@ public class PlatformNotificationOutbox extends Outbox {
                 platformNotificationType.scheduledAt(createdAt, deadlineAt),
                 now
         );
+    }
+
+    @Override
+    public String getDescription() {
+        return "PlatformNotification-" + platformType + "-" + platformNotificationType;
     }
 }

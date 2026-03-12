@@ -5,8 +5,10 @@ import com.estime.room.participant.ParticipantName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
+
 
 public record DateTimeSlotStatisticResponse(
         @Schema(example = "4")
@@ -21,7 +23,7 @@ public record DateTimeSlotStatisticResponse(
         List<DateTimeSlotVotesResponse> statistic
 ) {
 
-    public static DateTimeSlotStatisticResponse from(final DateTimeSlotStatisticOutput output) {
+    public static DateTimeSlotStatisticResponse from(final DateTimeSlotStatisticOutput output, final ZoneId zone) {
         final int participantCount = output.participantCount();
         return new DateTimeSlotStatisticResponse(
                 participantCount,
@@ -41,7 +43,7 @@ public record DateTimeSlotStatisticResponse(
                             final int voteCount = each.participantNames().size();
                             final double weight = Math.round((double) voteCount / participantCount * 100.0) / 100.0;
                             return new DateTimeSlotVotesResponse(
-                                    each.dateTimeSlot().getStartAt(),
+                                    each.dateTimeSlot().getStartAt().atZone(zone).toLocalDateTime(),
                                     voteCount,
                                     weight,
                                     participantNames.stream().map(ParticipantName::getValue).toList()

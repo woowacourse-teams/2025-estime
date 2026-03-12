@@ -8,7 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -35,34 +35,33 @@ public class RoomAvailableSlot implements Comparable<RoomAvailableSlot> {
     private Room room;
 
     public static RoomAvailableSlot of(
-            final CompactDateTimeSlot slotCode,
+            final DateTimeSlot slot,
             final Room room
     ) {
-        validateNull(slotCode, room);
-        return new RoomAvailableSlot(RoomAvailableSlotId.of(slotCode), room);
+        validateNull(slot, room);
+        return new RoomAvailableSlot(RoomAvailableSlotId.of(slot), room);
     }
 
     private static void validateNull(
-            final CompactDateTimeSlot slotCode,
+            final DateTimeSlot slot,
             final Room room
     ) {
         Validator.builder()
-                .add(RoomAvailableSlotId.Fields.slotCode, slotCode)
+                .add(RoomAvailableSlotId.Fields.slot, slot)
                 .add(RoomAvailableSlot.Fields.room, room)
                 .validateNull();
     }
 
-    public CompactDateTimeSlot getSlotCode() {
-        return id.getSlotCode();
+    public DateTimeSlot getSlot() {
+        return id.getSlot();
     }
 
-    public LocalDateTime getStartAt() {
-        final CompactDateTimeSlot slotCode = id.getSlotCode();
-        return LocalDateTime.of(slotCode.getStartAtLocalDate(), slotCode.getStartAtLocalTime());
+    public Instant getStartAt() {
+        return id.getSlot().getStartAt();
     }
 
     @Override
     public int compareTo(final RoomAvailableSlot other) {
-        return this.getSlotCode().compareTo(other.getSlotCode());
+        return this.getSlot().compareTo(other.getSlot());
     }
 }

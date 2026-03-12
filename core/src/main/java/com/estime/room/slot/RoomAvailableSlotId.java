@@ -24,18 +24,18 @@ public class RoomAvailableSlotId implements Serializable {
     @Column(name = "room_id", nullable = false)
     private Long roomId;
 
-    @Column(name = "slot_code", nullable = false)
-    private CompactDateTimeSlot slotCode;
+    @Column(name = "slot", nullable = false)
+    private DateTimeSlot slot;
 
-    public static RoomAvailableSlotId of(final CompactDateTimeSlot slotCode) {
-        validateNull(slotCode);
+    public static RoomAvailableSlotId of(final DateTimeSlot slot) {
+        validateNull(slot);
         // roomId는 @MapsId에 의해 persist 시점에 채워짐
-        return new RoomAvailableSlotId(null, slotCode);
+        return new RoomAvailableSlotId(null, slot);
     }
 
-    private static void validateNull(final CompactDateTimeSlot slotCode) {
+    private static void validateNull(final DateTimeSlot slot) {
         Validator.builder()
-                .add(Fields.slotCode, slotCode)
+                .add(Fields.slot, slot)
                 .validateNull();
     }
 }

@@ -9,7 +9,6 @@ import com.estime.room.controller.dto.response.ConnectedRoomCreateResponse;
 import com.estime.room.controller.dto.response.DateTimeSlotStatisticResponse;
 import com.estime.room.controller.dto.response.ParticipantCheckResponse;
 import com.estime.room.controller.dto.response.ParticipantVotesResponse;
-import com.estime.room.controller.dto.response.ParticipantVotesUpdateResponse;
 import com.estime.room.controller.dto.response.RoomCreateResponse;
 import com.estime.room.controller.dto.response.RoomResponse;
 import com.estime.room.dto.input.RoomSessionInput;
@@ -20,6 +19,7 @@ import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomOutput;
 import com.estime.room.service.RoomApplicationService;
 import com.estime.shared.CustomApiResponse;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RoomController implements RoomControllerSpecification {
 
+    private static final ZoneId DEFAULT_ZONE = ZoneId.of("Asia/Seoul");
+
     private final RoomApplicationService roomApplicationService;
 
     @Override
     public CustomApiResponse<RoomCreateResponse> createRoom(@RequestBody final RoomCreateRequest request) {
         return CustomApiResponse.ok(
                 RoomCreateResponse.from(
-                        roomApplicationService.createRoom(request.toInput())));
+                        roomApplicationService.createRoom(request.toInput(DEFAULT_ZONE))));
     }
 
     @Override
@@ -44,7 +46,7 @@ public class RoomController implements RoomControllerSpecification {
             @RequestBody final ConnectedRoomCreateRequest request) {
         return CustomApiResponse.ok(
                 ConnectedRoomCreateResponse.from(
-                        roomApplicationService.createConnectedRoom(request.toInput())));
+                        roomApplicationService.createConnectedRoom(request.toInput(DEFAULT_ZONE))));
     }
 
     @Override
@@ -52,7 +54,7 @@ public class RoomController implements RoomControllerSpecification {
             @PathVariable("session") final RoomSession session
     ) {
         final RoomOutput output = roomApplicationService.getRoomBySession(RoomSessionInput.from(session));
-        return CustomApiResponse.ok(RoomResponse.from(output));
+        return CustomApiResponse.ok(RoomResponse.from(output, DEFAULT_ZONE));
     }
 
     @Override
@@ -61,7 +63,7 @@ public class RoomController implements RoomControllerSpecification {
     ) {
         final DateTimeSlotStatisticOutput output = roomApplicationService.calculateVoteStatistic(
                 RoomSessionInput.from(session));
-        return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output));
+        return CustomApiResponse.ok(DateTimeSlotStatisticResponse.from(output, DEFAULT_ZONE));
     }
 
     @Override
@@ -71,18 +73,18 @@ public class RoomController implements RoomControllerSpecification {
     ) {
         final VotesOutput output = roomApplicationService.getParticipantVotesBySessionAndParticipantName(
                 VotesFindInput.of(session, participantName));
-        return CustomApiResponse.ok(ParticipantVotesResponse.from(output));
+        return CustomApiResponse.ok(ParticipantVotesResponse.from(output, DEFAULT_ZONE));
     }
 
     @Override
-    public CustomApiResponse<ParticipantVotesUpdateResponse> updateParticipantVotes(
+    public CustomApiResponse<ParticipantVotesResponse> updateParticipantVotes(
             @PathVariable("session") final RoomSession session,
             @RequestBody final ParticipantVotesUpdateRequest request
     ) {
         final VotesOutput output = roomApplicationService.updateParticipantVotes(
                 request.toInput(session));
         return CustomApiResponse.ok("Update success",
-                ParticipantVotesUpdateResponse.from(output));
+                ParticipantVotesResponse.from(output, DEFAULT_ZONE));
     }
 
     @Override

@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Transient;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -30,7 +29,10 @@ public class Vote implements Persistable<VoteId> {
     @Transient
     private boolean isNew = true;
 
-    public static Vote of(final Long participantId, final DateTimeSlot dateTimeSlot) {
+    public static Vote of(
+            final Long participantId,
+            final DateTimeSlot dateTimeSlot
+    ) {
         Validator.builder()
                 .add("participantId", participantId)
                 .add("dateTimeSlot", dateTimeSlot)
@@ -49,15 +51,11 @@ public class Vote implements Persistable<VoteId> {
         this.isNew = false;
     }
 
-    public Long participantId() {
+    public Long getParticipantId() {
         return id.getParticipantId();
     }
 
-    public DateTimeSlot dateTimeSlot() {
+    public DateTimeSlot getDateTimeSlot() {
         return id.getDateTimeSlot();
-    }
-
-    public LocalDateTime startAt() {
-        return dateTimeSlot().getStartAt();
     }
 }
