@@ -46,4 +46,4 @@
 
 
 ## 🏭 Architecture
-<img width="1992" height="3072" alt="AWS cloud diagram" src="https://github.com/user-attachments/assets/7c4158c6-25f8-4704-92ee-ccd11cbae8b4" />
+<img width="1992" height="3072" alt="스크린샷 2026-03-14 오후 8 05 12" src="https://github.com/user-attachments/assets/ada78661-8f10-4a4e-9cb3-94971d864965" />
