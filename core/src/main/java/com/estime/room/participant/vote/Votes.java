@@ -4,6 +4,7 @@ import com.estime.room.participant.vote.exception.DuplicateNotAllowedException;
 import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
 import com.estime.shared.Validator;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,26 @@ import lombok.AllArgsConstructor;
 public class Votes {
 
     private final Set<Vote> elements;
+
+    public record Diff(Votes toRemove, Votes toAdd) {
+    }
+
+    public record Statistic(Map<DateTimeSlot, Set<Long>> dateTimeSlotParticipants) {
+
+        public Set<Long> allParticipantIds() {
+            return dateTimeSlotParticipants.values().stream()
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+        }
+
+        public Set<DateTimeSlot> dateTimeSlots() {
+            return dateTimeSlotParticipants.keySet();
+        }
+
+        public Set<Long> participantIdsFor(final DateTimeSlot slot) {
+            return dateTimeSlotParticipants.getOrDefault(slot, Set.of());
+        }
+    }
 
     public static Votes from(final List<Vote> votes) {
         validateNull(votes);
@@ -40,18 +61,22 @@ public class Votes {
         }
     }
 
+    public Diff diff(final Votes updated) {
+        return new Diff(this.subtract(updated), updated.subtract(this));
+    }
+
     public Votes subtract(final Votes other) {
         final Set<Vote> removed = new HashSet<>(this.elements);
         removed.removeAll(other.elements);
         return new Votes(removed);
     }
 
-    public Map<DateTimeSlot, Set<Long>> calculateStatistic() {
-        return elements.stream()
+    public Statistic calculateStatistic() {
+        return new Statistic(elements.stream()
                 .collect(Collectors.groupingBy(
                         Vote::getDateTimeSlot,
                         Collectors.mapping(Vote::getParticipantId, Collectors.toSet())
-                ));
+                )));
     }
 
     public List<Vote> getSortedVotes() {
