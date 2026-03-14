@@ -29,16 +29,10 @@ import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformRepository;
-import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
-import com.estime.room.platform.notification.PlatformNotificationType;
-import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -95,19 +89,8 @@ public class RoomApplicationService {
                         input.channelId(),
                         input.notification()));
 
-        for (final PlatformNotificationType type : PlatformNotificationType.values()) {
-            if (platform.shouldNotifyFor(type)) {
-                platformNotificationOutboxRepository.save(
-                        PlatformNotificationOutbox.of(
-                                room.getId(),
-                                input.platformType(),
-                                platform.getChannelId(),
-                                type,
-                                room.getCreatedAt(),
-                                room.getDeadline(),
-                                timeProvider.now()));
-            }
-        }
+        platform.createNotificationOutboxes(room.getCreatedAt(), room.getDeadline(), timeProvider.now())
+                .forEach(platformNotificationOutboxRepository::save);
 
         return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }

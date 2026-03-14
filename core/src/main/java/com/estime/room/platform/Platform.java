@@ -1,9 +1,13 @@
 package com.estime.room.platform;
 
 import com.estime.room.platform.notification.PlatformNotification;
+import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.room.platform.notification.PlatformNotificationType;
 import com.estime.shared.BaseEntity;
 import com.estime.shared.Validator;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -62,5 +66,17 @@ public class Platform extends BaseEntity {
 
     public boolean shouldNotifyFor(final PlatformNotificationType type) {
         return notification.shouldNotifyFor(type);
+    }
+
+    public List<PlatformNotificationOutbox> createNotificationOutboxes(
+            final Instant createdAt,
+            final Instant deadlineAt,
+            final Instant now
+    ) {
+        return Arrays.stream(PlatformNotificationType.values())
+                .filter(this::shouldNotifyFor)
+                .map(notificationType -> PlatformNotificationOutbox.of(
+                        roomId, type, channelId, notificationType, createdAt, deadlineAt, now))
+                .toList();
     }
 }
