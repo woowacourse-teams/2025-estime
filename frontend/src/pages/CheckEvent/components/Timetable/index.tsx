@@ -14,34 +14,24 @@ interface TimetableProps {
   availableDates: Set<string>;
 }
 
-const TimetableContent = ({ timeColumnRef, dateTimeSlots, availableDates }: TimetableProps) => {
+const Timetable = ({ timeColumnRef, dateTimeSlots, availableDates }: TimetableProps) => {
   const { containerRef, pointerHandlers } = useLocalTimeSelection();
 
   return (
-    <S.TimetableContent>
-      <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
-      <Wrapper maxWidth="100%" center={false} ref={containerRef} {...pointerHandlers}>
-        <Flex>
-          {[...availableDates].map((date) => (
-            <Wrapper key={date} maxWidth="100%">
-              <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
-              <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
-            </Wrapper>
-          ))}
-        </Flex>
-      </Wrapper>
-    </S.TimetableContent>
-  );
-};
-
-const Timetable = ({ timeColumnRef, dateTimeSlots, availableDates }: TimetableProps) => {
-  return (
     <TimetableHoverProvider dateTimeSlots={dateTimeSlots}>
-      <TimetableContent
-        timeColumnRef={timeColumnRef}
-        dateTimeSlots={dateTimeSlots}
-        availableDates={availableDates}
-      />
+      <S.TimetableContent>
+        <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
+        <Wrapper maxWidth="100%" center={false} ref={containerRef} {...pointerHandlers}>
+          <Flex>
+            {[...availableDates].map((date) => (
+              <Wrapper key={date} maxWidth="100%">
+                <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
+                <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
+              </Wrapper>
+            ))}
+          </Flex>
+        </Wrapper>
+      </S.TimetableContent>
     </TimetableHoverProvider>
   );
 };
