@@ -11,14 +11,14 @@ import { useTheme } from '@emotion/react';
 import { userNameStore } from '../stores/userNameStore';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
-import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import { CheckRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 
 import Toggle from '@/shared/components/Toggle';
 import { useGlassPreview } from '../stores/glassPreviewStore';
 import { useRoomStatistics } from '../stores/roomStatisticsStore';
 
 interface TimetableSectionProps {
-  roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
+  roomInfo: CheckRoomInfo;
   pagination: TimeTablePaginationReturns;
   buttonName: string;
   handleButtonClick: () => Promise<void>;

@@ -127,4 +127,36 @@ export const FormatManager = {
 
     return (days << 8) | timeSlotIndex;
   },
+
+  /**
+   * 슬롯 코드 배열에서 그리드 축(날짜 Set, 시간 배열)을 파생합니다.
+   * min~max 범위를 1일/30분 단위로 연속 채워 반환합니다.
+   *
+   * @param availableSlots - 인코딩된 슬롯 코드 배열
+   * @returns availableDateSlots: 연속된 날짜 Set, availableTimeSlots: 연속된 시간 배열
+   */
+  populateGridAxes(availableSlots: number[]): {
+    availableDateSlots: Set<string>;
+    availableTimeSlots: string[];
+  } {
+    const dayIndices = availableSlots.map((c) => (c >> 8) & 0xfff);
+    const timeIndices = availableSlots.map((c) => c & 0xff);
+
+    const minDay = Math.min(...dayIndices);
+    const maxDay = Math.max(...dayIndices);
+    const minTime = Math.min(...timeIndices);
+    const maxTime = Math.max(...timeIndices);
+
+    const availableDateSlots = new Set<string>();
+    for (let d = minDay; d <= maxDay; d++) {
+      availableDateSlots.add(FormatManager.decodeSlotCode(d << 8).slice(0, 10));
+    }
+
+    const availableTimeSlots: string[] = [];
+    for (let t = minTime; t <= maxTime; t++) {
+      availableTimeSlots.push(FormatManager.decodeSlotCode(t).slice(11));
+    }
+
+    return { availableDateSlots, availableTimeSlots };
+  },
 };

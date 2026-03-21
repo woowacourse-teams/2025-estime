@@ -10,10 +10,10 @@ import * as S from './Section.styled';
 import { useTheme } from '@emotion/react';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
-import { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import { CheckRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 
 interface HeatmapSectionProps {
-  roomInfo: RoomInfo & { roomSession: string; availableTimeSlots: string[] };
+  roomInfo: CheckRoomInfo;
   pagination: TimeTablePaginationReturns;
   buttonName: string;
   handleButtonClick: () => Promise<void>;

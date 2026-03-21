@@ -6,6 +6,7 @@ import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { useTheme } from '@emotion/react';
 import { cellHoverStore } from '@/pages/CheckEvent/stores/CellHoverStore';
+import { useRoomInfo } from '@/pages/CheckEvent/stores/roomInfoStore';
 
 interface HeatMapDataCellProps {
   date: string;
@@ -15,7 +16,9 @@ interface HeatMapDataCellProps {
 
 const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => {
   const { isMobile } = useTheme();
+  const { minSlotCode } = useRoomInfo();
 
+  const isPast = FormatManager.encodeSlotCode(`${date}T${timeText}`) < minSlotCode;
   const roomStatistics = useRoomStatistics();
   const cellInfo = roomStatistics.statistics.get(`${date}T${timeText}`);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
@@ -59,6 +62,7 @@ const HeatMapDataCell = ({ date, timeText, isLocked }: HeatMapDataCellProps) => 
       data-cell-id={`${date}T${timeText}`}
       weight={weight}
       isRecommended={isRecommended}
+      isPast={isPast}
       onMouseOver={() => {
         if (isMobile || isLocked) return;
         publishCellInfo();

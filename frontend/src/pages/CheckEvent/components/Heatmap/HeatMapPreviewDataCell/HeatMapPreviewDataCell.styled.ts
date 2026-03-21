@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 export const Container = styled.div<{
   weight: number;
   isRecommended?: boolean;
+  isPast?: boolean;
 }>`
   position: relative;
   border-top: 1px solid ${({ theme }) => theme.colors.gray20};
@@ -16,8 +17,13 @@ export const Container = styled.div<{
   pointer-events: none;
   overflow: hidden;
 
-  background-color: ${({ weight, theme }) =>
-    weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.background};
+  background-color: ${({ weight, isPast, theme }) => {
+    if (isPast) return theme.colors.gray20;
+    if (weight > 0) return hexToRgba(theme.colors.primary, weight);
+    return theme.colors.background;
+  }};
+
+  opacity: ${({ isPast }) => (isPast ? 0.4 : 1)};
 
   &:hover {
     border: 1.5px dashed ${({ theme }) => theme.colors.gray30};
