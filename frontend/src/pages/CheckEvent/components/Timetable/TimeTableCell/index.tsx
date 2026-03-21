@@ -2,6 +2,7 @@ import { useTimetableHoverContext } from '@/pages/CheckEvent/providers/Timetable
 import { cellDataStore } from '@/pages/CheckEvent/stores/CellDataStore';
 import { useGlassPreview } from '@/pages/CheckEvent/stores/glassPreviewStore';
 import { useRoomStatistics } from '@/pages/CheckEvent/stores/roomStatisticsStore';
+import { useRoomInfo } from '@/pages/CheckEvent/stores/roomInfoStore';
 import { FormatManager } from '@/shared/utils/common/FormatManager';
 import { TimeManager } from '@/shared/utils/common/TimeManager';
 import { useTheme } from '@emotion/react';
@@ -13,6 +14,8 @@ interface TimeTableCellProps {
 
 const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const dateTimeKey = `${date}T${timeText}`;
+  const { minSlotCode } = useRoomInfo();
+  const isPast = FormatManager.encodeSlotCode(dateTimeKey) < minSlotCode;
   const roomStatistics = useRoomStatistics();
   const cellInfo = roomStatistics.statistics.get(dateTimeKey);
   const isRecommended = cellInfo?.voteCount === roomStatistics.maxVoteCount;
@@ -21,6 +24,9 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
   const { timeTableCellHover } = useTimetableHoverContext();
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isPast) {
+      return;
+    }
     const isDragging = e.currentTarget.closest('.dragging') !== null;
 
     if (!isDragging && !theme.isMobile && isOn) {
@@ -37,6 +43,7 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
       }
     }
   };
+
   const handleEnter = () => {
     if (theme.isMobile) return;
     timeTableCellHover(timeText);
@@ -49,13 +56,14 @@ const TimeTableCell = ({ date, timeText }: TimeTableCellProps) => {
 
   return (
     <div
-      className="time-table-cell"
+      className={`time-table-cell${isPast ? ' isPast' : ''}`}
       aria-label={`${FormatManager.formatKoreanDate(date)} ${timeText} 선택`}
+      aria-disabled={isPast}
       data-time={dateTimeKey}
       onMouseEnter={handleEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      tabIndex={0}
+      tabIndex={isPast ? -1 : 0}
     />
   );
 };

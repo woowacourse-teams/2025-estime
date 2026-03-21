@@ -1,10 +1,8 @@
-import { createChannelRoom, createRoom } from '@/apis/room/room';
-import { toCreateRoomInfo } from '@/apis/transform/toCreateRoomInfo';
-
+import { createChannelRoomV3, createRoomV3 } from '@/apis/room/room';
 import { useCallback, useState } from 'react';
 import { useExtractQueryParams } from '@/shared/hooks/common/useExtractQueryParams';
+import { usePastSlotFilter } from './usePastSlotFilter';
 import useFetch from '@/shared/hooks/common/useFetch';
-import { getRoomInfo } from '@/pages/CreateEvent/store/createRoomStore';
 
 type checkedNotification = {
   created: boolean;
@@ -14,6 +12,7 @@ type checkedNotification = {
 
 export const useCreateRoom = () => {
   const { platformType, channelId } = useExtractQueryParams(['platformType', 'channelId'] as const);
+  const { getFilteredPayload } = usePastSlotFilter();
   const [checkedNotification, setCheckedNotification] = useState<checkedNotification>({
     created: true,
     remind: true,
@@ -23,8 +22,8 @@ export const useCreateRoom = () => {
   const { triggerFetch: roomWithPlatformSubmit } = useFetch({
     context: 'roomInfoSubmit',
     requestFn: () =>
-      createChannelRoom({
-        ...toCreateRoomInfo(getRoomInfo()),
+      createChannelRoomV3({
+        ...getFilteredPayload(),
         platformType: platformType as 'DISCORD' | 'SLACK',
         channelId: channelId || 'DISCORD',
         notification: checkedNotification,
@@ -33,7 +32,7 @@ export const useCreateRoom = () => {
 
   const { triggerFetch: roomSubmit } = useFetch({
     context: 'roomInfoSubmit',
-    requestFn: () => createRoom(toCreateRoomInfo(getRoomInfo())),
+    requestFn: () => createRoomV3(getFilteredPayload()),
   });
 
   const notification = {

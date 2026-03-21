@@ -1,22 +1,20 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useExtractQueryParams } from '@/shared/hooks/common/useExtractQueryParams';
-import { getRoomInfo } from '@/apis/room/room';
-import type { RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import { getRoomInfoV3 } from '@/apis/room/room';
 import { initialCheckRoomInfo } from '@/constants/initialRoomInfo';
-import { fromParseRoomInfo } from '@/apis/transform/fromParseRoomInfo';
+import { fromParseRoomInfo, type CheckRoomInfo } from '@/apis/transform/fromParseRoomInfo';
 import useFetch from '@/shared/hooks/common/useFetch';
 import { useAnnounceContext } from '@/shared/contexts/AnnounceContext';
+import { roomInfoStore } from '../stores/roomInfoStore';
 
 const useCheckRoomSession = () => {
   const session = useExtractQueryParams('id');
   const { triggerFetch: getRoomSession } = useFetch({
     context: 'fetchSession',
-    requestFn: useCallback(() => getRoomInfo(session), [session]),
+    requestFn: useCallback(() => getRoomInfoV3(session), [session]),
   });
 
-  const [roomInfo, setRoomInfo] = useState<
-    RoomInfo & { roomSession: string; availableTimeSlots: string[] }
-  >(initialCheckRoomInfo);
+  const [roomInfo, setRoomInfo] = useState<CheckRoomInfo>(initialCheckRoomInfo);
 
   const { roomInfoAnnounce } = useAnnounceContext();
 
@@ -41,6 +39,10 @@ const useCheckRoomSession = () => {
     const response = await getRoomSession();
     const parseData = fromParseRoomInfo(response);
     setRoomInfo(parseData);
+    roomInfoStore.setState({
+      minSlotCode:
+        parseData.availableSlots.length > 0 ? Math.min(...parseData.availableSlots) : Infinity,
+    });
     announceRoomInfo(parseData.title, parseData.deadline);
   }, [getRoomSession, announceRoomInfo]);
 
