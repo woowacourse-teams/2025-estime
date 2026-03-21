@@ -1,4 +1,5 @@
-import type { CreateRoomInfoType, RoomInfo } from '@/pages/CreateEvent/types/roomInfo';
+import { CheckRoomInfo } from '@/apis/transform/fromParseRoomInfo';
+import type { CreateRoomInfoType } from '@/pages/CreateEvent/types/roomInfo';
 import { DateManager } from '@/shared/utils/common/DateManager';
 
 const { defaultTime, defaultDate } = DateManager.getDefaultDeadline();
@@ -16,12 +17,10 @@ export const initialCreateRoomInfo: CreateRoomInfoType = {
   },
 };
 
-export const initialCheckRoomInfo: RoomInfo & {
-  roomSession: string;
-  availableTimeSlots: string[];
-} = {
+export const initialCheckRoomInfo: CheckRoomInfo = {
   title: '',
-  availableDateSlots: new Set(),
+  availableSlots: [],
+  availableDateSlots: new Set<string>(),
   availableTimeSlots: [],
   deadline: {
     date: defaultDate,

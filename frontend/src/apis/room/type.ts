@@ -15,6 +15,22 @@ export interface CreateChannelRoomRequestType extends CreateRoomRequestType {
   };
 }
 
+export interface CreateRoomRequestTypeV3 {
+  title: string;
+  availableSlots: number[];
+  deadline: string;
+}
+
+export interface CreateChannelRoomRequestTypeV3 extends CreateRoomRequestTypeV3 {
+  platformType: 'DISCORD' | 'SLACK';
+  channelId: string;
+  notification: {
+    created: boolean;
+    remind: boolean;
+    deadline: boolean;
+  };
+}
+
 export interface CreateRoomResponseType {
   session: string;
 }
@@ -26,6 +42,13 @@ export interface GetRoomInfoResponseType {
   deadline: string;
   roomSession: string;
 }
+export interface GetRoomInfoResponseTypeV3 {
+  title: string;
+  availableSlots: number[];
+  deadline: string;
+  roomSession: string;
+}
+
 export interface CreateUserRequestType {
   participantName: string;
 }

@@ -7,7 +7,7 @@ const shimmerSweep = keyframes`
   to   { transform: translate3d(400%, 0, 0); }
 `;
 
-export const Container = styled.div<{ weight: number; isRecommended?: boolean }>`
+export const Container = styled.div<{ weight: number; isRecommended?: boolean; isPast?: boolean }>`
   position: relative;
   border-top: 1px solid ${({ theme }) => theme.colors.gray40};
   border-right: 1px solid ${({ theme }) => theme.colors.gray40};
@@ -27,9 +27,15 @@ export const Container = styled.div<{ weight: number; isRecommended?: boolean }>
   }
 
   // 기본 요소는 배경색 애니메이션만
-  transition: background-color 0.5s ease-in-out;
-  background-color: ${({ weight, theme }) =>
-    weight > 0 ? hexToRgba(theme.colors.primary, weight) : theme.colors.gray10};
+  transition:
+    background-color 0.5s ease-in-out,
+    opacity 0.3s ease-in-out;
+  background-color: ${({ weight, isPast, theme }) => {
+    if (isPast) return theme.colors.gray20;
+    if (weight > 0) return hexToRgba(theme.colors.primary, weight);
+    return theme.colors.gray10;
+  }};
+  cursor: ${({ isPast }) => (isPast ? 'not-allowed' : 'default')};
 
   // before는 배경 그라디에이션
 
