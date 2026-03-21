@@ -1,5 +1,9 @@
 import useShakeAnimation from '@/shared/hooks/common/useShakeAnimation';
-import { checkBasicReady, checkCalendarReady } from '../utils/CreateRoomValidator';
+import {
+  checkBasicReady,
+  checkCalendarReady,
+  getInvalidReason,
+} from '../utils/CreateRoomValidator';
 import { useRef } from 'react';
 import { showToast } from '@/shared/store/toastStore';
 
@@ -10,12 +14,6 @@ interface showCreateRoomValidationErrorType {
 
 type FieldType = 'all' | 'calendar' | 'basic';
 
-const validationFailureMessages: Record<FieldType, string> = {
-  all: '날짜와 기본 설정을 선택해주세요!',
-  calendar: '날짜를 선택해주세요!',
-  basic: '제목과 시간을 선택해주세요!',
-};
-
 const useCreateRoomValidation = () => {
   const { shouldShake, handleShouldShake } = useShakeAnimation();
   const showValidationBorder = useRef<boolean>(false);
@@ -24,11 +22,10 @@ const useCreateRoomValidation = () => {
 
   const showCreateRoomValidationError = ({
     type = 'warning',
-    field,
   }: showCreateRoomValidationErrorType) => {
     showToast({
       type,
-      message: validationFailureMessages[field],
+      message: getInvalidReason(),
     });
     showValidationBorder.current = true;
     handleShouldShake();

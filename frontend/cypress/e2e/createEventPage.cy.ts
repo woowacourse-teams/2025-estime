@@ -27,14 +27,14 @@ describe('방 생성 플로우', () => {
   describe('필수 입력값이 누락되면 방이 생성되지 않는다.', () => {
     it('날짜를 선택하지 않고 약속 제목을 입력하지 않으면 방 생성 버튼 클릭 시 경고 토스트가 표시된다.', () => {
       cy.contains('약속 만들기').click();
-      cy.contains('날짜와 기본 설정을 선택해주세요!').should('be.visible');
+      cy.contains('제목, 날짜 선택이 올바르지 않습니다. 다시 입력해주세요!').should('be.visible');
     });
 
     it('날짜를 선택하지 않고 방 생성 버튼 클릭 시 경고 토스트가 표시된다.', () => {
       cy.get('[aria-label="약속 제목 입력 필드"]').type('아인슈타임 회식');
 
       cy.contains('약속 만들기').click();
-      cy.contains('날짜를 선택해주세요!').should('be.visible');
+      cy.contains('날짜 선택이 올바르지 않습니다. 다시 입력해주세요!').should('be.visible');
     });
 
     it('약속 제목을 입력하지 않고 방 생성 버튼 클릭 시 경고 토스트가 표시된다.', () => {
@@ -43,7 +43,7 @@ describe('방 생성 플로우', () => {
       cy.get(`[role="button"][aria-label="${day}일 선택 안되어 있음"]`).click();
 
       cy.contains('약속 만들기').click();
-      cy.contains('제목과 시간을 선택해주세요!').should('be.visible');
+      cy.contains('제목이 올바르지 않습니다. 다시 입력해주세요!').should('be.visible');
     });
   });
 });
