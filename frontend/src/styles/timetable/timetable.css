@@ -48,3 +48,8 @@
 .time-table-cell.selected::after {
   opacity: 1;
 }
+
+.time-table-cell.isPast {
+  cursor: not-allowed;
+  background-color: var(--gray20);
+}

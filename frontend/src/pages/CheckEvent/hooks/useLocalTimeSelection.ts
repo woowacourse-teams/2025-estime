@@ -69,7 +69,7 @@ const useLocalTimeSelection = () => {
     containerBoundingRectRef.current = containerRect;
 
     dragHitboxesRef.current = Array.from(
-      container.querySelectorAll<HTMLElement>('.time-table-cell')
+      container.querySelectorAll<HTMLElement>('.time-table-cell:not(.isPast)')
     ).map((el) => {
       const rect = el.getBoundingClientRect();
       return {
@@ -86,7 +86,7 @@ const useLocalTimeSelection = () => {
     const el = document.elementFromPoint(event.clientX, event.clientY);
     if (!el) return null;
     const targetCell = el.closest('.time-table-cell') as HTMLElement | null;
-    if (!targetCell) return null;
+    if (!targetCell || targetCell.classList.contains('isPast')) return null;
     return targetCell.dataset.time;
   }, []);
 
