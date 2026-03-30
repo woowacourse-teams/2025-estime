@@ -15,14 +15,7 @@ export const fromParseRoomInfo = (data: GetRoomInfoResponseTypeV3): CheckRoomInf
 
   const { availableDateSlots, availableTimeSlots } = FormatManager.populateGridAxes(availableSlots);
 
-  const replacedDeadline = new Date(deadline.replace('Z', ''));
-
-  const date = replacedDeadline.toLocaleDateString('sv-SE');
-  const time = replacedDeadline.toLocaleTimeString('ko-KR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
+  const { date, time } = FormatManager.parseDeadline(deadline);
 
   return {
     title,
