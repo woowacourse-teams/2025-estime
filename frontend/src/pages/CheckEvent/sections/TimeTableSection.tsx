@@ -77,7 +77,7 @@ const TimetableSection = ({
         </TimeTableHeader>
 
         <Flex direction="column" gap="var(--gap-4)">
-          {theme.isMobile && (
+          {pagination.totalPages > 1 && (
             <Flex gap="var(--gap-3)" justify="flex-end" align="center">
               <PageArrowButton
                 onClick={pagination.handlePagePrev}
