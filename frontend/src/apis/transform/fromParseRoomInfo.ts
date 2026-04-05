@@ -15,7 +15,7 @@ export const fromParseRoomInfo = (data: GetRoomInfoResponseTypeV3): CheckRoomInf
 
   const { availableDateSlots, availableTimeSlots } = FormatManager.populateGridAxes(availableSlots);
 
-  const [date, time] = deadline.split('T');
+  const { date, time } = FormatManager.parseDeadline(deadline);
 
   return {
     title,

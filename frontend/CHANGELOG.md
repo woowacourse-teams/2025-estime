@@ -1,3 +1,11 @@
+## 1.10.0 (2026-04-05)
+
+* buildspec.yml 수정 (#779) ([84d237f](https://github.com/woowacourse-teams/2025-estime/commit/84d237f)), closes [#779](https://github.com/woowacourse-teams/2025-estime/issues/779)
+* pnpm + 빌드 결과물 cache 적용 (#780) ([fa910ac](https://github.com/woowacourse-teams/2025-estime/commit/fa910ac)), closes [#780](https://github.com/woowacourse-teams/2025-estime/issues/780)
+* 마감시간 포맷 변경 (#845) ([8826a8f](https://github.com/woowacourse-teams/2025-estime/commit/8826a8f)), closes [#845](https://github.com/woowacourse-teams/2025-estime/issues/845)
+* chore: webpack 빌드 결과물 캐시 제거 (#782) ([fa6d6c8](https://github.com/woowacourse-teams/2025-estime/commit/fa6d6c8)), closes [#782](https://github.com/woowacourse-teams/2025-estime/issues/782)
+* fix: buildspec.yml 파일 수정 (#781) ([0e8cf0e](https://github.com/woowacourse-teams/2025-estime/commit/0e8cf0e)), closes [#781](https://github.com/woowacourse-teams/2025-estime/issues/781)
+* feat: buildspec.yml 파일 수정 (#778) ([9c49ef4](https://github.com/woowacourse-teams/2025-estime/commit/9c49ef4)), closes [#778](https://github.com/woowacourse-teams/2025-estime/issues/778)
 ## 1.9.0 (2026-03-21)
 
 * fix: buildspec.yml 파일 수정 (#781) ([4ed3a51](https://github.com/woowacourse-teams/2025-estime/commit/4ed3a51)), closes [#781](https://github.com/woowacourse-teams/2025-estime/issues/781)
