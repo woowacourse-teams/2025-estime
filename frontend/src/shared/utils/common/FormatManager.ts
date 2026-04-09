@@ -139,23 +139,16 @@ export const FormatManager = {
     availableDateSlots: Set<string>;
     availableTimeSlots: string[];
   } {
-    const dayIndices = availableSlots.map((c) => (c >> 8) & 0xfff);
-    const timeIndices = availableSlots.map((c) => c & 0xff);
+    const dayIndices = [...new Set(availableSlots.map((c) => (c >> 8) & 0xfff))].sort((a, b) => a - b);
+    const timeIndices = [...new Set(availableSlots.map((c) => c & 0xff))].sort((a, b) => a - b);
 
-    const minDay = Math.min(...dayIndices);
-    const maxDay = Math.max(...dayIndices);
-    const minTime = Math.min(...timeIndices);
-    const maxTime = Math.max(...timeIndices);
+    const availableDateSlots = new Set<string>(
+      dayIndices.map((dayIndex) => FormatManager.decodeSlotCode(dayIndex << 8).slice(0, 10))
+    );
 
-    const availableDateSlots = new Set<string>();
-    for (let d = minDay; d <= maxDay; d++) {
-      availableDateSlots.add(FormatManager.decodeSlotCode(d << 8).slice(0, 10));
-    }
-
-    const availableTimeSlots: string[] = [];
-    for (let t = minTime; t <= maxTime; t++) {
-      availableTimeSlots.push(FormatManager.decodeSlotCode(t).slice(11));
-    }
+    const availableTimeSlots = timeIndices.map((timeIndex) =>
+      FormatManager.decodeSlotCode(timeIndex).slice(11)
+    );
 
     return { availableDateSlots, availableTimeSlots };
   },
