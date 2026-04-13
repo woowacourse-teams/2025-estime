@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["DOM", "DOM.Iterable", "ES6"],
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "allowJs": true,
     // node_modules 안의 타입 정의 검사는 건너뜀 — 빌드 속도↑
     "skipLibCheck": true,
@@ -38,12 +38,9 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
 
-    // 절대 경로 import에 기준이 될 루트
-    "baseUrl": ".",
-
     // "@/컴포넌트" 같이 별칭 경로 지정
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
 

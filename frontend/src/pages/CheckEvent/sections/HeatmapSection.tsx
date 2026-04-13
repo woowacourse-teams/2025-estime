@@ -7,7 +7,6 @@ import IChevronLeft from '@/assets/icons/IChevronLeft';
 import IChevronRight from '@/assets/icons/IChevronRight';
 import Heatmap from '../components/Heatmap';
 import * as S from './Section.styled';
-import { useTheme } from '@emotion/react';
 import { TimeTablePaginationReturns } from '../hooks/useTimeTablePagination';
 import { DateManager } from '@/shared/utils/common/DateManager';
 import { CheckRoomInfo } from '@/apis/transform/fromParseRoomInfo';
@@ -27,8 +26,6 @@ const HeatmapSection = ({
   handleButtonClick,
   buttonMode,
 }: HeatmapSectionProps) => {
-  const { isMobile } = useTheme();
-
   const isExpired = DateManager.IsPastDeadline(roomInfo.deadline);
 
   const isVisible = buttonMode !== 'save';
@@ -50,7 +47,7 @@ const HeatmapSection = ({
           </Button>
         </TimeTableHeader>
         <Flex direction="column" gap="var(--gap-4)">
-          {isMobile && (
+          {pagination.totalPages > 1 && (
             <Flex gap="var(--gap-3)" justify="flex-end" align="center">
               <PageArrowButton
                 onClick={pagination.handlePagePrev}

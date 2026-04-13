@@ -7,11 +7,12 @@ import Wrapper from '@/shared/layout/Wrapper';
 import TimeTableColumn from './TimeTableColumn';
 import TimetableHoverProvider from '../../providers/TimetableProvider';
 import Flex from '@/shared/layout/Flex';
+import { PagedDateColumn } from '../../hooks/useTimeTablePagination';
 
 interface TimetableProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
-  availableDates: Set<string>;
+  availableDates: PagedDateColumn[];
 }
 
 const TimetableContent = ({ timeColumnRef, dateTimeSlots, availableDates }: TimetableProps) => {
@@ -22,11 +23,11 @@ const TimetableContent = ({ timeColumnRef, dateTimeSlots, availableDates }: Time
       <TimeSlotColumn timeColumnRef={timeColumnRef} dateTimeSlots={dateTimeSlots} />
       <Wrapper maxWidth="100%" center={false} ref={containerRef} {...pointerHandlers}>
         <Flex>
-          {[...availableDates].map((date) => (
-            <Wrapper key={date} maxWidth="100%">
+          {availableDates.map(({ date, isWeekBoundary }) => (
+            <S.DateColumn key={date} isWeekBoundary={isWeekBoundary}>
               <HeatmapPreview date={date} dateTimeSlots={dateTimeSlots} />
               <TimeTableColumn date={date} dateTimeSlots={dateTimeSlots} />
-            </Wrapper>
+            </S.DateColumn>
           ))}
         </Flex>
       </Wrapper>

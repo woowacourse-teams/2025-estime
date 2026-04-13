@@ -29,7 +29,6 @@ const DayCell = ({
       isToday={dayState.isToday}
       isSelected={dayState.isSelected}
       isEmpty={dayState.isEmpty}
-      isDateBlockedByLimit={dayState.isDateBlockedByLimit}
       onPointerDown={() => onPointerDown(day)}
       onPointerMove={(e) => onPointerMove(e, day)}
       onPointerUp={onPointerUp}

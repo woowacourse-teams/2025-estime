@@ -83,6 +83,13 @@ export const FormatManager = {
       nextTime: nextTimeString,
     };
   },
+
+  parseDeadline(deadline: string): { date: string; time: string } {
+    const [date = '', rawTime = ''] = deadline.split('T');
+    const time = rawTime.slice(0, 5);
+
+    return { date, time };
+  },
   /**
    * 슬롯 코드를 ISO 8601 형식의 날짜/시간 문자열로 디코딩합니다.
    *
@@ -139,32 +146,19 @@ export const FormatManager = {
     availableDateSlots: Set<string>;
     availableTimeSlots: string[];
   } {
-    const dayIndices = availableSlots.map((c) => (c >> 8) & 0xfff);
-    const timeIndices = availableSlots.map((c) => c & 0xff);
+    const dayIndices = [...new Set(availableSlots.map((c) => (c >> 8) & 0xfff))].sort(
+      (a, b) => a - b
+    );
+    const timeIndices = [...new Set(availableSlots.map((c) => c & 0xff))].sort((a, b) => a - b);
 
-    const minDay = Math.min(...dayIndices);
-    const maxDay = Math.max(...dayIndices);
-    const minTime = Math.min(...timeIndices);
-    const maxTime = Math.max(...timeIndices);
+    const availableDateSlots = new Set<string>(
+      dayIndices.map((dayIndex) => FormatManager.decodeSlotCode(dayIndex << 8).slice(0, 10))
+    );
 
-    const availableDateSlots = new Set<string>();
-    for (let d = minDay; d <= maxDay; d++) {
-      availableDateSlots.add(FormatManager.decodeSlotCode(d << 8).slice(0, 10));
-    }
-
-    const availableTimeSlots: string[] = [];
-    for (let t = minTime; t <= maxTime; t++) {
-      availableTimeSlots.push(FormatManager.decodeSlotCode(t).slice(11));
-    }
+    const availableTimeSlots = timeIndices.map((timeIndex) =>
+      FormatManager.decodeSlotCode(timeIndex).slice(11)
+    );
 
     return { availableDateSlots, availableTimeSlots };
-  },
-
-  parseDeadline(deadline: string) {
-    const d = new Date(deadline.replace('Z', ''));
-    return {
-      date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
-      time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
-    };
   },
 };
