@@ -1,12 +1,22 @@
+## 1.10.0 (2026-04-05)
+
+- buildspec.yml 수정 (#779) ([84d237f](https://github.com/woowacourse-teams/2025-estime/commit/84d237f)), closes [#779](https://github.com/woowacourse-teams/2025-estime/issues/779)
+- pnpm + 빌드 결과물 cache 적용 (#780) ([fa910ac](https://github.com/woowacourse-teams/2025-estime/commit/fa910ac)), closes [#780](https://github.com/woowacourse-teams/2025-estime/issues/780)
+- 마감시간 포맷 변경 (#845) ([8826a8f](https://github.com/woowacourse-teams/2025-estime/commit/8826a8f)), closes [#845](https://github.com/woowacourse-teams/2025-estime/issues/845)
+- chore: webpack 빌드 결과물 캐시 제거 (#782) ([fa6d6c8](https://github.com/woowacourse-teams/2025-estime/commit/fa6d6c8)), closes [#782](https://github.com/woowacourse-teams/2025-estime/issues/782)
+- fix: buildspec.yml 파일 수정 (#781) ([0e8cf0e](https://github.com/woowacourse-teams/2025-estime/commit/0e8cf0e)), closes [#781](https://github.com/woowacourse-teams/2025-estime/issues/781)
+- feat: buildspec.yml 파일 수정 (#778) ([9c49ef4](https://github.com/woowacourse-teams/2025-estime/commit/9c49ef4)), closes [#778](https://github.com/woowacourse-teams/2025-estime/issues/778)
+
 ## 1.9.0 (2026-03-21)
 
-* fix: buildspec.yml 파일 수정 (#781) ([4ed3a51](https://github.com/woowacourse-teams/2025-estime/commit/4ed3a51)), closes [#781](https://github.com/woowacourse-teams/2025-estime/issues/781)
-* fix: 과거 날짜 대응 관련 문제 수정 (#842) ([ae43fca](https://github.com/woowacourse-teams/2025-estime/commit/ae43fca)), closes [#842](https://github.com/woowacourse-teams/2025-estime/issues/842)
-* chore: webpack 빌드 결과물 캐시 제거 (#782) ([d26e600](https://github.com/woowacourse-teams/2025-estime/commit/d26e600)), closes [#782](https://github.com/woowacourse-teams/2025-estime/issues/782)
-* chore: 버전 변경 (v1.6.4) ([5c169fe](https://github.com/woowacourse-teams/2025-estime/commit/5c169fe))
-* buildspec.yml 수정 (#779) ([40eb734](https://github.com/woowacourse-teams/2025-estime/commit/40eb734)), closes [#779](https://github.com/woowacourse-teams/2025-estime/issues/779)
-* pnpm + 빌드 결과물 cache 적용 (#780) ([44221b1](https://github.com/woowacourse-teams/2025-estime/commit/44221b1)), closes [#780](https://github.com/woowacourse-teams/2025-estime/issues/780)
-* feat: buildspec.yml 파일 수정 (#778) ([082b702](https://github.com/woowacourse-teams/2025-estime/commit/082b702)), closes [#778](https://github.com/woowacourse-teams/2025-estime/issues/778)
+- fix: buildspec.yml 파일 수정 (#781) ([4ed3a51](https://github.com/woowacourse-teams/2025-estime/commit/4ed3a51)), closes [#781](https://github.com/woowacourse-teams/2025-estime/issues/781)
+- fix: 과거 날짜 대응 관련 문제 수정 (#842) ([ae43fca](https://github.com/woowacourse-teams/2025-estime/commit/ae43fca)), closes [#842](https://github.com/woowacourse-teams/2025-estime/issues/842)
+- chore: webpack 빌드 결과물 캐시 제거 (#782) ([d26e600](https://github.com/woowacourse-teams/2025-estime/commit/d26e600)), closes [#782](https://github.com/woowacourse-teams/2025-estime/issues/782)
+- chore: 버전 변경 (v1.6.4) ([5c169fe](https://github.com/woowacourse-teams/2025-estime/commit/5c169fe))
+- buildspec.yml 수정 (#779) ([40eb734](https://github.com/woowacourse-teams/2025-estime/commit/40eb734)), closes [#779](https://github.com/woowacourse-teams/2025-estime/issues/779)
+- pnpm + 빌드 결과물 cache 적용 (#780) ([44221b1](https://github.com/woowacourse-teams/2025-estime/commit/44221b1)), closes [#780](https://github.com/woowacourse-teams/2025-estime/issues/780)
+- feat: buildspec.yml 파일 수정 (#778) ([082b702](https://github.com/woowacourse-teams/2025-estime/commit/082b702)), closes [#778](https://github.com/woowacourse-teams/2025-estime/issues/778)
+
 ## 1.8.0 (2026-02-01)
 
 - refactor: 날짜/시간 데이터 포맷을 ISO 문자열에서 슬롯 코드로 변경 (#816) ([a9de536](https://github.com/woowacourse-teams/2025-estime/commit/a9de536)), closes [#816](https://github.com/woowacourse-teams/2025-estime/issues/816)
