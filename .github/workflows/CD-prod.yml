@@ -328,6 +328,15 @@ jobs:
           echo "=========================================="
           docker ps --filter "name=estime-api"
 
+      - name: Recreate alloy with latest config & env
+        if: success()
+        run: |
+          echo "=========================================="
+          echo "alloy 재생성 (최신 config-prod.river / .env.prod 반영)"
+          echo "=========================================="
+          docker compose -f docker-compose.prod.yml up -d --force-recreate alloy
+          docker ps --filter "name=alloy"
+
       - name: Clean up unused Docker resources
         if: always()
         continue-on-error: true

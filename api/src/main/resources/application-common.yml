@@ -32,9 +32,11 @@ management:
     tags:
       application: estime-api
     distribution:
+      # Grafana Cloud 무료 active series(10k) 한도 절약을 위해 히스토그램 버킷 비활성화
+      # (요청 수·평균·최대 응답시간은 계속 수집됨, p95/p99 분포만 미수집)
       percentiles-histogram:
-        http.server.requests: true
-        jdbc.query: true
+        http.server.requests: false
+        jdbc.query: false
 
 jdbc:
   datasource-proxy:
