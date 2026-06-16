@@ -1,6 +1,10 @@
 loki.write "prod" {
     endpoint {
-        url = "http://" + env("MONITORING_SERVER") + ":3100/loki/api/v1/push"
+        url = env("GCLOUD_HOSTED_LOGS_URL")
+        basic_auth {
+            username = env("GCLOUD_HOSTED_LOGS_ID")
+            password = env("GCLOUD_RW_API_KEY")
+        }
     }
 }
 
@@ -77,6 +81,10 @@ prometheus.relabel "add_metrics_labels" {
 
 prometheus.remote_write "prod" {
     endpoint {
-        url = "http://" + env("MONITORING_SERVER") + ":9090/api/v1/write"
+        url = env("GCLOUD_HOSTED_METRICS_URL")
+        basic_auth {
+            username = env("GCLOUD_HOSTED_METRICS_ID")
+            password = env("GCLOUD_RW_API_KEY")
+        }
     }
 }
