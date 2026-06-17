@@ -10,6 +10,14 @@ loki.write "prod" {
 
 discovery.docker "api_containers" {
     host = "unix:///var/run/docker.sock"
+    refresh_interval = "15s"
+
+    // 종료된(이전 blue/green) 컨테이너는 추적하지 않도록 running 상태만 필터.
+    // → 배포 시 alloy가 죽은 컨테이너에 고정되지 않고 항상 활성 컨테이너 로그를 수집한다.
+    filter {
+        name = "status"
+        values = ["running"]
+    }
     filter {
         name = "name"
         values = ["estime-api-blue", "estime-api-green"]
