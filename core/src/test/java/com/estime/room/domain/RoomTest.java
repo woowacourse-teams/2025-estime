@@ -8,11 +8,14 @@ import com.estime.room.Room;
 import com.estime.room.RoomSession;
 import com.estime.room.exception.DeadlineOverdueException;
 import com.estime.room.exception.PastNotAllowedException;
+import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
 import com.estime.shared.exception.InvalidLengthException;
+import com.estime.shared.exception.MaxCountExceededException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -145,5 +148,45 @@ class RoomTest {
         assertThatThrownBy(() -> room.ensureDeadlineNotPassed(now.plus(2, ChronoUnit.DAYS)))
                 .isInstanceOf(DeadlineOverdueException.class)
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
+    }
+
+    @DisplayName("선택 슬롯이 최대 개수(4320)와 같으면 예외가 발생하지 않는다")
+    @Test
+    void validateAvailableSlotsCount_exactMaxCount_noException() {
+        // given
+        final List<DateTimeSlot> slots = consecutiveSlots(4320);
+
+        // when & then
+        assertThatCode(() -> Room.withoutId(
+                "테스트방",
+                roomSession,
+                futureDeadline,
+                slots,
+                now
+        )).doesNotThrowAnyException();
+    }
+
+    @DisplayName("선택 슬롯이 최대 개수(4320)를 초과하면 예외가 발생한다")
+    @Test
+    void validateAvailableSlotsCount_exceedMaxCount_throwsException() {
+        // given
+        final List<DateTimeSlot> slots = consecutiveSlots(4321);
+
+        // when & then
+        assertThatThrownBy(() -> Room.withoutId(
+                "테스트방",
+                roomSession,
+                futureDeadline,
+                slots,
+                now
+        )).isInstanceOf(MaxCountExceededException.class)
+                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name());
+    }
+
+    private List<DateTimeSlot> consecutiveSlots(final int count) {
+        final Instant start = now.plus(1, ChronoUnit.DAYS);
+        return IntStream.range(0, count)
+                .mapToObj(index -> DateTimeSlot.from(start.plus(DateTimeSlot.UNIT.multipliedBy(index))))
+                .toList();
     }
 }
