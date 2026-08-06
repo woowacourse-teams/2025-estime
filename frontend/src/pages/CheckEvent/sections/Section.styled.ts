@@ -4,7 +4,7 @@ export const FlipFace = styled.div`
   backface-visibility: hidden;
 
   width: 100%;
-  max-width: ${({ theme }) => (theme.isMobile ? '100%' : '1040px')};
+  max-width: ${({ theme }) => (theme.isMobile ? '100%' : '90%')};
   height: 100%;
   margin: 0 auto;
   padding: var(--padding-9);
