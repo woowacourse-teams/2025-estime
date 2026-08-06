@@ -13,6 +13,8 @@ import com.estime.shared.DomainTerm;
 import com.estime.shared.exception.InvalidLengthException;
 import com.estime.shared.exception.MaxCountExceededException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -150,11 +152,11 @@ class RoomTest {
                 .hasMessageContaining(DomainTerm.DEADLINE.name());
     }
 
-    @DisplayName("선택 슬롯이 최대 개수(4320)와 같으면 예외가 발생하지 않는다")
+    @DisplayName("선택 날짜가 최대 개수(90)와 같으면 예외가 발생하지 않는다")
     @Test
-    void validateAvailableSlotsCount_exactMaxCount_noException() {
+    void validateAvailableDatesCount_exactMaxCount_noException() {
         // given
-        final List<DateTimeSlot> slots = consecutiveSlots(4320);
+        final List<DateTimeSlot> slots = slotsOverDates(90, 1);
 
         // when & then
         assertThatCode(() -> Room.withoutId(
@@ -166,11 +168,11 @@ class RoomTest {
         )).doesNotThrowAnyException();
     }
 
-    @DisplayName("선택 슬롯이 최대 개수(4320)를 초과하면 예외가 발생한다")
+    @DisplayName("선택 날짜가 최대 개수(90)를 초과하면 예외가 발생한다")
     @Test
-    void validateAvailableSlotsCount_exceedMaxCount_throwsException() {
+    void validateAvailableDatesCount_exceedMaxCount_throwsException() {
         // given
-        final List<DateTimeSlot> slots = consecutiveSlots(4321);
+        final List<DateTimeSlot> slots = slotsOverDates(91, 1);
 
         // when & then
         assertThatThrownBy(() -> Room.withoutId(
@@ -180,13 +182,37 @@ class RoomTest {
                 slots,
                 now
         )).isInstanceOf(MaxCountExceededException.class)
-                .hasMessageContaining(DomainTerm.DATE_TIME_SLOT.name());
+                .hasMessageContaining(DomainTerm.DATE_SLOT.name());
     }
 
-    private List<DateTimeSlot> consecutiveSlots(final int count) {
-        final Instant start = now.plus(1, ChronoUnit.DAYS);
-        return IntStream.range(0, count)
-                .mapToObj(index -> DateTimeSlot.from(start.plus(DateTimeSlot.UNIT.multipliedBy(index))))
+    @DisplayName("날짜 수가 상한 이하이면 하루에 모든 시간을 선택해도 예외가 발생하지 않는다")
+    @Test
+    void validateAvailableDatesCount_maxDatesWithAllTimeSlots_noException() {
+        // given: 90일 × 48슬롯 = 4320개 — 상한 기준은 슬롯 개수가 아니라 날짜 개수다
+        final List<DateTimeSlot> slots = slotsOverDates(90, 48);
+
+        // when & then
+        assertThatCode(() -> Room.withoutId(
+                "테스트방",
+                roomSession,
+                futureDeadline,
+                slots,
+                now
+        )).doesNotThrowAnyException();
+    }
+
+    private List<DateTimeSlot> slotsOverDates(final int dateCount, final int slotsPerDate) {
+        // dayOffset 경계인 KST 자정을 기준으로 만들어야 하루치 슬롯이 다음 날로 넘어가지 않는다
+        final ZoneId zone = ZoneId.of("Asia/Seoul");
+        final Instant firstDate = LocalDate.now(zone).plusDays(1).atStartOfDay(zone).toInstant();
+
+        return IntStream.range(0, dateCount)
+                .boxed()
+                .flatMap(dateIndex -> IntStream.range(0, slotsPerDate)
+                        .mapToObj(slotIndex -> DateTimeSlot.from(
+                                firstDate.plus(dateIndex, ChronoUnit.DAYS)
+                                        .plus(DateTimeSlot.UNIT.multipliedBy(slotIndex))
+                        )))
                 .toList();
     }
 }
