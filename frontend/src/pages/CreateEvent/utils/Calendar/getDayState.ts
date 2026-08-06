@@ -17,7 +17,6 @@ const getDayState = ({ day, today, selectedDates }: GetDayStateProps) => {
       isSelected: false,
       isEmpty: true,
       dateString: '',
-      isDateBlockedByLimit: false,
     };
   }
 
@@ -29,7 +28,6 @@ const getDayState = ({ day, today, selectedDates }: GetDayStateProps) => {
     isSelected: selectedDates.has(FormatManager.formatDate(day)),
     isEmpty: false,
     dateString: day.getDate().toString(),
-    isDateBlockedByLimit: DateManager.isDateBlockedByLimit(day, selectedDates),
   };
 };
 
