@@ -42,7 +42,7 @@ import lombok.experimental.FieldNameConstants;
 public class Room extends BaseEntity {
 
     private static final int TITLE_MAX_LENGTH = 20;
-    private static final int MAX_AVAILABLE_SLOT_COUNT = 4_320;
+    private static final int MAX_AVAILABLE_DATE_COUNT = 90;
 
     @Column(name = "session", nullable = false)
     private RoomSession session;
@@ -81,7 +81,7 @@ public class Room extends BaseEntity {
         final String trimmedTitle = title.trim();
         validateTitle(trimmedTitle);
         validateDeadline(deadline, now);
-        validateAvailableSlotsCount(slots);
+        validateAvailableDatesCount(slots);
         validateAvailableSlotsNoDuplicate(slots);
         validateAvailableSlotsNotPast(slots, now);
 
@@ -119,10 +119,14 @@ public class Room extends BaseEntity {
         }
     }
 
-    private static void validateAvailableSlotsCount(final List<DateTimeSlot> slots) {
-        if (slots.size() > MAX_AVAILABLE_SLOT_COUNT) {
+    private static void validateAvailableDatesCount(final List<DateTimeSlot> slots) {
+        final long dateCount = slots.stream()
+                .map(DateTimeSlot::getDayOffset)
+                .distinct()
+                .count();
+        if (dateCount > MAX_AVAILABLE_DATE_COUNT) {
             throw new MaxCountExceededException(
-                    DomainTerm.DATE_TIME_SLOT, MAX_AVAILABLE_SLOT_COUNT, slots.size()
+                    DomainTerm.DATE_SLOT, MAX_AVAILABLE_DATE_COUNT, dateCount
             );
         }
     }

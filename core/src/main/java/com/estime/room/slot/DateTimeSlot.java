@@ -106,6 +106,10 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         return getStartAt().plus(UNIT);
     }
 
+    public int getDayOffset() {
+        return (encoded >> 8) & 0xFFF;
+    }
+
     @Override
     public int compareTo(final DateTimeSlot other) {
         return Integer.compare(this.encoded, other.encoded);
