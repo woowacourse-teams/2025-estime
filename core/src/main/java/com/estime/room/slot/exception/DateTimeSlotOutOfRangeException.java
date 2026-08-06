@@ -15,7 +15,7 @@ public class DateTimeSlotOutOfRangeException extends DomainException {
 
     private static String buildLogMessage(final DomainTerm term, final Object... params) {
         return ExceptionMessageFormatter.format(
-                "Encoded value out of 20-bit range for %s.", term.name(), params
+                "Encoded value out of valid range for %s.", term.name(), params
         );
     }
 

@@ -263,4 +263,51 @@ class DateTimeSlotTest {
         // then
         assertThat(result).isEqualTo(original);
     }
+
+    @Test
+    @DisplayName("from(int) - flag 영역(상위 4비트)이 0이 아니면 예외 발생")
+    void createFromEncodedInvadingFlagRegion() {
+        // given: flag 영역을 침범하는 비정규 코드의 최솟값/최댓값
+        final int minInvalid = 0x100000;              // 1048576
+        final int maxInvalid = (0xFFFF << 8) | 47;    // 16777007
+
+        // when & then
+        assertSoftly(softly -> {
+            assertThatThrownBy(() -> DateTimeSlot.from(minInvalid))
+                    .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+            assertThatThrownBy(() -> DateTimeSlot.from(maxInvalid))
+                    .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+        });
+    }
+
+    @Test
+    @DisplayName("from(int) - 정규 코드와 같은 시각으로 디코딩되던 비정규 코드는 거부된다")
+    void rejectEncodedAliasingNormalizedSlot() {
+        // given: 2026-09-01 00:00 KST의 정규 코드(dayOffset=312)와, 여기에 flag 영역을 더한 비정규 코드
+        final int normalized = 312 << 8;              // 79872
+        final int aliased = normalized + 0x100000;    // 1128448
+
+        // when & then
+        assertSoftly(softly -> {
+            assertThat(DateTimeSlot.from(normalized).getStartAt())
+                    .isEqualTo(Instant.parse("2026-08-31T15:00:00Z"));
+            assertThatThrownBy(() -> DateTimeSlot.from(aliased))
+                    .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+        });
+    }
+
+    @Test
+    @DisplayName("from(int) - dayOffset 경계값(4095)은 정상 생성되고 4096은 예외 발생")
+    void createFromEncodedAtDayOffsetBoundary() {
+        // given
+        final int maxDayOffsetEncoded = 0xFFF << 8;       // dayOffset=4095
+        final int exceedingDayOffsetEncoded = 0x1000 << 8; // dayOffset=4096
+
+        // when & then
+        assertSoftly(softly -> {
+            assertThat(DateTimeSlot.from(maxDayOffsetEncoded).getEncoded()).isEqualTo(maxDayOffsetEncoded);
+            assertThatThrownBy(() -> DateTimeSlot.from(exceedingDayOffsetEncoded))
+                    .isInstanceOf(DateTimeSlotOutOfRangeException.class);
+        });
+    }
 }
