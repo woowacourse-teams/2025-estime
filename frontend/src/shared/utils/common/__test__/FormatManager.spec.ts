@@ -51,3 +51,33 @@ describe('zeroFill2 함수는', () => {
     expect(FormatManager.zeroFill2(0)).toBe('00');
   });
 });
+
+describe('populateGridAxes 함수는', () => {
+  it('실제 슬롯에 존재하는 날짜만 availableDateSlots로 복원한다', () => {
+    const availableSlots = [
+      FormatManager.encodeSlotCode('2026-03-31T09:00'),
+      FormatManager.encodeSlotCode('2026-03-31T09:30'),
+      FormatManager.encodeSlotCode('2026-04-02T09:00'),
+      FormatManager.encodeSlotCode('2026-04-04T09:00'),
+    ];
+
+    const { availableDateSlots } = FormatManager.populateGridAxes(availableSlots);
+
+    expect([...availableDateSlots]).toEqual(['2026-03-31', '2026-04-02', '2026-04-04']);
+    expect(availableDateSlots.has('2026-04-01')).toBe(false);
+    expect(availableDateSlots.has('2026-04-03')).toBe(false);
+  });
+
+  it('실제 슬롯에 존재하는 시간만 availableTimeSlots로 복원한다', () => {
+    const availableSlots = [
+      FormatManager.encodeSlotCode('2026-03-31T09:00'),
+      FormatManager.encodeSlotCode('2026-03-31T10:00'),
+      FormatManager.encodeSlotCode('2026-04-02T09:00'),
+    ];
+
+    const { availableTimeSlots } = FormatManager.populateGridAxes(availableSlots);
+
+    expect(availableTimeSlots).toEqual(['09:00', '10:00']);
+    expect(availableTimeSlots).not.toContain('09:30');
+  });
+});

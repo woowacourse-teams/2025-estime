@@ -28,11 +28,13 @@ export const GridContainer = styled.div`
   position: relative;
 `;
 
-export const DateColumn = styled.div`
+export const DateColumn = styled.div<{ isWeekBoundary?: boolean }>`
   display: flex;
   flex-direction: column;
+  flex: 1 1 0;
   min-width: 0;
-  width: 0;
+  border-left: ${({ isWeekBoundary, theme }) =>
+    isWeekBoundary ? `2px solid ${theme.colors.gray30}` : 'none'};
 `;
 
 export const TimeLabel = styled.div`

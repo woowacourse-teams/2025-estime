@@ -1,4 +1,3 @@
-import Wrapper from '@/shared/layout/Wrapper';
 import Text from '@/shared/components/Text';
 import * as S from './Heatmap.styled';
 import HeatMapDataCell from './HeatMapDataCell';
@@ -7,11 +6,12 @@ import { RefObject, useEffect, useMemo } from 'react';
 import { cellDataStore } from '../../stores/CellDataStore';
 import { cellHoverStore, useCellHoverState } from '../../stores/CellHoverStore';
 import { useTheme } from '@emotion/react';
+import { PagedDateColumn } from '../../hooks/useTimeTablePagination';
 
 interface HeatmapProps {
   timeColumnRef: RefObject<HTMLDivElement | null>;
   dateTimeSlots: string[];
-  availableDates: Set<string>;
+  availableDates: PagedDateColumn[];
 }
 
 const Heatmap = ({ timeColumnRef, dateTimeSlots, availableDates }: HeatmapProps) => {
@@ -63,8 +63,8 @@ const Heatmap = ({ timeColumnRef, dateTimeSlots, availableDates }: HeatmapProps)
         <S.TimeSlotColumn ref={timeColumnRef} aria-hidden={true}>
           {timeSlotNodes}
         </S.TimeSlotColumn>
-        {[...availableDates].map((date) => (
-          <Wrapper key={date} center={false} maxWidth="100%">
+        {availableDates.map(({ date, isWeekBoundary }) => (
+          <S.DateColumn key={date} isWeekBoundary={isWeekBoundary}>
             <TimeTableDay date={date} />
             {dateTimeSlots.map((timeText) => (
               <HeatMapDataCell
@@ -74,7 +74,7 @@ const Heatmap = ({ timeColumnRef, dateTimeSlots, availableDates }: HeatmapProps)
                 isLocked={cellHoverState}
               />
             ))}
-          </Wrapper>
+          </S.DateColumn>
         ))}
       </S.HeatMapContent>
     </>
