@@ -29,16 +29,10 @@ import com.estime.room.participant.vote.VoteRepository;
 import com.estime.room.participant.vote.Votes;
 import com.estime.room.platform.Platform;
 import com.estime.room.platform.PlatformRepository;
-import com.estime.room.platform.notification.PlatformNotificationOutbox;
 import com.estime.room.platform.notification.PlatformNotificationOutboxRepository;
-import com.estime.room.platform.notification.PlatformNotificationType;
-import com.estime.room.slot.DateTimeSlot;
 import com.estime.shared.DomainTerm;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -95,19 +89,8 @@ public class RoomApplicationService {
                         input.channelId(),
                         input.notification()));
 
-        for (final PlatformNotificationType type : PlatformNotificationType.values()) {
-            if (platform.shouldNotifyFor(type)) {
-                platformNotificationOutboxRepository.save(
-                        PlatformNotificationOutbox.of(
-                                room.getId(),
-                                input.platformType(),
-                                platform.getChannelId(),
-                                type,
-                                room.getCreatedAt(),
-                                room.getDeadline(),
-                                timeProvider.now()));
-            }
-        }
+        platform.createNotificationOutboxes(room.getCreatedAt(), room.getDeadline(), timeProvider.now())
+                .forEach(platformNotificationOutboxRepository::save);
 
         return ConnectedRoomCreateOutput.from(room.getSession(), platform.getType());
     }
@@ -127,24 +110,20 @@ public class RoomApplicationService {
 
         final Votes votes = voteRepository.findAllByParticipantIds(participantIds);
 
-        final Map<DateTimeSlot, Set<Long>> dateTimeSlotParticipants = votes.calculateStatistic();
+        final Votes.Statistic statistic = votes.calculateStatistic();
 
-        final Set<Long> participantsIds = dateTimeSlotParticipants.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
-
-        final Participants participants = participantRepository.findAllByIdIn(participantsIds);
+        final Participants participants = participantRepository.findAllByIdIn(statistic.allParticipantIds());
 
         final Map<Long, ParticipantName> idToName = participants.getIdToName();
 
         return new DateTimeSlotStatisticOutput(
                 participants.getSize(),
                 participants.getAllNames(),
-                dateTimeSlotParticipants.keySet().stream()
+                statistic.dateTimeSlots().stream()
                         .map(dateTimeSlot ->
                                 new DateTimeParticipantsOutput(
                                         dateTimeSlot,
-                                        dateTimeSlotParticipants.get(dateTimeSlot).stream()
+                                        statistic.participantIdsFor(dateTimeSlot).stream()
                                                 .map(idToName::get)
                                                 .toList())
                         ).toList());
@@ -178,8 +157,9 @@ public class RoomApplicationService {
         final Votes originVotes = voteRepository.findAllByParticipantId(participantId);
         final Votes updatedVotes = Votes.from(input.toEntities(participantId));
 
-        voteRepository.deleteAllInBatch(originVotes.subtract(updatedVotes));
-        voteRepository.saveAll(updatedVotes.subtract(originVotes));
+        final Votes.Diff diff = originVotes.diff(updatedVotes);
+        voteRepository.deleteAllInBatch(diff.toRemove());
+        voteRepository.saveAll(diff.toAdd());
 
         eventPublisher.publishEvent(
                 new VotesUpdatedEvent(room.getSession(), input.name().getValue())

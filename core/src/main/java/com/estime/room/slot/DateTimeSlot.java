@@ -19,7 +19,7 @@ import lombok.Getter;
  *
  * <p>포맷: {@code (flag << 20) | (dayOffset << 8) | timeSlotIndex}
  * <ul>
- *   <li>확장 부분 (4비트) 미사용 </li>
+ *   <li>확장 부분 (4비트) 미사용 — 항상 0이어야 하며, 0이 아니면 생성 시점에 거부한다</li>
  *   <li>날짜 부분 (12비트): EPOCH로부터 경과한 일수 (0~4095일, 약 11.2년)</li>
  *   <li>시간 부분 (8비트): 30분 단위 슬롯 인덱스 (0~47, 00:00~23:30)</li>
  * </ul>
@@ -43,6 +43,8 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
     private static final int MINUTES_PER_DAY = 24 * 60;
     private static final int MAX_ENCODED = 0xFFFFFF;
     private static final int MAX_DAY_OFFSET = 0xFFF;
+    private static final int DAY_OFFSET_SHIFT = 8;
+    private static final int TIME_SLOT_INDEX_MASK = 0xFF;
     private static final int DEFAULT_MAX_TIME_SLOT_INDEX = (MINUTES_PER_DAY / (int) UNIT.toMinutes()) - 1;
 
     private final int encoded;
@@ -51,7 +53,11 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
         if (encoded < 0 || encoded > MAX_ENCODED) {
             throw new DateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, encoded);
         }
-        final int timeSlotIndex = encoded & 0xFF;
+        final int dayOffset = encoded >> DAY_OFFSET_SHIFT;
+        if (dayOffset > MAX_DAY_OFFSET) {
+            throw new DateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, encoded);
+        }
+        final int timeSlotIndex = encoded & TIME_SLOT_INDEX_MASK;
         if (timeSlotIndex > DEFAULT_MAX_TIME_SLOT_INDEX) {
             throw new DateTimeSlotOutOfRangeException(DomainTerm.TIME_SLOT, encoded);
         }
@@ -91,12 +97,12 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
             throw new DateTimeSlotOutOfRangeException(DomainTerm.DATE_TIME_SLOT, startAt);
         }
         final int timeSlotIndex = minuteOfDay / (int) UNIT.toMinutes();
-        return new DateTimeSlot(/* (flag << 20) | */ (dayOffset << 8) | timeSlotIndex);
+        return new DateTimeSlot(/* (flag << 20) | */ (dayOffset << DAY_OFFSET_SHIFT) | timeSlotIndex);
     }
 
     public Instant getStartAt() {
-        final int dayOffset = (encoded >> 8) & 0xFFF;
-        final int timeSlotIndex = encoded & 0xFF;
+        final int dayOffset = encoded >> DAY_OFFSET_SHIFT;
+        final int timeSlotIndex = encoded & TIME_SLOT_INDEX_MASK;
         final long totalMinutes = (long) dayOffset * MINUTES_PER_DAY
                 + (long) timeSlotIndex * UNIT.toMinutes();
         return EPOCH.plus(Duration.ofMinutes(totalMinutes));
@@ -104,6 +110,10 @@ public class DateTimeSlot implements Comparable<DateTimeSlot> {
 
     public Instant getEndAt() {
         return getStartAt().plus(UNIT);
+    }
+
+    public int getDayOffset() {
+        return (encoded >> 8) & 0xFFF;
     }
 
     @Override
