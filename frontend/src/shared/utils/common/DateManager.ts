@@ -1,7 +1,5 @@
 import { FormatManager } from './FormatManager';
 
-const DAY_LENGTH = 7;
-
 /**
  * 날짜 관련 유틸 함수 모음
  */
@@ -93,27 +91,6 @@ export const DateManager = {
     const defaultTime = FormatManager.formatHourMinute(tomorrow.getHours(), 0);
 
     return { defaultDate, defaultTime };
-  },
-
-  /**
-   * 선택된 날짜 수가 최대치(7개)에 도달했는지 확인합니다.
-   * @param selectedDates - 선택된 날짜 Set
-   * @returns 7개 이상이면 true
-   */
-  hasReachedMaxSelection(selectedDates: Set<string>): boolean {
-    return selectedDates.size === DAY_LENGTH;
-  },
-
-  /**
-   * 선택된 날짜가 7개에 도달했고, 현재 날짜가 아직 선택되지 않은 경우 제한 여부를 반환합니다.
-   * @param date - 확인할 날짜
-   * @param selectedDates - 선택된 날짜 Set
-   * @returns 선택 제한 상태이면 true
-   */
-  isDateBlockedByLimit(date: Date | null, selectedDates: Set<string>): boolean {
-    if (!date) return false;
-    const dateStr = FormatManager.formatDate(date);
-    return DateManager.hasReachedMaxSelection(selectedDates) && !selectedDates.has(dateStr);
   },
   /**
    * 시간, 날짜 문자열을 ISO 형식으로 변환후 Date 객체로 변환합니다.

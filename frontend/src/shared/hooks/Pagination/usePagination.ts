@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface paginationProps {
   totalItemCount: number;
@@ -12,8 +12,12 @@ const usePagination = ({ totalItemCount, perPage }: paginationProps) => {
     return Math.ceil(totalItemCount / perPage);
   }, [totalItemCount, perPage]);
 
-  const pagePrev = useCallback(() => setPage((prev) => prev - 1), []);
-  const pageNext = useCallback(() => setPage((prev) => prev + 1), []);
+  useEffect(() => {
+    setPage((prev) => Math.min(Math.max(prev, 1), totalPages));
+  }, [totalPages]);
+
+  const pagePrev = useCallback(() => setPage((prev) => Math.max(prev - 1, 1)), []);
+  const pageNext = useCallback(() => setPage((prev) => Math.min(prev + 1, totalPages)), [totalPages]);
   const pageReset = useCallback(() => setPage(1), []);
 
   const canPagePrev = page > 1;

@@ -44,16 +44,6 @@ export const useDateSelection = ({
         });
         return;
       }
-      if (
-        DateManager.hasReachedMaxSelection(newSelectedDates) &&
-        !newSelectedDates.has(dateString)
-      ) {
-        showToast({
-          type: 'warning',
-          message: '최대 7개의 날짜를 선택할 수 있습니다.',
-        });
-        return;
-      }
 
       newSelectedDates.add(dateString);
       setSelectedDates(newSelectedDates);

@@ -10,7 +10,6 @@ interface DayCellProps {
   isToday: boolean;
   isSelected: boolean;
   isEmpty: boolean;
-  isDateBlockedByLimit: boolean;
 }
 
 const getHoverBackgroundColor = (
@@ -60,13 +59,6 @@ export const Container = styled.div<DayCellProps>`
       }
     `}
   transform: ${({ isSelected }) => (isSelected ? 'scale(1.05)' : 'scale(1)')};
-
-  ${({ isDateBlockedByLimit }) =>
-    isDateBlockedByLimit &&
-    `
-    cursor: not-allowed;
-    opacity: 0.3;
-  `}
   @media (max-width: 430px) {
     height: 2rem;
   }
