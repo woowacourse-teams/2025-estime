@@ -1,3 +1,6 @@
+## <small>1.11.1 (2026-08-10)</small>
+
+* fix: FormatManager의 중복 parseDeadline 정의 제거 ([2aebb64](https://github.com/woowacourse-teams/2025-estime/commit/2aebb64))
 ## 1.11.0 (2026-08-09)
 
 * buildspec.yml 수정 (#779) ([84d237f](https://github.com/woowacourse-teams/2025-estime/commit/84d237f)), closes [#779](https://github.com/woowacourse-teams/2025-estime/issues/779)
