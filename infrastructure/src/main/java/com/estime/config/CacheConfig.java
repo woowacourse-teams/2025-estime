@@ -10,10 +10,14 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 캐시 설정.
+ *
+ * <p>캐시 프록시를 트랜잭션 프록시보다 바깥에 둔다. 둘 다 기본 우선순위가 최저라
+ * 지정하지 않으면 어느 쪽이 바깥인지 정해지지 않는다. 바깥에 두면 캐시에 값이 있을 때
+ * 트랜잭션을 열지 않아 DB 커넥션을 잡지 않는다.
+ */
 @Configuration
-// 캐시 인터셉터를 트랜잭션 인터셉터보다 바깥에 둔다. 둘 다 기본 우선순위가 최저라
-// 지정하지 않으면 순서가 정해지지 않는다. 바깥에 두면 캐시 히트일 때 트랜잭션을
-// 열지 않아 커넥션을 잡지 않는다.
 @EnableCaching(order = Ordered.HIGHEST_PRECEDENCE)
 public class CacheConfig {
 

@@ -96,8 +96,10 @@ class VoteStatisticCacheTest extends IntegrationTest {
         verify(voteRepository, times(1)).findAllByParticipantIds(anyList());
     }
 
-    // 무효화가 AFTER_COMMIT 리스너로 옮겨졌으므로 이 테스트는 실제로 커밋되어야 한다.
-    // @Transactional 을 붙이면 롤백되어 리스너가 돌지 않는다.
+    /**
+     * 무효화가 AFTER_COMMIT 리스너로 옮겨졌으므로 이 테스트는 실제로 커밋되어야 한다.
+     * {@code @Transactional} 을 붙이면 롤백되어 리스너가 돌지 않는다.
+     */
     @DisplayName("투표 수정이 커밋되면 캐시가 무효화되어 다음 조회에서 Repository를 다시 호출한다")
     @Test
     void cacheEvict_afterVoteUpdate() {
