@@ -349,10 +349,7 @@ class RoomApplicationServiceTest extends IntegrationTest {
         assertThat(eventCount).isEqualTo(1);
 
         final VotesUpdatedEvent event = events.stream(VotesUpdatedEvent.class).findFirst().orElseThrow();
-        assertSoftly(softly -> {
-            softly.assertThat(event.roomSession()).isEqualTo(room.getSession());
-            softly.assertThat(event.participantName()).isEqualTo(participant1.getName().getValue());
-        });
+        assertThat(event.roomSession()).isEqualTo(room.getSession());
     }
 
     @DisplayName("새로운 참여자를 생성한다.")

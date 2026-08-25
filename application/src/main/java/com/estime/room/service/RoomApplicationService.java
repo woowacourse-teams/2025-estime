@@ -161,9 +161,7 @@ public class RoomApplicationService {
         voteRepository.deleteAllInBatch(diff.toRemove());
         voteRepository.saveAll(diff.toAdd());
 
-        eventPublisher.publishEvent(
-                new VotesUpdatedEvent(room.getSession(), input.name().getValue())
-        );
+        eventPublisher.publishEvent(new VotesUpdatedEvent(room.getSession()));
 
         return VotesOutput.from(input.name(), updatedVotes);
     }

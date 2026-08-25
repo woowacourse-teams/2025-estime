@@ -3,8 +3,7 @@ package com.estime.room.event;
 import com.estime.room.RoomSession;
 
 public record VotesUpdatedEvent(
-        RoomSession roomSession,
-        String participantName
+        RoomSession roomSession
 ) implements Event {
 
     @Override
