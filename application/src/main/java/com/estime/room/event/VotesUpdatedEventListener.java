@@ -28,6 +28,10 @@ import org.springframework.transaction.event.TransactionalEventListener;
  * <p>주기마다 집합을 통째로 교체한 뒤 전송한다. 순서가 반대면 전송 중에 커밋된 변경이 세운
  * 표시를 지워 그 변경이 묻힌다. 이 순서에서 최악은 신호가 한 번 더 나가는 것뿐이다.
  *
+ * <p>받는 것은 서버 내부 사실 {@link VotesUpdated} 이고, 보낼 때 브라우저용 페이로드
+ * {@link VotesUpdatedEvent} 를 만든다. 합치기 때문에 둘은 개수가 다르다: 변경 열 번에
+ * 신호 한 번이라 발행된 객체를 그대로 흘려보낼 수 없다.
+ *
  * <p>투표 통계 캐시도 여기서 비운다. 서비스에 붙이던 {@code @CacheEvict} 는 캐시 인터셉터와
  * 트랜잭션 인터셉터의 우선순위가 둘 다 최저라 커밋 앞뒤 어느 쪽에서 도는지 정해져 있지 않았다.
  * 커밋 전에 비우면 그 틈에 읽은 옛 값이 캐시에 다시 앉아 만료까지 낡은 값이 나간다.
@@ -56,7 +60,7 @@ public class VotesUpdatedEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handle(final VotesUpdatedEvent event) {
+    public void handle(final VotesUpdated event) {
         final RoomSession roomSession = event.roomSession();
         evictVoteStatistic(roomSession);
         dirtyRooms.get().add(roomSession);

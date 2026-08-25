@@ -45,7 +45,7 @@ class VotesUpdatedEventListenerTest {
     void flush_sendsEventForDirtyRoom() {
         final RoomSession roomSession = RoomSession.from("test-session");
 
-        listener.handle(new VotesUpdatedEvent(roomSession));
+        listener.handle(new VotesUpdated(roomSession));
         listener.flush();
 
         verify(roomEventSender).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
@@ -57,7 +57,7 @@ class VotesUpdatedEventListenerTest {
         final RoomSession roomSession = RoomSession.from("test-session");
 
         for (int i = 0; i < 10; i++) {
-            listener.handle(new VotesUpdatedEvent(roomSession));
+            listener.handle(new VotesUpdated(roomSession));
         }
         listener.flush();
 
@@ -68,7 +68,7 @@ class VotesUpdatedEventListenerTest {
     @Test
     void flush_sendsEventForEachRoom() {
         for (int i = 0; i < 10; i++) {
-            listener.handle(new VotesUpdatedEvent(RoomSession.from("session-" + i)));
+            listener.handle(new VotesUpdated(RoomSession.from("session-" + i)));
         }
         listener.flush();
 
@@ -88,9 +88,9 @@ class VotesUpdatedEventListenerTest {
     void flush_sendsAgainForEventAfterFlush() {
         final RoomSession roomSession = RoomSession.from("test-session");
 
-        listener.handle(new VotesUpdatedEvent(roomSession));
+        listener.handle(new VotesUpdated(roomSession));
         listener.flush();
-        listener.handle(new VotesUpdatedEvent(roomSession));
+        listener.handle(new VotesUpdated(roomSession));
         listener.flush();
 
         verify(roomEventSender, times(2)).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
@@ -103,7 +103,7 @@ class VotesUpdatedEventListenerTest {
         doThrow(new RuntimeException()).when(roomEventSender)
                 .sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
 
-        listener.handle(new VotesUpdatedEvent(roomSession));
+        listener.handle(new VotesUpdated(roomSession));
 
         assertThatCode(() -> listener.flush()).doesNotThrowAnyException();
     }
@@ -115,7 +115,7 @@ class VotesUpdatedEventListenerTest {
         final Cache cache = cacheManager.getCache(CacheNames.VOTE_STATISTIC);
         cache.put(roomSession, "stale");
 
-        listener.handle(new VotesUpdatedEvent(roomSession));
+        listener.handle(new VotesUpdated(roomSession));
 
         assertThat(cache.get(roomSession)).isNull();
     }
@@ -128,7 +128,7 @@ class VotesUpdatedEventListenerTest {
         final Cache cache = cacheManager.getCache(CacheNames.VOTE_STATISTIC);
         cache.put(other, "keep");
 
-        listener.handle(new VotesUpdatedEvent(target));
+        listener.handle(new VotesUpdated(target));
 
         assertThat(cache.get(other)).isNotNull();
     }

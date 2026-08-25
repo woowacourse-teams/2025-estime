@@ -20,7 +20,7 @@ import com.estime.room.dto.output.DateTimeSlotStatisticOutput.DateTimeParticipan
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomCreateOutput;
 import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.event.VotesUpdatedEvent;
+import com.estime.room.event.VotesUpdated;
 import com.estime.room.participant.Participant;
 import com.estime.room.participant.ParticipantName;
 import com.estime.room.participant.ParticipantRepository;
@@ -159,7 +159,7 @@ public class RoomApplicationService {
         voteRepository.deleteAllInBatch(diff.toRemove());
         voteRepository.saveAll(diff.toAdd());
 
-        eventPublisher.publishEvent(new VotesUpdatedEvent(room.getSession()));
+        eventPublisher.publishEvent(new VotesUpdated(room.getSession()));
 
         return VotesOutput.from(input.name(), updatedVotes);
     }
