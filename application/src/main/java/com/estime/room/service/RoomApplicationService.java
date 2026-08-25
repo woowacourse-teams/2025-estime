@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -137,7 +136,6 @@ public class RoomApplicationService {
         return VotesOutput.from(input.name(), votes);
     }
 
-    @CacheEvict(value = CacheNames.VOTE_STATISTIC, key = "#input.session()")
     @Retryable(
             retryFor = {OptimisticLockingFailureException.class, DataIntegrityViolationException.class},
             maxAttempts = 3,

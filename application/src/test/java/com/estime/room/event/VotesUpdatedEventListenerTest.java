@@ -1,5 +1,6 @@
 package com.estime.room.event;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.estime.cache.CacheNames;
 import com.estime.port.out.RoomEventSender;
 import com.estime.room.RoomSession;
 import java.util.concurrent.Executor;
@@ -17,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
 @ExtendWith(MockitoExtension.class)
 class VotesUpdatedEventListenerTest {
@@ -26,11 +31,13 @@ class VotesUpdatedEventListenerTest {
     @Mock
     private RoomEventSender roomEventSender;
 
+    private CacheManager cacheManager;
     private VotesUpdatedEventListener listener;
 
     @BeforeEach
     void setUp() {
-        listener = new VotesUpdatedEventListener(roomEventSender, SAME_THREAD);
+        cacheManager = new ConcurrentMapCacheManager(CacheNames.VOTE_STATISTIC);
+        listener = new VotesUpdatedEventListener(roomEventSender, cacheManager, SAME_THREAD);
     }
 
     @DisplayName("이벤트를 받고 flush 하면 그 방으로 SSE를 전송한다.")
@@ -99,5 +106,30 @@ class VotesUpdatedEventListenerTest {
         listener.handle(new VotesUpdatedEvent(roomSession));
 
         assertThatCode(() -> listener.flush()).doesNotThrowAnyException();
+    }
+
+    @DisplayName("이벤트를 받으면 그 방의 투표 통계 캐시를 비운다.")
+    @Test
+    void handle_evictsVoteStatisticCache() {
+        final RoomSession roomSession = RoomSession.from("test-session");
+        final Cache cache = cacheManager.getCache(CacheNames.VOTE_STATISTIC);
+        cache.put(roomSession, "stale");
+
+        listener.handle(new VotesUpdatedEvent(roomSession));
+
+        assertThat(cache.get(roomSession)).isNull();
+    }
+
+    @DisplayName("다른 방의 캐시는 비우지 않는다.")
+    @Test
+    void handle_doesNotEvictOtherRoomCache() {
+        final RoomSession target = RoomSession.from("target");
+        final RoomSession other = RoomSession.from("other");
+        final Cache cache = cacheManager.getCache(CacheNames.VOTE_STATISTIC);
+        cache.put(other, "keep");
+
+        listener.handle(new VotesUpdatedEvent(target));
+
+        assertThat(cache.get(other)).isNotNull();
     }
 }
