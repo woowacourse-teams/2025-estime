@@ -1,3 +1,6 @@
+## <small>1.11.3 (2026-08-27)</small>
+
+* fix: CodeBuild 의 pnpm 버전을 9 로 고정 (#863) ([39980e4](https://github.com/woowacourse-teams/2025-estime/commit/39980e4)), closes [#863](https://github.com/woowacourse-teams/2025-estime/issues/863) [#16](https://github.com/woowacourse-teams/2025-estime/issues/16) [#17](https://github.com/woowacourse-teams/2025-estime/issues/17) [#15](https://github.com/woowacourse-teams/2025-estime/issues/15)
 ## <small>1.11.2 (2026-08-27)</small>
 
 * refactor: 저장 완료 플립을 SSE 이름 대조에서 대기 플래그로 교체 (#861) ([13ec541](https://github.com/woowacourse-teams/2025-estime/commit/13ec541)), closes [#861](https://github.com/woowacourse-teams/2025-estime/issues/861)
