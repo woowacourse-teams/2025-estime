@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from 'react';
+import { useCallback, useReducer, useRef } from 'react';
 import modeReducer from '../reducers/modeReducer';
 import { ModalAction, modalReducer } from '../reducers/modalReducer';
 import { CreateUserResponseType } from '@/apis/room/type';
@@ -32,6 +32,8 @@ const useCheckEventHandlers = ({
   handleUserAvailabilitySubmit,
   pageReset,
 }: CheckEventHandlers) => {
+  const awaitingSaveRef = useRef(false);
+
   const [buttonMode, buttonModeDispatch] = useReducer(modeReducer, 'register');
   const [modal, modalDispatch] = useReducer(modalReducer, initialModalState);
 
@@ -77,31 +79,27 @@ const useCheckEventHandlers = ({
         message: '시간표 저장이 완료되었습니다!',
       });
 
-      // 전역 스토어같은 곳에서 이벤트를 전달 받는다.
-      // sse 단에서 새로운 매시지가 올떄가 대기한다.
-      //임시로 설정
-
-      // 현재 문제상황 :
-      // 사용자가 자신의 셀을 선택한 후, 반영하면 저장하기 api는 가지만, 플립이 늦어짐.$
-
-      // 해결 방안
-      // 사용자가 저장 버튼 클릭 → 서버로 저장 요청
-      // 서버에서 SSE 메시지 브로드캐스트 → 클라이언트 수신
-      // SSE 핸들러에서 userAvailabilityStore.setState(...) 호출 → 전역 store 업데이트
-      // 그 순간 "flip" (예: buttonModeDispatch('click_save')) 실행하고 싶다
+      // 저장 응답을 받은 뒤에 세운다. 이 시점 이후의 어떤 갱신이든 내 저장을 포함하므로,
+      // 다음 SSE 로 히트맵을 다시 불러온 순간에 플립하면 화면과 버튼이 어긋나지 않는다.
+      awaitingSaveRef.current = true;
     } else if (buttonMode === 'edit') {
       buttonModeDispatch('click_edit');
     }
   };
 
-  const triggerSaveComplete = useCallback(() => buttonModeDispatch('click_save'), []);
+  // SSE 신호에는 누가 바꿨는지가 없다. 내 저장을 기다리는 중일 때만 플립한다.
+  const completeSaveIfAwaiting = useCallback(() => {
+    if (!awaitingSaveRef.current) return;
+    awaitingSaveRef.current = false;
+    buttonModeDispatch('click_save');
+  }, []);
 
   return {
     buttonMode,
     buttonName: BUTTON_NAME[buttonMode],
     modal,
     handleButtonClick,
-    triggerSaveComplete,
+    completeSaveIfAwaiting,
     handleLoginModalButtonClick,
     handleConfirmModalButtonClick,
     handleModalClick,
