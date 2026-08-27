@@ -22,7 +22,9 @@ phases:
     commands:
       - echo "=== Install Dependencies ==="
       - cd frontend
-      - npm install -g pnpm
+      # CI(.github/workflows/frontend-ci.yml)와 pnpm-lock.yaml(lockfileVersion 9.0)에 맞춘다.
+      # 버전을 비우면 그날의 최신을 받아, 우리 코드가 그대로여도 pnpm 릴리스에 빌드가 깨진다.
+      - npm install -g pnpm@9
       - pnpm install --frozen-lockfile
 
   build:
