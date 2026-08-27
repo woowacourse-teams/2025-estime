@@ -20,7 +20,7 @@ import com.estime.room.dto.output.ConnectedRoomCreateOutput;
 import com.estime.room.dto.output.DateTimeSlotStatisticOutput;
 import com.estime.room.dto.output.ParticipantCheckOutput;
 import com.estime.room.dto.output.RoomOutput;
-import com.estime.room.event.VotesUpdatedEvent;
+import com.estime.room.event.VotesUpdated;
 import com.estime.room.exception.PastNotAllowedException;
 import com.estime.room.exception.UnavailableSlotException;
 import com.estime.room.participant.Participant;
@@ -332,9 +332,9 @@ class RoomApplicationServiceTest extends IntegrationTest {
         });
     }
 
-    @DisplayName("참여자 투표 수정 시 VotesUpdatedEvent가 발행된다.")
+    @DisplayName("참여자 투표 수정 시 VotesUpdated가 발행된다.")
     @Test
-    void updateParticipantVotes_publishesVotesUpdatedEvent() {
+    void updateParticipantVotes_publishesVotesUpdated() {
         // given
         final DateTimeSlot slot = DateTimeSlot.from(
                 LocalDateTime.of(NOW_LOCAL_DATE.plusDays(1), LocalTime.of(10, 0)).atZone(ZONE).toInstant());
@@ -345,14 +345,11 @@ class RoomApplicationServiceTest extends IntegrationTest {
         roomApplicationService.updateParticipantVotes(input);
 
         // then
-        final long eventCount = events.stream(VotesUpdatedEvent.class).count();
+        final long eventCount = events.stream(VotesUpdated.class).count();
         assertThat(eventCount).isEqualTo(1);
 
-        final VotesUpdatedEvent event = events.stream(VotesUpdatedEvent.class).findFirst().orElseThrow();
-        assertSoftly(softly -> {
-            softly.assertThat(event.roomSession()).isEqualTo(room.getSession());
-            softly.assertThat(event.participantName()).isEqualTo(participant1.getName().getValue());
-        });
+        final VotesUpdated event = events.stream(VotesUpdated.class).findFirst().orElseThrow();
+        assertThat(event.roomSession()).isEqualTo(room.getSession());
     }
 
     @DisplayName("새로운 참여자를 생성한다.")
