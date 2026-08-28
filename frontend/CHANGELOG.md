@@ -1,3 +1,6 @@
+## <small>1.11.4 (2026-08-28)</small>
+
+* fix: 날짜 개수 안내를 상시 문구에서 초과 시 토스트로 교체 (#866) ([6585583](https://github.com/woowacourse-teams/2025-estime/commit/6585583)), closes [#866](https://github.com/woowacourse-teams/2025-estime/issues/866) [#848](https://github.com/woowacourse-teams/2025-estime/issues/848)
 ## <small>1.11.3 (2026-08-27)</small>
 
 * fix: CodeBuild 의 pnpm 버전을 9 로 고정 (#863) ([39980e4](https://github.com/woowacourse-teams/2025-estime/commit/39980e4)), closes [#863](https://github.com/woowacourse-teams/2025-estime/issues/863) [#16](https://github.com/woowacourse-teams/2025-estime/issues/16) [#17](https://github.com/woowacourse-teams/2025-estime/issues/17) [#15](https://github.com/woowacourse-teams/2025-estime/issues/15)
