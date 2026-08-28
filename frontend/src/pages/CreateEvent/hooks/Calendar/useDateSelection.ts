@@ -10,6 +10,9 @@ interface SimpleDragSelectionOptions {
 }
 type DragState = 'add' | 'remove';
 
+// 서버(Room.MAX_AVAILABLE_DATE_COUNT)와 같은 값. 한쪽만 바꾸면 서버 400 이 사용자에게 그대로 나간다.
+const MAX_AVAILABLE_DATE_COUNT = 90;
+
 export const useDateSelection = ({
   selectedDates,
   setSelectedDates,
@@ -41,6 +44,13 @@ export const useDateSelection = ({
         showToast({
           type: 'warning',
           message: '과거 날짜는 선택할 수 없습니다.',
+        });
+        return;
+      }
+      if (!newSelectedDates.has(dateString) && newSelectedDates.size >= MAX_AVAILABLE_DATE_COUNT) {
+        showToast({
+          type: 'warning',
+          message: `날짜는 최대 ${MAX_AVAILABLE_DATE_COUNT}개까지 선택할 수 있습니다.`,
         });
         return;
       }

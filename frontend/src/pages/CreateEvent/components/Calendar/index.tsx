@@ -57,9 +57,6 @@ const Calender = () => {
               </PageArrowButton>
             </S.ButtonContainer>
           </S.Header>
-          <Text tabIndex={0} variant="h4">
-            날짜는 최대 7개까지 선택 가능합니다.
-          </Text>
         </Flex>
         <S.CalendarContainer ref={containerRef}>
           <S.Grid onPointerLeave={handlePointerLeave}>
