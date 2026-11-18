@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -13,6 +13,7 @@ import com.estime.cache.CacheNames;
 import com.estime.port.out.RoomEventSender;
 import com.estime.room.RoomSession;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,72 +41,53 @@ class VotesUpdatedEventListenerTest {
         listener = new VotesUpdatedEventListener(roomEventSender, cacheManager, SAME_THREAD);
     }
 
-    @DisplayName("이벤트를 받고 flush 하면 그 방으로 SSE를 전송한다.")
+    @DisplayName("이벤트를 받으면 그 방으로 SSE를 전송한다.")
     @Test
-    void flush_sendsEventForDirtyRoom() {
+    void handle_sendsEventToRoom() {
         final RoomSession roomSession = RoomSession.from("test-session");
 
         listener.handle(new VotesUpdated(roomSession));
-        listener.flush();
 
         verify(roomEventSender).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
     }
 
-    @DisplayName("같은 방에 이벤트가 여러 번 와도 flush 한 번에 한 번만 전송된다.")
+    @DisplayName("같은 방에 이벤트가 여러 번 오면 합치지 않고 그만큼 전송한다.")
     @Test
-    void flush_coalescesEventsForSameRoom() {
+    void handle_sendsForEveryEventWithoutCoalescing() {
         final RoomSession roomSession = RoomSession.from("test-session");
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             listener.handle(new VotesUpdated(roomSession));
         }
-        listener.flush();
 
-        verify(roomEventSender, times(1)).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
+        verify(roomEventSender, times(3)).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
     }
 
-    @DisplayName("다른 방의 이벤트는 각각 전송된다.")
+    @DisplayName("캐시를 비운 뒤에 SSE를 전송한다.")
     @Test
-    void flush_sendsEventForEachRoom() {
-        for (int i = 0; i < 10; i++) {
-            listener.handle(new VotesUpdated(RoomSession.from("session-" + i)));
-        }
-        listener.flush();
-
-        verify(roomEventSender, times(10)).sendEvent(any(RoomSession.class), any(VotesUpdatedEvent.class));
-    }
-
-    @DisplayName("이벤트가 없으면 전송하지 않는다.")
-    @Test
-    void flush_doesNothingWhenNoEvent() {
-        listener.flush();
-
-        verify(roomEventSender, never()).sendEvent(any(RoomSession.class), any(VotesUpdatedEvent.class));
-    }
-
-    @DisplayName("flush 후 같은 방에 이벤트가 다시 오면 다음 flush 에서 전송된다.")
-    @Test
-    void flush_sendsAgainForEventAfterFlush() {
+    void handle_evictsCacheBeforeSending() {
         final RoomSession roomSession = RoomSession.from("test-session");
+        final Cache cache = cacheManager.getCache(CacheNames.VOTE_STATISTIC);
+        cache.put(roomSession, "stale");
+        final AtomicReference<Cache.ValueWrapper> cachedAtSend = new AtomicReference<>(() -> "not-sent");
+        doAnswer(invocation -> {
+            cachedAtSend.set(cache.get(roomSession));
+            return null;
+        }).when(roomEventSender).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
 
         listener.handle(new VotesUpdated(roomSession));
-        listener.flush();
-        listener.handle(new VotesUpdated(roomSession));
-        listener.flush();
 
-        verify(roomEventSender, times(2)).sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
+        assertThat(cachedAtSend.get()).isNull();
     }
 
     @DisplayName("SSE 전송이 실패해도 예외를 던지지 않는다.")
     @Test
-    void flush_doesNotThrowWhenSendFails() {
+    void handle_doesNotThrowWhenSendFails() {
         final RoomSession roomSession = RoomSession.from("test-session");
         doThrow(new RuntimeException()).when(roomEventSender)
                 .sendEvent(eq(roomSession), any(VotesUpdatedEvent.class));
 
-        listener.handle(new VotesUpdated(roomSession));
-
-        assertThatCode(() -> listener.flush()).doesNotThrowAnyException();
+        assertThatCode(() -> listener.handle(new VotesUpdated(roomSession))).doesNotThrowAnyException();
     }
 
     @DisplayName("이벤트를 받으면 그 방의 투표 통계 캐시를 비운다.")

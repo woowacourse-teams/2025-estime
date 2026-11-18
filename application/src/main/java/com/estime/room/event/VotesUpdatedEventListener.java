@@ -3,39 +3,26 @@ package com.estime.room.event;
 import com.estime.cache.CacheNames;
 import com.estime.port.out.RoomEventSender;
 import com.estime.room.RoomSession;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
- * 투표 변경 신호를 방 단위로 모아 주기마다 한 번씩 보낸다.
- *
- * <p>목록에 담는 일은 커밋 직후 동기로 한다. 전송용 실행기가 큐 포화 시 작업을 버리므로
- * 담는 일까지 비동기면 신호가 사라진다.
- *
- * <p>{@link #flush()} 는 목록을 먼저 가져오고 나서 보낸다. 순서가 반대면 보내는 동안
- * 커밋된 변경이 담아 둔 항목을 지워 그 변경이 묻힌다.
+ * 신호를 합치지 않고 투표마다 보낸다. prod 에서 같은 방에 투표가 몰린 적이 없어 합치는 로직을
+ * 뺐다(#868). 합치는 구현은 #860 에 있다.
  */
 @Component
 @Slf4j
 public class VotesUpdatedEventListener {
 
-    private static final long FLUSH_INTERVAL_MS = 100L;
-
     private final RoomEventSender roomEventSender;
     private final CacheManager cacheManager;
     private final Executor sseExecutor;
-    private final AtomicReference<Set<RoomSession>> dirtyRooms =
-            new AtomicReference<>(ConcurrentHashMap.newKeySet());
 
     public VotesUpdatedEventListener(
             final RoomEventSender roomEventSender,
@@ -47,11 +34,15 @@ public class VotesUpdatedEventListener {
         this.sseExecutor = sseExecutor;
     }
 
+    /**
+     * 캐시를 비운 뒤에 신호를 보낸다. 순서가 반대면 신호를 받고 조회한 참여자가 옛 값을 받고,
+     * 다음 신호가 없으면 그대로 남는다.
+     */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(final VotesUpdated event) {
         final RoomSession roomSession = event.roomSession();
         evictVoteStatistic(roomSession);
-        dirtyRooms.get().add(roomSession);
+        sseExecutor.execute(() -> send(roomSession));
     }
 
     /**
@@ -64,12 +55,6 @@ public class VotesUpdatedEventListener {
         if (cache != null) {
             cache.evict(roomSession);
         }
-    }
-
-    @Scheduled(fixedDelay = FLUSH_INTERVAL_MS)
-    public void flush() {
-        final Set<RoomSession> batch = dirtyRooms.getAndSet(ConcurrentHashMap.newKeySet());
-        batch.forEach(roomSession -> sseExecutor.execute(() -> send(roomSession)));
     }
 
     private void send(final RoomSession roomSession) {
