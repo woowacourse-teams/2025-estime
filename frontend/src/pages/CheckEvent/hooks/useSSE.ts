@@ -54,6 +54,8 @@ const useSSE = (session: string, onVoteChange: () => Promise<void>) => {
       };
 
       eventSource.addEventListener('connected', handleConnected);
+      // 연결 전이나 끊긴 동안 온 신호는 받을 수 없어서, 연결될 때마다 다시 조회한다.
+      eventSource.addEventListener('connected', handleVoteChange);
       eventSource.addEventListener('votes-updated', handleVoteChange);
 
       eventSource.onerror = (e) => {
